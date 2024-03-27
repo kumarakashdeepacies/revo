@@ -8,6 +8,7 @@ import math
 import multiprocessing
 import warnings
 
+import time
 from dateutil.relativedelta import relativedelta
 from joblib import Parallel, delayed, wrap_non_picklable_objects
 import matplotlib.pyplot as plt
@@ -852,7 +853,8 @@ class Valuation_Models:
             Begining_Date_array = np.delete(Begining_Date_array, d_i)
             Ending_Date_array = np.delete(Ending_Date_array, d_i)
         Year_frac_array = np.empty([0], dtype="float64")
-
+        Year_frac_array = np.zeros(Begining_Date_array.size + 1)
+        
         if interest_moratorium_flag == "Y":
             Cashflow_Date_array = Cashflow_Date_array[Cashflow_Date_array > moratorium_end_date]
             Ending_Date_array = Ending_Date_array[Ending_Date_array > moratorium_end_date]
@@ -909,26 +911,17 @@ class Valuation_Models:
             else:
                 Year_frac_array = np.append(Year_frac_array, 0)
 
-            for i in range(1, Begining_Date_array.size):
-                if str(Ending_Date_array[i - 1]) == "NaT":
-                    Year_frac_value = conventions.A_day_count(
-                        Last_coupon_date,
-                        Ending_Date_array[i],
-                        accrual_convention_code,
-                        custom_daycount_conventions=custom_daycount_conventions,
-                    )
+            def calculate_year_frac(row):
+                if str(row['Ending_Date']) == "NaT":
+                    return max(conventions.A_day_count(Last_coupon_date, row['Ending_Date'], accrual_convention_code, custom_daycount_conventions=custom_daycount_conventions), 0)
                 else:
-                    Year_frac_value = conventions.A_day_count(
-                        Begining_Date_array[i],
-                        Ending_Date_array[i],
-                        accrual_convention_code,
-                        custom_daycount_conventions=custom_daycount_conventions,
-                    )
+                    return max(conventions.A_day_count(row['Begining_Date'], row['Ending_Date'], accrual_convention_code, custom_daycount_conventions=custom_daycount_conventions), 0)
 
-                if Year_frac_value > 0:
-                    Year_frac_array = np.append(Year_frac_array, Year_frac_value)
-                else:
-                    Year_frac_array = np.append(Year_frac_array, 0)
+            temp = pd.DataFrame({'Begining_Date': Begining_Date_array, 'Ending_Date': Ending_Date_array})
+            start3 =  time.time()
+            Year_frac_array[1:] = np.apply_along_axis(calculate_year_frac, axis=1, arr=temp)
+            end3 = time.time()
+            raise Exception( end3 - start3)    
 
             Coupon_Rate = np.repeat(Coupon_Rate, len(Cashflow_Date_array))
             Face_Value = np.repeat(Face_Value, len(Cashflow_Date_array))
@@ -21529,60 +21522,82 @@ def compound_interest_schedule_generation(
 
     # Generation of the compound interest schedule
     compound_interest_schedule = []
-    for i in range(0, len(Begining_Date_array)):
-        compound_interest_schedule_row = {}
-        compound_interest_schedule_row["accrual_start_date"] = Begining_Date_array[i]
-        compound_interest_schedule_row["date"] = Ending_Date_array[i]
-        # Flag to identify the cashflow payment date
-        if payout == "Maturity":
-            if i == len(Begining_Date_array) - 1:
-                compound_interest_schedule_row["payout_date"] = 1
-            else:
-                compound_interest_schedule_row["payout_date"] = 0
-        else:
-            if Ending_Date_array[i] in cashflow_date or Ending_Date_array[i] == last_payment_date:
-                compound_interest_schedule_row["payout_date"] = 1
-            else:
-                compound_interest_schedule_row["payout_date"] = 0
-        # Accrual period calculation
-        if model_code == "M046" and i == 0:
-            compound_interest_schedule_row["year_frac"] = conventions.D_day_count(
-                valuation_date,
-                Ending_Date_array[i],
-                discount_convention_code,
-                custom_daycount_conventions=custom_daycount_conventions,
-            )
-        else:
-            compound_interest_schedule_row["year_frac"] = conventions.D_day_count(
-                Begining_Date_array[i],
-                Ending_Date_array[i],
-                discount_convention_code,
-                custom_daycount_conventions=custom_daycount_conventions,
-            )
-        # Accrual factor calculation
-        compound_interest_schedule_row["accrual_rate"] = (
-            compound_interest_schedule_row["year_frac"] * interest_rate
+
+    def calculate_interest_parameters(start_dates, end_dates, cashflow_dates, last_payment_date, interest_rate, principal, accrued_interest, valuation_date, discount_convention_code, custom_daycount_conventions, payout, model_code):
+        start_dates = np.array(start_dates)
+        end_dates = np.array(end_dates)
+        cashflow_dates = np.array(cashflow_dates)
+        len_dates = len(start_dates)
+        is_model_M046 = model_code == 'M046'
+        is_payout_at_maturity = payout == 'Maturity'
+    
+        is_first = np.arange(len(start_dates)) == 0
+        payout_dates = np.where(
+            np.logical_or(
+                np.logical_and(is_payout_at_maturity, np.arange(len(start_dates)) == len(start_dates) - 1),
+                np.isin(end_dates, cashflow_dates) | (end_dates == last_payment_date)
+            ),
+            1, 0
         )
-        if i == 0:
-            if model_code == "M046" and str(accrued_interest) != "None":
-                compound_interest_schedule_row["accrual_factor"] = (
-                    1 + compound_interest_schedule_row["accrual_rate"] + accrued_interest / principal[0]
-                )
-            else:
-                compound_interest_schedule_row["accrual_factor"] = (
-                    1 + compound_interest_schedule_row["accrual_rate"]
-                )
-        else:
-            compound_interest_schedule_row["accrual_factor"] = compound_interest_schedule[i - 1][
-                "accrual_factor_payoff"
-            ] * (1 + compound_interest_schedule_row["accrual_rate"])
-        if compound_interest_schedule_row["payout_date"] == 0:
-            compound_interest_schedule_row["accrual_factor_payoff"] = compound_interest_schedule_row[
-                "accrual_factor"
-            ]
-        else:
-            compound_interest_schedule_row["accrual_factor_payoff"] = 1
-        compound_interest_schedule.append(compound_interest_schedule_row)
+
+        # Vectorize year fraction calculation
+        year_frac_first = np.where(
+            (is_model_M046 & is_first),
+            conventions.D_day_count(valuation_date, end_dates[0], discount_convention_code, custom_daycount_conventions),
+            0
+        )
+
+        year_frac_rest = conventions.D_day_count(start_dates, end_dates, discount_convention_code, custom_daycount_conventions)
+        year_frac = np.where(is_first, year_frac_first, year_frac_rest)
+        
+        # Vectorize accrual rate calculation  
+        accrual_rate = year_frac * interest_rate
+
+        accrual_factors = np.ones(len_dates) + accrual_rate
+        if is_model_M046 and accrued_interest != 'None':
+            accrued_interest_value = float(accrued_interest) / principal  # Convert once, use if not 'None'
+            accrual_factors[0] += accrued_interest_value
+
+        # Vectorized cumulative product for accrual_factors beyond the first element
+        accrual_factors[1:] = np.cumprod(accrual_factors[1:])
+
+        # Set initial value correctly if the first condition applies
+        if is_model_M046 and accrued_interest != 'None':
+            accrual_factors[0] = 1 + accrual_rate[0] + accrued_interest_value
+
+        # Vectorized calculation for accrual_factor_payoff
+        accrual_factor_payoff = np.where(payout_dates == 1, 1, accrual_factors)
+
+        compound_interest_schedule = pd.DataFrame({
+            'accrual_start_date': start_dates,
+            'date': end_dates,
+            'payout_date': payout_dates,
+            'year_frac': year_frac,
+            'accrual_rate': accrual_rate,
+            'accrual_factor': accrual_factors,
+            'accrual_factor_payoff': accrual_factor_payoff
+        })
+
+        return compound_interest_schedule
+
+
+    start2 = time.time()
+    compound_interest_schedule = calculate_interest_parameters(
+            Begining_Date_array,  
+            Ending_Date_array,  
+            cashflow_date,  
+            last_payment_date,  
+            interest_rate,  
+            principal[0],  
+            accrued_interest,  
+            valuation_date,  
+            discount_convention_code,  
+            custom_daycount_conventions,  
+            payout,  
+            model_code
+    )
+    end2 = time.time()
+    #raise Exception (end2 - start2)
 
     compound_interest_schedule = pd.DataFrame(compound_interest_schedule)
 
@@ -21590,14 +21605,14 @@ def compound_interest_schedule_generation(
     compound_interest_schedule["outstanding_balance_before_payout"] = (
         principal[0] * compound_interest_schedule["accrual_factor"]
     )
-    compound_interest_schedule["outstanding_balance_after_payout"] = (
-        principal[0] * compound_interest_schedule["accrual_factor_payoff"]
-    )
+
+    compound_interest_schedule["outstanding_balance_after_payout"] = principal[0] * (
+        compound_interest_schedule["accrual_factor_payoff"]
+    )  
     compound_interest_schedule["interest"] = (
         compound_interest_schedule["outstanding_balance_before_payout"] - principal[0]
     )
     return compound_interest_schedule
-
 
 ## Building blocks functions
 
