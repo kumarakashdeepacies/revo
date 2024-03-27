@@ -17,71 +17,6 @@ from numba import float64, guvectorize, int64, njit, void
 from datetime import date, datetime
 import logging
 
-def applyParallel(
-                config_dict,
-                column_index_dict,
-                pos_data,
-                curve_repo_data,
-                curve_components_data,
-                cs_curve_repo_data,
-                cs_curve_components_data,
-                vol_repo_data,
-                vol_components_data,
-                holiday_calendar,
-                currency_data,
-                NMD_adjustments,
-                repayment_schedule,
-                func,
-                vix_data,
-                cf_analysis_id,
-                cashflow_uploaded_data,
-                underlying_position_data,
-                custom_daycount_conventions,
-                dpd_ruleset,
-                overdue_bucketing_data,
-                dpd_schedule,
-                product_holiday_code,
-                request,
-                market_data
-            ):
-                retLst, cashflow_model_results, measures_output = zip(
-                    *Parallel(n_jobs=cpu_total_count)(
-                        delayed(func)(
-                            row,
-                            column_index_dict,
-                            config_dict,
-                            curve_repo_data,
-                            curve_components_data,
-                            cs_curve_repo_data,
-                            cs_curve_components_data,
-                            vol_repo_data,
-                            vol_components_data,
-                            holiday_calendar,
-                            currency_data,
-                            NMD_adjustments,
-                            repayment_schedule,
-                            market_data,
-                            vix_data,
-                            cf_analysis_id,
-                            cashflow_uploaded_data,
-                            underlying_position_data,
-                            custom_daycount_conventions,
-                            dpd_ruleset,
-                            overdue_bucketing_data,
-                            dpd_schedule,
-                            product_holiday_code,
-                            request,
-                        )
-                        for row in pos_data
-                    )
-                )
-                cashflow_output = pd.concat(cashflow_model_results, ignore_index=True)
-                measures_output = pd.concat(measures_output, ignore_index=True)
-                final_output = pd.DataFrame(retLst)
-                return final_output, cashflow_output, measures_output
-
-
-
 def final_valuation_fn(config_dict, request, data=None):
     logging.warning(f"ENTERED PORTFOLIO VALUATION FUNCTION")
     start_date = datetime.now()
@@ -732,7 +667,75 @@ def final_valuation_fn(config_dict, request, data=None):
     
     if len(val_date_filtered_array)>0:
         if config_dict["inputs"]["Technical_Conf"] == "Joblib":
+
+            def applyParallel(
+                config_dict,
+                column_index_dict,
+                pos_data,
+                curve_repo_data,
+                curve_components_data,
+                cs_curve_repo_data,
+                cs_curve_components_data,
+                vol_repo_data,
+                vol_components_data,
+                holiday_calendar,
+                currency_data,
+                NMD_adjustments,
+                repayment_schedule,
+                func,
+                vix_data,
+                cf_analysis_id,
+                cashflow_uploaded_data,
+                underlying_position_data,
+                custom_daycount_conventions,
+                dpd_ruleset,
+                overdue_bucketing_data,
+                dpd_schedule,
+                product_holiday_code,
+                request,
+                market_data
+            ):
+                retLst, cashflow_model_results, measures_output = zip(
+                    *Parallel(n_jobs=cpu_total_count)(
+                        delayed(func)(
+                            row,
+                            column_index_dict,
+                            config_dict,
+                            curve_repo_data,
+                            curve_components_data,
+                            cs_curve_repo_data,
+                            cs_curve_components_data,
+                            vol_repo_data,
+                            vol_components_data,
+                            holiday_calendar,
+                            currency_data,
+                            NMD_adjustments,
+                            repayment_schedule,
+                            market_data,
+                            vix_data,
+                            cf_analysis_id,
+                            cashflow_uploaded_data,
+                            underlying_position_data,
+                            custom_daycount_conventions,
+                            dpd_ruleset,
+                            overdue_bucketing_data,
+                            dpd_schedule,
+                            product_holiday_code,
+                            request,
+                        )
+                        for row in pos_data
+                    )
+                )
+                cashflow_output = pd.concat(cashflow_model_results, ignore_index=True)
+                measures_output = pd.concat(measures_output, ignore_index=True)
+                final_output = pd.DataFrame(retLst)
+                return final_output, cashflow_output, measures_output
+
+            
             identifier = 0
+            
+            
+
             for chunk_pos_data in np.array_split(val_date_filtered_array, len(val_date_filtered_array)/chunk_size if len(val_date_filtered_array)>chunk_size else 1):
                 if len(cashflow_uploaded_data) > 0:
                     cashflow_uploaded_data_filtered = cashflow_uploaded_data.loc[cashflow_uploaded_data["position_id"].isin(chunk_pos_data[:,column_index_dict["position_id"]])]
