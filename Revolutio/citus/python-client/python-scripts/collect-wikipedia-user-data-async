@@ -1,0 +1,84 @@
+#!python/bootloader/bootloader
+
+from collections import namedtuple
+from datetime import datetime
+import logging
+import sys
+import time
+import os
+
+import asyncio
+import aiohttp
+from aiosseclient import aiosseclient
+import json
+
+import psycopg2
+from socketIO_client import SocketIO, BaseNamespace, LoggingNamespace
+
+logging.basicConfig(level=logging.DEBUG)
+
+if len(sys.argv) > 1:
+    conn_str = " ".join(sys.argv[1:])
+else:
+    conn_str = os.environ.get('DATABASE_URI')
+    if not conn_str:
+        conn_str = "postgresql://revolutio:supersecretpassword@citus_master:5432/postgres"
+
+connection = psycopg2.connect(conn_str)
+connection.autocommit = True
+cursor = connection.cursor()
+
+async def main():
+    async for event in aiosseclient('https://stream.wikimedia.org/v2/stream/recentchange'):
+        data = json.loads(event.data)
+        if data["type"] in ("edit"):
+            new_length = (data["length"]["new"] if "length" in data else 0) or 0
+            old_length = (data["length"]["old"] if "length" in data else 0) or 0
+
+            added_chars = max(0, new_length - old_length)
+            removed_chars = -max(0, old_length - new_length)
+            cursor.execute("""
+                INSERT INTO wikipedia_changes
+                VALUES (
+                    %(editor)s, to_timestamp(%(time)s),
+                    %(wiki)s, %(title)s,
+                    %(comment)s, %(minor)s, %(type)s,
+                    %(old_length)s, %(new_length)s
+                );
+            """, {
+                'editor': data["user"],
+                'time': data["timestamp"],
+                'wiki': data["wiki"],
+                'title': data["title"],
+                'comment': data["comment"],
+                'minor': data.get("minor", None),
+                'type': data["type"],
+                'old_length': old_length,
+                'new_length': new_length,
+            })
+
+            cursor.execute("""
+                INSERT INTO wikipedia_editors as u
+                VALUES (
+                    %(editor)s, %(bot)s, 1,
+                    %(added_chars)s, %(removed_chars)s,
+                    to_timestamp(%(timestamp)s), to_timestamp(%(timestamp)s)
+                )
+                ON CONFLICT (editor) DO UPDATE SET
+                    added_chars = u.added_chars + %(added_chars)s,
+                    removed_chars = u.removed_chars + %(removed_chars)s,
+                    last_seen = to_timestamp(%(timestamp)s),
+                    edit_count = u.edit_count + 1
+                WHERE u.editor = %(editor)s;
+            """, {
+                'timestamp': data["timestamp"],
+                'editor': data["user"],
+                'bot': data["bot"],
+                'added_chars': added_chars,
+                'removed_chars': removed_chars,
+            })
+
+        print(event)
+
+loop = asyncio.get_event_loop()
+loop.run_until_complete(main())

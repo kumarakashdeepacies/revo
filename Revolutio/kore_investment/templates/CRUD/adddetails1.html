@@ -1,0 +1,874 @@
+{% extends extend_template %}
+
+{% load crispy_forms_tags %}
+{{ form.media }}
+{% load static %}
+{% block body_block %}
+
+<!-- Select2 -->
+<link rel="stylesheet" href="{% static 'vendor/Base_theme/select2/css/select2.min.css' %}">
+<link rel="stylesheet" href="{% static 'vendor/Base_theme/select2-bootstrap4-theme/select2-bootstrap4.min.css' %}">
+
+<!-- Select2 -->
+<script src="{% static 'vendor/Base_theme/select2/js/select2.min.js' %}"></script>
+
+
+
+<head>
+  <style>
+    input[type="text"] {
+      background: transparent;
+      border: 1px solid #A9A9A9;
+      /*border-bottom: 1px solid #000000;*/
+      box-shadow: none;
+      border-radius: 3px;
+    }
+
+    .textinput textInput form-control {
+      background: transparent;
+      border: solid thin #EAEAEA;
+      /*border-bottom: 1px solid #000000;*/
+      box-shadow: none;
+      border-radius: 3px;
+    }
+
+    input[type="number"] {
+      background: transparent;
+      border: 1px solid #A9A9A9;
+      /*border-bottom: 1px solid #000000;*/
+      box-shadow: none;
+      border-radius: 3px;
+    }
+
+    #submit-id-submit {
+      position: relative;
+      top: 50%;
+    }
+
+    .content-header {
+      margin-left: 1.5%;
+      padding: 0%;
+    }
+
+    .content {
+      margin-left: -1%;
+      padding: 0%;
+    }
+
+    .buttonalign {
+      margin-left: 1%;
+    }
+
+    .backbtn {
+      background-color: var(--primary-color);
+      color: white;
+    }
+
+      .backbtn:hover {
+        background-color: #565a5e;
+        color: white;
+      }
+  </style>
+</head>
+
+<div class="breadcrumb-holder" style="background-color: #e9ecef; ">
+  <div class="container-fluid">
+    <ul class="breadcrumb">
+      <li class="breadcrumb-item"><a {% if current_application_code != 'App0' %} {% if current_application_code == 'Dev' %} {% if current_dev_mode == 'Edit' %} {% if edit_app_code != 'Not Selected' %} href="{% url 'users:homePage' edit_app_code current_dev_mode %}" {% else %} href="{% url 'users:homePage' 'Dev' current_dev_mode %}" {% endif %} {% elif current_dev_mode == 'Build' %} {% if build_app_code != 'Not Selected' %} href="{% url 'users:homePage' build_app_code current_dev_mode %}" {% else %} href="{% url 'users:select_application' %}"  {% endif %} {% endif %} {% else %} href="{% url 'users:homePage' current_application_code 'User' %}" {% endif %} {% else %} href="{% url 'users:select_application' %}" {% endif %}>
+        <b> Home </b></a></li>
+      <li class="breadcrumb-item active"><b> View User Groups > Groups > Edit</b> </li>
+    </ul>
+  </div>
+</div>
+
+<section class="content">
+
+  <div class="container-fluid">
+    <div class="font-weight-light">
+      <div class="card ">
+        <div class="card-header">
+          <h6 class="card-title">{{title}}</h6>
+
+          <div class="card-tools">
+
+            <button type="button" onclick="goBack()" class="btn btn-primary btn-sm">
+              <i class="fas fa-times"></i>
+            </button>
+          </div>
+        </div>
+
+        <div class="card-body">
+          <p>{{title_1}}</p>
+          {% crispy form %}
+
+          <div class="row buttonalign">
+          </div>
+        </div>
+      </div>
+      <div class="card " id="password_change_card" style="display: none;">
+        <div class="card-header">
+          <h6 class="card-title">Update User Password</h6>
+
+          <div class="card-tools">
+
+            <button type="button" onclick="goBack()" class="btn btn-primary btn-sm">
+              <i class="fas fa-times"></i>
+            </button>
+          </div>
+        </div>
+
+        <div class="card-body">
+          <div class="row">
+            <div class="col-3">
+          <label style="font-weight: 700;">Username:</label>
+          <input id="username_pc" name="username_pc" type="text"
+              class="textinput textInput form-control" required>
+        </div>
+        <div class="col-3">
+          <label style="font-weight: 700;">Updated Password:</label>
+          <input id="password_pc" name="password_pc" type="text"
+          class="textinput textInput form-control" required>
+        </div>
+          </div>
+          <br>
+          <button type="button" id="update_user_password"
+              class="buttonstyling acies_btn acies_btn-primary">
+              Update Password
+          </button>
+          <div class="row buttonalign">
+        </div>
+      </div>
+      </div>
+      <div class="card " id="user_activation_card" style="display: none;">
+        <div class="card-header">
+          <h6 class="card-title">Activate/Deactivate User</h6>
+
+          <div class="card-tools">
+
+            <button type="button" onclick="goBack()" class="btn btn-primary btn-sm">
+              <i class="fas fa-times"></i>
+            </button>
+          </div>
+        </div>
+
+        <div class="card-body">
+          <label style="font-weight: 700;">Username:</label>
+          <input id="username_pc2" name="username_pc2" type="text"
+            style="width: 15%;"
+            class="textinput textInput form-control" required>
+          <br>
+          <button type="button" id="activate_user"
+              class="btn btn-primary">
+              Activate User
+          </button>
+          <button type="button" id="deactivate_user"
+              class="btn btn-primary">
+              Deactivate User
+          </button>
+          <div class="row buttonalign">
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+<script>
+
+  var ctoken = $('form').find("input[name='csrfmiddlewaretoken']").attr('value')
+  url_string = window.location.pathname
+  f_occ = url_string.indexOf('/', url_string.indexOf('/') + 1)
+  s_occ = url_string.indexOf('/', url_string.indexOf('/') + f_occ +1)
+  t_occ = url_string.indexOf('/', url_string.indexOf('/') + s_occ +1)
+  app_code2 = url_string.substring(f_occ+1,s_occ)
+  current_dev_mode2 = url_string.substring(s_occ+1,t_occ)
+  var app_code_build_code_url = "/"+app_code2+"/"+current_dev_mode2
+  $.ajaxSetup({
+    beforeSend: function (xhr, settings) {
+      xhr.setRequestHeader("X-CSRFToken", ctoken);
+    }
+  });
+  function copyUsername() {
+    $('#deactivate_user').css('margin-left','5px')
+    var dummy = $('#id_username').val();
+    if(dummy){
+      $("#password_change_card").css("display", "block")
+      $("#user_activation_card").css("display", "block")
+    }
+    else{
+      $("#password_change_card").css("display", "none")
+      $("#user_activation_card").css("display", "none")
+    }
+    $('#username_pc').val(dummy).trigger('change');
+    $('#username_pc2').val(dummy).trigger('change');
+    var ischecked = $('#id_is_active').is(":checked")
+    $('#username_pc').prop('readonly', true);
+    $('#username_pc2').prop('readonly', true);
+    $.ajax({
+      url: '/users'+app_code_build_code_url+'/update_user_password/',
+      data: {
+        'operation': 'get_is_active',
+        'username': $('#username_pc').val(),
+      },
+      type: "GET",
+      dataType: "json",
+      success: function(data){
+        if(data.is_active){
+          $('#deactivate_user').prop('disabled', false);
+          $('#activate_user').prop('disabled', true);
+        }
+        else{
+          $('#activate_user').prop('disabled', false);
+          $('#deactivate_user').prop('disabled', true);
+        }
+      },
+      error: function(){
+        Swal.fire({icon: 'error',text: 'Error! Please try again.'});
+      }
+    });
+  }
+  copyUsername();
+  $('#update_user_password').off('click').on('click', () => {
+        $.ajax({
+            url: '/users'+app_code_build_code_url+'/update_user_password/',
+            data: {
+                'operation': 'change_user_password',
+                'username': $('#username_pc').val(),
+                'password': $('#password_pc').val(),
+            },
+
+            type: "POST",
+            dataType: "json",
+            success: function (data) {
+                if(data.response == "error"){
+                  Swal.fire({icon: 'error',text: data.error_msg});
+                }
+                else{
+                  Swal.fire({icon: 'success',text: 'Password updated successfully!'});
+                }
+
+            },
+            error: function () {
+                Swal.fire({icon: 'error',text: 'Error! Please try again.'});
+            }
+        });
+    });
+  $('#activate_user').off('click').on('click', () => {
+    $.ajax({
+      url: '/users'+app_code_build_code_url+'/update_user_password/',
+      data: {
+        'operation': 'user_active',
+        'username': $('#username_pc').val(),
+        'is_active': 'true'
+      },
+      type: "POST",
+      dataType: "json",
+      success: function(data){
+        Swal.fire({icon: 'success',text: 'User activated successfully!'});
+        window.location.reload();
+      },
+      error: function(){
+        Swal.fire({icon: 'error',text: 'Error! Please try again.'});
+      }
+    });
+  });
+  $('#deactivate_user').off('click').on('click', () => {
+    $.ajax({
+      url: '/users'+app_code_build_code_url+'/update_user_password/',
+      data: {
+        'operation': 'user_active',
+        'username': $('#username_pc').val(),
+        'is_active': 'false'
+      },
+      type: "POST",
+      dataType: "json",
+      success: function(data){
+        Swal.fire({icon: 'success',text: 'User deactivated successfully!'});
+        window.location.reload();
+      },
+      error: function(){
+        Swal.fire({icon: 'error',text: 'Error! Please try again.'});
+      }
+    });
+  });
+</script>
+
+
+
+<script>
+  // Initialise select elements
+  $('.select2').select2()
+  $(".systemvaluedropdown").select2({
+    tags: true
+  });
+
+  $('#select2multiple').select2({
+    tags: true
+  })
+  function goBack() {
+    window.history.back();
+  }
+</script>
+
+<!--System Values-->
+<!--dynamically insert values in dropdowns which get saved in db-->
+<script>
+  if ($('.systemvaluedropdown').length > 0) {
+    $('.systemvaluedropdown').each(function () {
+      $(this).on('select2:select', indexselected)
+    })
+    function indexselected(e) {
+      var SystemValues_Master = $(this).val();
+      console.log(SystemValues_Master)
+      var label1 = $(this).attr('name');
+      $.ajax({
+        url: '/users/systemvalues/',
+
+        data: {
+          'val': label1,
+          'key': SystemValues_Master,
+        },
+        type: "POST",
+        dataType: "json",
+        success: function (data) {
+
+        },
+        error: function () {
+          Swal.fire({icon: 'error',text: 'Error! Please try again.'});
+        }
+      })
+    }
+  }
+</script>
+<!--System Values code ends-->
+<!--User permission Nav Bar-->
+<script>
+  if ($('#id_permission_name').length == 1) {
+    if (window.location.href == "http://127.0.0.1:8000/users/userpermission/create/") {
+      $('#ptype').append('<div id="newdiv"></div>');
+      $('#id_permission_name').empty()
+
+      $('#id_permission_type').on('select2:select', indexselected1)
+      function indexselected1(e) {
+        console.log(e)
+        console.log("aaaaaaaaaaa")
+        var values = $(this).val();
+        console.log(values)
+        //var label1 = $(this).attr('name');
+        $.ajax({
+          url: '/users/values/',
+
+          data: {
+            //'val': label1,
+            'key': values,
+          },
+          type: "POST",
+          dataType: "json",
+          success: successIndex,
+          error: function () {
+            Swal.fire({icon: 'error',text: 'Error! Please try again.'});
+          }
+        })
+        function successIndex(data) {
+          console.log(data)
+
+          $('#id_permission_name').empty()
+          var options = data.data
+          for (var i = 0; i < options.length; i++) {
+            $('#id_permission_name').append(new Option(options[i].option_name, options[i].option_code, false, false))
+          }
+          console.log(options)
+          //$("select#id_permission_name").on('change', (function () {
+          //  console.log($('#permission_name:selected').attr('value'));
+
+          //});
+
+          $("select#id_permission_name").change(function (e) {
+            console.log(e)
+            var permission_value = $('#id_permission_name').val();
+            var permission_name = $(`#id_permission_name option[value='${permission_value[0]}']`).html();
+            console.log(permission_value)
+            console.log(permission_name)
+
+            $(`<button type='button' class='btn btn-dark m-1' name='${permission_name}'
+                            value='${permission_value}'> ${permission_name}</button>`).appendTo('#newdiv')
+            $(`#id_permission_name option[value='${permission_value}']`).remove();
+            $(`#newdiv button[value='${permission_value}']`).on('click', functionbtn);
+          });
+          function functionbtn(e) {
+            console.log(e)
+            // var btnvalue = $('#mybtn').val();
+            //console.log(btnvalue)
+            $(`<option value='${e.target.value}'> ${e.target.name}</option>`).appendTo('#id_permission_name')
+            $(this).remove()
+          };
+        }
+        $("#button-id-button").click(function () {
+          console.log("aaaaa")
+          var btn = $('#newdiv button')
+
+          btn.each(function () {
+            var btnvalue1 = $(this).attr('value')
+            var btnname1 = $(this).attr('name')
+            $(`<option selected value='${btnvalue1}'> ${btnname1}</option>`).appendTo('#id_permission_name')
+          })
+          $('#newdiv').empty()
+          $("#button-id-button").attr('type', 'submit')
+        });
+
+      }
+    }
+    else {
+      $('#ptype').append('<div id="newdiv"></div>');
+      $(document).ready(function () {
+        var username = $("#id_username").val();
+        var access_name = $("#id_permission_type").val();
+        $.ajax({
+          url: '/users/access1/',
+
+          data: {
+            //'val': label1,
+            'key': access_name,
+            'username': username,
+            //'key1': values2,
+          },
+          type: "POST",
+          dataType: "json",
+          success: successIndex,
+          error: function () {
+            Swal.fire({icon: 'error',text: 'Error! Please try again.'});
+          }
+        })
+        function successIndex(data) {
+          console.log(data)
+          $('#id_permission_name').empty()
+          var options = data.data
+          var processcodename = data.processcodename
+          console.log("id")
+          //console.log(processcodename[0][0][0])
+          console.log("name")
+          //console.log(processcodename[0][0][1])
+          //var processcodename1 = processcodename.valueOf();
+          for (var i = 0; i < options.length; i++) {
+            $('#id_permission_name').append(new Option(options[i].option_name, options[i].option_code, false, false))
+          }
+          for (var i = 0; i < processcodename.length; i++) {
+            $(`<button type='button' class='btn btn-dark m-1' name='${processcodename[i][0][1]}'
+                            value='${processcodename[i][0][0]}'> ${processcodename[i][0][1]}</button>`).appendTo('#newdiv')
+            $(`#id_permission_name option[value='${processcodename[i][0][0]}']`).remove();
+            $(`#newdiv button[value='${processcodename[i][0][0]}']`).on('click', functionbtn);
+          }
+          console.log(options)
+          $("select#id_permission_name").change(function (e) {
+            console.log(e)
+            var permission_value = $('#id_permission_name').val();
+            var permission_name = $(`#id_permission_name option[value='${permission_value[0]}']`).html();
+            console.log(permission_value)
+            console.log(permission_name)
+
+            $(`<button type='button' class='btn btn-dark m-1' name='${permission_name}'
+                            value='${permission_value}'> ${permission_name}</button>`).appendTo('#newdiv')
+            $(`#id_permission_name option[value='${permission_value}']`).remove();
+            $(`#newdiv button[value='${permission_value}']`).on('click', functionbtn);
+          });
+          function functionbtn(e) {
+            console.log(e)
+            // var btnvalue = $('#mybtn').val();
+            //console.log(btnvalue)
+            $(`<option value='${e.target.value}'> ${e.target.name}</option>`).appendTo('#id_permission_name')
+            $(this).remove()
+          };
+
+          //$("select#id_permission_name").on('change', (function () {
+          //  console.log($('#permission_name:selected').attr('value'));
+
+          //});
+        }
+        $("#button-id-button").click(function () {
+          console.log("aaaaa")
+          var btn = $('#newdiv button')
+
+          btn.each(function () {
+            var btnvalue1 = $(this).attr('value')
+            var btnname1 = $(this).attr('name')
+            $(`<option selected value='${btnvalue1}'> ${btnname1}</option>`).appendTo('#id_permission_name')
+          })
+          $('#newdiv').empty()
+          $("#button-id-button").attr('type', 'submit')
+        });
+
+      });
+      $('#id_permission_type').on('select2:select', indexselected1)
+      function indexselected1(e) {
+        console.log(e)
+        console.log("aaaaaaaaaaa")
+        var values = $(this).val();
+        console.log(values)
+        //var label1 = $(this).attr('name');
+        $.ajax({
+          url: '/users/values/',
+
+          data: {
+            //'val': label1,
+            'key': values,
+          },
+          type: "POST",
+          dataType: "json",
+          success: successIndex,
+          error: function () {
+            Swal.fire({icon: 'error',text: 'Error! Please try again.'});
+          }
+        })
+        function successIndex(data, data1) {
+          console.log(data)
+
+          $('#id_permission_name').empty()
+          var options = data.data
+          var selectValues = data1.data
+          console.log("data here")
+          console.log(options)
+          for (var i = 0; i < options.length; i++) {
+            $('#id_permission_name').append(new Option(options[i].option_name, options[i].option_code, false, false))
+          }
+          //for (var i = 0; i < selectValues.length; i++) {
+          //  $('#id_permission_name').find(Option(selectValues[i].option)).remove();
+          //}
+          $("select#id_permission_name").change(function (e) {
+            console.log(e)
+            var permission_value = $('#id_permission_name').val();
+            var permission_name = $(`#id_permission_name option[value='${permission_value[0]}']`).html();
+            console.log(permission_value)
+            console.log(permission_name)
+
+            $(`<button type='button' class='btn btn-dark m-1' name='${permission_name}'
+                            value='${permission_value}'> ${permission_name}</button>`).appendTo('#newdiv')
+            $(`#id_permission_name option[value='${permission_value}']`).remove();
+            $(`#newdiv button[value='${permission_value}']`).on('click', functionbtn);
+          });
+          function functionbtn(e) {
+            console.log(e)
+            // var btnvalue = $('#mybtn').val();
+            //console.log(btnvalue)
+            $(`<option value='${e.target.value}'> ${e.target.name}</option>`).appendTo('#id_permission_name')
+            $(this).remove()
+          };
+          console.log(options)
+          //$("select#id_permission_name").on('change', (function () {
+          //  console.log($('#permission_name:selected').attr('value'));
+
+          //});
+
+          $("select#id_permission_name").change(function (e) {
+            console.log(e)
+            var permission_value = $('#id_permission_name').val();
+            var permission_name = $(`#id_permission_name option[value='${permission_value[0]}']`).html();
+            console.log(permission_value)
+            console.log(permission_name)
+
+            $(`<button type='button' class='btn btn-dark m-1' name='${permission_name}'
+                            value='${permission_value}'> ${permission_name}</button>`).appendTo('#newdiv')
+            $(`#id_permission_name option[value='${permission_value}']`).remove();
+            $(`#newdiv button[value='${permission_value}']`).on('click', functionbtn);
+          });
+          function functionbtn(e) {
+            console.log(e)
+            // var btnvalue = $('#mybtn').val();
+            //console.log(btnvalue)
+            $(`<option value='${e.target.value}'> ${e.target.name}</option>`).appendTo('#id_permission_name')
+            $(this).remove()
+          };
+        }
+        $("#button-id-button").click(function () {
+          console.log("aaaaa")
+          var btn = $('#newdiv button')
+
+          btn.each(function () {
+            var btnvalue1 = $(this).attr('value')
+            var btnname1 = $(this).attr('name')
+            $(`<option selected value='${btnvalue1}'> ${btnname1}</option>`).appendTo('#id_permission_name')
+          })
+          $('#newdiv').empty()
+          $("#button-id-button").attr('type', 'submit')
+        });
+
+      }
+    }
+  }
+</script>
+<!--User permission Nav Bar code ends-->
+<!--Strategy Master-->
+<script>
+  var checkbox1 = document.getElementById('showmore');
+  if (checkbox1) {
+    checkbox1.addEventListener('change', function () {
+      if (this.checked) {
+        $('.displayhidden').css('display', 'block')
+      }
+      else {
+        $('.displayhidden').css('display', 'none')
+
+      }
+    })
+  }
+</script>
+<!--Strategy Master code ends-->
+<!--Money Market Master-->
+<script>
+  var show1 = document.getElementById('displayfields');
+
+  if (show1) {
+    show1.addEventListener('change', function () {
+      if (this.value == 1) {
+        $('.displayhidden').css('display', 'block')
+      }
+      else {
+        $('.displayhidden').css('display', 'none')
+
+      }
+    })
+  }
+</script>
+<!--Money Market master code ends-->
+<!--Limit Name Master-->
+<script>
+
+  var showattr = document.getElementById('show');
+  if (showattr) {
+    $("#show").change(function () {
+      if ($(this).val() == "Entity") {
+        $(".displayhidden").css('display', 'block')
+      }
+      else if ($(this).val() == "Security_Rating") {
+        $(".displayhidden1").css('display', 'block')
+      }
+      else {
+        $(".displayhidden").css('display', 'none')
+        $(".displayhidden1").css('display', 'none')
+      }
+    });
+  }
+</script>
+<!--Limit Name Master code ends-->
+<!--Currency Master Code ends-->
+<script>
+   var currency = document.getElementById('currency')
+ // if (currency) {
+
+      $('#currency').on('select2:select', currencyfunction);
+  $('#trading_centre').on('select2:select', currencyfunction);
+
+    var tradingcentredict = {{ tradingcentre| safe }}
+
+  console.log(tradingcentredict)
+  function currencyfunction(event) {
+      console.log("GGGGGGGGGGGGGGGGGGGG")
+
+      var currency = document.getElementById("currency").value;
+
+      var tradingcentre = $("#trading_centre option:selected").text();
+      console.log(tradingcentre)
+      console.log(event.target.id)
+      if (event.target.id == "trading_centre") {
+        console.log("if working")
+        for (i in tradingcentredict) {
+          console.log("for working")
+          if (tradingcentredict[i].centre == tradingcentre) {
+            console.log(tradingcentredict[i].centre)
+            document.getElementById("defaultholidays").value = tradingcentredict[i].holiday
+          }
+        }
+      }
+      document.getElementById("currencycode").value = currency + "-" + tradingcentre
+
+    }
+
+  //}
+</script>
+<!--Currency Master code ends-->
+<!--Currency Pair Master-->
+<script>
+    var primary_currency = document.getElementById('primarycurrency')
+  if (primary_currency) {
+     $('#id_holiday_calendar_primary_currency').empty()
+  $('#id_holiday_calendar_quoting_currency').empty()
+      $('#primarycurrency').on('select2:select', holidayfunction);
+  $('#quotingcurrency').on('select2:select', holidayfunction);
+  var holidaydict = {{ holidays| safe}}
+    function holidayfunction(e) {
+      if (e.target.id == "primarycurrency") {
+        var primary_currency = $("#primarycurrency option:selected").text();
+        $('#id_holiday_calendar_primary_currency').empty()
+        $('#id_holiday_calendar_primary_currency').append(new Option("---------", "---------", false, false))
+        for (i in holidaydict) {
+          holidaylist = []
+
+          if (holidaydict[i].currency_code == primary_currency) {
+            holidaylist.push(holidaydict[i].holiday)
+
+
+            for (var i = 0; i < holidaylist.length; i++) {
+
+              $('#id_holiday_calendar_primary_currency').append(new Option(holidaylist[i], holidaylist[i], false, false))
+            }
+          }
+        }
+      }
+
+      if (e.target.id == "quotingcurrency") {
+        var quoting_currency = $("#quotingcurrency option:selected").text();
+        $('#id_holiday_calendar_quoting_currency').empty()
+        $('#id_holiday_calendar_quoting_currency').append(new Option("---------", "---------", false, false))
+        for (i in holidaydict) {
+          holidaylist = []
+          if (holidaydict[i].currency_code == quoting_currency) {
+            holidaylist.push(holidaydict[i].holiday)
+
+
+            for (var i = 0; i < holidaylist.length; i++) {
+
+              $('#id_holiday_calendar_quoting_currency').append(new Option(holidaylist[i], holidaylist[i], false, false))
+            }
+          }
+        }
+
+      }
+
+    }
+
+  }
+</script>
+<!--Currency Pair Master code ends-->
+<!--Order Mandate-->
+<script>
+  var cc = document.getElementById('ordermandateform1');
+  if (cc) {
+    var ctoken = document.getElementById('ordermandateform1').elements[0].value
+
+    $.ajaxSetup({
+      beforeSend: function (xhr, settings) {
+        xhr.setRequestHeader("X-CSRFToken", ctoken);
+      }
+    });
+
+    $('#fundtype').on('change', function () {
+      var selection = $(this).val();
+      switch (selection) {
+        case "Individual Fund":
+          $("#fundname").show()
+          $('#saveandsubmitbutton').prop('disabled', false);
+          break;
+        default:
+          $("#fundname").hide()
+          $('#saveandsubmitbutton').prop('disabled', true);
+      }
+    });
+
+
+    document.getElementById("quantity").onfocusout = function () { mousefunction() };
+    document.getElementById("price").onfocusout = function () { mousefunction() };
+
+    function mousefunction() {
+      var quantity = document.getElementById("quantity").value;
+      var price = document.getElementById("price").value;
+      var tradeamount = quantity * price;
+      document.getElementById("tradeamount").value = tradeamount;
+    }
+    var input = document.createElement("input");
+
+    input.setAttribute("type", "hidden");
+
+    input.setAttribute("name", "formtype");
+
+    input.setAttribute("value", "pool1");
+
+
+
+    document.getElementById("ordermandateform1").appendChild(input);
+
+
+    document.getElementById("savebutton").onclick = function () { savefunction() };
+
+    document.getElementById("saveandsubmitbutton").onclick = function () { savefunction() };
+
+    function savefunction() {
+      document.getElementById("ordermandateform1").action = "http://127.0.0.1:8000/users/ordermandatetype/";
+
+      document.getElementById("savebutton").type = "submit";
+      document.getElementById("saveandsubmitbutton").type = "submit";
+    }
+
+  }
+</script>
+<!--Order Mandate code ends-->
+<!--Country Master-->
+<script>
+    var country_name = document.getElementById('countryname')
+  if (country_name) {
+
+    var countrydict = {{ country | safe  }}
+
+    $('#countryname').on('select2:select', countryfunction);
+    function countryfunction(event) {
+      var countryname = $(this).val()
+      for (i in countrydict) {
+        if (countrydict[i].country == countryname) {
+          document.getElementById("iso_code").value = countrydict[i].iso_code
+        }
+      }
+    }
+
+  var x = $('input[name="perpetuity"]');
+    $('input[name="perpetuity"]').change(function () {
+      document.getElementById('activeto').value = "";
+      document.getElementById('activeto').readOnly = false;
+      if (this.checked) {
+        document.getElementById('activeto').readOnly = true;
+        var dateString = "31-12-2099";
+        var dateParts = dateString.split("/");
+        console.log
+        var dateObject = new Date(+dateParts[2], dateParts[1] - 1, +dateParts[0]);
+        document.getElementById('activeto').value = dateString;
+        console.log(dateObject)
+      }
+
+    });
+
+  }
+
+
+  $("#save_user_form_button").click(function(){
+    id = window.location.pathname.split('/')[6]
+    username = $("#id_username").val()
+    email = $("#id_email").val()
+    is_active = $("#id_is_active").is(":checked")
+    let url_string = window.location.pathname
+    let f_occ = url_string.indexOf('/', url_string.indexOf('/') + 1)
+    let s_occ = url_string.indexOf('/', url_string.indexOf('/') + f_occ +1)
+    let t_occ = url_string.indexOf('/', url_string.indexOf('/') + s_occ +1)
+    let app_code2 = url_string.substring(f_occ+1,s_occ)
+    let current_dev_mode2 = url_string.substring(s_occ+1,t_occ)
+    var app_code_build_code_url = "/"+app_code2+"/"+current_dev_mode2
+    $.ajax({
+          "url": "/users"+app_code_build_code_url+"/user_update/",
+          "data": {
+            'id':id,
+            'username':username,
+            'email':email,
+            'is_active':is_active,
+            'operation': 'update_user' },
+          "dataType": "json",
+          "type": "POST",
+          "success": function (d) {
+            window.location.replace("/users"+app_code_build_code_url+"/access_setup/");
+          },
+          "error": function () {
+            Swal.fire({icon: 'error',text: 'Error! Please try again.'});
+          }
+        });
+    })
+</script>
+<!-- Country Master Code Ends-->
+    {% endblock %}
+
+
+

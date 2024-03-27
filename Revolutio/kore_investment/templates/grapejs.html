@@ -1,0 +1,3685 @@
+<!DOCTYPE html>
+{% load static %}
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="icon" href="/static/images/favicons/favicon1.ico">
+    <title>Revolutio</title>
+    <meta
+      content="width=device-width, initial-scale=1"
+      name="viewport"
+    />
+
+    <link rel="stylesheet" href="{% static 'New_Grapejs/grapesjs/dist/css/toastr.min.css' %}">
+    <link rel="stylesheet" href="{% static 'New_Grapejs/grapesjs/dist/css/grapes.min.css' %}" />
+    <link rel="stylesheet" href="{% static 'New_Grapejs/grapesjs/dist/css/grapesjs-preset-webpage.min.css' %}">
+    <link rel="stylesheet" href="{% static 'New_Grapejs/grapesjs/dist/css/tooltip.css' %}">
+    <link rel="stylesheet" href="{% static 'New_Grapejs/grapesjs/dist/css/demos.css' %}">
+    <link rel="stylesheet" href="{% static 'New_Grapejs/grapesjs/dist/css/grapick.min.css' %}" >
+    <link rel="stylesheet" href="{% static 'New_Grapejs/grapesjs/dist/css/grapesjs-component-code-editor.min.css' %}" >
+
+    <!-- <script src="//static.filestackapi.com/v3/filestack.js"></script> -->
+    <!-- <script src="js/aviary.js"></script> old //feather.aviary.com/imaging/v3/editor.js -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+      integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
+      crossorigin="anonymous"
+    />
+    <script src="{% static 'New_Grapejs/grapesjs/dist/toastr.min.js' %}"></script>
+    <script src="{% static 'New_Grapejs/grapesjs/dist/grapes.min.js' %}"></script>
+    <script src="{% static 'New_Grapejs/grapesjs/dist/grapesjs-preset-webpage.js' %}"></script>
+    <script src="{% static 'New_Grapejs/grapesjs/dist/grapesjs-blocks-basic.js' %}"></script>
+    <script src="{% static 'New_Grapejs/grapesjs/dist/grapesjs-component-code-editor.min.js' %}"></script>
+    <script src="{% static 'New_Grapejs/grapesjs/dist/grapesjs-plugin-forms.js' %}"></script>
+    <script src="{% static 'New_Grapejs/grapesjs/dist/grapesjs-component-countdown.js' %}"></script>
+    <script src="{% static 'New_Grapejs/grapesjs/dist/grapesjs-plugin-export.js' %}"></script>
+    <script src="{% static 'New_Grapejs/grapesjs/dist/grapesjs-tabs.js' %}"></script>
+    <script src="{% static 'New_Grapejs/grapesjs/dist/grapesjs-custom-code.js' %}"></script>
+    <script src="{% static 'New_Grapejs/grapesjs/dist/grapesjs-touch.js' %}"></script>
+    <script src="{% static 'New_Grapejs/grapesjs/dist/grapesjs-parser-postcss.js' %}"></script>
+    <script src="{% static 'New_Grapejs/grapesjs/dist/grapesjs-tooltip.js' %}"></script>
+    <script src="{% static 'New_Grapejs/grapesjs/dist/grapesjs-tui-image-editor.js' %}"></script>
+    <script src="{% static 'New_Grapejs/grapesjs/dist/grapesjs-typed.js' %}"></script>
+    <script src="{% static 'New_Grapejs/grapesjs/dist/grapesjs-style-bg.js' %}"></script>
+
+    <link rel="stylesheet" href="{% static 'css/KoreD/jquery.dataTables.css' %}">
+    <link rel="stylesheet" href="{% static 'vendor/Base_theme/datatables-responsive/css/responsive.bootstrap4.min.css' %}">
+    <link rel="stylesheet" href="{% static 'vendor/Base_theme/datatables-colreorder/css/colReorder.bootstrap4.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/KoreD/buttons.dataTables.min.css' %}">
+
+    <!-- Select2 -->
+    <link rel="stylesheet" href="{% static 'vendor/Base_theme/select2/css/select2.min.css' %}">
+    <link rel="stylesheet" href="{% static 'vendor/Base_theme/select2-bootstrap4-theme/select2-bootstrap4.min.css' %}">
+
+    <!-- Select2 -->
+    <script src="{% static 'vendor/Base_theme/select2/js/select2.full.min.js' %}"></script>
+    <!-- Theme style -->
+    <link rel="stylesheet" href="{%static 'css/Base_theme/CSS_min.css'%}">
+    <link rel="stylesheet" href="{%static 'css/Acies_theme/Stylesheet1.css'%}">
+
+    <!-- jQuery -->
+    <script src="{%static 'vendor/Base_theme/jquery/jquery.min.js'%}"></script>
+
+    <script src="{%static 'vendor/Base_theme/bootstrap/js/bootstrap.bundle.min.js'%}"></script>
+    <!--Jquery UI-->
+    <script src="{%static 'vendor/Base_theme/jquery-ui/jquery-ui.js'%}"></script>
+
+
+
+    <!-- Select2 -->
+    <link rel="stylesheet" href="{% static 'vendor/Base_theme/select2/css/select2.min.css' %}">
+    <link rel="stylesheet" href="{% static 'vendor/Base_theme/select2-bootstrap4-theme/select2-bootstrap4.min.css' %}">
+    <!-- Select2 -->
+    <script src="{% static 'vendor/Base_theme/select2/js/select2.full.min.js' %}"></script>
+    <link rel="stylesheet" href="{%static 'vendor/Base_theme/fontawesome-free/css/all.min.css'%}">
+
+    <!-- DataTables -->
+    <link rel="stylesheet" href="{% static 'vendor/Base_theme/datatables-bs4/css/dataTables.bootstrap4.css' %}">
+    <!--Jquery UI-->
+    <link rel="stylesheet" href="{% static 'vendor/Base_theme/jquery-ui/jquery-ui.css' %}">
+
+    <!-- Ckeditor -->
+    <script src="{% static 'js/ckeditor/ckeditor.js' %}"></script>
+    <style>{{global_css}}</style>
+
+    <!-- sweetalert2 -->
+    <script src="{% static 'vendor/sweet_alert/sweetalert2.all.min.js' %}"></script>
+
+    <style type="text/css">
+      @media (min-width:576px) {
+        .swal2-styled.swal2-confirm, .swal2-styled.swal2-deny, .swal2-styled.swal2-cancel{
+          flex: 0 0 auto !important;
+        }
+
+        .swal2-actions {
+          flex-wrap: nowrap;
+        }
+
+      }
+      @media (max-width:576px) {
+        .swal2-styled.swal2-confirm, .swal2-styled.swal2-deny, .swal2-styled.swal2-cancel{
+          flex: 0 0 auto !important;
+        }
+
+        .swal2-actions {
+          flex-wrap: nowrap;
+        }
+
+      }
+
+
+    #iconselect,#newiconselect{
+      font-family: 'FontAwesome', 'sans-serif';
+      width: 100%;
+      height: 38px;
+    }
+    .select2-selection__rendered {
+    line-height: 38px !important;
+    }
+    .select2-container .select2-selection--single {
+        height: 38px !important;
+    }
+    .select2-selection__arrow {
+        height: 38px !important;
+    }
+      .widgetbtn:hover,
+      .resetbtn:hover,
+      .savebtn:hover {
+        color: white !important;
+      }
+      .widgetbtn,
+      .resetbtn,
+      .savebtn {
+        color: whitesmoke !important;
+      }
+      .modal-content {
+        background-color: whitesmoke !important;
+        color: black !important;
+      }
+      .modal-content .btn-primary {
+        background-color: #343a40 !important;
+        border-color: #343a40 !important;
+      }
+      .btn-primary:hover {
+        background-color: var(--primary-color) !important;
+      }
+      .modal-content .btn-outline-primary {
+        color: #343a40 !important;
+        border-color: #343a40 !important;
+      }
+
+      .modal-content .btn-outline-primary:hover {
+        background-color: var(--primary-color) !important;
+        color: black !important;
+        border-color: var(--primary-color) !important;
+      }
+      .modal-content .btn-outline-primary:active {
+        background-color: var(--primary-color) !important;
+        color: black !important;
+        border-color: var(--primary-color) !important;
+      }
+      .modal-content .btn-outline-primary:focus {
+        box-shadow: none;
+      }
+      .modal-content .btn-primary:not(:disabled):not(.disabled).active, .btn-primary:not(:disabled):not(.disabled):active, .show>.btn-primary.dropdown-toggle {
+        background-color: var(--primary-color) !important;
+        color: white !important;
+        border-color: var(--primary-color) !important;
+      }
+      .newwid .icon-add-comp::before,
+      .icon-comp100::before,
+      .icon-comp50::before,
+      .icon-comp30::before,
+      .icon-rm::before {
+        content: "";
+      }
+      .icon-add-comp {
+        background: url("{% static 'images/grapejs/icon-sq-a.png' %}") no-repeat center;
+      }
+      .icon-comp100 {
+        background: url("{% static 'images/grapejs/icon-sq-1.png' %}") no-repeat center;
+      }
+      .icon-comp50 {
+        background: url("{% static 'images/grapejs/icon-sq-2.png' %}") no-repeat center;
+      }
+      .icon-comp30 {
+        background: url("{% static 'images/grapejs/icon-sq-3.png' %}") no-repeat center;
+      }
+      .icon-rm {
+        background: url("{% static 'images/grapejs/icon-sq-r.png' %}") no-repeat center;
+      }
+
+      .icons-flex {
+        background-size: 70% 65% !important;
+        height: 15px;
+        width: 17px;
+        opacity: 0.9;
+      }
+      .icon-dir-row {
+        background: url("{% static 'images/grapejs/flex-dir-row.png' %}") no-repeat
+          center;
+      }
+      .icon-dir-row-rev {
+        background: url("{% static 'images/grapejs/flex-dir-row-rev.png' %}") no-repeat
+          center;
+      }
+      .icon-dir-col {
+        background: url("{% static 'images/grapejs/flex-dir-col.png' %}") no-repeat
+          center;
+      }
+      .icon-dir-col-rev {
+        background: url("{% static 'images/grapejs/flex-dir-col-rev.png' %}") no-repeat
+          center;
+      }
+      .icon-just-start {
+        background: url("{% static 'images/grapejs/flex-just-start.png' %}") no-repeat
+          center;
+      }
+      .icon-just-end {
+        background: url("{% static 'images/grapejs/flex-just-end.png' %}") no-repeat
+          center;
+      }
+      .icon-just-sp-bet {
+        background: url("{% static 'images/grapejs/flex-just-sp-bet.png' %}") no-repeat
+          center;
+      }
+      .icon-just-sp-ar {
+        background: url("{% static 'images/grapejs/flex-just-sp-ar.png' %}") no-repeat
+          center;
+      }
+      .icon-just-sp-cent {
+        background: url("{% static 'images/grapejs/flex-just-sp-cent.png' %}") no-repeat
+          center;
+      }
+      .icon-al-start {
+        background: url("{% static 'images/grapejs/flex-al-start.png' %}") no-repeat
+          center;
+      }
+      .icon-al-end {
+        background: url("{% static 'images/grapejs/flex-al-end.png' %}") no-repeat
+          center;
+      }
+      .icon-al-str {
+        background: url("{% static 'images/grapejs/flex-al-str.png' %}") no-repeat
+          center;
+      }
+      .icon-al-center {
+        background: url("{% static 'images/grapejs/flex-al-center.png' %}") no-repeat
+          center;
+      }
+
+      [data-tooltip]::after {
+        background: rgba(51, 51, 51, 0.9);
+      }
+
+      .gjs-pn-commands {
+        min-height: 40px;
+      }
+
+      #gjs-sm-float,
+      .gjs-pn-views .fa-cog {
+        display: none;
+      }
+
+      .gjs-am-preview-cont {
+        height: 100px;
+        width: 100%;
+      }
+
+      .gjs-logo-version {
+        background-color: #756467;
+      }
+
+      .gjs-pn-panel.gjs-pn-views {
+        padding: 0;
+        border-bottom: none;
+      }
+      .gjs-pn-panel#gjs-pn-views-container, .gjs-pn-panel.gjs-pn-views-container {
+          height: calc(95%);
+      }
+      .gjs-frame:hover{
+        background-color: #6da9e5 !important;
+      }
+      .gjs-pn-panel, .gjs-block,.gjs-import-label,.gjs-cm-title,.modal-header,.gjs-btn-prim,.gjs-cm-title, .gjs-blocks-cs,.gjs-mdl-header,.CodeMirror-code,.gjs-mdl-content,.CodeMirror-vscrollbar,.CodeMirror-scroll,.CodeMirror-gutter,.CodeMirror-linenumbers {
+        background-color: #343a40 !important;
+        color: whitesmoke !important;
+      }
+      .gjs-pn-panel,.gjs-layer-title,.gjs-sm-sectors,.gjs-clm-tags,.gjs-layer-children,.gjs-layer,.gjs-sm-properties,.gjs-trt-traits  {
+        background-color: #343a40 !important;
+        color: whitesmoke !important;
+      }
+      .gjs-layer:hover,.gjs-layer-title:hover  {
+        background: var(--primary-color) !important;
+        background-color: var(--primary-color) !important;
+      }
+
+      .gjs-mdl-content {
+        background: whitesmoke !important;
+      }
+      .gjs-block:hover {
+        color: var(--primary-color) !important;
+      }
+      .gjs-pn-btn.gjs-pn-active {
+        box-shadow: none;
+      }
+      .code-panel{
+      display:flex;
+      background: #343a40 !important;
+    }
+      .gjs-pn-buttons {
+        height: auto;
+        color:whitesmoke !important;
+      }
+      .gjs-pn-btn:hover {
+        color: var(--primary-color) !important;
+      }
+
+      .gjs-pn-views .gjs-pn-btn {
+        margin: 0;
+        height: 40px;
+        padding: 10px;
+        width: 33.3333%;
+        border-bottom: 2px solid rgba(0, 0, 0, 0.3);
+      }
+
+      .CodeMirror {
+        min-height: 450px;
+        margin-bottom: 8px;
+      }
+      .grp-handler-close {
+        background-color: transparent;
+        color: #ddd !important;
+      }
+
+      .grp-handler-cp-wrap {
+        border-color: transparent;
+      }
+      .gjs-pn-btn {
+        font-size:1.5em;
+      }
+      .gjs-pn-panel,.gjs-block,.gjs-blocks-c,.gjs-title,.gjs-block-category,.gjs-layer,.gjs-layer-title-c,.gjs-clm-tags,.gjs-sm-sectors,.gjs-sm-property,.gjs-sm-properties,.gjs-trt-trait,.gjs-three-bg{
+        background-color: #343a40 !important;
+        color: whitesmoke !important;
+      }
+      .gjs-four-color {
+        color:var(--primary-color) !important;
+      }
+      .gjs-sm-clear {
+        color: whitesmoke !important;
+      }
+      .gjs-mdl-content,.gjs-mdl-header,.modal-header{
+        color: var(--primary-color) !important;
+        background-color: whitesmoke !important;
+      }
+      .btn-primary,.CodeMirror-linenumber,.CodeMirror-code,.CodeMirror-gutter,.CodeMirror-scroll,.gjs-cv-canvas__frames,.gjs-off-prv,.sp-picker-container,.sp-palette-container{
+        background-color: #343a40 !important;
+      }
+      .gjs-cm-title{
+        color: var(--primary-color) !important;
+      }
+      [data-tooltip]::after {
+        background: #343a40 !important;
+        color: whitesmoke !important;
+    }
+    .gjs-clm-header select option{
+      background: #343a40 !important;
+      color: whitesmoke !important;
+    }
+    .gjs-sm-property select option{
+      background: #343a40 !important;
+      color: whitesmoke !important;
+    }
+    .setting {
+      margin-left:15px;
+    }
+    </style>
+  </head>
+  <body>
+    {% load static %}
+
+        <div class="modal fade" id="formModal" tabindex="-1" role="dialog" aria-labelledby="formModalLabel" aria-hidden="true" >
+        <div class="modal-dialog modal-xl" role="document" style="max-width: 1600px; width: 100%;">
+          <div class="modal-content">
+            <div class="modal-header" style='background:#565a5e; color:white;'>
+              <h5 class="modal-title" id="formModalLabel" style="margin-left: auto;">Configure create view elements</h5>
+              <button type="button" class="close closeForm" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="row">
+              <div class="col-4">
+                <div class="modal-body" style="overflow-y: scroll ;max-height: 30rem;">
+                  <div class='card'>
+                    <div class='card-header' style="font-size: medium; color:var(--primary-color); font-weight: bold;">Table</div>
+                    <div class='card-body'>
+                      <form id="tableForm" method="post">
+                        {% csrf_token %}
+                        <div class="row">
+                          <div class="form-row col-6">
+                            <label style="margin-left:7px">Tab header:</label>
+                            <input type="text" placeholder="Tab Header" class="tabHeader" id="tabHeaderCreateView" data-spanid="createViewErrorSpan" style="margin-bottom: 8px;margin-left: 4px;">
+                          </div>
+                        </div>
+                        <div class="row">
+                        <div class="form-group col-12">
+                          <label class="acies_label ">Table:&nbsp;</label>
+                            <select id="selectFormTable" class="select2 form-control" name="tableform1" multiple>
+                              {% for i in data.tableList%}
+                              <option value="{{i}}">{{i}}</option>
+                              {%endfor%}
+                            </select>
+                        </div>
+                      </div>
+                      <div class="row tableRelation" style="display: none;">
+                        <div class="form-group col-12">
+                          <label class="acies_label ">Relationship:&nbsp;</label>
+                          <div class="col-12 tableRelationDetail">
+                          </div>
+                        </div>
+                        <div class="form-group col-12 tableRelationBtn" style = "display:none; margin-right: 4px;">
+                          <button class="btn btn-primary tableRelationCreateBtn" style = "margin-right: 5px;"  onclick="tableRelationCreateBtn.call(this)" type="button" data-toggle="modal" data-target="#tableRelationModal" aria-expanded="false" aria-controls="collapseExample">
+                            Create relation
+                          </button>
+                          <button class="btn btn-primary tableRelationCancelBtn" onclick="tableRelationCancelBtn.call(this)" type="button">
+                            Cancel
+                          </button>
+                        </div>
+                      </div>
+                        <div class="row">
+                        <div class="form-group col-8">
+                          <label class="acies_label ">Template:&nbsp;</label>
+                          <select id="selectFormTemplate" class="select2 form-control" name="templateform">
+                              <option value="" disabled selected>--------------</option>
+                              {% for i in data.templateListCreateView%}
+                              <option value="{{i}}">{{i}}</option>
+                              {%endfor%}
+                            </select>
+                      </div>
+                    </div>
+                    </form>
+                  </div>
+                  </div>
+                  <div class='fieldCard card'>
+                    <div class='card-header' style="font-size: medium; color:var(--primary-color); font-weight: bold;">Field selection</div>
+                    <div class='card-body'>
+                      <form id="fieldSelection" method="post">
+                        {% csrf_token %}
+                        <div class="row">
+                            <div class="col-5" id='allFields'>
+                              <h7 style= "font-weight:bold">All fields</h7> <br> <br>
+                              <div class="list-group" id="formfieldList"  style ="max-height:200px;overflow-y:auto">
+                              </div>
+
+                            </div>
+                            <!-- Sub sub-elements config -->
+                            <div class="col-7 subElementCards">
+                              <h7 style= "font-weight:bold">Selected fields</h7> <br> <br>
+                              <div class="row">
+                                <div class="col-10 list-group" id="selectedFormfieldList"  style ="max-height:200px;overflow-y:auto">
+                                </div>
+                                <div class="col-2 list-group" id="searchableFormfieldList" style ="max-height:200px;overflow-y:auto">
+                                </div>
+                              </div>
+                            </div>
+                        </div>
+                      </form>
+                    </div>
+                  </div>
+
+                  <div class='card' id='flowhiddenCard' hidden='true'>
+                    <div class='card-header' style="font-size: medium; color:var(--primary-color); font-weight: bold;">Flow column selection
+                    </div>
+                    <div class='card-body'>
+                      <form id="flowhiddenPerSelection" method="post">
+                        {% csrf_token %}
+                        <div class="row">
+
+                          <div class="form-group col-6" style="display: block;">
+                            <label class="acies_label ">Select Column:&nbsp;</label>
+                            <select id="flowhiddenSelectedColumn" class="select2 form-control" name="action" >
+
+                              </select>
+
+                            </div>
+                          </div>
+                          <div class="row">
+                            <div class="form-group col-8">
+                              <label class="acies_label ">Master Table:&nbsp;</label>
+                                <select id="selectMultipleFormTableflow" class="select2 form-control" name="tableform2">
+                                  {% for i in data.tableList %}
+                                  <option value="{{i}}">{{i}}</option>
+                                  {% endfor %}
+                                </select>
+                            </div>
+                            <div class="form-group col-4">
+                              <label class="acies_label ">Column:&nbsp;</label>
+                              <select id="selectTableColumnsflow" class="select2 form-control" name="templateformsflow">
+
+                              </select>
+                            </div>
+                          </div>
+
+                        </form>
+                        </div>
+                      </div>
+
+                  <div class='card' id='multiSelectCondCard' hidden='true'>
+                    <div class='card-header' style="font-size: medium; color:var(--primary-color); font-weight: bold;">MultiTable selection
+                    </div>
+                    <div class='card-body'>
+                      <form id="multiSelectPerSelection" method="post">
+                        {% csrf_token %}
+                        <div class="row">
+
+                          <div class="form-group col-6" style="display: block;">
+                            <label class="acies_label ">Select Column:&nbsp;</label>
+                            <select id="multipleSelectedColumn" class="select2 form-control" name="action" >
+
+                              </select>
+
+                            </div>
+
+                          <div class="form-group col-8">
+                            <label class="acies_label ">Master Table:&nbsp;</label>
+                              <select id="selectMultipleFormTable" class="select2 form-control" name="tableform1">
+                                {% for i in data.tableList %}
+                                <option value="{{i}}">{{i}}</option>
+                                {% endfor %}
+                              </select>
+                          </div>
+                      </div>
+                      <div class="row">
+                        <div class="form-group col-6">
+                          <label class="acies_label ">Column:&nbsp;</label>
+                          <select id="selectTableColumns" class="select2 form-control" name="templateforms">
+
+                          </select>
+                        </div>
+                        <div class="form-group col-6">
+                          <label class="acies_label ">Additional :&nbsp;</label>
+                          <select id="additional" class="select2 form-control" name="templateforms" multiple>
+                          </select>
+                          </div>
+                      </div>
+                      <div class="row">
+                        <div id="defaultValueConfig" class="custom-control custom-checkbox" style="margin-left:1%;">
+                          <input type="checkbox" name="defaultValueConfig" id="selectAlll" class="checkboxinput custom-control-input" value="0">
+                          <label for="selectAlll" class="custom-control-label">
+                            Ability to configure Value
+                          </label>
+                          </div>
+                      </div>
+                      </form>
+                    </div>
+                  </div>
+
+
+                  <div class='constraintAggCard card'  hidden='true'>
+                    <div class='card-header' style='font-size: medium; color:var(--primary-color); font-weight: bold;'>
+                      DropDown Field Selection
+                    </div>
+
+                    <div class='card-body'>
+                    <div class="row">
+                      <div class="form-group col-8">
+                        <h7 style= "font-weight:bold">UseCase Name:&nbsp;</h7> <br> <br>
+                        <div class="constraintAggSelection list-group"  name="tableform1" style ="max-height:200px;overflow-y:auto">
+                          <input  type="text" class="usecase_name form-control p-2" style="padding-left:4px;"  placeholder="Enter UseCase Name (Optional)" value="" required></input>
+                        </div>
+                      </div>
+
+                      <div class="form-group col-8">
+                        <label class="constraint_table">Table:
+                        </label>
+                          <select  class="selectFormTable_constraint select2 form-control" name="tableform1" multiple>
+                            {% for i in data.tableList%}
+                            <option value="{{i}}">{{i}}</option>
+                            {% endfor %}
+                          </select>
+                      </div>
+
+
+                      <div class="form-group col-8">
+                        <label class="constraint_selectableField"> Drop Fields
+                        </label>
+                          <select  class="selectFields_constraint select2 form-control" name="tableform1" multiple>
+                            <option value="use_case"></option>
+                            <option value="rule_set"> </option>
+                            <option value="constraint_name"> </option>
+                            <option value="unique_constraint_column"></option>
+                            <option value="condition_datatype"></option>
+                            <option value="condition"></option>
+                            <option value="threshold"></option>
+                            <option value="applicability_status"></option>
+                          </select>
+                      </div>
+                    </div>
+
+
+                    <div class="row float-right" >
+                      <i class="add_constraint{{t.element_id}} fa fa-plus-square fa-2x" aria-hidden="true"  style="color:var(--primary-color);margin-left: 380px"></i>
+                    </div>
+
+                    <div class="row">
+                      <div class="col-5">
+                        <h7 style= "font-weight:bold">Constraint Name:&nbsp;</h7> <br> <br>
+                        <div class="constraintAggSelection list-group" id="formfieldList"  style ="max-height:200px;overflow-y:auto">
+                          <input  class="constraint_name form-control p-2" style="padding-left:4px;"  placeholder="Enter Constraint Name" required>
+                        </div>
+                      </div>
+
+                      <div class="col-5">
+                        <h7 style= "font-weight:bold">Constraint Type:&nbsp;</h7> <br> <br>
+                        <div class=" constraintAggSelection list-group" id="formfieldList"  style ="max-height:200px;overflow-y:auto">
+                          <select  class="constraint_type select2 form-control" name="templateform" required>
+                            <option value=""  selected style="color:lightgrey;" disabled>Select Constraint Type</option>
+                            <option value="Array">Array</option>
+                            <option value="Individual">Individual</option>
+                            <option value="Grouped">Grouped</option>
+                          </select>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="add_tables"></div>
+                  </div>
+                  </div>
+                  <div class='assetAggCard card'  hidden='true'>
+                    <div class='card-header' style='font-size: medium; color:var(--primary-color); font-weight: bold;'>
+                      DropDown Field Selection
+                    </div>
+
+                    <div class='card-body'>
+                    <div class="row">
+                      <div class="form-group col-8">
+                        <label class="asset_table">Table:
+                        </label>
+                          <select  class="selectFormTable_asset select2 form-control" name="tableform1" multiple>
+                            {% for i in data.tableList%}
+                            <option value="{{i}}">{{i}}</option>
+                            {% endfor %}
+                          </select>
+                      </div>
+                    </div>
+
+                    <div class="row">
+
+                      <div class="col-10">
+                        <h7 style= "font-weight:bold">Condition Type:&nbsp;</h7> <br> <br>
+                        <div class=" assetAggSelection list-group" id="formfieldList"  style ="max-height:200px;overflow-y:auto">
+                          <select  class="asset_type select2 form-control" name="templateform" required multiple>
+                            <option value="AND">AND</option>
+                            <option value="Single">Single</option>
+                            <option value="OR">OR</option>
+                          </select>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  </div>
+                  <div class='card' id='comparableAggCard' hidden='true'>
+                    <div class='card-header' style="font-size: medium; color:var(--primary-color); font-weight: bold;">Condition selection
+                    </div>
+                    <div class='card-body'>
+                      <form id="conditionAggSelection" method="post">
+                        {% csrf_token %}
+                        <div class="row">
+                            <div class="col-5" id='comparableFields'>
+                            <h7 style="font-weight:bold">All fields</h7> <br> <br>
+                            <div class="list-group" id="ComparableNumList" style="max-height:200px;overflow-y:auto">
+                            </div>
+
+                          </div>
+                          <!-- Sub sub-elements config -->
+                          <div class="col-7 subElementCards">
+                            <h7 style="font-weight:bold">Selected fields</h7> <br> <br>
+                            <div class="list-group" id="selectedComparableNumList" style="max-height:200px;overflow-y:auto">
+
+                            </div>
+                          </div>
+                      </div>
+                      </form>
+                    </div>
+                  </div>
+
+                  <div class='card' id='comparableCondCard' hidden='true'>
+                    <div class='card-header' style="font-size: medium; color:var(--primary-color); font-weight: bold;">Condition selection
+                    </div>
+                    <div class='card-body'>
+                      <form id="conditionPerSelection" method="post">
+                        {% csrf_token %}
+                          <div class="row">
+                            <div class="form-group col-6" id='periodSelection'>
+
+
+
+                            </div>
+                            <div class="form-group col-6">
+                              <label class="acies_label ">Column:&nbsp;</label>
+                              <select id="selectCharColumn" class="select2 form-control" name="charColumn" multiple>
+                                <!-- Character Columns -->
+                              </select>
+                            </div>
+                          </div>
+                      </form>
+                    </div>
+                  </div>
+                  <div class='card'>
+                    <div class='card-header' style="font-size: medium; color:var(--primary-color); font-weight: bold;">Form action</div>
+                    <div class='card-body'>
+                      <form id="formActionSelection" method="post">
+                        {% csrf_token %}
+                        <div class="row">
+                          <div class="form-group col-8">
+                            <label class="acies_label ">Action:&nbsp;</label>
+                            <select id="selectAction" class="select2 form-control" name="action" multiple>
+                                {% for i in data.createViewAction%}
+                                <option value="{{i}}">{{i}}</option>
+                                {%endfor%}
+                              </select>
+
+                        </div>
+
+                      </div>
+                      <br>
+
+
+
+                    <button class="btn btn-primary popoverval" id="check2"  type="button" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
+                      Icon Selector
+                    </button>
+
+                  <div class="collapse" id="collapseExample">
+                    <div class="card card-body listoficon">
+
+
+                      </div>
+                    </div>
+                    </form>
+                  </div>
+
+                  </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-primary" id="saveCreateViewConfig">Save changes</button>
+                </div>
+              </div>
+            </div>
+            <div class="col-8">
+              <div class="modal-body" style="overflow-y: scroll ;max-height: 30rem;">
+                <div class='card' style="margin-left:-15px">
+                  <div class='card-header' style="font-size: medium; color:var(--primary-color); font-weight: bold;">
+                    <span>Preview</span>
+                    <div class="head float-right" style="display: flex; align-items:center; justify-content: space-between; width: 210px">
+                      <div class='custom-control custom-radio'>
+                        <input type="radio" id="single" name="js" value="single" checked="checked" style="margin-bottom:6px" class="custom-control-input">
+                        <label for="single" class="custom-control-label black" style="font-size: small;">Single field</label>
+                      </div>
+                      <div class='custom-control custom-radio'>
+                        <input type="radio" id="multiple" name="js" value="multiple" style="margin-bottom:6px" class="custom-control-input">
+                        <label for="multiple" class="custom-control-label black" style="font-size: small;">Multiple field</label>
+                      </div>
+                    </div>
+                  </div>
+                    <div class='card-body'>
+                      <div class="form-row"><div class="container"></div>
+                    </div>
+                    <div class="form-group formBtn"> <div class=""> <input type="hidden" name="tablename"> <input type="hidden" name="elementid" ><input type="submit" name="submit" value="Save" class="btn btn-primary buttonstyling acies_btn acies_btn-primary button_standard_save" ><input type="button" name="back" value="↝" class="btn backbtn ml-2" id="button-id-back"> </div> </div>
+                    </div>
+                </div>
+            <div class="card singleJsCard" id="JSConfig" style="display:none; margin-left: -15px;">
+              <div class="card-header">
+                <h5 class="card-title" id="chart1ModalLabel" style="color: var(--primary-color);">Configure field attributes</h5>
+                <div class="float-right" style="margin-right: 6px;">
+                  <i class="fas fa-plus" onclick="multipleJsCard.call(this)" style="margin-right: 4px; color:var(--primary-color);"><span style="color: var(--primary-color); font-size: 17.6px; font-family: Arial; font-weight: normal; margin-left: 3px;"></span></i>
+                </div>
+              </div>
+
+              <div class="card-body modal-body">
+                <p style="display: none;">Select the column name to configure</p>
+                  <select id='selectField' class="no class" name="SelectedFields" style="display: none;">
+                    <option value="" disabled selected>Select Field</option>
+                  </select>
+                  <p></p>
+                <div class="card collapsed-card multipleJs" style="margin-left:-12px;margin-right: -12px;">
+                  <div class="card-header row">
+                    <div class="form-group col-10" style="display:flex; align-items: center; margin-bottom: 0px;">
+                      <p class="ca" style="margin-block: auto; margin-right: 5px; font-weight:bold; color:var(--primary-color); white-space: normal;">Select the field property:</p>
+                      <div class="col-4">
+                        <select class="select2 form-control selectJSproperty" name="SelectedJS" onchange="selectJSpropertyFunc.call(this)" style="margin-left: 5px;">
+                          <option value="" disabled selected>Select Field property</option>
+                          {% for i in data.JSfunctions%}
+                            <option value="{{i}}">{{i}}</option>
+                          {%endfor%}
+                        </select>
+
+                      </div>
+                    </div>
+                    <div class="col-2">
+                      <div class="card-tools float-right">
+                        <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-plus" style="color:var(--primary-color);"></i></button>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="card-body">
+                    <div  id="cascadingCard1" style="display: none;" >
+                      <div class="card card-default collapsed-card">
+                        <div class="card-header">
+                          <p class="card-title">Cascading level 0</p>
+
+                          <div class="card-tools">
+                            <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-plus" style="color:black"></i></button>
+                            <button type="button" class="btn btn-tool" onclick="cascadingCard.call(this)" style="color:black">Add levels</i></button>
+                          </div>
+                        </div>
+                        <div class="card-body row" style="display: flex;">
+                          <div class="col-6 autopopulate1" style="height: 16rem;overflow: scroll;">
+                            <p class="autopopulate1" style="font-weight:bold;">Select source table</p>
+                            <div class="" id="masterTableCascading1">
+                              <select class="masterTableSelectCascading1 select2 form-control" onchange="selectColFromTable.call(this)">
+                                <option value="" selected>Select master table</option>
+                                {% for i in data.tableList%}
+                                <option value="{{i}}">{{i}}</option>
+                                {%endfor%}
+                              </select>
+                            </div><br>
+                            <div class="autopopulate1" style="font-weight: bold;">Criteria field mapping through source table column</div><br>
+                            <div class="row" id="indFieldTypeCascading1">
+                              <div class="col-6" style="display: inline-block;">
+                                <p>Current table field:</p>
+                                <select class="select2 form-control indFieldTypeSelectCascading1">
+                                  <option value="" selected>Dependent field mapping through source table column</option>
+                                </select>
+                              </div>
+                              <div class="col-6" style="display: inline-block;">
+                                <p>Mapping table field:</p>
+                                <select class="select2 form-control commonCol indFieldTypeMapperCascading1">
+                                  <option value="" selected>Select mapping field</option>
+                                </select>
+                              </div>
+                            </div><br>
+                          </div>
+                          <div class="col-6" style="height: 16rem;overflow: scroll;">
+                            <div class="autopopulate1" style="display: flex; align-items: center; justify-content: space-between;" style="font-weight: bold;"><span style="font-weight: bold;">Select dependent field</span> <span class="float-right" style="font-size: 15px;" onclick="addIndField.call(this,'Cascading1')"><i class="fas fa-plus"></i></span></div><br>
+                            <div class="norow" id="depFieldTypeCascading1">
+                              <div class="row" style="margin-bottom:6px">
+                                <div class="col-6">
+                                  <p>Current table field:</p>
+                                  <select class="depFieldTypeSelectCascading1 select2 form-control " onchange="casadingColOption.call(this)">
+                                    <option value="" selected>Select independent field</option>
+                                  </select>
+                                </div>
+                                <div class="col-5">
+                                  <p>Mapping table field:</p>
+                                  <select class="depFieldTypeMapperCascading1 select2 form-control commonCol">
+                                    <option value="" selected>Select mapping field</option>
+                                  </select>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="row linked-field">
+                      <div class="col-6">
+                        <p style="font-weight: bold;">Select Parent-Child</p>
+                        <select class="select2 form-control selectpctype" name="Selectedpc">
+                          <option value="" disabled selected>Select Field property</option>
+                            <option value="parent">Parent</option>
+                            <option value="child">Child</option>
+                        </select><p></p>
+                      </div>
+                      <div class="col-6">
+                        <p style="font-weight: bold;">Select Parent Column</p>
+                        <select class="select2 form-control selectparentcolumn" name="selectparentcolumn" >
+                          <option value="" selected>Select Parent Column</option>
+                          {% for i in data.finalFieldList%}
+                            <option value="{{i}}">{{i}}</option>
+                          {%endfor%}
+                        </select> <br><br>
+                      </div>
+                      <div class="foreignKeyCondCont col-12">
+                        <div class="subCont col-12" style="display:flex; margin-top: 10px">
+                          <div class="col-4">
+                            <p style="font-weight: bold;">Select Condition Column</p>
+                            <select class="select2 form-control selectparentcolumnCond" name="selectparentcolumnCond" >
+                              <option value="" selected>Select Condition Column</option>
+                            </select>
+                          </div>
+                          <div class="col-4">
+                            <p style="font-weight: bold;">Select condition:</p>
+                            <select class="select2 form-control foreignKeyCond" required onchange="foreignKeyCond.call(this)">
+                              <option value="Greater then">Greater than</option>
+                              <option value="Smaller then">Smaller than</option>
+                              <option value="Equal to">Equal to</option>
+                              <option value="Not Equal to">Not Equal to</option>
+                              <option value="In">In</option>
+                            </select>
+                          </div>
+                          <div class="col-3 foreignKeyCondVal">
+                            <p style="font-weight: bold;">Select value:</p>
+                            <select class="select2 form-control" required>
+                            </select>
+                          </div>
+                          <div class="col-3 foreignKeyCondValTag" style="display: none;">
+                            <p style="font-weight: bold;">Select value:</p>
+                            <select class="select2 form-control" required multiple>
+                            </select>
+                          </div>
+                          <div class="col-1">
+                            <i class="fas fa-plus" onclick="addForeignKeyCond.call(this)" data-toggle="tooltip" title="Add condition"></i> </i>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="row autopopulate">
+                      <div class="col-6" style="height: 16rem;overflow: scroll;">
+                        <p class="autopopulaten" style="font-weight: bold;">Select source table</p>
+                        <div class="masterTable" style="display: none;">
+                          <select  class="select2 form-control masterTableSelect">
+                            <option value="" selected>Select master table</option>
+                            {% for i in data.tableList%}
+                            <option value="{{i}}">{{i}}</option>
+                            {%endfor%}
+                          </select>
+                        </div><br>
+                        <div class="autopopulaten" style="font-weight: bold;">Criteria field mapping through source table column</div><br>
+                        <div class="row" id="indFieldType" style="display: none;">
+                          <div class="col-6" style="display: inline-block;">
+                            <p>Source table field:</p>
+                            <select  class="select2 form-control indFieldTypeSelect">
+                              <option value="" selected>Dependent field mapping through source table column</option>
+                            </select>
+                          </div>
+                          <div class="col-6" style="display: inline-block;">
+                            <p>Mapping table field:</p>
+                            <select  class="select2 form-control commonCol indFieldTypeMapper">
+                              <option value="" selected>Select mapping field</option>
+                            </select>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="col-6" style="height: 16rem;overflow: scroll;">
+                        <div class="autopopulaten" style="display: flex; align-items: center; justify-content: space-between;" style="font-weight: bold;"><span style="font-weight: bold;">Select dependent field</span> <span class="float-right" style="font-size: 15px;" onclick="addIndField.call(this)"><i class="fas fa-plus"></i></span></div><br>
+                        <div class="norow" id="depFieldType" style="display: none;">
+                          <div class="row" style="margin-bottom: 6px;">
+                            <div class="col-6" style="display: inline-block;">
+                              <p>Current table field:</p>
+                              <select class="depFieldTypeSelect select2 form-control ">
+                                <option value="" selected>Select independent field</option>
+                              </select>
+                            </div>
+                            <div class="col-5" style="display: inline-block;">
+                              <p>Mapping table field:</p>
+                              <select class="depFieldTypeMapper select2 form-control commonCol">
+                                <option value="" selected>Select mapping field</option>
+                              </select>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="row formLevelJs" style="display: none; margin-left: -15px">
+                      <div class="rowAdd">
+                        <div class="row formLevelFieldActions" style="padding:15px">
+                          <div class="col-5">
+                            <p style="font-weight: bold;">Select method:</p>
+                            <select class="select2 form-control formLevelFieldActionsSel" required onchange="formLevelFieldActions.call(this)">
+                              <option value="">---</option>
+                              <option value="Create manually">Create manually</option>
+                              <option value="Upload">Upload</option>
+                              <option value="Link to source table">Link to source table</option>
+                            </select>
+                          </div>
+                          <div class="col-5 uploadCondition" style="display: none; margin-top:30px">
+                            <form method="post" class="uploadCondition" enctype="multipart/form-data">
+                              <div class="custom-file">
+                                <input type="file" class="custom-file-input" id="uploadConditionClass" style="border-bottom-color:white;" name="show-hide_file" accept=".csv" >
+                                <label id="uploadConditionClass" class="custom-file-label">Choose file</label>
+                              </div>
+                            </form>
+                          </div>
+                          <div class="col-1 uploadCondition" style="display: none; margin-top: 30px;">
+                            <button type="submit" data-toggle="tooltip" title="Upload File" class="btn btn-primary btn-xs mx-2 rounded px-2 my-1 uploadConditionClassBtn" onclick="uploadConditionClassBtn.call(this)"><i class="fa fa-upload"></i>
+                            </button>
+                          </div>
+                          <div class="col-1 uploadCondition" style="display: none; margin-top: 30px;">
+                              <button type="submit" data-toggle="tooltip" title="Download format" class="btn btn-primary btn-xs mx-2 rounded px-2 my-1 downloadConditionClassBtn" onclick="downloadConditionClassBtn.call(this)"><i class="fa fa-download"></i>
+                              </button>
+                          </div>
+                        </div>
+                        <div class="row configContLink linkToSourceTable" style="padding:15px; display:none">
+                          <div class="col-4 formLevelFieldMasterTable">
+                            <p style="font-weight: bold;">Master table:</p>
+                            <select class="select2 form-control" required onchange="formLevelFieldMasterTable.call(this)">
+                              <option value="" selected>Select master table</option>
+                              {% for i in data.tableList%}
+                              <option value="{{i}}">{{i}}</option>
+                              {%endfor%}
+                            </select>
+                          </div>
+                          <div class="col-4 formLevelFieldColName">
+                            <p style="font-weight: bold;">Criteria field mapping:</p>
+                            <select class="select2 form-control" required>
+                            </select>
+                          </div>
+                          <div class="col-4 formLevelFieldColName">
+                            <p style="font-weight: bold;">Dependent column field:</p>
+                            <select class="select2 form-control" required>
+                            </select>
+                          </div>
+                        </div>
+                        <div class="row configCont createManually" style="padding:15px; display:none">
+                          <div class="col-3">
+                            <p style="font-weight: bold;">Select condition:</p>
+                            <select class="select2 form-control formLevelFieldCond" required onchange="formLevelFieldChangeCond.call(this)">
+                              <option value="Greater then">Greater than</option>
+                              <option value="Smaller then">Smaller than</option>
+                              <option value="Equal to">Equal to</option>
+                              <option value="In">In</option>
+                            </select>
+                          </div>
+                          <div class="col-4 formLevelFieldVal">
+                            <p style="font-weight: bold;">Select value:</p>
+                            <select class="select2 form-control" required>
+                            </select>
+                          </div>
+                          <div class="col-4 formLevelFieldValTag" style="display: none;">
+                            <p style="font-weight: bold;">Select value:</p>
+                            <select class="select2 form-control" required multiple>
+                            </select>
+                          </div>
+                          <div class="col-4">
+                            <p style="font-weight: bold;">Select columns to show:</p>
+                            <select class="select2 form-control formLevelFieldCol" required multiple>
+                          </select>
+                          </div>
+                          <div class="col-1">
+                            <i class="fas fa-plus" onclick="formLevelFieldAdd.call(this)" data-toggle="tooltip" title="Add condition"></i> </i>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="row stylingJs" style="display: none; margin-left: -15px">
+                      <div class="row stylingJsProperty" style="padding:15px; width:53%">
+                        <div class="col-12">
+                          <p style="font-weight: bold;">Select styling property:</p>
+                          <select class="select2 form-control stylingJsPropertySelect" required onchange="stylingJsPropertySelect.call(this)">
+                            <option value="">-----</option>
+                            <option value="Border">Field outer border</option>
+                            <option value="Validation color">Color on validation</option>
+                            <option value="Field color">Field color</option>
+                            <option value="Hover">Hover</option>
+                            <option value="Instruction">Instruction on field</option>
+                          </select>
+                        </div>
+                      </div>
+                      <div class="row stylingJsBorder" style="padding-left: 15px; width:100%;display: none;">
+                        <div class="col-4 stylingJsBorderType">
+                          <p style="font-weight: bold;">Select border type:</p>
+                          <select class="select2 form-control stylingJsBorderTypeSelect" data-css="border-style" required onchange="stylingJs.call(this)">
+                            <option value="none">No border</option>
+                            <option value="dotted">Dotted</option>
+                            <option value="dashed">Dashed</option>
+                            <option value="solid">Solid</option>
+                            <option value="double">Double</option>
+                            <option value="groove">Groove</option>
+                            <option value="ridge">Ridge</option>
+                            <option value="inset">Inset</option>
+                            <option value="outset">Outset</option>
+                            <option value="dotted dashed solid double">Dotted dashed solid double</option>
+                          </select>
+                        </div>
+                        <div class="col-4 stylingJsBorderWidth">
+                          <p style="font-weight: bold;">Select border width:</p>
+                          <div class="input-group">
+                            <input type="float" class="form-control stylingJsBorderWidthInput" data-css="border-width" list="measure" required onchange="stylingJs.call(this)">
+                            <span class="input-group-addon" style="margin-top:1px; margin-left:2px"><select class="select2 form-control stylingJsBorderWidthSelect input-group-addon">
+                              <option value="px">px</option>
+                              </select>
+                            </span>
+                          </div>
+
+                          <!--<datalist id="measure">
+                            <option value="px">
+                            <option value="%">
+                          </datalist>-->
+                        </div>
+                        <div class="col-4 stylingJsBorderColor">
+                          <p style="font-weight: bold;">Select border color:</p>
+                          <input type="color" class="form-control stylingJsBorderColorInput" data-css="border-color" required onchange="stylingJs.call(this)">
+                        </div>
+                      </div>
+                      <div class="row stylingJsValidationColor" style="padding-left: 15px; width:100%;display: none;">
+                        <div class="stylingJsValidationColorCont" style="width: 100%; display:flex">
+                          <div class="col-3">
+                            <p style="font-weight: bold;">Select condition:</p>
+                            <select class="select2 form-control stylingJsValidationColorCond" required onchange="stylingJsValidationColorCond.call(this)">
+                              <option value="Greater then">Greater than</option>
+                              <option value="Smaller then">Smaller than</option>
+                              <option value="Equal to">Equal to</option>
+                              <option value="In">In</option>
+                            </select>
+                          </div>
+                          <div class="col-3 stylingJsValidationColorVal">
+                            <p style="font-weight: bold;">Select value:</p>
+                            <select class="select2 form-control" required>
+                            </select>
+                          </div>
+                          <div class="col-3 stylingJsValidationColorValTag" style="display: none;">
+                            <p style="font-weight: bold;">Select value:</p>
+                            <select class="select2 form-control" required multiple>
+                            </select>
+                          </div>
+                          <div class="col-3">
+                            <p style="font-weight: bold;">Select fields to change color:</p>
+                            <select class="select2 form-control stylingJsValidationColorCol" required multiple>
+                          </select>
+                          </div>
+                          <div class="col-2">
+                            <p style="font-weight: bold;">Select field color:</p>
+                            <input type="color" class="form-control stylingJsValidationColorInput" data-css="background-color" value="#ffffff" required >
+                          </div>
+                          <div class="col-1">
+                            <i class="fas fa-plus" onclick="stylingJsValidationColorAdd.call(this)" data-toggle="tooltip" title="Add condition"></i> </i>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="row stylingJsFieldColor" style="padding-left: 15px; width:100%; display: none;">
+                        <div class="col-6">
+                          <p style="font-weight: bold;">Select field color:</p>
+                          <input type="color" class="form-control stylingJsFieldColorInput" data-css="background-color" required onchange="stylingJs.call(this)" value="#ffffff">
+                        </div>
+                      </div>
+                      <div class="row stylingJsHover" style="padding-left: 15px; width:100%; display: none;">
+                        <div class="col-6">
+                          <p style="font-weight: bold;">Set text to display on hover:</p>
+                          <input type="text" class="form-control stylingJsHoverInput" data-css="data-toggle" required onchange="stylingJs.call(this)">
+                        </div>
+                      </div>
+                      <div class="row stylingJsInstruction" style="padding-left: 15px; width:100%; display: none;">
+                        <div class="col-6">
+                          <p style="font-weight: bold;">Set instruction to display:</p>
+                          <textarea type="text" class="form-control stylingJsInstructionInput" data-css="data-toggle" required onchange="stylingJs.call(this)"></textarea>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="card-footer">
+                <button type="button" id='' class="btn btn-primary float-right" onclick="backtoformmodal(0)" style="margin-left: 5px;">Cancel</button>
+                <button type="button" id='savecreateview' class="btn btn-primary float-right" onclick="backtoformmodal(1)">Save field</button>
+              </div>
+            </div>
+            <div class="card formLevelJs" style="display: none; margin-left: -15px">
+              <div class="card-header">
+                <h5 class="card-title" id="chart1ModalLabel" style="color: var(--primary-color);">Configure field attributes</h5>
+              </div>
+              <div class="card-body formLevelJs" style="display: none; margin-left: -15px">
+                <div class="row ">
+                  <div class="col-12 warningFormLevelFieldSel" style="color:red; display:none">Select field from preview</div>
+                  <div class="col-12 warningFormLevelField" style="display:none; color:red">All fields are mandatory</div>
+                  <div class="col-12 warningFormLevelFieldInp" style="display:none; color:red">This name exist in configuration</div>
+                  <div class="col-12 warningFormLevelFieldCol" style="display:none; color:red">This column exist in configuration</div>
+                  <div class="col-6">
+                    <p style="font-weight: bold;">Name:</p>
+                    <input type="text" class="form-control formLevelFieldInput" required>
+                  </div>
+                  <div class="col-6">
+                    <p style="font-weight: bold;">Action:</p>
+                    <select class="select2 form-control formLevelFieldAction" required>
+                      <option value="">---</option>
+                      <option value="active on">Active on</option>
+                    </select>
+                  </div>
+                </div>
+                <div class="row" style="margin-top: 20px;">
+                  <div class="col-4">
+                    <p style="font-weight: bold;">Select column:</p>
+                    <select class="select2 form-control formLevelFieldCol" required>
+                    </select>
+                  </div>
+                  <div class="col-4">
+                    <p style="font-weight: bold;">Select condition:</p>
+                    <select class="select2 form-control formLevelFieldCond" required>
+                      <option value="Greater then">Greater than</option>
+                      <option value="Smaller then">Smaller than</option>
+                      <option value="Equal to">Equal to</option>
+                      <option value="In">In</option>
+                    </select>
+                  </div>
+                  <div class="col-4 formLevelFieldVal">
+                    <p style="font-weight: bold;">Select value:</p>
+                    <select class="select2 form-control" required>
+                    </select>
+                  </div>
+                  <div class="col-4 formLevelFieldValTag" style="display: none;">
+                    <p style="font-weight: bold;">Select value:</p>
+                    <select class="select2 form-control" required multiple>
+                    </select>
+                  </div>
+                </div>
+              </div>
+              <div class="card-footer">
+                <button type="button" class="float-right btn btn-primary" id="formLevelFieldSave" style="margin-left:5px;">Save</button>
+                <button type="button" class="float-right btn btn-primary" id="formLevelFieldCancel">Cancel</button>
+              </div>
+            </div>
+            <div class="card formLevelFieldReload" style="display: none; margin-left: -15px;">
+              <div class="card-header">
+                <div class="row">
+                  <div class="col-4">
+                    <p style="font-weight:bold; display: inline-block;">Select name:</p>
+                  </div>
+                  <div class="col-8">
+                    <select class="formLevelFieldReloadOpt select2 form-control">
+
+                    </select>
+                  </div>
+                </div>
+              </div>
+              <div class="card-body">
+                <div id="carouselExampleIndicators1" class="carousel slide" >
+                  <div class="carousel-inner">
+                  </div>
+                </div>
+              </div>
+              <div class="card-footer">
+                <button type="button" class="float-right btn btn-primary" id="formLevelFieldReloadSave" style="margin-left: 5px;">Save</button>
+                <button type="button" class="float-right btn btn-primary" id="formLevelFieldReloadCancel">Cancel</button>
+              </div>
+            </div>
+            </div>
+          </div>
+            </div>
+        </div>
+      </div>
+    </div>
+    <div class="modal fade" id="ProcessModal" tabindex="-1" role="dialog" aria-labelledby="ProcessModalLabel" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="chartModalLabel" style="margin:auto">Select create view</h5>
+          </div>
+
+          <div class="modal-body">
+            <div class='card'>
+               <div class='card-body' id='processSubProcessTagging'>
+                  <div class="row">
+                  <div class="form-group col-4">
+                      <select  class="select2 selectProcess form-control" name="Process" required onchange="ajaxfunction.call(this)">
+                        <option value="" disabled selected>Select Process</option>
+                        {% for i in process%}
+                        <option value="{{i.item_code}}">{{i.item_name}}</option>
+                        {%endfor%}
+                      </select>
+                  </div>
+                  <div class="form-group col-4">
+                    <select class="select2 form-control subprocess" name="subprocesslist"  required onchange="fetchCreateView.call(this)">
+                      <option value="" disabled selected>Select Subprocess</option>
+                    </select>
+                </div>
+                <div class="form-group col-4">
+                  <select class="select2 form-control" name="subprocesslist" id='createViewNames' required>
+                    <option value="" disabled selected>Select Createview</option>
+                  </select>
+              </div>
+              </div>
+              <div id="noteXMLFile"></div>
+            </div>
+            </div>
+        </div>
+          <div class="modal-footer">
+
+            <button onclick="fetchConfig.call(this)" type="button" class="btn btn-primary spin-btn" style="background-color:#343a40;color: whitesmoke;">Save</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="modal fade" id="computationModal" tabindex="-1" role="dialog" aria-labelledby="computationModalLabel" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="chartModalLabel" style="margin:auto">Select computation model</h5>
+          </div>
+
+          <div class="modal-body">
+            <div class='card'>
+               <div class='card-body' id='processSubProcessTagging'>
+                  <div class="row">
+                  <div class="form-group col-4">
+                      <select class="select2 form-control selectProcess" name="Process" required onchange="ajaxfunction.call(this)">
+                        <option value="" disabled selected>Select Process</option>
+                        {% for i in process%}
+                        <option value="{{i.item_code}}">{{i.item_name}}</option>
+                        {%endfor%}
+                      </select>
+                  </div>
+                  <div class="form-group col-4">
+                    <select class="select2 form-control subprocess" name="subprocesslist" required onchange="fetchComputation.call(this)">
+                      <option value="" disabled selected>Select Subprocess</option>
+                    </select>
+                </div>
+                <div class="form-group col-4">
+                  <select class="select2 form-control" name="subprocesslist" id='computationNames' required>
+                    <option value="" disabled selected>Select Computation Model</option>
+                  </select>
+              </div>
+              </div>
+              <div id="noteXMLFile"></div>
+            </div>
+            </div>
+        </div>
+          <div class="modal-footer">
+
+            <button onclick="fetchComputationConfig.call(this)" type="button" class="btn btn-primary spin-btn" style="background-color:#343a40;color: whitesmoke;">Save</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="modal fade" id="analysis" tabindex="-1" role="dialog" aria-labelledby="analysisLabel" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="chartModalLabel" style="margin:auto">Select dashboard</h5>
+          </div>
+
+          <div class="modal-body">
+            <div class='card'>
+               <div class='card-body' id='processSubProcessTagging'>
+                  <div class="row">
+                  <div class="form-group col-4">
+                      <select class="select2 form-control selectProcess" name="Process" required onchange="ajaxfunction.call(this)">
+                        <option value="" disabled selected>Select Process</option>
+                        {% for i in process%}
+                        <option value="{{i.item_code}}">{{i.item_name}}</option>
+                        {%endfor%}
+                      </select>
+                  </div>
+                  <div class="form-group col-4">
+                    <select class="select2 form-control subprocess" name="subprocesslist" required onchange="fetchAnalysis.call(this)">
+                      <option value="" disabled selected>Select Subprocess</option>
+                    </select>
+                </div>
+                <div class="form-group col-4">
+                  <select class="select2 form-control" name="subprocesslist" id='analysisNames' required>
+                    <option value="" disabled selected>Select Analysis Model</option>
+                  </select>
+              </div>
+              </div>
+              <div id="noteXMLFile"></div>
+            </div>
+            </div>
+        </div>
+          <div class="modal-footer">
+
+            <button onclick="fetchAnalysisConfig.call(this)" type="button" class="btn btn-primary spin-btn" style="background-color:#343a40;color: whitesmoke;">Save</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="modal fade" id="listview" tabindex="-1" role="dialog" aria-labelledby="listviewLabel" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="listviewLabel" style="margin:auto">Select listview</h5>
+          </div>
+
+          <div class="modal-body">
+            <div class='card'>
+               <div class='card-body' id='processSubProcessTagging'>
+                  <div class="row">
+                  <div class="form-group col-4">
+                      <select class="select2 form-control selectProcess" name="Process" required onchange="ajaxfunction.call(this)">
+                        <option value="" disabled selected>Select Process</option>
+                        {% for i in process%}
+                        <option value="{{i.item_code}}">{{i.item_name}}</option>
+                        {%endfor%}
+                      </select>
+                  </div>
+                  <div class="form-group col-4">
+                    <select class="select2 form-control subprocess" name="subprocesslist" required onchange="fetchListView.call(this)">
+                      <option value="" disabled selected>Select Subprocess</option>
+                    </select>
+                </div>
+                <div class="form-group col-4">
+                  <select class="select2 form-control" name="subprocesslist" id='listViewNames' required>
+                    <option value="" disabled selected>Select Listview Model</option>
+                  </select>
+              </div>
+              </div>
+              <div id="noteXMLFile"></div>
+            </div>
+            </div>
+        </div>
+          <div class="modal-footer">
+
+            <button onclick="fetchListViewConfig.call(this)" type="button" class="btn btn-primary spin-btn" style="background-color:#343a40;color: whitesmoke;">Save</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="modal fade" id="upload" tabindex="-1" role="dialog" aria-labelledby="uploadLabel" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="uploadLabel" style="margin:auto">Select upload</h5>
+          </div>
+
+          <div class="modal-body">
+            <div class='card'>
+               <div class='card-body' id='processSubProcessTagging'>
+                  <div class="row">
+                  <div class="form-group col-4">
+                      <select class="select2 form-control selectProcess" name="Process" required onchange="ajaxfunction.call(this)">
+                        <option value="" disabled selected>Select Process</option>
+                        {% for i in process%}
+                        <option value="{{i.item_code}}">{{i.item_name}}</option>
+                        {%endfor%}
+                      </select>
+                  </div>
+                  <div class="form-group col-4">
+                    <select class="select2 form-control subprocess" name="subprocesslist" required onchange="fetchUpload.call(this)">
+                      <option value="" disabled selected>Select Subprocess</option>
+                    </select>
+                </div>
+                <div class="form-group col-4">
+                  <select class="select2 form-control" name="subprocesslist" id='uploadNames' required>
+                    <option value="" disabled selected>Select Upload Model</option>
+                  </select>
+              </div>
+              </div>
+              <div id="noteXMLFile"></div>
+            </div>
+            </div>
+        </div>
+          <div class="modal-footer">
+
+            <button onclick="fetchUploadConfig.call(this)" type="button" class="btn btn-primary spin-btn" style="background-color:#343a40;color: whitesmoke;">Save</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <script>
+      var app_code = "{{app_code}}"
+      var rejectVar;
+      var user = "{{user}}"
+      var ctoken
+      var injectScript = ""
+      var tableNamesChild = {{data.tableList | safe}}
+    </script>
+    <script src="{% static 'js/Kore_TI_js/create_view_form.js/grapheditor_createview.js' %}"></script>
+    <script>
+      function ajaxfunction() {
+        $('#noteXMLFile').empty()
+        process_code = $(this).val();
+        var thiss = $(this).parent().parent()
+        var url_string = window.location.pathname
+        var f_occ = url_string.indexOf('/', url_string.indexOf('/') + 1)
+        var s_occ = url_string.indexOf('/', url_string.indexOf('/') + f_occ +1)
+        var t_occ = url_string.indexOf('/', url_string.indexOf('/') + s_occ +1)
+        var app_code2 = url_string.substring(f_occ+1,s_occ)
+        var current_dev_mode2 = url_string.substring(s_occ+1,t_occ)
+        var modes = ["Build","Edit"]
+        var url = ""
+        if(current_dev_mode2 != "Build" && current_dev_mode2 != "Edit"){
+          current_dev_mode2 = "User"
+        }
+        $.ajax({
+          url: `/users/${app_code2}/${current_dev_mode2}/processCreationsave/`,
+          data: {
+            'data_list': JSON.stringify({ data1: process_code }),
+            'operation': 'cascading'
+          },
+          type: "POST",
+          dataType: "json",
+          success: function (data) {
+
+            thiss.find(".subprocess option").remove();
+            thiss.find(".subprocess").append(`<option value="" disabled selected>Select subprocess</option>`);
+            for (var i = 0; i < data.data.length; i++) {
+              thiss.find('.subprocess').append(new Option(data.data[i], data.data[i]));
+            }
+
+          },
+          error: function () {
+            Swal.fire({icon: 'error',text: 'Error! Please try again.'});
+          }
+        })
+      }
+      function fetchCreateView() {
+        $('#noteXMLFile').empty()
+        process_code = $(this).parent().parent().find('.selectProcess').val();
+        subprocess_code = $(this).val();
+        let url_string = window.location.pathname
+        let f_occ = url_string.indexOf('/', url_string.indexOf('/') + 1)
+        let s_occ = url_string.indexOf('/', url_string.indexOf('/') + f_occ +1)
+        let t_occ = url_string.indexOf('/', url_string.indexOf('/') + s_occ +1)
+        let app_code2 = url_string.substring(f_occ+1,s_occ)
+        let current_dev_mode2 = url_string.substring(s_occ+1,t_occ)
+        let modes = ["Build","Edit"]
+        let url = ""
+        if(current_dev_mode2 != "Build" && current_dev_mode2 != "Edit"){
+          current_dev_mode2 = "User"
+        }
+        $.ajax({
+          url: `/users/${app_code2}/${current_dev_mode2}/processCreationsave/`,
+          data: {
+            'data_list': JSON.stringify({ process: process_code, subprocess:subprocess_code}),
+            'operation': 'relatedCreateView'
+          },
+          type: "POST",
+          dataType: "json",
+          success: function (data) {
+            $("#createViewNames option").remove();
+            $("#createViewNames").append(`<option value="" disabled selected>Select related create view</option>`);
+            for (var i = 0; i < data.name_list.length; i++) {
+              $('#createViewNames').append(new Option(data.name_list[i], data.name_list[i]));
+            }
+
+          },
+          error: function () {
+            Swal.fire({icon: 'error',text: 'Error! Please try again.'});
+          }
+        })
+      }
+      function fetchComputation() {
+        $('#noteXMLFile').empty()
+        process_code = $(this).parent().parent().find('.selectProcess').val();
+        subprocess_code = $(this).val();
+        let url_string = window.location.pathname
+        let f_occ = url_string.indexOf('/', url_string.indexOf('/') + 1)
+        let s_occ = url_string.indexOf('/', url_string.indexOf('/') + f_occ +1)
+        let t_occ = url_string.indexOf('/', url_string.indexOf('/') + s_occ +1)
+        let app_code2 = url_string.substring(f_occ+1,s_occ)
+        let current_dev_mode2 = url_string.substring(s_occ+1,t_occ)
+        let modes = ["Build","Edit"]
+        let url = ""
+        if(current_dev_mode2 != "Build" && current_dev_mode2 != "Edit"){
+          current_dev_mode2 = "User"
+        }
+        $.ajax({
+          url: `/users/${app_code2}/${current_dev_mode2}/processCreationsave/`,
+          data: {
+            'data_list': JSON.stringify({ process: process_code, subprocess:subprocess_code}),
+            'operation': 'relatedComputation'
+          },
+          type: "POST",
+          dataType: "json",
+          success: function (data) {
+            $("#computationNames option").remove();
+            $("#computationNames").append(`<option value="" disabled selected>Select related computation</option>`);
+            for (var i = 0; i < data.name_list.length; i++) {
+              $('#computationNames').append(new Option(data.name_list[i], data.name_list[i]));
+            }
+
+          },
+          error: function () {
+            Swal.fire({icon: 'error',text: 'Error! Please try again.'});
+          }
+        })
+      }
+      function fetchComputationConfig() {
+        $(".spin-btn").html(` <i class="fa fa-circle-notch fa-spin" style="user-select: auto; "></i>`)
+        process_code = $(this).closest('.modal').find('.selectProcess').val();
+        subprocess_code =$(this).closest('.modal').find('.subprocess').val();
+        tab_name = $("#computationNames").val();
+
+        html2 = `<iframe data-template_type="computation" data-process="${process_code}" data-subprocess_name="${subprocess_code}" data-tab_name="${tab_name}" class="system_block">Computation</iframe>`
+        component.replaceWith(html2)
+        $('#computationModal').modal('hide')
+        $(".spin-btn").html("Save")
+
+      }
+      function fetchConfig() {
+        $(".spin-btn").html(` <i class="fa fa-circle-notch fa-spin" style="user-select: auto; "></i>`)
+        process_code = $(this).closest('.modal').find('.selectProcess').val();
+        subprocess_code =$(this).closest('.modal').find('.subprocess').val();
+        tab_name = $("#createViewNames").val();
+
+        html2 = `<iframe data-template_type="create_view" data-process="${process_code}" data-subprocess_name="${subprocess_code}" data-tab_name="${tab_name}" class="system_block">Create view</iframe>`
+        component.replaceWith(html2)
+        $('#ProcessModal').modal('hide')
+        $(".spin-btn").html("Save")
+      }
+      function fetchAnalysis() {
+
+        $('#noteXMLFile').empty()
+        process_code = $(this).parent().parent().find('.selectProcess').val();
+        subprocess_code = $(this).val();
+        let url_string = window.location.pathname
+        let f_occ = url_string.indexOf('/', url_string.indexOf('/') + 1)
+        let s_occ = url_string.indexOf('/', url_string.indexOf('/') + f_occ +1)
+        let t_occ = url_string.indexOf('/', url_string.indexOf('/') + s_occ +1)
+        let app_code2 = url_string.substring(f_occ+1,s_occ)
+        let current_dev_mode2 = url_string.substring(s_occ+1,t_occ)
+        let modes = ["Build","Edit"]
+        let url = ""
+        if(current_dev_mode2 != "Build" && current_dev_mode2 != "Edit"){
+          current_dev_mode2 = "User"
+        }
+        $.ajax({
+          url: `/users/${app_code2}/${current_dev_mode2}/processCreationsave/`,
+          data: {
+            'data_list': JSON.stringify({ process: process_code, subprocess:subprocess_code}),
+            'operation': 'relatedAnalysis'
+          },
+          type: "POST",
+          dataType: "json",
+          success: function (data) {
+            $("#analysisNames option").remove();
+            $("#analysisNames").append(`<option value="" disabled selected>Select related analysis</option>`);
+            for (var i = 0; i < data.name_list.length; i++) {
+              $('#analysisNames').append(new Option(data.name_list[i], data.name_list[i]));
+            }
+
+          },
+          error: function () {
+            Swal.fire({icon: 'error',text: 'Error! Please try again.'});
+          }
+        })
+      }
+      function fetchAnalysisConfig() {
+        $(".spin-btn").html(` <i class="fa fa-circle-notch fa-spin" style="user-select: auto; "></i>`)
+        process_code = $(this).closest('.modal').find('.selectProcess').val();
+        subprocess_code =$(this).closest('.modal').find('.subprocess').val();
+        tab_name = $("#analysisNames").val();
+
+        html2 = `<iframe data-template_type="analysis" data-process="${process_code}" data-subprocess_name="${subprocess_code}" data-tab_name="${tab_name}" class="system_block">Analysis</iframe>`
+        component.replaceWith(html2)
+        $('#analysis').modal('hide')
+        $(".spin-btn").html("Save")
+
+      }
+      function fetchListView() {
+        $('#noteXMLFile').empty()
+        process_code = $(this).parent().parent().find('.selectProcess').val();
+        subprocess_code = $(this).val();
+        let url_string = window.location.pathname
+        let f_occ = url_string.indexOf('/', url_string.indexOf('/') + 1)
+        let s_occ = url_string.indexOf('/', url_string.indexOf('/') + f_occ +1)
+        let t_occ = url_string.indexOf('/', url_string.indexOf('/') + s_occ +1)
+        let app_code2 = url_string.substring(f_occ+1,s_occ)
+        let current_dev_mode2 = url_string.substring(s_occ+1,t_occ)
+        let modes = ["Build","Edit"]
+        let url = ""
+        if(current_dev_mode2 != "Build" && current_dev_mode2 != "Edit"){
+          current_dev_mode2 = "User"
+        }
+        $.ajax({
+          url: `/users/${app_code2}/${current_dev_mode2}/processCreationsave/`,
+          data: {
+            'data_list': JSON.stringify({ process: process_code, subprocess:subprocess_code}),
+            'operation': 'relatedListView'
+          },
+          type: "POST",
+          dataType: "json",
+          success: function (data) {
+            $("#listViewNames option").remove();
+            $("#listViewNames").append(`<option value="" disabled selected>Select related listView</option>`);
+            for (var i = 0; i < data.name_list.length; i++) {
+              $('#listViewNames').append(new Option(data.name_list[i], data.name_list[i]));
+            }
+          },
+          error: function () {
+            Swal.fire({icon: 'error',text: 'Error! Please try again.'});
+          }
+        })
+      }
+      function fetchListViewConfig() {
+        $(".spin-btn").html(` <i class="fa fa-circle-notch fa-spin" style="user-select: auto; "></i>`)
+        process_code = $(this).closest('.modal').find('.selectProcess').val();
+        subprocess_code =$(this).closest('.modal').find('.subprocess').val();
+        tab_name = $("#listViewNames").val();
+
+        html2 = `<iframe data-template_type="list_view" data-process="${process_code}" data-subprocess_name="${subprocess_code}" data-tab_name="${tab_name}" class="system_block">List view</iframe>`
+        component.replaceWith(html2)
+        $("#listview").modal('hide')
+        $(".spin-btn").html("Save")
+      }
+      function fetchUpload() {
+        $('#noteXMLFile').empty()
+        process_code = $(this).parent().parent().find('.selectProcess').val();
+        subprocess_code = $(this).val();
+        let url_string = window.location.pathname
+        let f_occ = url_string.indexOf('/', url_string.indexOf('/') + 1)
+        let s_occ = url_string.indexOf('/', url_string.indexOf('/') + f_occ +1)
+        let t_occ = url_string.indexOf('/', url_string.indexOf('/') + s_occ +1)
+        let app_code2 = url_string.substring(f_occ+1,s_occ)
+        let current_dev_mode2 = url_string.substring(s_occ+1,t_occ)
+        let modes = ["Build","Edit"]
+        let url = ""
+        if(current_dev_mode2 != "Build" && current_dev_mode2 != "Edit"){
+          current_dev_mode2 = "User"
+        }
+        $.ajax({
+          url: `/users/${app_code2}/${current_dev_mode2}/processCreationsave/`,
+          data: {
+            'data_list': JSON.stringify({ process: process_code, subprocess:subprocess_code}),
+            'operation': 'relatedUpload'
+          },
+          type: "POST",
+          dataType: "json",
+          success: function (data) {
+            $("#uploadNames option").remove();
+            $("#uploadNames").append(`<option value="" disabled selected>Select related upload</option>`);
+            for (var i = 0; i < data.name_list.length; i++) {
+              $('#uploadNames').append(new Option(data.name_list[i], data.name_list[i]));
+            }
+
+          },
+          error: function () {
+            Swal.fire({icon: 'error',text: 'Error! Please try again.'});
+          }
+        })
+      }
+      function fetchUploadConfig() {
+        $(".spin-btn").html(` <i class="fa fa-circle-notch fa-spin" style="user-select: auto; "></i>`)
+        process_code = $(this).closest('.modal').find('.selectProcess').val();
+        subprocess_code =$(this).closest('.modal').find('.subprocess').val();
+        tab_name = $("#uploadNames").val();
+
+        html2 = `<iframe data-template_type="data_connector" data-process="${process_code}" data-subprocess_name="${subprocess_code}" data-tab_name="${tab_name}" class="system_block">Upload</iframe>`
+        component.replaceWith(html2)
+        $("#upload").modal('hide')
+        $(".spin-btn").html("Save")
+      }
+    </script>
+    <div class="modal fade" id="widgetmodal" tabindex="-1" role="dialog">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header" style="background-color: whitesmoke">
+            <h5 class="modal-title" id="exampleModalLongTitle" style="margin-left: auto; color: var(--primary-color);">Save Widget</h5>
+            <button
+              type="button"
+              class="close"
+              data-dismiss="modal"
+              aria-label="Close"
+            >
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <div class="row">
+              <div class="col-12">
+                <div class="d-flex justify-content-center">
+                  <button class="btn btn-primary buttonstyling acies_btn acies_btn-primary button_standard_save newpanelbtn" style="background-color:#343a40;color: whitesmoke;">
+                    Create New Panel
+                  </button>
+                  <button class="btn ml-3 btn-outline-primary existingpanelbtn" style="background-color:#343a40;color: whitesmoke;">
+                    Add to existing panel
+                  </button>
+                </div>
+              </div>
+            </div>
+            <div class="row mt-3">
+              <div class="col-12">
+                <form action="" class="newpanelform" style="display: none">
+                  <div class="form-row">
+                    <div class="col-6">
+                      <div class="form-group">
+                        <input
+                          type="text"
+                          class="form-control newpanelname"
+                          placeholder="Panel Name"
+                          required
+                        />
+                      </div>
+                    </div>
+                    <div class="col-6">
+                      <div class="form-group">
+
+                        <select id="newiconselect" class=" form-control select2">
+                          <option value="fa fa-compass"> &#xf14e; </option>
+                          <option value="fas fa-table"> &#xf0ce; </option>
+                          <option value="fas fa-chart-pie"> 	&#xf200; </option>
+                          <option value="fas fa-tasks"> &#xf0ae; </option>
+                          <option value="fas fa-th"> &#xf00a; </option>
+                          <option value="fa fa-bank"> &#xf19c; </option>
+                          <option value="fas fa-chart-area"> &#xf1fe; </option>
+                        </select>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="form-row">
+                    <div class="col-12">
+                      <input
+                          type="text"
+                          class="form-control newwidgetname"
+                          placeholder="Widget Name"
+                          required
+                        />
+                    </div>
+                  </div>
+                  <div class="form-row mt-4">
+                    {% if is_superuser_ %}
+                    <div class="col-6">
+                      <div class="d-flex justify-content-center">
+                        <button class="savenewwidgetbtn btn btn-primary" style="background-color:#343a40;color: whitesmoke;">
+                          Save widget
+                        </button>
+                      </div>
+                    </div>
+                    <div class="col-6">
+                      <div class="d-flex justify-content-center">
+                        <button class="savenewwidgetbtnstd btn btn-primary" style="background-color:#343a40;color: whitesmoke;">
+                          System defined widgets
+                        </button>
+                      </div>
+                    </div>
+                    {% endif %}
+                    {% if not is_superuser_ %}
+                    <div class="col-12">
+                      <div class="d-flex justify-content-center">
+                        <button class="savenewwidgetbtn btn btn-primary" style="background-color:#343a40;color: whitesmoke;">
+                          Save Widget
+                        </button>
+                      </div>
+                    </div>
+                    {% endif %}
+                  </div>
+                </form>
+                <form action="" class="existingpanelform" style="display: none">
+                  <div class="form-row">
+                    <div class="col-6">
+                      <div class="form-group">
+                        <select
+                          id="panelname"
+                          class="form-control" name="state" style="width: 100%;height: 40px;"></select>
+
+                      </div>
+                    </div>
+                    <div class="col-6">
+                      <div class="form-group">
+
+                        <select id="iconselect" class="form-control select2">
+                          <option value="fa fa-compass"> &#xf14e; </option>
+                          <option value="fas fa-table"> &#xf0ce; </option>
+                          <option value="fas fa-chart-pie"> 	&#xf200; </option>
+                          <option value="fas fa-tasks"> &#xf0ae; </option>
+                          <option value="fas fa-th"> &#xf00a; </option>
+                          <option value="fa fa-bank"> &#xf19c; </option>
+                          <option value="fas fa-chart-area"> &#xf1fe; </option>
+                        </select>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="form-row">
+                    <div class="col-12">
+                      <input
+                          type="text"
+                          class="form-control existingwidgetname"
+                          placeholder="Widget Name"
+                          required
+                        />
+                    </div>
+                  </div>
+                  <div class="form-row mt-4">
+                    {% if is_superuser_ %}
+                    <div class="col-6">
+                      <div class="d-flex justify-content-center">
+                        <button class="saveexistingwidgetbtn btn btn-primary" style="background-color:#343a40;color: whitesmoke;">
+                          Save widget
+                        </button>
+                      </div>
+                    </div>
+                    <div class="col-6">
+                      <div class="d-flex justify-content-center">
+                        <button class="saveexistingwidgetbtnstd btn btn-primary" style="background-color:#343a40;color: whitesmoke;">
+                          System defined widgets
+                        </button>
+                      </div>
+                    </div>
+                    {% endif %}
+                    {% if not is_superuser_ %}
+                    <div class="col-12">
+                      <div class="d-flex justify-content-center">
+                        <button class="saveexistingwidgetbtn btn btn-primary" style="background-color:#343a40;color: whitesmoke;">
+                          Save Widget
+                        </button>
+                      </div>
+                    </div>
+                    {% endif %}
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div style="display: none"></div>
+    <!-- ADS HERE -->
+    <div id="gjs" style="height: 0px; overflow: hidden">
+
+      <style>
+        .clearfix {
+          clear: both;
+        }
+        .header-banner {
+          padding-top: 35px;
+          padding-bottom: 100px;
+          color: #ffffff;
+          font-family: Helvetica, serif;
+          font-weight: 100;
+          background-image: url("https://grapesjs.com/img/bg-gr-v.png"),
+            url("https://grapesjs.com/img/work-desk.jpg");
+          background-attachment: scroll, scroll;
+          background-position: left top, center center;
+          background-repeat: repeat-y, no-repeat;
+          background-size: contain, cover;
+        }
+        .container-width {
+          width: 90%;
+          max-width: 1150px;
+          margin: 0 auto;
+        }
+        .logo-container {
+          float: left;
+          width: 50%;
+        }
+        .logo {
+          background-color: #fff;
+          border-radius: 5px;
+          width: 130px;
+          padding: 10px;
+          min-height: 30px;
+          text-align: center;
+          line-height: 30px;
+          color: #4d114f;
+          font-size: 23px;
+        }
+        .menu {
+          float: right;
+          width: 50%;
+        }
+        .menu-item {
+          float: right;
+          font-size: 15px;
+          color: #eee;
+          width: 130px;
+          padding: 10px;
+          min-height: 50px;
+          text-align: center;
+          line-height: 30px;
+          font-weight: 400;
+        }
+        .lead-title {
+          margin: 150px 0 30px 0;
+          font-size: 40px;
+        }
+        .sub-lead-title {
+          max-width: 650px;
+          line-height: 30px;
+          margin-bottom: 30px;
+          color: #c6c6c6;
+        }
+        .lead-btn {
+          margin-top: 15px;
+          padding: 10px;
+          width: 190px;
+          min-height: 30px;
+          font-size: 20px;
+          text-align: center;
+          letter-spacing: 3px;
+          line-height: 30px;
+          background-color: #d983a6;
+          border-radius: 5px;
+          transition: all 0.5s ease;
+          cursor: pointer;
+        }
+        .lead-btn:hover {
+          background-color: #ffffff;
+          color: #4c114e;
+        }
+        .lead-btn:active {
+          background-color: #4d114f;
+          color: #fff;
+        }
+        .flex-sect {
+          background-color: #fafafa;
+          padding: 100px 0;
+          font-family: Helvetica, serif;
+        }
+        .flex-title {
+          margin-bottom: 15px;
+          font-size: 2em;
+          text-align: center;
+          font-weight: 700;
+          color: #555;
+          padding: 5px;
+        }
+        .flex-desc {
+          margin-bottom: 55px;
+          font-size: 1em;
+          color: rgba(0, 0, 0, 0.5);
+          text-align: center;
+          padding: 5px;
+        }
+        .cards {
+          padding: 20px 0;
+          display: flex;
+          justify-content: space-around;
+          flex-flow: wrap;
+        }
+        .card {
+          background-color: white;
+          height: 300px;
+          width: 300px;
+          margin-bottom: 30px;
+          box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.2);
+          border-radius: 2px;
+          transition: all 0.5s ease;
+          font-weight: 100;
+          overflow: hidden;
+        }
+        .card:hover {
+          margin-top: -5px;
+          box-shadow: 0 20px 30px 0 rgba(0, 0, 0, 0.2);
+        }
+        .card-header {
+          height: 155px;
+          background-image: url("https://placehold.it/350x250/78c5d6/fff/image1.jpg");
+          background-size: cover;
+          background-position: center center;
+        }
+        /* .card-header.ch2 {
+          background-image: url("https://placehold.it/350x250/459ba8/fff/image2.jpg");
+        }
+        .card-header.ch3 {
+          background-image: url("https://placehold.it/350x250/79c267/fff/image3.jpg");
+        }
+        .card-header.ch4 {
+          background-image: url("https://placehold.it/350x250/c5d647/fff/image4.jpg");
+        }
+        .card-header.ch5 {
+          background-image: url("https://placehold.it/350x250/f28c33/fff/image5.jpg");
+        }
+        .card-header.ch6 {
+          background-image: url("https://placehold.it/350x250/e868a2/fff/image6.jpg");
+        } */
+        .card-body {
+          padding: 15px 15px 5px 15px;
+          color: #555;
+        }
+        .card-title {
+          font-size: 1.4em;
+          margin-bottom: 5px;
+        }
+        .card-sub-title {
+          color: #b3b3b3;
+          font-size: 1em;
+          margin-bottom: 15px;
+        }
+        .card-desc {
+          font-size: 0.85rem;
+          line-height: 17px;
+        }
+        .am-sect {
+          padding-top: 100px;
+          padding-bottom: 100px;
+          font-family: Helvetica, serif;
+        }
+        .img-phone {
+          float: left;
+        }
+        .am-container {
+          display: flex;
+          flex-wrap: wrap;
+          align-items: center;
+          justify-content: space-around;
+        }
+        /*
+        .am-container{
+          perspective: 1000px;
+        }*/
+        .am-content {
+          float: left;
+          padding: 7px;
+          width: 490px;
+          color: #444;
+          font-weight: 100;
+          margin-top: 50px;
+        }
+        .am-pre {
+          padding: 7px;
+          color: #b1b1b1;
+          font-size: 15px;
+        }
+        .am-title {
+          padding: 7px;
+          font-size: 25px;
+          font-weight: 400;
+        }
+        .am-desc {
+          padding: 7px;
+          font-size: 17px;
+          line-height: 25px;
+        }
+        .am-post {
+          padding: 7px;
+          line-height: 25px;
+          font-size: 13px;
+        }
+        .blk-sect {
+          padding-top: 100px;
+          padding-bottom: 100px;
+          background-color: #222222;
+          font-family: Helvetica, serif;
+        }
+        .blk-title {
+          color: #fff;
+          font-size: 25px;
+          text-align: center;
+          margin-bottom: 15px;
+        }
+        .blk-desc {
+          color: #b1b1b1;
+          font-size: 15px;
+          text-align: center;
+          max-width: 700px;
+          margin: 0 auto;
+          font-weight: 100;
+        }
+        .price-cards {
+          margin-top: 70px;
+          display: flex;
+          flex-wrap: wrap;
+          align-items: center;
+          justify-content: space-around;
+        }
+        .price-card-cont {
+          width: 300px;
+          padding: 7px;
+          float: left;
+        }
+        .price-card {
+          margin: 0 auto;
+          min-height: 350px;
+          background-color: #d983a6;
+          border-radius: 5px;
+          font-weight: 100;
+          color: #fff;
+          width: 90%;
+        }
+        .pc-title {
+          font-weight: 100;
+          letter-spacing: 3px;
+          text-align: center;
+          font-size: 25px;
+          background-color: rgba(0, 0, 0, 0.1);
+          padding: 20px;
+        }
+        .pc-desc {
+          padding: 75px 0;
+          text-align: center;
+        }
+        .pc-feature {
+          color: rgba(255, 255, 255, 0.5);
+          background-color: rgba(0, 0, 0, 0.1);
+          letter-spacing: 2px;
+          font-size: 15px;
+          padding: 10px 20px;
+        }
+        .pc-feature:nth-of-type(2n) {
+          background-color: transparent;
+        }
+        .pc-amount {
+          background-color: rgba(0, 0, 0, 0.1);
+          font-size: 35px;
+          text-align: center;
+          padding: 35px 0;
+        }
+        .pc-regular {
+          background-color: #da78a0;
+        }
+        .pc-enterprise {
+          background-color: #d66a96;
+        }
+        .footer-under {
+          background-color: #312833;
+          padding-bottom: 100px;
+          padding-top: 100px;
+          min-height: 500px;
+          color: #eee;
+          position: relative;
+          font-weight: 100;
+          font-family: Helvetica, serif;
+        }
+        .led {
+          border-radius: 100%;
+          width: 10px;
+          height: 10px;
+          background-color: rgba(0, 0, 0, 0.15);
+          float: left;
+          margin: 2px;
+          transition: all 5s ease;
+        }
+        .led:hover {
+          background-color: #c29fca; /* #eac229 */
+          box-shadow: 0 0 5px #9d7aa5, 0 0 10px #e6c3ee; /* 0 0 10px 0 #efc111 */
+          transition: all 0s ease;
+        }
+        .copyright {
+          background-color: rgba(0, 0, 0, 0.15);
+          color: rgba(238, 238, 238, 0.5);
+          bottom: 0;
+          padding: 1em 0;
+          position: absolute;
+          width: 100%;
+          font-size: 0.75em;
+        }
+        .made-with {
+          float: left;
+          width: 50%;
+          padding: 5px 0;
+        }
+        .foot-social-btns {
+          display: none;
+          float: right;
+          width: 50%;
+          text-align: right;
+          padding: 5px 0;
+        }
+        .footer-container {
+          display: flex;
+          flex-wrap: wrap;
+          align-items: stretch;
+          justify-content: space-around;
+        }
+        .foot-list {
+          float: left;
+          width: 200px;
+        }
+        .foot-list-title {
+          font-weight: 400;
+          margin-bottom: 10px;
+          padding: 0.5em 0;
+        }
+        .foot-list-item {
+          color: rgba(238, 238, 238, 0.8);
+          font-size: 0.8em;
+          padding: 0.5em 0;
+        }
+        .foot-list-item:hover {
+          color: rgba(238, 238, 238, 1);
+        }
+        .foot-form-cont {
+          width: 300px;
+          float: right;
+        }
+        .foot-form-title {
+          color: rgba(255, 255, 255, 0.75);
+          font-weight: 400;
+          margin-bottom: 10px;
+          padding: 0.5em 0;
+          text-align: right;
+          font-size: 2em;
+        }
+        .foot-form-desc {
+          font-size: 0.8em;
+          color: rgba(255, 255, 255, 0.55);
+          line-height: 20px;
+          text-align: right;
+          margin-bottom: 15px;
+        }
+
+        .form {
+          border-radius: 3px;
+          padding: 10px 15px;
+          background-color: rgba(0, 0, 0, 0.2);
+        }
+
+        .input,
+        .textarea,
+        .select,
+        .sub-input {
+          width: 100%;
+          margin-bottom: 15px;
+          padding: 7px 10px;
+          border-radius: 2px;
+          color: #fff;
+          background-color: #554c57;
+          border: none;
+        }
+
+        .select {
+          height: 30px;
+        }
+
+        .label {
+          width: 100%;
+          display: block;
+        }
+
+        .button,
+        .sub-btn {
+          width: 100%;
+          margin: 15px 0;
+          background-color: #785580;
+          border: none;
+          color: #fff;
+          border-radius: 2px;
+          padding: 7px 10px;
+          font-size: 1em;
+          cursor: pointer;
+        }
+        .sub-btn:hover {
+          background-color: #91699a;
+        }
+        .sub-btn:active {
+          background-color: #573f5c;
+        }
+        .blk-row::after {
+          content: "";
+          clear: both;
+          display: block;
+        }
+        .blk-row {
+          padding: 10px;
+        }
+        .blk1 {
+          width: 100%;
+          padding: 10px;
+          min-height: 75px;
+        }
+        .blk2 {
+          float: left;
+          width: 50%;
+          padding: 10px;
+          min-height: 75px;
+        }
+        .blk3 {
+          float: left;
+          width: 33.3333%;
+          padding: 10px;
+          min-height: 75px;
+        }
+        .blk37l {
+          float: left;
+          width: 30%;
+          padding: 10px;
+          min-height: 75px;
+        }
+        .blk37r {
+          float: left;
+          width: 70%;
+          padding: 10px;
+          min-height: 75px;
+        }
+        .heading {
+          padding: 10px;
+        }
+        .paragraph {
+          padding: 10px;
+        }
+
+        .bdg-sect {
+          padding-top: 100px;
+          padding-bottom: 100px;
+          font-family: Helvetica, serif;
+          background-color: #fafafa;
+        }
+        .bdg-title {
+          text-align: center;
+          font-size: 2em;
+          margin-bottom: 55px;
+          color: #555555;
+        }
+        .badges {
+          padding: 20px;
+          display: flex;
+          justify-content: space-around;
+          align-items: flex-start;
+          flex-wrap: wrap;
+        }
+        .badge {
+          width: 290px;
+          font-family: Helvetica, serif;
+          background-color: white;
+          margin-bottom: 30px;
+          box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.2);
+          border-radius: 3px;
+          font-weight: 100;
+          overflow: hidden;
+          text-align: center;
+        }
+        .badge-header {
+          height: 115px;
+          background-image: url("https://grapesjs.com/img/bg-gr-v.png"),
+            url("https://grapesjs.com/img/work-desk.jpg");
+          background-position: left top, center center;
+          background-attachment: scroll, fixed;
+          overflow: hidden;
+        }
+        .blurer {
+          filter: blur(5px);
+        }
+        .badge-name {
+          font-size: 1.4em;
+          margin-bottom: 5px;
+        }
+        .badge-role {
+          color: #777;
+          font-size: 1em;
+          margin-bottom: 25px;
+        }
+        .badge-desc {
+          font-size: 0.85rem;
+          line-height: 20px;
+        }
+        .badge-avatar {
+          width: 100px;
+          height: 100px;
+          border-radius: 100%;
+          border: 5px solid #fff;
+          box-shadow: 0 1px 1px 0 rgba(0, 0, 0, 0.2);
+          margin-top: -75px;
+          position: relative;
+        }
+        .badge-body {
+          margin: 35px 10px;
+        }
+        .badge-foot {
+          color: #fff;
+          background-color: #a290a5;
+          padding-top: 13px;
+          padding-bottom: 13px;
+          display: flex;
+          justify-content: center;
+        }
+        .badge-link {
+          height: 35px;
+          width: 35px;
+          line-height: 35px;
+          font-weight: 700;
+          background-color: #fff;
+          color: #a290a5;
+          display: block;
+          border-radius: 100%;
+          margin: 0 10px;
+        }
+        .quote {
+          color: #777;
+          font-weight: 300;
+          padding: 10px;
+          box-shadow: -5px 0 0 0 #ccc;
+          font-style: italic;
+          margin: 20px 30px;
+        }
+
+        @media (max-width: 768px) {
+          .foot-form-cont {
+            width: 400px;
+          }
+          .foot-form-title {
+            width: autopx;
+          }
+        }
+
+        @media (max-width: 480px) {
+          .foot-lists {
+            display: none;
+          }
+        }
+      </style>
+    </div>
+
+    <div id="info-panel" style="display: none">
+      <div class="info-panel-label">
+
+      </div>
+    </div>
+    <form id='form1' method='post'>{% csrf_token %}</form>
+
+    <script type="text/javascript">
+      var url_string = window.location.pathname
+      var f_occ = url_string.indexOf('/', url_string.indexOf('/') + 1)
+      var s_occ = url_string.indexOf('/', url_string.indexOf('/') + f_occ +1)
+      var t_occ = url_string.indexOf('/', url_string.indexOf('/') + s_occ +1)
+      var app_code2 = url_string.substring(f_occ+1,s_occ)
+      var current_dev_mode2 = url_string.substring(s_occ+1,t_occ)
+      var modes = ["Build","Edit"]
+      var url = ""
+      if(current_dev_mode2 != "Build" && current_dev_mode2 != "Edit"){
+        current_dev_mode2 = "User"
+      }
+      ctoken = document.getElementById('form1').elements[0].value
+      var images = [];
+
+      var updloadLocation = window.location.href.replace(window.location.hash, '');
+      updloadLocation = updloadLocation + '/asset-upload/';
+
+      var editor = grapesjs.init({
+        avoidInlineStyle: 1,
+        height: "100%",
+        container: "#gjs",
+        allowScripts: 1,
+        fromElement: 1,
+        showOffsets: 1,
+        assetManager: {
+          upload: updloadLocation,
+          uploadName: 'files',
+          embedAsBase64: false,
+          assets: images,
+        },
+        selectorManager: { componentFirst: true },
+        styleManager: { clearProperties: 1 },
+        panels: {},
+        canvas: {
+          styles:[
+            "{% static 'css/Base_theme/CSS_min.css' %}",
+            "{% static 'css/Acies_theme/Stylesheet1.css' %}",
+          ]
+        },
+
+        plugins: [
+          'gjs-blocks-basic',
+          'grapesjs-plugin-forms',
+          'grapesjs-component-countdown',
+          'grapesjs-plugin-export',
+          'grapesjs-tabs',
+          'grapesjs-custom-code',
+          'grapesjs-touch',
+          'grapesjs-parser-postcss',
+          'grapesjs-tooltip',
+          'grapesjs-tui-image-editor',
+          'grapesjs-typed',
+          'grapesjs-style-bg',
+          'grapesjs-preset-webpage',
+          'grapesjs-component-code-editor',
+        ],
+        pluginsOpts: {
+          "grapesjs-tabs": {
+            tabsBlock: {
+              category: "Extra",
+            },
+          },
+          "grapesjs-typed": {
+            block: {
+              category: "Extra",
+              content: {
+                type: "typed",
+                "type-speed": 40,
+                strings: ["Text row one", "Text row two", "Text row three"],
+              },
+            },
+          },
+        },
+      });
+      const panelManager = editor.Panels;
+      editor.I18n.addMessages({
+        en: {
+          styleManager: {
+            properties: {
+              "background-repeat": "Repeat",
+              "background-position": "Position",
+              "background-attachment": "Attachment",
+              "background-size": "Size",
+            },
+          },
+        },
+      });
+      editor.DomComponents.clear();
+      var pn = editor.Panels;
+      var modal = editor.Modal;
+      var cmdm = editor.Commands;
+      cmdm.add("canvas-clear", function () {
+        Swal.fire({
+          icon: 'question',
+          text: "Are you sure you want to clear the canvas? Click 'Yes' to confirm or click 'No' if you do not wish to clear it.",
+                    showDenyButton: true,
+                    showCancelButton: true,
+                    confirmButtonText: 'Yes',
+                    denyButtonText: 'No',
+                  }).then((result) => {
+                    if (result.isConfirmed) {
+                      var comps = editor.DomComponents.clear();
+                      setTimeout(function () {
+                        localStorage.clear();
+                      }, 0);
+                    }
+
+                  })
+      });
+      cmdm.add("set-device-desktop", {
+        run: function (ed) {
+          ed.setDevice("Desktop");
+        },
+        stop: function () {},
+      });
+      cmdm.add("set-device-tablet", {
+        run: function (ed) {
+          ed.setDevice("Tablet");
+        },
+        stop: function () {},
+      });
+      cmdm.add("set-device-mobile", {
+        run: function (ed) {
+          ed.setDevice("Mobile portrait");
+        },
+        stop: function () {},
+      });
+
+      // Simple warn notifier
+      var origWarn = console.warn;
+      toastr.options = {
+        closeButton: true,
+        preventDuplicates: true,
+        showDuration: 250,
+        hideDuration: 150,
+      };
+      console.warn = function (msg) {
+        if (msg.indexOf("[undefined]") == -1) {
+          toastr.warning(msg);
+        }
+        origWarn(msg);
+      };
+
+      // Add and beautify tooltips
+      [
+        ["sw-visibility", "Show Borders"],
+        ["preview", "Preview"],
+        ["fullscreen", "Fullscreen"],
+        ["export-template", "Export"],
+        ["undo", "Undo"],
+        ["redo", "Redo"],
+        ["gjs-open-import-webpage", "Import"],
+        ["canvas-clear", "Clear canvas"],
+      ].forEach(function (item) {
+        pn.getButton("options", item[0]).set("attributes", {
+          title: item[1],
+          "data-tooltip-pos": "bottom",
+        });
+      });
+      [
+        ["open-sm", "Style Manager"],
+        ["open-layers", "Layers"],
+        ["open-blocks", "Blocks"],
+      ].forEach(function (item) {
+        pn.getButton("views", item[0]).set("attributes", {
+          title: item[1],
+          "data-tooltip-pos": "bottom",
+        });
+      });
+      var titles = document.querySelectorAll("*[title]");
+
+      for (var i = 0; i < titles.length; i++) {
+        var el = titles[i];
+        var title = el.getAttribute("title");
+        title = title ? title.trim() : "";
+        if (!title) break;
+        el.setAttribute("data-tooltip", title);
+        el.setAttribute("title", "");
+      }
+
+      // Show borders by default
+      pn.getButton("options", "sw-visibility").set("active", 1);
+
+      // Store and load events
+
+      const bm = editor.BlockManager;
+
+      //Do stuff on load
+      editor.on("load", function () {
+        var $ = grapesjs.$;
+        // Show logo with the version
+        // var logoCont = document.querySelector(".gjs-logo-cont");
+        // document.querySelector(".gjs-logo-version").innerHTML = "";
+        // var logoPanel = document.querySelector(".gjs-pn-commands");
+        // logoPanel.appendChild(logoCont);
+
+        // Load and show settings and style manager
+        var openTmBtn = pn.getButton("views", "open-tm");
+        openTmBtn && openTmBtn.set("active", 1);
+        var openSm = pn.getButton("views", "open-sm");
+        openSm && openSm.set("active", 1);
+
+        // Add Settings Sector
+        var traitsSector = $(
+          '<div class="gjs-sm-sector no-select manipulate">' +
+            '<div class="gjs-sm-title" onclick="populateLink.call(this)"><span class="icon-settings fa fa-cog"></span> Settings</div>' +
+            '<div class="gjs-sm-properties" style="display: none;"></div></div>'
+        );
+        var traitsProps = traitsSector.find(".gjs-sm-properties");
+        traitsProps.append($(".gjs-trt-traits"));
+        $(".gjs-sm-sectors").before(traitsSector);
+        traitsSector.find(".gjs-sm-title").on("click", function () {
+          var traitStyle = traitsProps.get(0).style;
+          var hidden = traitStyle.display == "none";
+          if (hidden) {
+            traitStyle.display = "block";
+          } else {
+            traitStyle.display = "none";
+          }
+        });
+
+        // Open block manager
+        var openBlocksBtn = editor.Panels.getButton("views", "open-blocks");
+        openBlocksBtn && openBlocksBtn.set("active", 1);
+
+        reloadCanvas();
+
+      });
+
+      $('#gjs').find('.gjs-toolbar').prepend(`<div><i class="fas fa-wrench" onclick="openModal.call(this)" style="margin-top:35px;font-size:15px;"></i></div>`)//.eq(0).append(`<div class="fa fa-trash-o gjs-toolbar-item"></div>`));
+      const logomove = () => {
+        let windowLocation = window.location.pathname
+        var f_occ = windowLocation.indexOf('/', windowLocation.indexOf('/') + 1)
+        var s_occ = windowLocation.indexOf('/', windowLocation.indexOf('/') + f_occ +1)
+        var t_occ = windowLocation.indexOf('/', windowLocation.indexOf('/') + s_occ +1)
+        var app_code2 = windowLocation.substring(f_occ+1,s_occ)
+        var current_dev_mode2 = windowLocation.substring(s_occ+1,t_occ)
+        if(current_dev_mode2 != "Build" && current_dev_mode2 != "Edit"){
+          current_dev_mode2 = "User"
+        }
+        let urlPath = `${app_code2}/${current_dev_mode2}`
+
+        const logoelement = `
+          <a href="/users/${urlPath}/homePage/" style="padding-left: 8px;padding-right: 8px" class="float-left">
+            <img
+              id="imageAciesLogo"
+              src="{% static 'images/Base_theme/A.png' %}"
+              alt="Acies Logo"
+              class="brand-image img-responsive"
+              align="left"
+              style="float: left"
+              height="30px"
+            />
+          </a>
+        `;
+        // $('.clasname').on('click',function() {
+
+        // })
+
+        $(".gjs-pn-panels")
+          .children()
+          .eq(3)
+          .find(".gjs-pn-buttons")
+          .prepend(logoelement);
+      };
+      logomove();
+      editor.DomComponents.clear();
+      bm.add("1X1", {
+        label: "1X1",
+        category: "Basic",
+        attributes: { class: "gjs-fonts gjs-f-b1" },
+        content: `
+        <div class="row"><div class="col-12 cell" style="min-height:75px;"></div></div>
+        `
+      });
+      bm.add("2X1", {
+        label: "2X1",
+        category: "Basic",
+        attributes: { class: "gjs-fonts gjs-f-b2" },
+        content: `
+        <div class="row"><div class="col-6 cell" style="min-height:75px;"></div><div class="col-6 cell" style="min-height:75px;"></div></div>
+        `
+      });
+      bm.add("3X1", {
+        label: "3X1",
+        category: "Basic",
+        attributes: { class: "gjs-fonts gjs-f-b3" },
+        content: `
+          <div class="row"><div class="col-4 cell" style="min-height:75px;"></div><div class="col-4 cell" style="min-height:75px;"></div><div class="col-4 cell" style="min-height:75px;"></div></div>
+        `
+      });
+      bm.add("2X1-3/7", {
+        label: "2X1\n3/7",
+        category: "Basic",
+        attributes: { class: "gjs-fonts gjs-f-b37" },
+        content: `
+          <div class="row"><div class="col-4 cell" style="min-height:75px;"></div><div class="col-8 cell" style="min-height:75px;"></div></div>
+        `
+      });
+      bm.remove("column1")
+      bm.remove("column2")
+      bm.remove("column3")
+      bm.remove("column3-7")
+      bm.add("Create view", {
+
+        label: `<i style="font-size: xx-large; margin-bottom: 20px" class="fas fa-paste"></i><div class="gjs-block-label">Create view</div>`,
+        content: `
+          <div title="create view" class="create view" style="width: 90px;height: 60px;border: 1.8px solid black;background-color: white;text-align: center;display: flex;justify-content: center;align-items: center;padding-top: 15px;margin-bottom: 10px;"><p>Create view</p></div>
+        `
+         ,
+        category: 'App component',
+        attributes: {
+          title: "Create view",
+        },
+      });
+      bm.add("Computation", {
+      label: `<i style="font-size: xx-large; margin-bottom: 20px" class="fas fa-robot"></i><div class="gjs-block-label">Computation</div>`,
+      content: `
+        <div title="computation" class="computation" style="width: 80px;height: 60px;border: 1.8px solid black;background-color: white;text-align: center;display: flex;justify-content: center;align-items: center;padding-top: 15px;margin-bottom: 10px;transform: skew(-10deg);margin-left:15px;"><p>Computation</p></div>
+      `
+      ,
+      category: 'App component',
+      attributes: {
+        title: "Computation",
+      },
+      });
+      bm.add("Analysis", {
+      label: `<i style="font-size: xx-large; margin-bottom: 20px" class="fa fa-bar-chart"></i><div class="gjs-block-label">Analysis</div>`,
+      content: `
+        <div title="analysis" class="analysis" style="width: 80px;height: 80px;border: 1.8px solid black;background-color: white;text-align: center;display: flex;justify-content: center;align-items: center;padding-top: 15px;margin-bottom: 10px; border-radius:40px;"><p>analysis</p></div>
+      `
+      ,
+      category: 'App component',
+      attributes: {
+        title: "analysis",
+      },
+      });
+      bm.add("List view", {
+      label: `<i style="font-size: xx-large; margin-bottom: 20px" class="fa fa-table"></i><div class="gjs-block-label">List View</div>`,
+      content: `
+        <div title="listview" class="listview" style="width: 100px;height: 80px;border: 1.8px solid black;background-color: white;text-align: center;display: flex;justify-content: center;align-items: center;padding-top: 15px;margin-bottom: 10px;"><p>List View</p></div>
+      `
+      ,
+      category: 'App component',
+      attributes: {
+        title: "listview",
+      },
+      });
+      bm.add("Upload", {
+      label: `<i style="font-size: xx-large; margin-bottom: 20px" class="fa fa-upload"></i><div class="gjs-block-label">Upload</div>`,
+      content: `
+        <div title="upload" class="upload" style="width: 100px;height: 80px;border: 1.8px solid black;background-color: white;text-align: center;display: flex;justify-content: center;align-items: center;padding-top: 15px;margin-bottom: 10px;"><p>Upload</p></div>
+      `
+      ,
+      category: 'App component',
+      attributes: {
+        title: "upload",
+      },
+      });
+      bm.add("Ordered list", {
+      label: `<i style="font-size: xx-large; margin-bottom: 20px" class="	fas fa-list-ol"></i><div class="gjs-block-label">Ordered list</div>`,
+      content: `
+      <ol>
+        <li>1</li>
+        <li>2</li>
+        <li>3</li>
+      </ol> `
+      ,
+      category: 'Basic',
+      attributes: {
+        title: "ordered list",
+      },
+      });
+      bm.add("Unordered list", {
+      label: `<i style="font-size: xx-large; margin-bottom: 20px" class="	fas fa-list-ul"></i><div class="gjs-block-label">Unordered list</div>`,
+      content: `
+      <ul>
+        <li>1</li>
+        <li>2</li>
+        <li>3</li>
+      </ul> `
+      ,
+      category: 'Basic',
+      attributes: {
+        title: "unordered list",
+      },
+      });
+      editor.addComponents(
+           `<form id='form1' method='post'>
+            <input type="hidden" name="csrfmiddlewaretoken" value="${ctoken}"></form>`
+        );
+
+      const addsavebutton = () => {
+        const savebutton = `<a href='#' style="margin-left: 3px;margin-right: 8px;" class="savebtn gjs-pn-btn" id="savebtn">
+          <i class="fa fa-save  " style="user-select: auto; "></i>
+        </a>`;
+        const resetbutton = `<a href='#' style="margin-left: 3px;margin-right: 8px;margin-bottom: 2px" class="resetbtn gjs-pn-btn">
+          <i class="fa fa-retweet" style="user-select: auto; "></i>
+        </a>`;
+        const resettooltip = `<div class="tooltipdiv" style="display:none;position:absolute;height:auto; width: 60px;color:white;top: 43px; padding:5px;left: 15px;border-radius:4px;background-color:#343a40;)"><span class="tooltiptext">Reset to default</span></div>`;
+        const addwidgetbutton = `<a href='#' data-toggle="modal" data-target="#widgetmodal" style="margin-left: 3px;margin-right: 8px;margin-bottom: 2px" class="widgetbtn gjs-pn-btn">
+          <i class="fas fa-wrench" style="user-select: auto; "></i>
+        </a>
+
+        `;
+        const loading = `<a href='#' data-toggle="modal" data-target="#widgetmodal" style="margin-left: 3px;margin-right: 8px;margin-bottom: 2px" class="widgetbtn gjs-pn-btn loading">
+          <i class="fa fa-circle-notch fa-spin" style="user-select: auto; "></i>
+        </a>
+
+        `;
+        const addwidgettooltip = `<div class="widgettooltipdiv" style="display:none;position:absolute;height:auto; width: 60px;color:white;top: 43px; padding:5px;left: -15px;border-radius:4px;background-color:#343a40;"><span class="tooltiptext">Add Custom Widget</span></div>`;
+
+        let url_string = window.location.pathname
+        let f_occ = url_string.indexOf('/', url_string.indexOf('/') + 1)
+        let s_occ = url_string.indexOf('/', url_string.indexOf('/') + f_occ +1)
+        let t_occ = url_string.indexOf('/', url_string.indexOf('/') + s_occ +1)
+        let app_code2 = url_string.substring(f_occ+1,s_occ)
+        let current_dev_mode2 = url_string.substring(s_occ+1,t_occ)
+        let modes = ["Build","Edit"]
+        let url = ""
+        if(current_dev_mode2 != "Build" && current_dev_mode2 != "Edit"){
+          current_dev_mode2 = "User"
+        }
+
+        const nextbutton = `<a href='/users/${app_code2}/${current_dev_mode2}/homePage/Grapejs/preview/' style="margin-left: 3px;margin-right: 8px;" target ="_blank" class="nextbtn gjs-pn-btn">
+          <i class="fas fa-long-arrow-alt-right" style="user-select: auto;color:white; "></i>
+        </a>`;
+        const sidebar_checkbox = `<label style="margin-top: 3px;" for="id="sidebarcheckbox" "class="gjs-pn-btn">Sidebar:</label><input style="margin-left: -6px; margin-right: 4px; min-height: 14px;
+         margin-top: -4px;" class="gjs-pn-btn" type="checkbox" id="sidebarcheckbox">`;
+        const topbar_checkbox = `<label style="margin-top: 3px;" for="topbarcheckbox">Topbar:</label><input style="margin-left: -6px; margin-right: 4px; min-height: 14px; margin-top: -4px;" class="gjs-pn-btn"  type="checkbox"  id="topbarcheckbox">`;
+        $(".gjs-pn-panels")
+          .children()
+          .eq(1)
+          .find(".gjs-pn-buttons")
+          .append(savebutton);
+        $(".gjs-pn-panels")
+          .children()
+          .eq(1)
+          .find(".gjs-pn-buttons")
+          .prepend(resetbutton)
+          .append(resettooltip);
+        $(".gjs-pn-panels")
+          .children()
+          .eq(1)
+          .find(".gjs-pn-buttons")
+          .prepend(addwidgetbutton)
+          .append(addwidgettooltip);
+        $(".gjs-pn-panels")
+          .children()
+          .eq(1)
+          .find(".gjs-pn-buttons")
+          .find("span")
+          .eq(8)
+          .remove();
+        $(".gjs-pn-panels")
+          .children()
+          .eq(1)
+          .find(".gjs-pn-buttons")
+          .prepend(loading)
+        $(".gjs-pn-panels")
+          .children()
+          .eq(1)
+          .find(".gjs-pn-buttons")
+          .append(nextbutton);
+          $(".gjs-pn-panels")
+          .children()
+          .eq(1)
+          .find(".gjs-pn-buttons")
+          .append(sidebar_checkbox);
+          $(".gjs-pn-panels")
+          .children()
+          .eq(1)
+          .find(".gjs-pn-buttons")
+          .append(topbar_checkbox);
+
+      };
+      addsavebutton();
+
+      ctoken = $('form').find("input[name='csrfmiddlewaretoken']").attr('value')
+      $.ajaxSetup({
+        beforeSend: function (xhr, settings) {
+          xhr.setRequestHeader("X-CSRFToken", ctoken);
+        }
+      });
+      $(".savebtn").on("click", function () {
+        var displayOptions = ""
+        Swal.fire({
+          text: 'Do you want to display Edit and Logout options on homepage?',
+          icon: 'question',
+          showDenyButton: true,
+          showCancelButton: true,
+          showCloseButton: true,
+          confirmButtonText: 'Yes and Save',
+          denyButtonText: `Yes only for Dev`,
+          cancelButtonText: 'No and Save'
+
+        }).then((result) => {
+          if (result.isConfirmed) {
+            displayOptions = "both"
+            saveCustomHomepage(displayOptions)
+          }
+          else if (result.isDenied) {
+            displayOptions = "onlydev"
+            saveCustomHomepage(displayOptions)
+          }
+          else if (result.isDismissed) {
+            displayOptions = "none"
+            saveCustomHomepage(displayOptions)
+          }
+        })
+      });
+      function saveCustomHomepage(displayOptions){
+        let thiss = $(".savebtn")
+        let thi = document.getElementById('savebtn')
+        const decodeHtmlCharCodes = str =>
+            str.replaceAll(/(&#(\d+);)/g, (match, capture, charCode) =>
+              String.fromCharCode(charCode));
+        $(".gjs-frame").contents().find('body').find('.reject').remove()
+        script_ = $(".gjs-frame").contents().find('body').find('div').eq(0).find('script').text()
+        let script1 = $(".gjs-frame").contents().find('body').find('script').text()
+        let script_widget = script1.replace(script_,"");
+        let script2 = $(".gjs-frame").contents().find('body').find('script').text()
+
+        var e_id_del = [];
+        var list_of_element = [];
+        if (typeof(element_id_gjs) === 'undefined'){
+            element_id_gjs = []
+        }
+        for(let i = 0; i < element_id_gjs.length; i++) {
+          if (!(editor.getHtml()).includes(element_id_gjs[i])) {
+            e_id_del.push(element_id_gjs[i]);
+          }
+        }
+        var dic_widget_script = editor.DomComponents.getWrapper().find(`span[data-js=countdown]`)
+        var widget_script_ct = []
+        for(let i = 0; i < dic_widget_script.length; i++) {
+          if(1
+          ) {
+            widget_script_ct.push(dic_widget_script[i]["ccid"]);
+          }
+        }
+        if(editor.getHtml().includes('ellipse0')){
+          list_of_element.push("Analysis")
+        } if(editor.getHtml().includes('parallelogram')){
+          list_of_element.push("Computation")
+        } if(editor.getHtml().includes('document0')){
+          list_of_element.push("Upload")
+        } if(editor.getHtml().includes('process0')){
+          list_of_element.push("List view")
+        } if(editor.getHtml().includes('whiteSpace')){
+          list_of_element.push("Create view")
+        }
+        const sidebarCheckbox = document.getElementById('sidebarcheckbox');
+        const sidebarCheckboxValue = sidebarCheckbox.checked;
+        const topbarCheckbox = document.getElementById('topbarcheckbox');
+        const topbarCheckboxValue = topbarCheckbox.checked;
+        $.ajax({
+          url:window.location.href,
+          data: {
+            "operation":"save_view",
+            "displayOptions":displayOptions,
+            "htmldata": decodeHtmlCharCodes(editor.getHtml()),
+            "script": script2,
+            "script_inbuild": script2,
+            "static_page_script":static_page_script,
+            "cssdata": JSON.stringify(editor.getCss() + `.chartDivSection {
+              overflow:scroll;
+              pointer-events:cursor;
+            }`),
+            "element_id_del":JSON.stringify(e_id_del),
+            "element_list":JSON.stringify(list_of_element),
+            "widget_element_id": JSON.stringify(widget_script_ct),
+            "widget_script": script_widget,
+            "sidebar":sidebarCheckboxValue,
+            "topbar":topbarCheckboxValue,
+          },
+          type: "POST",
+          dataType: "json",
+          success: function (data) {
+            Swal.fire({icon: 'success',text: 'Template saved successfully.'});
+          },
+          failure: function () {
+            Swal.fire({icon: 'error',text: 'Error! Failure in saving the specific View. Please check and try again.'});
+          },
+        });
+      }
+      let thi = this
+      function reloadCanvas(){
+        $.ajax({
+          url:window.location.href,
+          data: {"operation":"reload_save_data"},
+          type: "POST",
+          dataType: "json",
+          success: function (data) {
+              $(".loading").css("display","none");
+              editor.DomComponents.clear();
+              if(Object.keys(data).length != 0) {
+
+                editor.addComponents(data["htmldata"]);
+                $(".gjs-frame").contents().find('body').find('.gjs-js-cont').empty()
+                $(".gjs-frame").contents().find('body').find('.gjs-js-cont').append(`<div>${data["widget_script"]}</div>`)
+                $('#gjs').find('.gjs-toolbar').prepend(`<div><i class="fas fa-wrench" onclick="openModal.call(this)" style="margin-top:35px;font-size:15px;"></i></div>`)
+              }else{
+                $('#gjs').find('.gjs-toolbar').prepend(`<div><i class="fas fa-wrench" onclick="openModal.call(this)" style="margin-top:35px;font-size:15px;"></i></div>`)
+              }
+            },
+            failure: function () {
+              Swal.fire({icon: 'error',text: 'Error! Failure in saving the specific View. Please check and try again.'});
+            },
+          });
+
+
+      }
+
+      $(".resetbtn").on("click", function () {
+        const selectedelement = editor.getSelectedAll();
+        editor.addComponents(selectedelement);
+        Swal.fire({
+          icon:'question',
+          text: "Do you want to reset the homepage to default?\n\nClick 'Yes' to confirm or click 'No' if you do not wish to reset it.",
+                    showDenyButton: true,
+                    showCancelButton: true,
+                    confirmButtonText: 'Yes',
+                    denyButtonText: 'No',
+                  }).then((result) => {
+                    if (result.isConfirmed) {
+                      $.ajax({
+                              url:window.location.href,
+                              data: {"operation":"reset_view"},
+                              type: "POST",
+                              dataType: "json",
+                              success: function (data) {
+                                // window.history.back()
+                                window.location.href = data.url;
+                              },
+                              failure: function () {
+                                Swal.fire({icon: 'error',text: 'Error! Failure in saving the specific View. Please check and try again.'});
+                              },
+                            });
+                    }
+                    })
+      });
+      $(".resetbtn").hover(() => {
+        $(".tooltipdiv").css({
+          display: "block",
+        });
+      });
+      $(".resetbtn").mouseout(() => {
+        $(".tooltipdiv").css({
+          display: "none",
+        });
+      });
+      $(".widgetbtn").hover(() => {
+        $(".widgettooltipdiv").css({
+          display: "block",
+        });
+      });
+      $(".widgetbtn").mouseout(() => {
+        $(".widgettooltipdiv").css({
+          display: "none",
+        });
+      });
+      const getCategories = (blocks) => {
+          const categories = [
+            ...new Set(blocks.map((block) => block.attributes.category.id)),
+          ];
+          return categories;
+        };
+      $(".widgetbtn").click(() => {
+        $("#panelname").empty();
+        getCategories(editor.BlockManager.getAll().models).forEach(
+          (category) => {
+            $("#panelname").append(
+              `<option value="${category}">${category}</option>`
+            );
+          }
+        );
+        $('#panelname').select2({
+          dropdownParent: $('#widgetmodal')
+        });
+        const css = editor.CodeManager.getCode(editor.getSelected(), 'css', {cssc: editor.CssComposer});
+      });
+      $(".newpanelbtn").on("click", () => {
+        $(this).css('background-color','var(--primary-color)');
+        $(".newpanelform").css({
+          display: "block",
+        });
+        $(".existingpanelform").css({
+          display: "none",
+        });
+      });
+      $(".existingpanelbtn").on("click", () => {
+        $(this).css('background-color','var(--primary-color)');
+        $(".newpanelform").css({
+          display: "none",
+        });
+        $(".existingpanelform").css({
+          display: "block",
+        });
+      });
+      $(".savenewwidgetbtn").click((e) => {
+        $(this).css('background-color','var(--primary-color)');
+        e.preventDefault();
+        const elementselected = editor.getSelected();
+        const panelname = $(".newpanelname").val();
+        const widgetname = $(".newwidgetname").val();
+        const iconclass = $('#newiconselect').val();
+        const panelexists = getCategories(editor.BlockManager.getAll().models).find((category)=>category===panelname)
+        const blockexists = editor.BlockManager.get(widgetname)
+        const selectedhtml = editor.getSelected().toHTML()
+        const selectedcss = editor.CodeManager.getCode(editor.getSelected(), 'css', {cssc: editor.CssComposer});
+        if (
+          panelname === "" ||
+          !panelname ||
+
+          widgetname === "" ||
+          !widgetname
+
+        ) {
+          Swal.fire({icon: 'warning',text: 'Fields cannot be left blank. Please ensure to fill all necessary fields.'});
+        }else if(panelexists){
+          Swal.fire({icon: 'warning',text: 'Panel already exists, add a new panel or select an existing one.'});
+        }
+        else if (elementselected.length === 0) {
+          Swal.fire({icon: 'warning',text: 'Select a container/ block to save.'});
+        } else if(blockexists){
+          Swal.fire({icon: 'warning',text: 'Block with the same ID already exists, please choose a unique name to proceed.'});
+        }else {
+          editor.Components.addType('default', {
+            model: {
+              defaults: {
+                script,
+                // Add some style, just to make the component visible
+              }
+            }
+          });
+          bm.add(widgetname, {
+            label: `<i style="font-size: xx-large; margin-bottom: 20px" data-panel="${panelname}" data-widget="${widgetname}" ondblclick="deleteWidgets.call(this)" class="${iconclass}"></i><div class="gjs-block-label">${widgetname}</div>`,
+            content: `${selectedhtml} <style>${selectedcss}</style>`,
+            // content: [...editor.getSelectedAll(), ...styles1],
+            category: panelname,
+            attributes: {
+              title: widgetname,
+            },
+          });
+          $.ajax({
+            url:window.location.href,
+            data: {
+              "operation":"create_widgets",
+              "widget": JSON.stringify(editor.BlockManager.get(widgetname))
+            },
+            type: "POST",
+            dataType: "json",
+            success: function () {
+              Swal.fire({icon: 'success',text: 'Widget saved successfully!'});
+              // $("#widgetmodal").modal("hide");
+            },
+            failure: function () {
+              Swal.fire({icon: 'error',text: 'Error! Failure in saving the Widget. Please try again.'});
+            },
+          });
+
+        }
+      });
+      $(".savenewwidgetbtnstd").click((e) => {
+        $(this).css('background-color','var(--primary-color)');
+        e.preventDefault();
+        const elementselected = editor.getSelected();
+        const panelname = $(".newpanelname").val();
+        const widgetname = $(".newwidgetname").val();
+        const iconclass = $('#newiconselect').val();
+        const panelexists = getCategories(editor.BlockManager.getAll().models).find((category)=>category===panelname)
+        const blockexists = editor.BlockManager.get(widgetname)
+        const selectedhtml = editor.getSelected().toHTML()
+        const selectedcss = editor.CodeManager.getCode(editor.getSelected(), 'css', {cssc: editor.CssComposer});
+
+        if (
+          panelname === "" ||
+          !panelname ||
+
+          widgetname === "" ||
+          !widgetname
+
+        ) {
+          Swal.fire({icon: 'warning',text: 'Fields cannot be left blank. Please ensure to fill all necessary fields.'});
+        }else if(panelexists){
+          Swal.fire({icon: 'warning',text: 'Panel already exists, add a new panel or select an existing one.'});
+        }
+        else if (elementselected.length === 0) {
+          Swal.fire({icon: 'warning',text: 'Select a container/ block to save.'});
+        } else if(blockexists){
+          Swal.fire({icon: 'warning',text: 'Block with the same ID already exists, please choose a unique name to proceed.'});
+        }else {
+          editor.Components.addType('default', {
+            model: {
+              defaults: {
+                script,
+                // Add some style, just to make the component visible
+              }
+            }
+          });
+          bm.add(widgetname, {
+            label: `<i style="font-size: xx-large; margin-bottom: 20px" data-panel="${panelname}" data-widget="${widgetname}" class="${iconclass}"></i><div class="gjs-block-label">${widgetname}</div>`,
+            content: `${selectedhtml} <style>${selectedcss}</style>`,
+            // content: [...editor.getSelectedAll(), ...styles1],
+            category: panelname,
+            attributes: {
+              title: widgetname,
+            },
+          });
+          $.ajax({
+            url:window.location.href,
+            data: {
+              "operation":"create_widgets_std",
+              "widget": JSON.stringify(editor.BlockManager.get(widgetname))
+            },
+            type: "POST",
+            dataType: "json",
+            success: function () {
+              Swal.fire({icon: 'success',text: 'Widget saved successfully!'});
+              // $("#widgetmodal").modal("hide");
+            },
+            failure: function () {
+              Swal.fire({icon: 'error',text: 'Error! Failure in saving the Widget. Please try again.'});
+            },
+          });
+
+        }
+      });
+      var deleteWidgets = function() {
+        Swal.fire({
+          icon:'question',
+          text: "Do you want to delete the widget? Click 'Yes' to confirm or click 'No' if you do not wish to delete it.",
+                    showDenyButton: true,
+                    showCancelButton: true,
+                    confirmButtonText: 'Yes',
+                    denyButtonText: 'No',
+                  }).then((result) => {
+                    if (result.isConfirmed) {
+                      id_widget = $(this).attr('data-widget')
+                      for(let i = 0; i < widgetsarray.length; i++) {
+                        if(id_widget == widgetsarray[i]['id']) {
+                          widgetsarray.splice(i,1);
+                          break;
+                        }
+                      }
+                      $.ajax({
+                          url:window.location.href,
+                          data: {
+                            "operation":"delete_widgets",
+                            "widget": JSON.stringify(widgetsarray)
+                          },
+                          type: "POST",
+                          dataType: "json",
+                          success: function () {
+                            Swal.fire({icon: 'success',text: 'Widget deleted successfully!'});
+                            window.location.reload()
+                          },
+                          failure: function () {
+                            Swal.fire({icon: 'error',text: 'Error! Failure in deleting the Widget. Please try again.'});
+                          },
+                        });
+                    }
+                  })
+      }
+      $(".saveexistingwidgetbtn").click((e) => {
+        e.preventDefault();
+        const elementselected = editor.getSelectedAll();
+        const panelname = $('#panelname option:selected').val();
+        const widgetname = $(".existingwidgetname").val();
+        const iconclass = $('#iconselect').val();
+        const blockexists = editor.BlockManager.get(widgetname)
+        const selectedhtml = editor.getSelected().toHTML()
+        const selectedcss = editor.CodeManager.getCode(editor.getSelected(), 'css', {cssc: editor.CssComposer});
+        if (
+          panelname === "" ||
+          !panelname ||
+
+          widgetname === "" ||
+          !widgetname
+
+        ) {
+          Swal.fire({icon: 'warning',text: 'Fields cannot be left blank. Please ensure to fill all necessary fields.'});
+        } else if (elementselected.length === 0) {
+          Swal.fire({icon: 'warning',text: 'Select a container/ block to save.'});
+        }else if(blockexists){
+          Swal.fire({icon: 'warning',text: 'Block with the same ID already exists, please choose a unique name to proceed.'});
+        } else {
+          editor.Components.addType('default', {
+            model: {
+              defaults: {
+                script,
+                // Add some style, just to make the component visible
+              }
+            }
+          });
+          bm.add(widgetname, {
+            label: `<i style="font-size: xx-large; margin-bottom: 20px" data-panel="${panelname}" data-widget="${widgetname}" ondblclick="deleteWidgets.call(this)" class="${iconclass}"></i><div class="gjs-block-label">${widgetname}</div>`,
+            content: `${selectedhtml} <style>${selectedcss}</style>`,
+            category: panelname,
+            attributes: {
+              title: widgetname,
+            },
+          });
+          $.ajax({
+            url:window.location.href,
+            data: {
+              "operation":"create_widgets",
+              "widget": JSON.stringify(editor.BlockManager.get(widgetname))
+            },
+            type: "POST",
+            dataType: "json",
+            success: function () {
+              Swal.fire({icon: 'success',text: 'Widget saved successfully!'});
+              // $("#widgetmodal").modal("hide");
+            },
+            failure: function () {
+              Swal.fire({icon: 'error',text: 'Error! Failure in saving the Widget. Please try again.'});
+            },
+          });
+        }
+      });
+      $(".saveexistingwidgetbtnstd").click((e) => {
+        e.preventDefault();
+        const elementselected = editor.getSelectedAll();
+        const panelname = $('#panelname option:selected').val();
+        const widgetname = $(".existingwidgetname").val();
+        const iconclass = $('#iconselect').val();
+        const blockexists = editor.BlockManager.get(widgetname)
+        const selectedhtml = editor.getSelected().toHTML()
+        const selectedcss = editor.CodeManager.getCode(editor.getSelected(), 'css', {cssc: editor.CssComposer});
+        if (
+          panelname === "" ||
+          !panelname ||
+
+          widgetname === "" ||
+          !widgetname
+
+        ) {
+          Swal.fire({icon: 'warning',text: 'Fields cannot be left blank. Please ensure to fill all necessary fields.'});
+        } else if (elementselected.length === 0) {
+          Swal.fire({icon: 'warning',text: 'Select a container/ block to save.'});
+        }else if(blockexists){
+          Swal.fire({icon: 'warning',text: 'Block with the same ID already exists, please choose a unique name to proceed.'});
+        } else {
+          editor.Components.addType('default', {
+            model: {
+              defaults: {
+                script,
+                // Add some style, just to make the component visible
+              }
+            }
+          });
+          bm.add(widgetname, {
+            label: `<i style="font-size: xx-large; margin-bottom: 20px" data-panel="${panelname}" data-widget="${widgetname}" class="${iconclass}"></i><div class="gjs-block-label">${widgetname}</div>`,
+            content: `${selectedhtml} <style>${selectedcss}</style>`,
+            category: panelname,
+            attributes: {
+              title: widgetname,
+            },
+          });
+          $.ajax({
+            url:window.location.href,
+            data: {
+              "operation":"create_widgets_std",
+              "widget": JSON.stringify(editor.BlockManager.get(widgetname))
+            },
+            type: "POST",
+            dataType: "json",
+            success: function () {
+              Swal.fire({icon: 'success',text: 'Widget saved successfully!'});
+              // $("#widgetmodal").modal("hide");
+            },
+            failure: function () {
+              Swal.fire({icon: 'error',text: 'Error! Failure in saving the Widget. Please try again.'});
+            },
+          });
+        }
+      });
+
+    var True = true;
+    const panelViews = pn.addPanel({
+      id: 'views'
+    });
+    panelViews.get('buttons').add([{
+      attributes: {
+        title: 'Open Code'
+      },
+      className: 'fa fa-file-code-o',
+      command: 'open-code',
+      togglable: false, //do not close when button is clicked again
+      id: 'open-code'
+    }]);
+    </script>
+    <script>{{script | safe}}</script>
+    <script>{% include path %}</script>
+    <script>{% include path_standard %}</script>
+    <script>
+    let static_page_script = ""
+
+    widgetsarray.forEach((widget)=>{
+      bm.add(widget.id,widget)
+    });
+    standard_widgetsarray.forEach((widget)=>{
+      bm.add(widget.id,widget)
+    });
+    </script>
+
+
+
+
+    <script>
+      let navPoints = {{navPoints | safe}};
+      let appList = {{appList | safe}};
+      let linkList = [
+        {"main":"Custom input","sub":[]},
+        {"main":"Data management","sub":[["DataManagement","Data management"]]},
+        {"main":"Approval management","sub":[["approval_table","Approval"]]},
+        {"main":"Alert management","sub":[["alert_management","Alert management"]]},
+        {"main":"Application configuration","sub":[["application","Application"]]},
+        {"main":"Business model","sub":[["business_model","Business model"]]},
+        {"main":"Process creation","sub":[["Levelcreation","Level creation"],["processGraphModule","Process creation"],["computationModule","Computation"],["FlowMonitor","Flow monitor"]]},
+        {"main":"Application admin","sub":[["user_management","User Management"],["audit_trail","Audit trial"],["permission_access","Permission access"],["jobexecution","Job execution"]]},
+        {"main":"Screens","sub":[]},
+        {"main":"Navigation points","sub":[]},
+        {"main":"Applications","sub":[]},
+      ]
+      if(current_dev_mode2 == "Build"){
+        navPoints = navPoints["new"]["Build"]
+      } else {
+        navPoints = navPoints["new"][user]
+      }
+      for(let [key,value] of Object.entries(navPoints) ) {
+        let val = "";
+        if(value.hasOwnProperty("existing")){
+          val = value["existing"]
+          if(val.hasOwnProperty("subprocess")){
+            for(let [key1,value1] of Object.entries(val["subprocess"])){
+              if(!linkList[9]["sub"].includes([key1,value1])){
+                linkList[9]["sub"].push([key1,value1]);
+              }
+            }
+          }
+        }
+      }
+      linkList[10]["sub"].push(["selectApplication","Select Application"])
+      linkList[10]["sub"].push(["selectDashboard","Select Dashboard"])
+      for(let i in appList){
+        linkList[10]["sub"].push([appList[i]["application_code"],appList[i]["application_name"]]);
+      }
+
+      $('.gjs-block').on('mouseenter',function() {
+        $('.gjs-block-label').css('color','var(--primary-color)')
+      })
+      $(".gjs-pn-buttons").find("span[title='Open Code']").on("click",function(){
+        $(this).closest(".gjs-pn-panels").find(".code-panel").find("section").eq(1).css("display","none")
+      })
+
+      function populateLink() {
+        $("input[placeholder='eg. https://google.com']").parent().find("select").eq(0).parent().remove();
+        $("input[placeholder='eg. https://google.com']").parent().find("select").eq(0).parent().remove();
+        let html = `
+        <div class="data-input">
+          <select id="populateUrl" onchange="populateUrl.call(this)">
+        `
+        for(let i = 0; i < linkList.length; i++){
+          html = html + `<option value="${linkList[i]["main"]}">${linkList[i]["main"]}</option>`
+        }
+
+        $("input[placeholder='eg. https://google.com']").parent().prepend(`
+          ${html}
+            </select>
+          </div>
+        `)
+        $("input[placeholder='eg. https://google.com']").parent().append(`
+          <div class="data-input">
+            <select id="nextElementTab" onchange="populateInputLink.call(this)">
+
+            </select>
+          </div>
+        `)
+        $("#nextElementTab").parent().css("display","none");
+        let val = $("input[placeholder='eg. https://google.com']").val();
+        if(![undefined,null,""].includes(val)) {
+          if(val.includes("/Pr")){
+            $("input[placeholder='eg. https://google.com']").parent().find("select").eq(0).val("Screens").trigger("change");
+            let splitVal = val.split("/");
+            splitVal = splitVal[4];
+            $("#nextElementTab").attr("data-reload","yes");
+            $("#nextElementTab").attr("data-reloaddata",JSON.stringify(splitVal))
+          } else if (val.includes("{{"+"mode}"+"}") && val.includes("App") && val.includes("/homePage/")){
+            $("#populateUrl").val("Applications").trigger("change");
+            let str = val.split("/");
+            str = str[2];
+            $("#nextElementTab").val(str).trigger("change");
+          } else if (["/users/selectApplication/","/users/selectDashboard/"].includes(val)){
+            $("#populateUrl").val("Applications").trigger("change");
+            if(val.includes("selectApplication")){
+              $("#nextElementTab").val("selectApplication").trigger("change");
+            } else if (val.includes("selectDashboard")){
+              $("#nextElementTab").val("selectDashboard").trigger("change");
+            }
+          } else if(val.includes("{{") && val.includes("app_code") && val.includes("Rgr")){
+            $("#populateUrl").val("Navigation points").trigger("change");
+            let splitVal = val.split("/");
+            splitVal = splitVal[4];
+            $("#nextElementTab").val(splitVal).trigger("change");
+          } else {
+            if(val.includes("{{") && val.includes("app_code")){
+              let splitVal = val.split("/");
+              splitVal = splitVal[4];
+              for(let i = 0; i < linkList.length; i++){
+                for(let j = 0; j < linkList[i]["sub"].length; j++){
+                  if(linkList[i]["sub"][j][0] == splitVal){
+                    $("input[placeholder='eg. https://google.com']").parent().find("select").eq(1).val(linkList[i]["sub"][j][0]).trigger("change");
+                  } $("input[placeholder='eg. https://google.com']").parent().find("select").eq(0).val(linkList[i]["main"]).trigger("change");
+
+                }
+              }
+            } else {
+              $("input[placeholder='eg. https://google.com']").parent().find("select").eq(0).val("Custom input").trigger("change");
+              $("input[placeholder='eg. https://google.com']").val(val).trigger("change");
+            }
+          }
+        }
+
+        }
+      function populateInputLink() {
+        let string
+        if(["selectApplication","selectDashboard"].includes($(this).val())){
+          string = string = "/users/" + $(this).val() + "/"
+        } else{
+          if($("#populateUrl").val() != "Applications"){
+            string = "/users/{" + "{app_code" + "}" + "}/"+"{" + "{mo" + "de}" + "}/"+$(this).val() + "/"
+          } else {
+            string = "/users/" + $(this).val() + "/"+"{" + "{mo" + "de}" + "}/"+"homePage"+ "/"
+          }
+        }
+
+        $("input[placeholder='eg. https://google.com']").val(string).trigger("change");
+
+      }
+    function populateUrl() {
+      let windowLocation = window.location.pathname
+      let windowLocationAttr = window.location
+      var f_occ = windowLocation.indexOf('/', windowLocation.indexOf('/') + 1)
+      var s_occ = windowLocation.indexOf('/', windowLocation.indexOf('/') + f_occ +1)
+      var t_occ = windowLocation.indexOf('/', windowLocation.indexOf('/') + s_occ +1)
+      var app_code2 = windowLocation.substring(f_occ+1,s_occ)
+      var current_dev_mode2 = windowLocation.substring(s_occ+1,t_occ)
+      if(current_dev_mode2 != "Build" && current_dev_mode2 != "Edit"){
+        current_dev_mode2 = "User"
+      }
+      let urlPath = `${app_code2}/${current_dev_mode2}`
+      if($(this).val() == "Screens"){
+        $("input[placeholder='eg. https://google.com']").css("display","none");
+        $("#nextElementTab").parent().css("display","block")
+        $.ajax({
+          url: "/users/"+urlPath+"/processGraphModule/",
+          data: {
+            'operation': 'fetchSubprocess',
+          },
+          type: "POST",
+          dataType: "json",
+          success: function (data) {
+            $("#nextElementTab").empty()
+            $("#nextElementTab").append(`<option value="">Select url</option>`)
+            for(let [key,value] of Object.entries(data.subprocess) ) {
+              $('#nextElementTab').append(`<option value="${key}">${value}</option>`);
+            }
+              let data1 = JSON.parse($("#nextElementTab").attr("data-reloaddata"));
+              $('#nextElementTab').val(data1).trigger("change");
+              $('#nextElementTab').removeAttr("data-reload");
+
+          },
+          error: function () {alert('Error')}
+        })
+      } else if ($(this).val() == "Custom input"){
+        $("input[placeholder='eg. https://google.com']").css("display","block");
+        $("input[placeholder='eg. https://google.com']").val("").trigger("change");
+        $("#nextElementTab").parent().css("display","none")
+      } else {
+        $("input[placeholder='eg. https://google.com']").css("display","none");
+        $("#nextElementTab").parent().css("display","block")
+        for(let i = 0; i < linkList.length; i++){
+          let html = ""
+          if(linkList[i]["main"] == $(this).val()){
+            $("#nextElementTab").empty()
+            html = html + `<option value="">Select url</option>`
+            for(let j = 0; j < linkList[i]["sub"].length; j++){
+              html = html + `<option value="${linkList[i]["sub"][j][0]}">${linkList[i]["sub"][j][1]}</option>`
+            }
+            $("#nextElementTab").append(html);
+            break;
+          }
+        }
+      }
+    }
+    $("iframe").on("mouseover",function() {
+      setTimeout(() => {
+        $(".manipulate").find(".gjs-sm-properties").css("display","none");
+      },1000)
+    })
+    </script>
+  </body>
+</html>

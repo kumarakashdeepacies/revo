@@ -1,0 +1,34 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  namespace: production
+  name: envs-production-django
+data:
+  CDN_CUSTOM_DOMAIN: https://revolutiostatic.azureedge.net
+  CDN_CUSTOM_LOCATION: static
+  COMPUTATION_QUEUES: "2"
+  CSRF_TRUSTED_ORIGINS: https://*.revolutio.digital,https://antares.revolutio.digital,https://jonosfero.revolutio.digital
+  DATA_UPLOAD_QUEUES: "1"
+  DJANGO_ACCOUNT_ALLOW_REGISTRATION: "true"
+  DJANGO_ADMIN_URL: nxB0AWFHi204T2g7VxhVxJ5UYKMBQIjl/
+  DJANGO_SECURE_SSL_REDIRECT: "no"
+  DJANGO_SESSION_COOKIE_AGE: "86400"
+  DJANGO_SETTINGS_MODULE: config.settings.local
+  DJANGO_SUPERUSER_EMAIL: contact@acies.holdings
+  DJANGO_SUPERUSER_USERNAME: revolutio_admin
+  FILE_NAME: /etc/nginx/nginx.conf
+  KUBERNETES_ENV: "true"
+  PLATFORM_DOMAIN_NAME: revolutio.digital
+  PORT_NUMBER: "8080"
+  REDIS_CACHE_LOCATION: redis://:rediskeydbsecretpassword@keydb:6379
+  KEYDB_PASSWORD: rediskeydbsecretpassword
+  REDIS_HOST: redis
+  REDIS_HOST_SCHEDULER: redis-scheduler
+  REDIS_PORT: "6379"
+  REDIS_PORT_SCHEDULER: "6379"
+  REDIS_PASSWORD: redissecretpassword
+  REDIS_PASSWORD_SCHEDULER: redisschedulersecretpassword
+  REDIS_URL: redis://:redissecretpassword@redis:6379/0
+  REDIS_URL_SCHEDULER: redis://:redisschedulersecretpassword@redis-scheduler:6379/0
+  WEB_CONCURRENCY: "4"
+  OPERATION_TYPE: "application_run"

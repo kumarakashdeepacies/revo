@@ -1,0 +1,16 @@
+{% extends "account/base.html" %}
+{% load static %}
+
+{% block content %}
+<!-- Sweet Alert2 -->
+<script src="{% static 'vendor/sweet_alert/sweetalert2.all.min.js' %}"></script>
+
+<!-- Cryto Js for Password Hashing -->
+<script src="{% static 'js/crypto-js/js/crypto-js.min.js' %}"></script>
+
+<div id='messages-content' class="messages-content">
+    {% include 'messages.html' %}
+</div>
+
+{% endblock %}
+

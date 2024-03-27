@@ -1,0 +1,1460 @@
+<!DOCTYPE html>
+<!-- attr_detail -->
+
+{% load render_bundle from webpack_loader %}
+{% load static %}
+
+
+
+<!-- Select2 -->
+<link rel="stylesheet" href="{% static 'vendor/Base_theme/select2/css/select2.min.css' %}">
+<link rel="stylesheet" href="{% static 'vendor/Base_theme/select2-bootstrap4-theme/select2-bootstrap4.min.css' %}">
+<!-- Bootstrap4 Duallistbox -->
+<link rel="stylesheet" href="{% static 'vendor/Base_theme/bootstrap4-duallistbox/bootstrap-duallistbox.min.css' %}">
+<!--Official dataTables default  CSS FILE-->
+<link rel="stylesheet" href="{% static 'css/KoreD/jquery.dataTables.css' %}">
+<link rel="stylesheet" href="{% static 'css/KoreD/buttons.dataTables.min.css' %}">
+
+
+
+<!-- Select2 -->
+<script src="{% static 'vendor/Base_theme/select2/js/select2.min.js' %}"></script>
+<!-- Bootstrap4 Duallistbox -->
+<script src="{% static 'vendor/Base_theme/bootstrap4-duallistbox/jquery.bootstrap-duallistbox.min.js' %}"></script>
+
+<!--Official dataTables default  CSS FILE-->
+<link rel="stylesheet" href="{% static 'css/KoreD/jquery.dataTables.css' %}">
+<link rel="stylesheet" href="{% static 'css/KoreD/buttons.dataTables.min.css' %}">
+<link rel="stylesheet" href="{% static 'vendor/Base_theme/datatables-responsive/css/responsive.bootstrap4.min.css' %}">
+<link rel="stylesheet" href="{% static 'vendor/Base_theme/datatables-colreorder/css/colReorder.bootstrap4.min.css' %}">
+
+<!-- DataTables -->
+<script src="{% static 'vendor/Base_theme/datatables/jquery.dataTables.js' %}"></script>
+<script src="{% static 'vendor/Base_theme/datatables-responsive/js/dataTables.responsive.min.js' %}"></script>
+<script src="{% static 'vendor/Base_theme/datatables-fixedheader/js/dataTables.fixedHeader.min.js' %}"></script>
+<script src="{%static 'vendor/Base_theme/datatables-bs4/js/dataTables.bootstrap4.js'%}"></script>
+
+<script src="{%static 'vendor/Base_theme/datatables-buttons/js/dataTables.buttons.min.js'%}"></script>
+<script src="{%static 'vendor/Base_theme/jszip/jszip.min.js'%}"></script>
+<script src="{%static 'vendor/Base_theme/pdfmake/pdfmake.min.js'%}"></script>
+<script src="{%static 'vendor/Base_theme/pdfmake/vfs_fonts.js'%}"></script>
+<script src="{%static 'vendor/Base_theme/datatables-buttons/js/buttons.html5.min.js'%}"></script>
+<script src="{%static 'vendor/Base_theme/datatables-buttons/js/buttons.colVis.min.js'%}"></script>
+
+
+
+<section class="content">
+  <div class="container-fluid">
+
+
+
+
+
+        <div class="row">
+          <div class="col-lg-6 justify-content-center">
+            <div class="card">
+                <!-- /.card-header -->
+                <div class="card-header">
+                  <h6 class="card-title" style="color:var(--primary-color);">
+                    Form for Report Creation
+                  </h6>
+                </div>
+                <!-- /.card-body -->
+                <div class="card-body dataElements" style="height:25em;">
+                    <div class="row">
+                        <div class='col-12'style="display:flex; flex-direction: row; justify-content: left; align-items: left">
+                            <label for="name">Report Name:</label>
+
+                            <input class="form-control col-4" placeholder="Enter report name" type="text" id="repname"
+                            name="tblname" style="margin-left: 0.5em;min-width: 9.5em;" required size="30">
+                        </div>
+                    </div>
+                    <br><br>
+                    <div class="row">
+                        <div class='col-12'style="display:flex; flex-direction: row; justify-content: left; align-items: left">
+                            <label for="name">Create Table Base Column:</label>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class='col-6'>
+                            <select class="select2 form-control" id="keytablename" name="null" onchange="functioncall()">
+                                <option value="" disabled selected>Table Name</option>
+                                {% for tab in tables %}
+                                  <option class = "helo" value="">{{tab}}</option>
+                                {% endfor %}
+                              </select>
+                        </div>
+                        <div class='col-6'>
+                            <select class="select2 form-control uniquekey" id="uniquekey" name="null">
+                                <option value="" disabled selected>Data Element</option>
+                              </select>
+                        </div>
+                    </div>
+                    <br>
+                    <button type="button" id="saveBaseCol" class="btn btn-primary" style="height: 25px;border-radius:5px;border-color:none;color:white;padding-left:9px;padding-top:2px;" onclick="primkeyfunc()">
+                      Save
+                    </button>
+                  </div>
+                </div>
+          </div>
+          <div class="col-lg-6 justify-content-center">
+            <div class="card">
+              <!-- /.card-header -->
+              <div class="card-header">
+                <h6 class="card-title" style="color:var(--primary-color);">
+                  Data Discovery
+                </h6>
+              </div>
+              <!-- /.card-body -->
+              <div class="card-body dataElements" style="height:25em;">
+                <div class="card-body">
+                  <p id="selectid" style="color:red;display:block;">Select base column first</p>
+                  <form class="form-inline d-flex justify-content-left md-form form-sm mt-0">
+                    <div class="row">
+                      <div class="form-group form-inline col-md-8 mb-0 ">
+                        <form>
+                            <input type="text" placeholder="Search.." id="search_field2" name="search" style="border:1px solid #d0d0d0;border-radius:0.2em;padding:0.28em;">
+                            <button type="button" class="btn  btn-sm btn-primary" id="btn_search2" style="font-size:inherit;">
+                              <i class="fa fa-search"></i>
+                            </button>
+                          </form>
+                        <!-- <input class="form-control form-control-sm ml-3 w-75" id="search_field2" type="text"
+                          placeholder="Search" aria-label="Search"> -->
+                      </div>
+
+                      <div class="form-group col-md-4 mb-0 ">
+                        <div class="col-1.5 form-group">
+                          <label class="acies_label" style="margin-right: 1em;">Condition:</label>
+                          <select class="select2 form-control" id="search_option2" name="null">
+                            <option value="" disabled>Select Option</option>
+                            <option value="Yes" selected>Contains</option>
+                          </select>
+                        </div>
+                      </div>
+                    </div>
+
+                    <!-- <div class="col form-group col-md-1 mb-0">
+                      <button type="button" class="btn btn-xs btn-sm btn-primary" id="btn_search2" style="font-size:inherit;">
+                        Search
+                        <i class="fa fa-search"></i>
+                      </button>
+                    </div> -->
+                  </form>
+                  <div style="height:15em;word-wrap:break-word;padding-top:2em;">
+                    <table id="example121" class="row-border display" style="width: 100%;">
+                      <thead id = "searchhead2">
+                        <th>Table name</th>
+                        <th>Column name</th>
+                        <th>Add</th>
+                      </thead>
+                      <tbody id="searchTable2">
+                      </tbody>
+                    </table>
+                  </div>
+                  <br>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+
+
+
+
+        <div class="row">
+          <div class="col-lg-12">
+            <div class="card">
+              <!--card-header -->
+              <div class="card-header">
+                <h6 class="card-title" style="color:var(--primary-color);">
+                  Report Table
+                </h6>
+              </div>
+              <!--card-body -->
+              <div class="card-body">
+                <!-- <select class="form-control newclass multipleform" multiple="multiple" style="display:none;width:8em;">
+                </select> -->
+                <!-- Search form -->
+                <form method="post" action="">
+                    <div class="row">
+                      <div class='col-11'style="display:flex; flex-direction: row; justify-content: left; align-items: left">
+                        <label for="name">Tablename:</label>
+
+                        <input class="form-control col-2"  type="text" id="tname"
+                          name="tblname" style="margin-left: 0.5em;min-width: 9.5em;" required size="30" readonly>
+                        </div>
+                        <div class="col-1">
+                        <span class="table-add float-right mb-3 mr-2" style="display:flex; flex-direction: row; justify-content: right; align-items: right">
+                          <a href="#!" class="text-success">
+                            <i class="fas fa-plus fa-2x"></i>
+                          </a>
+                        </span>
+                      </div>
+                    </div>
+                  </form>
+                <div id="table" class="table-editable" style="height:18em;">
+
+                    <table class="table display" id="example11" style="width: 100%;">
+                      <thead>
+                        <tr>
+                          <th>Field name</th>
+                          <th>Field data type</th>
+                          <th>Parent table</th>
+                          <th>Field header</th>
+                          <th>Nullable?</th>
+                          <th>Maximum length*</th>
+                          <th>Choices</th>
+                          <th>Computed value</th>
+                          <th>Default</th>
+                          <th>Auto now?</th>
+                          <th>Editable?</th>
+                          <th>Aggregation</th>
+                          <th>Operation</th>
+                          <th>Data elements</th>
+                          <th>Display</th>
+                          <th>Computed Value</th>
+                          <th>Actions</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+
+                        <!-- This is our clonable table line -->
+
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+                <div>
+                  <div class="row">
+
+                    <button type="button" class="btn btn-primary" id="export-btn"
+                      style="font-size:inherit;position: absolute; right: 1.5em;margin-top:-3em;height: 25px;border-radius:5px;border-color:none;color:white;padding-left:9px;padding-top:2px;">
+                      Create table
+                      <i class="fas fa-plus"></i>
+                    </button>
+
+                    <button type="button" class="btn btn-primary" id="edit-btn"
+                        style="display:none;font-size:inherit;position: absolute; right: 11em;margin-top:-3em;height: 25px;border-radius:5px;border-color:none;color:white;padding-left:9px;padding-top:2px;">
+                        Edit table
+                      </button>
+
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </div>
+      <div class="row">
+        <div class="col-lg-12">
+          <div class="card">
+            <!--card-header -->
+            <div class="card-header">
+              <h6 class="card-title" style="color:var(--primary-color);">
+                Report Configuration
+              </h6>
+            </div>
+            <!--card-body -->
+            <div class="card-body">
+              <div class="row">
+                <div class="form-group col-6">
+                  <input type="text" class="tabHeader" placeholder="Tab Header" id="tabHeaderReport" data-spanID="reportErrorSpan">
+                </div>
+              </div>
+                <div class="row" style="color:red;display: none;">
+                  <div class="form-group col-12">
+                    <span id="#reportErrorSpan">
+                    Tab header must contain unique values. A tab with the same name already exists in the sub-process.
+                  </span>
+                  </div>
+                </div>
+                <div class="row tabHeaderEmptyValidation" style="color:red;display:none;">
+                  <div class="form-group col-12">
+                    <span>
+                      Tab header is a mandatory field.
+                    </span>
+                  </div>
+                </div>
+                <br>
+              <div class="row" style="border-bottom: solid 1px var(--primary-color);">
+                <div class="col-3">
+
+                </div>
+                <div class="col-3" style="margin-left: 6rem;">
+                  <div id="div_id_active" class="custom-control custom-checkbox">
+                    <input type="checkbox" name="NotRequiredDT" class="checkboxinput custom-control-input notRequiredReport" id="notrequiredReport">
+                    <label for="notrequiredReport" class="custom-control-label">
+                      Not Required
+                    </label>
+                  </div>
+                </div>
+                <div class="col-3">
+                  <div id="div_id_active" class="custom-control custom-checkbox" style="margin-left:1rem;">
+                    <input type="checkbox" name="SelectAll" class="checkboxinput custom-control-input" id="selectAllReport" value="1">
+                    <label for="selectAllReport" class="custom-control-label"> Select All</label>
+                  </div>
+                </div>
+
+                <br><br>
+              </div>
+              <br><br>
+              <div class="row form-inline reportElements">
+                <div class="form-group" style="margin-left:2rem">
+                  <div id="div_id_active" class="custom-control custom-checkbox">
+                    <input type="checkbox" name="plotChartReport
+                    " class="checkboxinput custom-control-input plotChartReport" id="plotChartReport">
+                    <label for="plotChartReport" class="custom-control-label">
+                      Plot charts
+                    </label>
+                  </div>
+                </div>
+                <div class="form-group" style="margin-left:8rem">
+                  <div id="div_id_active" class="custom-control custom-checkbox">
+                    <input type="checkbox" name="setAlertReport" class="checkboxinput custom-control-input setAlertReport" id="setAlertReport">
+                    <label for="setAlertReport" class="custom-control-label">
+                      Set alert
+                    </label>
+                  </div>
+                </div>
+                <div class="form-group" style="margin-left:8rem">
+                  <div id="div_id_active" class="custom-control custom-checkbox">
+                    <input type="checkbox" name="customisedReport" class="checkboxinput custom-control-input customisedReport" id="customisedReport">
+                    <label for="customisedReport" class="custom-control-label">
+                      Customised report
+                    </label>
+                  </div>
+                </div>
+                <div class="form-group" style="margin-left:8rem">
+                  <div id="div_id_active" class="custom-control custom-checkbox">
+                    <input type="checkbox" name="saveTemplate" class="checkboxinput custom-control-input saveTemplate" id="saveTemplate">
+                    <label for="saveTemplate" class="custom-control-label">
+                      Save template
+                    </label>
+                  </div>
+                </div>
+                <div class="form-group" style="margin-left:8rem">
+                  <div id="div_id_active" class="custom-control custom-checkbox">
+                    <input type="checkbox" name="expandReport" class="checkboxinput custom-control-input expandReport" id="expandReport">
+                    <label for="expandReport" class="custom-control-label">
+                      Expand
+                    </label>
+                  </div>
+                </div>
+
+              </div>
+              <br>
+              <button class="btn btn-primary popoverval" id="check6"  type="button" data-toggle="collapse" data-target="#collapseExample5" aria-expanded="false" aria-controls="collapseExample5">
+                Icon Selector
+              </button>
+
+            <div class="collapse" id="collapseExample5">
+              <div class="card card-body listoficon">
+              </div>
+              </div>
+
+            </div>
+
+
+
+          </div>
+        </div>
+      </div>
+
+
+    </div>
+</section>
+
+<script>
+function functioncall(){
+    var dict = {{datasearch | safe}};
+    var name = $('#keytablename').find(":selected").text();
+    $('.uniquekey').empty()
+    var name1 =(dict[name])
+     for(i=0;i<(dict[name]).length;i++)
+       {
+        $('.uniquekey').append(name1[i])
+        $(".uniquekey").append(new Option(name1[i], name1[i]));
+       }
+}
+  var ctoken = $('form').find("input[name='csrfmiddlewaretoken']").attr('value')
+
+  $.ajaxSetup({
+    beforeSend: function (xhr, settings) {
+      xhr.setRequestHeader("X-CSRFToken", ctoken);
+    }
+  });
+
+
+
+</script>
+
+<script>
+
+
+  $('#btn_search2').click(function () {
+    var $TABLE = $('#table');
+    var $rows = $TABLE.find('tr:not(:hidden)');
+    var headers = [];
+    var data = [];
+    var data1 = [];
+    // Get the headers (add special header logic here)
+    $($rows.shift()).find('th:not(:empty)').each(function () {
+
+      headers.push($(this).text().toLowerCase());
+
+    });
+
+    // Turn all existing rows into a loopable array
+    $rows.each(function (index, element) {
+      if (index !== 0) {
+        var $td = $(this).find('td');
+        var h = {};
+        var h1 = {};
+        var dropdown_list = ["field data type", "nullable?", "computed value", "auto now?", "editable?"]
+        var valid_field_dict = {
+          "AutoField": ["field name", "parent table", "field data type", "field header", "nullable?"],
+          "CharField": ["field name", "parent table", "field data type", "maximum length*", "field header", "choices", "nullable?"],
+          "BooleanField": ["field name","parent table", "field data type", "field header", "nullable?"],
+          "FileField": ["field name","parent table", "field data type", "nullable?", "field header"],
+          "IntegerField": ["field name","parent table", "field data type", "field header", "nullable?", "default"],
+          "BigIntegerField": ["field name","parent table", "field data type", "field header", "nullable?", "default"],
+          "DateField": ["field name","parent table", "field data type", "field header", "nullable?", "auto now?", "editable?"],
+          "TimeField": ["field name", "parent table", "field data type", "auto now?", "editable?", "nullable?", "field header"],
+          "DateTimeField": ["field name", "parent table", "field data type", "auto now?", "editable?", "nullable?", "field header"],
+          "TextField": ["field name", "parent table", "field data type", "field header", "nullable?"],
+          "FloatField": ["field name", "parent table", "field data type", "field header", "nullable?", "default"],
+          "ForeignKey" : ["field name", "field data type","field header", "parent table", "nullable?", "default"]
+        }
+
+        var data_type = $td.eq(1).find('option:selected').text();
+        var data_type = data_type.split(" ")[0]
+        var field_name=$td.eq(0).text()
+        if(field_name==$('.uniquekey').find(":selected").text()){
+          type_list = ['AutoField','CharField','BooleanField','FileField','IntegerField','BigIntegerField', 'DateField','TimeField','DateTimeField','TextField','FloatField','ForeignKey']
+        if (type_list.includes(data_type)){
+        // Use the headers from earlier to name our hash keys
+          headers.forEach((header, i) => {
+            if (valid_field_dict[data_type].includes(header)) {
+              if (dropdown_list.includes(header)) {
+                h1[header] = $td.eq(i).find('option:selected').text();
+              } else {
+                h1[header] = $td.eq(i).text();
+              }
+            }
+            h[header] = $td.eq(i).text();
+          });
+          data1.push(h1);
+          data.push(h);
+        } else{
+          h1 = {}
+          data1.push(h1);
+        }
+        }
+
+      }
+    })
+    var search_text = $('#search_field2').val();
+    var search_option = $('#search_option2').find(":selected").text();
+
+    $.ajax({
+      url: window.location.pathname,
+      data: { 'table_data':JSON.stringify(data1) ,'search_text': search_text, 'search_option': search_option, 'operation': 'f5' },
+      type: "POST",
+      dataType: "json",
+      success: fieldtableReload,
+      error: function () {
+        Swal.fire({icon: 'error',text: 'Error! Please try again.'});
+      }
+    })
+
+    function fieldtableReload(data) {
+      var details = JSON.parse(data)
+      $('#searchTable2').empty()
+      for (i in details) {
+        var details = JSON.parse(data)[i]
+
+        for (x in details) {
+          $('#searchTable2').append('<tr> <td id="tablename1">' + x + '</td> <td id="columnname1">' + details[x] + '</td><td><a data-toggle="tooltip" title="Add Element" value="detail"><i name="actions" value="detail" class="butnadd fa fa-plus ihover javaSC thin-icon" onclick = "createtable_pk()" style="font-size: 15px"></i></a></td></tr>');
+        }
+      }
+    }
+  })
+
+</script>
+
+
+
+<script>
+
+  $(document).on("click", ".butnadd", function(){
+    var tablename = $(this).closest('tr').find('#tablename1').text()
+    var colname = $(this).closest('tr').find('#columnname1').text()
+
+
+    $.ajax({
+    url: window.location.pathname,
+    data: {'model_name': tablename, 'field_name': colname ,'operation': 'attr_details'},
+    type: "POST",
+    dataType: "json",
+    success: datatableReload,
+    error: function () {
+      Swal.fire({icon: 'error',text: 'Error! Please try again.'});
+    }
+  })
+  function datatableReload(data) {
+    var details = JSON.parse(data)
+    var maxlen = JSON.stringify(details['Max Length'])
+    if($('#example11 tbody tr')[0].innerText == "No data available in table")
+    {
+      var datatype1 = details['Data Type']
+      var unique = details['Unique']
+      if((datatype1 != "AutoField"))
+      {
+        $('#selectid').css("display","block")
+      }
+      else
+      {
+        if(maxlen == "null")
+        {
+          maxlen=" "
+        }
+        $('#selectid').css("display","none")
+        $('#example11 tbody tr')[0].remove()
+        datatype="AutoField"
+        $('#selectid').css("display","none")
+        var parent_table = tablename
+        var fieldname = details['Field_name']
+        var frontend_name = details['Front End Name']
+        var nullable = (details['Nullable']).toString()
+        if(nullable == "false")
+        {
+          nullable= "no"
+        }
+        else{
+          nullable= "yes"
+        }
+        var unique_val = details['Unique']
+        var editable = details['Editable']
+        var default_val = details['Default']
+        var $TABLE = $('#table');
+        var templateString = `<tr class="hide">
+                          <td><span id='fld_name' contenteditable="false" style="display: inline-block;min-width: 70px;">${fieldname}</span></td>
+                          <td contenteditable="false">
+                            <select class="table_datatype browser-default custom-select" id="fieldselect"
+                              disabled>
+                              <option value="" disabled>Select</option>
+                              <option value="AutoField">AutoField (Primary key)</option>
+                              <option value="CharField">CharField (Text,numbers,special characters,etc.)</option>
+                              <option value="TextField">TextField (Large text)</option>
+                              <option value="BooleanField">BooleanField (Yes or No,True or False,etc.</option>
+                              <option value="FileField">FileField (File/Document upload)</option>
+                              <option value="ImageField">ImageField (image upload)</option>
+                              <option value="IntegerField">IntegerField (Integer numbers)</option>
+                              <option value="BigIntegerField">BigIntegerField (Big Integer numbers)</option>
+                              <option value="FloatField">FloatField (Integer or decimal numbers)</option>
+                              <option value="DateField">DateField (Date)</option>
+                              <option value="DateTimeField">DateTimeField (Date and Time)</option>
+                              <option value="TimeField">TimeField (Time)</option>
+                              <option value="new" selected>${datatype}</option>
+                            </select>
+                          </td>
+                          <td><span id = 'prnt_tbl' contenteditable="false" style="display: inline-block;min-width: 70px;">${tablename}</span></td>
+                          <td><span contenteditable="true"  style="display: inline-block;min-width: 70px;">${frontend_name}</span></td>
+                          <td contenteditable="false">
+                            <select class="browser-default custom-select" id="nulloption"
+                              disabled>
+                              <option value="" disabled >Select</option>
+                              <option value="1">Yes</option>
+                              <option value="2" >No</option>
+                              <option value="3" selected>${nullable}</option>
+                            </select>
+                          </td>
+                          <td><span contenteditable="false" style="display: inline-block;min-width: 70px;">${maxlen}</span></td>
+                          <td><span contenteditable="false" style="display: inline-block;min-width: 70px;"></span></td>
+                          <td contenteditable="false">
+                            <select class="browser-default custom-select" id="computedoption"
+                              disabled>
+                              <option value="" disabled >Select</option>
+                              <option value="1">Yes</option>
+                              <option value="2" selected>No</option>
+                            </select>
+                          </td>
+                          <td><span contenteditable="false" style="display: inline-block; min-width: 70px;">${default_val}</span></td>
+                          <td contenteditable="false">
+                            <select class="browser-default custom-select" disabled id="autonowoption"
+                              disabled>
+                              <option value="" disabled selected>Select</option>
+                              <option value="1">Yes</option>
+                              <option value="2">No</option>
+                            </select>
+                          </td>
+                          <td contenteditable="false">
+                            <select class="browser-default custom-select" disabled id="editableoption"
+                              >
+                              <option value="" disabled selected>Select</option>
+                              <option value="1">Yes</option>
+                              <option value="2">No</option>
+                            </select>
+                          </td>
+                          <td contenteditable="false">
+                            <select class="browser-default custom-select editableagg">
+                              <option value="1">Sum</option>
+                              <option value="2">Average</option>
+                              <option value="2">Count</option>
+                            </select>
+                          </td>
+                          <td><span contenteditable="false" style="display: inline-block; min-width: 70px;"></span></td>
+                          <td><span contenteditable="false" style="display: inline-block; min-width: 70px;"></span></td>
+                          <td><span contenteditable="false" style="display: inline-block; min-width: 70px;">True</span></td>
+                          <td><span contenteditable="false" style="display: inline-block; min-width: 70px;">No</span></td>
+                          <td>
+                            <span class="table_remove" id="removerow">
+                              <a data-toggle="tooltip" title="Delete record" value="delete"><i name="actions" value="delete" class="far fa-trash-alt ihover javaSC thin-icontrash" style="font-size: 18px "></i></a>
+                            </span>
+                          </td>
+                        </tr>`;
+
+        $TABLE.find('table tbody').append(templateString);
+
+      }
+      var datatype = "AutoField"
+    }
+    else{
+      var maxlen = JSON.stringify(details['Max Length'])
+      var datatype1 = details['Data Type']
+      $('#selectid').css("display","none")
+      if(datatype1 == "AutoField"){
+        var datatype = "IntegerField"
+        if(maxlen == "null")
+        {
+          maxlen=" "
+        }
+      }
+      else{
+        var datatype=details['Data Type']
+      }
+      if(maxlen == "null")
+        {
+          maxlen=" "
+        }
+      else{
+        maxlen=parseInt(JSON.parse(maxlen))
+      }
+    var parent_table = tablename
+    // var datatype = details['Data Type']
+    var fieldname = details['Field_name']
+    var frontend_name = details['Front End Name']
+    var nullable = (details['Nullable']).toString()
+    if(nullable == "false")
+    {
+      nullable= "No"
+    }
+    else{
+      nullable= "Yes"
+    }
+    var unique_val = details['Unique']
+    var editable = details['Editable']
+    var default_val = details['Default']
+    var $TABLE = $('#table');
+    var $rows = $TABLE.find('tr:not(:hidden)');
+    var base_table
+    $rows.each(function (index, element) {
+      if (index === 1) {
+        var $td = $(this).find('td');
+        base_table = $td.eq(2).text();
+      }
+    })
+
+    var aggregation = "Direct relation"
+
+    var templateString = `<tr class="hide">
+                          <td><span id='fld_name' contenteditable="false" style="display: inline-block;min-width: 70px;">${fieldname}</span></td>
+                          <td contenteditable="false">
+                            <select class="table_datatype browser-default custom-select" id="fieldselect"
+                              disabled>
+                              <option value="" disabled>Select</option>
+                              <option value="AutoField">AutoField (Primary key)</option>
+                              <option value="CharField">CharField (Text,numbers,special characters,etc.)</option>
+                              <option value="TextField">TextField (Large text)</option>
+                              <option value="BooleanField">BooleanField (Yes or No,True or False,etc.</option>
+                              <option value="FileField">FileField (File/Document upload)</option>
+                              <option value="ImageField">ImageField (image upload)</option>
+                              <option value="IntegerField">IntegerField (Integer numbers)</option>
+                              <option value="BigIntegerField">BigIntegerField (Big Integer numbers)</option>
+                              <option value="FloatField">FloatField (Integer or decimal numbers)</option>
+                              <option value="DateField">DateField (Date)</option>
+                              <option value="DateTimeField">DateTimeField (Date and Time)</option>
+                              <option value="TimeField">TimeField (Time)</option>
+                              <option value="new" selected>${datatype}</option>
+                            </select>
+                          </td>
+                          <td><span id = 'prnt_tbl' contenteditable="false" style="display: inline-block;min-width: 70px;">${tablename}</span></td>
+                          <td><span contenteditable="true"  style="display: inline-block;min-width: 70px;">${frontend_name}</span></td>
+                          <td contenteditable="false">
+                            <select class="browser-default custom-select" id="nulloption"
+                              disabled>
+                              <option value="" disabled >Select</option>
+                              <option value="1">Yes</option>
+                              <option value="2" >No</option>
+                              <option value="3" selected>${nullable}</option>
+                            </select>
+                          </td>
+                          <td><span contenteditable="false" style="display: inline-block;min-width: 70px;">${maxlen}</span></td>
+                          <td><span contenteditable="false" style="display: inline-block;min-width: 70px;"></span></td>
+                          <td contenteditable="false">
+                            <select class="browser-default custom-select" id="computedoption"
+                              disabled>
+                              <option value="" disabled >Select</option>
+                              <option value="1">Yes</option>
+                              <option value="2" selected>No</option>
+                            </select>
+                          </td>
+                          <td><span contenteditable="false" style="display: inline-block; min-width: 70px;">${default_val}</span></td>
+                          <td contenteditable="false">
+                            <select class="browser-default custom-select" disabled id="autonowoption"
+                              disabled>
+                              <option value="" disabled selected>Select</option>
+                              <option value="1">Yes</option>
+                              <option value="2">No</option>
+                            </select>
+                          </td>
+                          <td contenteditable="false">
+                            <select class="browser-default custom-select" disabled id="editableoption"
+                              >
+                              <option value="" disabled selected>Select</option>
+                              <option value="1">Yes</option>
+                              <option value="2">No</option>
+                            </select>
+                          </td>`
+
+                          if ( unique_val === 1 || base_table === parent_table) {
+                            templateString = templateString + `<td contenteditable="false">
+                            <select class="browser-default custom-select editableagg" disabled>
+                              <option value="0" disabled selected>${aggregation}</option>
+                            </select>
+                          </td>`
+                          } else {
+                            templateString = templateString + `<td contenteditable="true">`
+                              if(datatype != "IntegerField" && datatype != "BigIntegerField" && datatype != "FloatField")
+                              {
+                                templateString+=`<select class="browser-default custom-select editableagg disabled">
+                              <option value="1">Sum</option>
+                              <option value="2">Average</option>
+                              <option value="3">Count</option>
+                            </select></td>`
+                              }
+                              else{
+                                templateString+=`<select class="browser-default custom-select editableagg">
+                              <option value="1">Sum</option>
+                              <option value="2">Average</option>
+                              <option value="3">Count</option>
+                            </select></td>`
+                              }
+                          }
+
+                          templateString = templateString + `<td><span contenteditable="false" style="display: inline-block; min-width: 70px;"></span></td>
+                          <td><span contenteditable="false" style="display: inline-block; min-width: 70px;"></span></td>
+                          <td><span contenteditable="false" style="display: inline-block; min-width: 70px;">True</span></td>
+                          <td><span contenteditable="false" style="display: inline-block; min-width: 70px;">Yes</span></td>
+                          <td>
+                            <span class="table_remove" id="removerow">
+                              <a data-toggle="tooltip" title="Delete record" value="delete"><i name="actions" value="delete" class="far fa-trash-alt ihover javaSC thin-icontrash" style="font-size: 18px "></i></a>
+                            </span>
+                          </td>
+                        </tr>`;
+
+    $TABLE.find('table tbody').append(templateString);
+    $('.table_remove').click(removeFunc);
+
+    function removeFunc() {
+      $(this).closest('tr').remove();
+    };
+
+    }
+
+      }
+  });
+
+$('#relation_modal_2').on('show.bs.modal', function (e) {
+
+})
+
+function createtable_pk() {
+
+}
+</script>
+ <!-- end of Foreignkey relationship from data discovery screen2 javascript -->
+
+ <!--START OF ABHI'S JAVASCRIPT-->
+
+<script>
+  var reportConfigJson={}
+  var $TABLE = $('#table');
+  var $BTN = $('#export-btn');
+  var $EXPORT = $('#export');
+  $('select.select2:not(.modal select.select2)').each(function(){
+    parent = $(this).parent()
+    $(this).select2({dropdownParent:parent})
+})
+$('.modal select.select2').each(function(){
+    $(this).select2()
+})
+
+  // CLoning replaced by templateString
+  // Attach methods and listeners to new row
+    var templateString2 = `<tr class="hide">
+                          <td><span id='fld_name' contenteditable="false" style="display: inline-block;min-width: 70px;">id</span></td>
+                          <td contenteditable="false">
+                            <select class="table_datatype browser-default custom-select" disabled id="fieldselect"
+                              >
+                              <option value="AutoField" selected>AutoField (Primary key)</option>
+
+                            </select>
+                          </td>
+                          <td><span id = 'prnt_tbl' contenteditable="false" style="display: inline-block;min-width: 70px;"></span></td>
+                          <td><span contenteditable="true"  style="display: inline-block;min-width: 70px;"></span></td>
+                          <td contenteditable="true">
+                            <select class="browser-default custom-select" id="nulloption"
+                              >
+                              <option value="" disabled selected>Select</option>
+                              <option value="1">Yes</option>
+                              <option value="2">No</option>
+                            </select>
+                          </td>
+                          <td><span contenteditable="false" style="display: inline-block;min-width: 70px;">null</span></td>
+                          <td><span contenteditable="false" style="display: inline-block;min-width: 70px;"></span></td>
+                          <td contenteditable="true">
+                            <select class="browser-default custom-select" id="computedoption"
+                              >
+                              <option value="" disabled selected>Select</option>
+                              <option value="1">Yes</option>
+                              <option value="2">No</option>
+                            </select>
+                          </td>
+                          <td><span contenteditable="false" style="display: inline-block; min-width: 70px;"></span></td>
+                          <td contenteditable="true">
+                            <select class="browser-default custom-select" disabled id="autonowoption"
+                              >
+                              <option value="" disabled selected>Select</option>
+                              <option value="1">Yes</option>
+                              <option value="2">No</option>
+                            </select>
+                          </td>
+                          <td contenteditable="true">
+                            <select class="browser-default custom-select" disabled id="editableoption"
+                              >
+                              <option value="" disabled selected>Select</option>
+                              <option value="1">Yes</option>
+                              <option value="2">No</option>
+                            </select>
+                          </td>
+                          <td><span contenteditable="false" style="display: inline-block; min-width: 70px;"></span></td>
+                          <td contenteditable="true">
+                            <select id="operation" class="browser-default custom-select editableagg">
+                              <option value="" disabled selected>Select</option>
+                              <option value="1">Add</option>
+                              <option value="2">Subtract</option>
+                              <option value="2">Multiply</option>
+                              <option value="2">Divide</option>
+                            </select>
+                          </td>
+                          <td contenteditable="true">
+                            <select class="form-control multipleform" multiple="multiple" style="width:8em">
+                            </select>
+                          </td>
+                          <td><span id='display' contenteditable="true" style="display: inline-block;min-width: 70px;"></span></td>
+                          <td><span contenteditable="false" style="display: inline-block; min-width: 70px;">Yes</span></td>
+                          <td>
+                            <span class="table_remove" id="removerow">
+                              <a data-toggle="tooltip" title="Delete record" value="delete"><i name="actions" value="delete" class="far fa-trash-alt ihover javaSC thin-icontrash" style="font-size: 18px "></i></a>
+                            </span>
+                          </td>
+                        </tr>`;
+
+    var templateString = `<tr class="hide">
+                          <td><span id='fld_name' contenteditable="true" style="display: inline-block;min-width: 70px;"></span></td>
+                          <td contenteditable="true">
+                            <select class="table_datatype browser-default custom-select" id="fieldselect">
+                              <option value="" disabled selected>Select</option>
+                              <option value="IntegerField">IntegerField (Integer numbers)</option>
+                              <option value="BigIntegerField">BigIntegerField (Big Integer numbers)</option>
+                              <option value="FloatField">FloatField (Integer or decimal numbers)</option>
+                            </select>
+                          </td>
+                          <td><span id = 'prnt_tbl' contenteditable="false" style="display: inline-block;min-width: 70px;"></span></td>
+                          <td><span contenteditable="true"  style="display: inline-block;min-width: 70px;"></span></td>
+                          <td contenteditable="true">
+                            <select class="browser-default custom-select" id="nulloption"
+                              >
+                              <option value="" disabled selected>Select</option>
+                              <option value="1">Yes</option>
+                              <option value="2">No</option>
+                            </select>
+                          </td>
+                          <td><span contenteditable="false" style="display: inline-block;min-width: 70px;"></span></td>
+                          <td><span contenteditable="false" style="display: inline-block;min-width: 70px;"></span></td>
+                          <td contenteditable="true">
+                            <select class="browser-default custom-select" id="computedoption"
+                              >
+                              <option value="" disabled selected>Select</option>
+                              <option value="1">Yes</option>
+                              <option value="2">No</option>
+                            </select>
+                          </td>
+                          <td><span contenteditable="false" style="display: inline-block; min-width: 70px;"></span></td>
+                          <td contenteditable="true">
+                            <select class="browser-default custom-select" disabled id="autonowoption"
+                              >
+                              <option value="" disabled selected>Select</option>
+                              <option value="1">Yes</option>
+                              <option value="2">No</option>
+                            </select>
+                          </td>
+                          <td contenteditable="true">
+                            <select class="browser-default custom-select" disabled id="editableoption"
+                              >
+                              <option value="" disabled selected>Select</option>
+                              <option value="1">Yes</option>
+                              <option value="2">No</option>
+                            </select>
+                          </td>
+                          <td><span contenteditable="false" style="display: inline-block; min-width: 70px;"></span></td>
+                          <td contenteditable="true">
+                            <select id="operation" class="browser-default custom-select editableagg">
+                              <option value="" disabled selected>Select</option>
+                              <option value="1">Add</option>
+                              <option value="2">Subtract</option>
+                              <option value="2">Multiply</option>
+                              <option value="2">Divide</option>
+                            </select>
+                          </td>
+                          <td contenteditable="true">
+                            <select class="form-control multipleform" multiple="multiple">
+                </select>
+                          </td>
+                          <td><span id='display' contenteditable="true" style="display: inline-block;min-width: 70px;"></span></td>
+                          <td><span contenteditable="false" style="display: inline-block; min-width: 70px;">Yes</span></td>
+                          <td>
+                            <span class="table_remove" id="removerow">
+                              <a data-toggle="tooltip" title="Delete record" value="delete"><i name="actions" value="delete" class="far fa-trash-alt ihover javaSC thin-icontrash" style="font-size: 18px "></i></a>
+                            </span>
+                          </td>
+                        </tr>`;
+
+  $('.table-add').click(function () {
+    $('#selectid').css("display","none")
+    $(".newclass").css("display","block")
+    $(document).ready(function() {
+        $(".multipleform").select2({
+      })
+    });
+    if($('#example11 tbody tr')[0].innerText == "No data available in table")
+   {
+    $('#example11 tbody tr')[0].remove()
+    $TABLE.find('table tbody').append(templateString2);
+   }
+   else{
+    $TABLE.find('table tbody').append(templateString);
+   }
+   $("#example11 tr").each(function(){
+     var opt = $(this).find("td:nth-child(2) select option:selected").text()
+     if(opt == "IntegerField" || opt == "BigIntegerField" || opt == "FloatField" || opt == "IntegerField (Integer numbers)" || opt == "BigIntegerField (Big Integer numbers)" || opt == "FloatField (Integer or decimal numbers)")
+     {
+      $('.multipleform')
+         .append($("<option></option>")
+                    .attr("value",($(this).find("td").first().text()))
+                    .text(($(this).find("td").first().text())));
+     }
+    });
+    var lastTr = $TABLE.find('table tr').last();
+    lastTr.find('.table_remove').click(removeFunc);
+    lastTr.find('.table-up').click(upFunc);
+    lastTr.find('.table-down').click(downFunc);
+  });
+  $('.table_remove').click(removeFunc);
+
+  function removeFunc() {
+    $(this).closest('tr').remove();
+  };
+
+  $('.table-up').click(upFunc);
+
+  function upFunc() {
+    var $row = $(this).parents('tr');
+    if ($row.index() === 1) return; // Don't go above the header
+    $row.prev().before($row.get(0));
+  };
+
+  $('.table-down').click(downFunc);
+
+  function downFunc() {
+    var $row = $(this).parents('tr');
+    $row.next().after($row.get(0));
+  };
+
+  // A few jQuery helpers for exporting only
+  jQuery.fn.pop = [].pop;
+  jQuery.fn.shift = [].shift;
+
+  $BTN.click(function () {
+    var $rows = $TABLE.find('tr:not(:hidden)');
+    var headers = [];
+    var data = [];
+    var data1 = [];
+    // Get the headers (add special header logic here)
+    $($rows.shift()).find('th:not(:empty)').each(function () {
+
+      headers.push($(this).text().toLowerCase());
+
+    });
+
+    // Turn all existing rows into a loopable array
+    $rows.each(function (index,element) {
+      if(index != 0){
+      var $td = $(this).find('td');
+      var h = {};
+      var h1 = {};
+      var dropdown_list = ["field data type", "nullable?", "computed value", "auto now?", "editable?","aggregation","operation","data elements"]
+      var valid_field_dict = {
+        "AutoField": ["field name", "field data type", "field header", "nullable?"],
+        "CharField": ["field name", "field data type", "maximum length*", "field header", "choices", "nullable?"],
+        "BooleanField": ["field name", "field data type", "field header", "nullable?"],
+        "FileField": ["field name", "field data type", "upload path", "nullable?", "field header"],
+        "IntegerField": ["field name", "field data type", "field header", "nullable?", "default"],
+        "BigIntegerField": ["field name", "field data type", "field header", "nullable?", "default"],
+        "DateField": ["field name", "field data type", "field header", "nullable?", "auto now?", "editable?"],
+        "TimeField": ["field name", "field data type", "auto now?", "editable?", "nullable?", "field header"],
+        "DateTimeField": ["field name", "field data type", "auto now?", "editable?", "nullable?", "field header"],
+        "TextField": ["field name", "field data type", "field header", "nullable?"],
+        "FloatField": ["field name", "field data type", "field header", "nullable?",],
+        "ForeignKey" : ["field name", "field data type","field header", "parent table", "nullable?", "default"]
+      }
+      var data_type = $td.eq(1).find('option:selected').text();
+      var data_type = data_type.split(" ")[0]
+      // Use the headers from earlier to name our hash keys
+      headers.forEach((header, i) => {
+        if (valid_field_dict[data_type].includes(header)) {
+          if (dropdown_list.includes(header)) {
+            h1[header] = $td.eq(i).find('option:selected').text();
+          } else {
+            h1[header] = $td.eq(i).text();
+          }
+        }
+        if(dropdown_list.includes(header)){
+
+          if($td.eq(i).find('option:selected').length>1){
+            selectedValues=[]
+            for(var j=0;j<$td.eq(i).find('option:selected').length;j++){
+              selectedValues.push($td.eq(i).find('option:selected')[j].innerText)
+            }
+            h[header]=selectedValues
+          }
+          else{
+            h[header] = $td.eq(i).find('option:selected').text();
+          }
+        }
+        else{
+          h[header] = $td.eq(i).text();
+        }
+      });
+      data1.push(h1);
+      data.push(h);
+      }
+    })
+
+    // Output the result
+    $EXPORT.text(JSON.stringify(data1));
+    $('#export-btn').click(function () {
+      reportConfigJson["Report_Table_Structure"] = ""
+
+      var table_name = $('#tname').val();
+      $EXPORT.text(JSON.stringify(table_name));
+      $.ajax({
+        url: window.location.pathname,
+        data: { 'data': JSON.stringify(data1), 'table_name': JSON.stringify(table_name), 'operation': 'create_table' },
+        type: "POST",
+        dataType: "json",
+        success: function(){
+          Swal.fire({icon: 'success',text: 'Table created successfully!'});
+          reportConfigJson["Report_Table_Name"]=$('#tname').val()
+          reportConfigJson["Report_Base_Table_Name"]=$('#keytablename').find(":selected").text()
+          reportConfigJson["Report_base_column"]=$('.uniquekey').find(":selected").text();
+          reportConfigJson["Report_Table_Structure"]=data
+
+        },
+        error: function () {
+          Swal.fire({icon: 'error',text: 'Error! Failure in creating table. Please try again.'});
+        }
+      })
+    })
+  })
+</script>
+<script>
+
+  $(document).ready(function () {
+      var table = $('#example11').DataTable({
+        "paging": false,
+        "ordering": false,
+        "info": false,
+        "searching": false,
+        "autoWidth": true,
+        "scrollY": "130px",
+      "sScrollX": "110%",
+      "scrollX":true,
+      "scrollCollapse": true,
+      columnDefs: [
+        {
+          targets: "_all",
+          className: 'dt-center allColumnClass all'
+        }
+        ],
+
+      });
+    });
+
+  </script>
+
+<script>
+  $('table').on('click', '#fieldselect', displaySpecificColumn);
+  var selectedDropdownSelectedValueList;
+
+  function displaySpecificColumn() {
+    var fieldPosition = $(this).find('td');
+    var selectedDataType = $(this).children("option:selected").text();
+
+    extraElements = fieldPosition.find("div").slice(6);
+    var $rows = $('#table').find('tr:not(:hidden)');
+    var headers = []
+
+    $($rows.shift()).find('th:not(:empty)').each(function () {
+
+      headers.push($(this).text().toLowerCase());
+
+    });
+
+    var $row = $(this).closest("tr");
+    var $td = $row.find('td');
+    if (selectedDataType.includes('AutoField')) {
+
+    headers.forEach((header, i) => {
+      $td.eq(5).find('span').attr('contenteditable', 'false');
+      $td.eq(6).find('span').attr('contenteditable', 'false');
+      $td.eq(10).attr('contenteditable', 'false');
+      $td.eq(9).attr('contenteditable', 'false');
+      $td.eq(8).find('span').attr('contenteditable', 'false');
+      $td.eq(7).find('span').attr('contenteditable', 'false');
+    })
+    }
+
+    if (selectedDataType.includes('CharField')) {
+
+      headers.forEach((header, i) => {
+        $td.eq(5).find('span').attr('contenteditable', 'true');
+        $td.eq(6).find('span').attr('contenteditable', 'true');
+        $td.eq(10).attr('contenteditable', 'false');
+        $td.eq(9).attr('contenteditable', 'false');
+        $td.eq(8).find('span').attr('contenteditable', 'false');
+        $td.eq(7).find('span').attr('contenteditable', 'false');
+      })
+    }
+
+    if (selectedDataType.includes("FileField") || selectedDataType.includes("ImageField")) {
+      headers.forEach((header, i) => {
+        $td.eq(5).find('span').attr('contenteditable', 'false');
+        $td.eq(6).find('span').attr('contenteditable', 'false');
+        $td.eq(10).attr('contenteditable', 'false');
+        $td.eq(9).attr('contenteditable', 'false');
+        $td.eq(8).find('span').attr('contenteditable', 'false');
+        $td.eq(7).find('span').attr('contenteditable', 'true');
+      })
+    }
+    if (selectedDataType.includes("IntegerField") || selectedDataType.includes("BigIntegerField") || selectedDataType.includes("FloatField")) {
+      headers.forEach((header, i) => {
+        $td.eq(5).find('span').attr('contenteditable', 'false');
+        $td.eq(6).find('span').attr('contenteditable', 'false');
+        $td.eq(10).attr('contenteditable', 'false');
+        $td.eq(9).attr('contenteditable', 'false');
+        $td.eq(8).find('span').attr('contenteditable', 'true');
+        $td.eq(7).find('span').attr('contenteditable', 'false');
+      })
+    }
+    if (selectedDataType.includes("DateField") || selectedDataType.includes("DateTimeField") || selectedDataType.includes("TimeField")) {
+      headers.forEach((header, i) => {
+        $td.eq(5).find('span').attr('contenteditable', 'false');
+        $td.eq(6).find('span').attr('contenteditable', 'false');
+        $td.eq(10).attr('contenteditable', 'true');
+        $td.eq(9).attr('contenteditable', 'true');
+        $td.eq(8).find('span').attr('contenteditable', 'false');
+        $td.eq(7).find('span').attr('contenteditable', 'false');
+      })
+    }
+
+  };
+</script>
+
+<!-- Start of create table primary key JAVASCRIPT for adding a row -->
+<script>
+function primkeyfunc(){
+  if($('#example11 tbody tr')[0].innerText == "No data available in table")
+   {
+    $('#example11 tbody tr')[0].remove()
+    var table = "empty"
+    var datatype="AutoField"
+    var templateString = `<tr class="hide">
+                          <td><span id='fld_name' contenteditable="false" style="display: inline-block;min-width: 70px;">id</span></td>
+                          <td contenteditable="false">
+                            <select class="table_datatype browser-default custom-select" id="fieldselect"
+                              disabled>
+                              <option value="" disabled>Select</option>
+                              <option value="AutoField">AutoField (Primary key)</option>
+                              <option value="CharField">CharField (Text,numbers,special characters,etc.)</option>
+                              <option value="TextField">TextField (Large text)</option>
+                              <option value="BooleanField">BooleanField (Yes or No,True or False,etc.</option>
+                              <option value="FileField">FileField (File/Document upload)</option>
+                              <option value="ImageField">ImageField (image upload)</option>
+                              <option value="IntegerField">IntegerField (Integer numbers)</option>
+                              <option value="BigIntegerField">BigIntegerField (Big Integer numbers)</option>
+                              <option value="FloatField">FloatField (Integer or decimal numbers)</option>
+                              <option value="DateField">DateField (Date)</option>
+                              <option value="DateTimeField">DateTimeField (Date and Time)</option>
+                              <option value="TimeField">TimeField (Time)</option>
+                              <option value="new" selected>${datatype}</option>
+                            </select>
+                          </td>
+                          <td><span id = 'prnt_tbl' contenteditable="false" style="display: inline-block;min-width: 70px;"></span></td>
+                          <td><span contenteditable="true"  style="display: inline-block;min-width: 70px;">ID</span></td>
+                          <td contenteditable="false">
+                            <select class="browser-default custom-select" id="nulloption"
+                              disabled>
+                              <option value="" disabled >Select</option>
+                              <option value="1">Yes</option>
+                              <option value="2" >No</option>
+                              <option value="3" selected>No</option>
+                            </select>
+                          </td>
+                          <td><span contenteditable="false" style="display: inline-block;min-width: 70px;"></span></td>
+                          <td><span contenteditable="false" style="display: inline-block;min-width: 70px;"></span></td>
+                          <td contenteditable="false">
+                            <select class="browser-default custom-select" id="computedoption"
+                              disabled>
+                              <option value="" disabled >Select</option>
+                              <option value="1">Yes</option>
+                              <option value="2" selected>No</option>
+                            </select>
+                          </td>
+                          <td><span contenteditable="false" style="display: inline-block; min-width: 70px;"></span></td>
+                          <td contenteditable="false">
+                            <select class="browser-default custom-select" disabled id="autonowoption"
+                              disabled>
+                              <option value="" disabled selected>Select</option>
+                              <option value="1">Yes</option>
+                              <option value="2">No</option>
+                            </select>
+                          </td>
+                          <td contenteditable="false">
+                            <select class="browser-default custom-select" disabled id="editableoption"
+                              >
+                              <option value="" disabled selected>Select</option>
+                              <option value="1">Yes</option>
+                              <option value="2">No</option>
+                            </select>
+                          </td>
+                          <td contenteditable="false">
+
+                          </td>
+                          <td><span contenteditable="false" style="display: inline-block; min-width: 70px;"></span></td>
+                          <td><span contenteditable="false" style="display: inline-block; min-width: 70px;"></span></td>
+                          <td><span contenteditable="false" style="display: inline-block; min-width: 70px;">True</span></td>
+                          <td><span contenteditable="false" style="display: inline-block; min-width: 70px;">No</span></td>
+                          <td>
+                            <span class="table_remove" id="removerow">
+                            </span>
+                          </td>
+                        </tr>`;
+
+    $TABLE.find('table tbody').append(templateString);
+   }
+  else{
+    var table = "not empty"
+  }
+
+  var tablename = $('#keytablename').find(":selected").text();
+  var colname = $('.uniquekey').find(":selected").text();
+  var report_name = $('#repname').val();
+
+  $.ajax({
+    url: window.location.pathname,
+    data: {'model_name': tablename, 'field_name': colname ,'operation': 'attr_details'},
+    type: "POST",
+    dataType: "json",
+    success: datatableReload,
+    error: function () {
+      Swal.fire({icon: 'error',text: 'Error! Please try again.'});
+    }
+  })
+
+  function datatableReload(data) {
+    var details = JSON.parse(data)
+    var nullable = (details['Nullable']).toString()
+    var maxlen = JSON.stringify(details['Max Length'])
+    var datatype1 = details['Data Type']
+    $('#selectid').css("display","none")
+    if(datatype1 == "AutoField"){
+      var datatype = "IntegerField"
+    }
+    else{
+      var datatype =datatype1
+    }
+    if(maxlen == "null")
+      {
+        maxlen=" "
+      }
+      else{
+        maxlen = details['Max Length']
+      }
+      var nullable = (details['Nullable']).toString()
+    if(nullable == "false")
+    {
+      nullable= "No"
+    }
+    else{
+      nullable= "Yes"
+    }
+
+    $('#selectid').css("display","none")
+    var parent_table = tablename
+    // var datatype = details['Data Type']
+    var fieldname = details['Field_name']
+    var frontend_name = details['Front End Name']
+    if(nullable == "false")
+    {
+      nullable= "No"
+    }
+    else{
+      nullable= "Yes"
+    }
+    var unique_val = details['Unique']
+    var editable = details['Editable']
+    var default_val = details['Default']
+    var aggregation="Direct relation"
+    var $TABLE = $('#table');
+    var templateString = `<tr class="hide">
+                          <td><span id='fld_name' contenteditable="false" style="display: inline-block;min-width: 70px;">${fieldname}</span></td>
+                          <td contenteditable="false">
+                            <select class="table_datatype browser-default custom-select" id="fieldselect"
+                              disabled>
+                              <option value="" disabled>Select</option>
+                              <option value="AutoField">AutoField (Primary key)</option>
+                              <option value="CharField">CharField (Text,numbers,special characters,etc.)</option>
+                              <option value="TextField">TextField (Large text)</option>
+                              <option value="BooleanField">BooleanField (Yes or No,True or False,etc.</option>
+                              <option value="FileField">FileField (File/Document upload)</option>
+                              <option value="ImageField">ImageField (image upload)</option>
+                              <option value="IntegerField">IntegerField (Integer numbers)</option>
+                              <option value="BigIntegerField">BigIntegerField (Big Integer numbers)</option>
+                              <option value="FloatField">FloatField (Integer or decimal numbers)</option>
+                              <option value="DateField">DateField (Date)</option>
+                              <option value="DateTimeField">DateTimeField (Date and Time)</option>
+                              <option value="TimeField">TimeField (Time)</option>
+                              <option value="new" selected>${datatype}</option>
+                            </select>
+                          </td>
+                          <td><span id = 'prnt_tbl' contenteditable="false" style="display: inline-block;min-width: 70px;">${tablename}</span></td>
+                          <td><span contenteditable="true"  style="display: inline-block;min-width: 70px;">${frontend_name}</span></td>
+                          <td contenteditable="false">
+                            <select class="browser-default custom-select" id="nulloption"
+                              disabled>
+                              <option value="" disabled >Select</option>
+                              <option value="1">Yes</option>
+                              <option value="2" >No</option>
+                              <option value="3" selected>${nullable}</option>
+                            </select>
+                          </td>
+                          <td><span contenteditable="false" style="display: inline-block;min-width: 70px;">${maxlen}</span></td>
+                          <td><span contenteditable="false" style="display: inline-block;min-width: 70px;"></span></td>
+                          <td contenteditable="false">
+                            <select class="browser-default custom-select" id="computedoption"
+                              disabled>
+                              <option value="" disabled >Select</option>
+                              <option value="1">Yes</option>
+                              <option value="2" selected>No</option>
+                            </select>
+                          </td>
+                          <td><span contenteditable="false" style="display: inline-block; min-width: 70px;">${default_val}</span></td>
+                          <td contenteditable="false">
+                            <select class="browser-default custom-select" disabled id="autonowoption"
+                              disabled>
+                              <option value="" disabled selected>Select</option>
+                              <option value="1">Yes</option>
+                              <option value="2">No</option>
+                            </select>
+                          </td>
+                          <td contenteditable="false">
+                            <select class="browser-default custom-select" disabled id="editableoption"
+                              >
+                              <option value="" disabled selected>Select</option>
+                              <option value="1">Yes</option>
+                              <option value="2">No</option>
+                            </select>
+                          </td>
+                          <td contenteditable="false">
+                            <select class="browser-default custom-select editableagg disabled">
+                            <option value="0" disabled selected>${aggregation}</option>
+                            </select>
+                          </td>
+                          <td><span contenteditable="false" style="display: inline-block; min-width: 70px;"></span></td>
+                          <td><span contenteditable="false" style="display: inline-block; min-width: 70px;"></span></td>
+                          <td><span contenteditable="false" style="display: inline-block; min-width: 70px;">True</span></td>
+                          <td><span contenteditable="false" style="display: inline-block; min-width: 70px;">No</span></td>
+                          <td>
+                            <span class="table_remove" id="removerow">
+                              <a data-toggle="tooltip" title="Delete record" value="delete"><i name="actions" value="delete" class="far fa-trash-alt ihover javaSC thin-icontrash" style="font-size: 18px "></i></a>
+                            </span>
+                          </td>
+                        </tr>`;
+    document.getElementById("tname").value = report_name;
+    $TABLE.find('table tbody').append(templateString);
+    $('.table_remove').click(removeFunc);
+    $('#keytablename')[0].disabled=true
+    $('.uniquekey')[0].disabled=true
+    $('#saveBaseCol')[0].disabled=true
+
+
+
+    function removeFunc() {
+      $(this).closest('tr').remove();
+      $('#keytablename')[0].disabled=false
+      $('.uniquekey')[0].disabled=false
+      $('#saveBaseCol')[0].disabled=false
+    };
+  }
+}
+
+</script>
+<!-- end of create table primary key JAVASCRIPT for adding a row -->
+<script>
+
+  $(document).ready(function () {
+
+      var table1 = $('#example121').DataTable({
+        "paging": false,
+        "ordering": false,
+        "info": false,
+        "searching": false,
+        "autoWidth": true,
+      "scrollY": "110px",
+      "scrollCollapse": true,
+      columnDefs: [
+        {
+          targets: "_all",
+          className: 'dt-center allColumnClass all'
+        }
+        ],
+
+      });
+    });
+
+  </script>
+  <!-- Final Json -->
+

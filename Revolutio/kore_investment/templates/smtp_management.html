@@ -1,0 +1,435 @@
+{% extends extend_template %}
+{% load static %}
+
+{% block body_block %}
+
+<style>
+
+  .card#smtp_management{
+    margin: 1rem;
+  }
+
+  #smtp_management .form-group-flex{
+    margin: 0.5rem;
+    margin-right: 0.5rem !important;
+  }
+  #smtp_management .textInput{
+    height: 3em;
+    padding: 1rem !important;
+  }
+
+  #smtp_management .card-footer, #smtp_management .card-header{
+    color: var(--primary-color);
+    background-color: transparent;
+    padding: 1rem 1.7rem;
+  }
+
+  .server-col{
+    margin: 1.5rem 0;
+  }
+  .serverInput{
+    width: 95%;
+  }
+  #developer_card.card-body{
+    height: 65vh;
+    max-height: 65vh;
+    overflow: auto;
+  }
+  #user_card.card-body{
+    height: 75vh;
+    max-height: 75vh;
+    overflow: auto;
+  }
+  #user_card .dropdown-divider{
+    margin: 0
+  }
+  #user_card .nav .nav-link{
+    padding: 1rem 0.5rem;
+  }
+  .display_smtp_configs{
+    border: 1px solid #d3d3d3;
+    height: auto;
+    min-height: 3em;
+    padding: 0.5rem 1rem !important;
+    border-radius: 4px;
+    margin: 0;
+    background: #f7f7f7;
+  }
+
+  .user_save{
+    float: right;
+    margin: 20px -8px 10px 10px;
+  }
+
+  #user_card .nav .nav-item.active{
+    background-color: var(--primary-color);
+    color: var(--font-hover-color);
+  }
+</style>
+
+
+<div class="card" id="smtp_management">
+  <div class="card-header">
+    <p class="card-title">SMTP Management</p>
+  </div>
+
+  {% if current_mode == "User" %}
+    <div class="card-body" id="user_card">
+      <div class="row" style="width: 100%;height: 65vh;">
+        <div class="col-lg-3 col-md-3 col-sm-3 col-xs-3">
+
+          <nav style="height: 100%;">
+            <div class="nav flex-column nav-tabs server-tabs" id="main-tab" role="tablist"  style="height: 100%;">
+              {% for rand_no, server in user_server_names.items %}
+              <a class="nav-item nav-link d-flex justify-content-between align-items-center" id="{{rand_no}}-tab" onclick="tabPanesActive(this,'{{rand_no}}');fetchDevServerDetails('{{rand_no}}','{{server}}')" data-toggle="tab" href="#{{rand_no}}" aria-controls="{{rand_no}}" role="tab" aria-selected="true" data-level="1"><div class="d-flex align-items-center">{{server}} </div><i class="fa fa-chevron-right" style="float: right;"></i></a>
+              <div class="dropdown-divider"></div>
+              {% endfor %}
+            </div>
+          </nav>
+
+        </div>
+        <div class="col-lg-9 col-md-9 col-sm-9 col-xs-9">
+          <div class="tab-content server-tab-contents" id="nav-tabContent">
+            {% for rand_no, server in user_server_names.items %}
+              <div class="tab-pane" id="{{rand_no}}" role="tabpanel" aria-labelledby="{{rand_no}}-tab">
+                <div class="row">
+                  <div class="form-group-flex col-md-12">
+                    <label class=" " style="width: 100%">
+                      SMTP Server Description
+                    </label>
+                    <p class="display_smtp_configs" data-name="smtp_description"></p>
+                  </div>
+                  <div class="form-group-flex col-md-12">
+                    <label class=" " style="width: 100%">
+                      SMTP Server Element ID
+                    </label>
+                    <p class="display_smtp_configs" data-name="smtp_elementid"></p>
+                  </div>
+                  <div class="form-group-flex col-md-12">
+                    <label class=" requiredField" style="width: 100%">
+                      SMTP Provider<span class="asteriskField">*</span>
+                    </label>
+                    <select class="select2 form-control user_smtp_config" name="smtp_provider" style="width: 100%" data-tags="true">
+                      <option value="" selected disabled>Select One</option>
+                      <option value='smtp.gmail.com'>Gmail</option>
+                      <option value='smtp.office365.com'>Office365</option>
+                      <option value='smtp-mail.outlook.com'>Outlook</option>
+                    </select>
+                  </div>
+                  <div class="form-group-flex col-md-12">
+                    <label class="requiredField" style="width: 100%">
+                      SMTP Port<span class="asteriskField">*</span>
+                    </label>
+                    <input name="smtp_port" type="number" class="form-control numberinput user_smtp_config" style="width: 100%" value="587">
+                  </div>
+                  <div class="form-group-flex col-md-12">
+                    <label class=" requiredField" style="width: 100%">
+                      Requires Authentication?<span class="asteriskField">*</span>
+                    </label>
+                    <select class="select2 form-control user_smtp_config" name="smtp_requires_auth" style="width: 100%">
+                      <option value="yes" selected>Yes</option>
+                      <option value='no'>No</option>
+                    </select>
+                  </div>
+                  <div class="form-group-flex col-md-12">
+                    <label class=" requiredField" style="width: 100%">
+                      Host Email ID<span class="asteriskField">*</span>
+                    </label>
+                    <input name="smtp_user" type="email" class="form-control textInput user_smtp_config" style="width: 100%">
+                  </div>
+                  <div class="form-group-flex col-md-12">
+                    <label class=" requiredField" style="width: 100%">
+                      Host Password<span class="asteriskField">*</span>
+                    </label>
+                    <input name="smtp_password" type="password" class="form-control textInput user_smtp_config" style="width: 100%">
+                  </div>
+                </div>
+                <div class="server-footer">
+                  <button type="button" class="btn buttonfooter user_save" id="save_{{rand_no}}" onclick="saveUserSmtp('{{rand_no}}','{{server}}')">Save <i class="fa-solid fa-floppy-disk pl-3"></i></button>
+                </div>
+              </div>
+            {% endfor %}
+          </div>
+
+
+        </div>
+      </div>
+    </div>
+
+    <script>
+      function tabPanesActive(element,tabpane){
+        $(".server-tabs .nav-item").each(function(){
+
+          $(this).removeClass("active")
+        })
+        $(".server-tab-contents .tab-pane").each(function(){
+          $(this).removeClass("active")
+        })
+
+        $(`#${element.id}`).addClass("active")
+        $(`#${tabpane}`).addClass("active")
+
+      }
+    </script>
+
+  {% endif %}
+
+  {% if current_mode == "Build" %}
+    <div class="card-body" id="developer_card">
+      <div class="row" style="width: 100%;">
+        {% if smtp_server_count_main == 0 and smtp_server_count == 0 %}
+          <p class="font-italic text-danger p-3">Note: All servers are utilised. Please contact the administrator.</p>
+        {% else %}
+          <div class="col-md-12">
+            <div class="row">
+              <div class="col-md-4">
+                <label for="server_name" class="requiredField" style="width: 100%; text-align:center">
+                  SMTP Server Name<span class="asteriskField">*</span>
+                </label>
+              </div>
+              <div class="col-md-4">
+                <label for="description" class="requiredField" style="width: 100%; text-align:center">
+                  SMTP Server Description<span class="asteriskField">*</span>
+                </label>
+              </div>
+              <div class="col-md-4">
+                <label for="group_assigned" class="requiredField" style="width: 100%; text-align:center">
+                  User Groups<span class="asteriskField">*</span>
+                </label>
+              </div>
+            </div>
+          </div>
+
+          {% for i in smtp_server_count_range %}
+            <div class="col-md-12 server_input_row">
+              <div class="row">
+                <div class="col-md-4 server-col">
+                  <input type="text" name="server_name" class="form-control textInput serverInput">
+                </div>
+                <div class="col-md-4 server-col">
+                  <textarea name="description" cols="30" rows="3" class="form-control textInput serverInput" style="padding: 0.5rem 1rem !important;"></textarea>
+                </div>
+                <div class="col-md-4 server-col">
+                  <select name="group_assigned" placeholder="Choose User Groups" class="select2 serverInput" required style="width: 100%" multiple>
+                    {% for i in user_groups %}
+                      <option value="{{i}}">{{i}}</option>
+                    {% endfor %}
+                  </select>
+                </div>
+              </div>
+            </div>
+          {% endfor %}
+
+          {% for i in smtp_server_count_main_range %}
+            <div class="col-md-12 server_input_row">
+              <div class="row">
+                <div class="col-md-4 server-col">
+                  <input type="text" name="server_name" class="form-control textInput serverInput">
+                </div>
+                <div class="col-md-4 server-col">
+                  <textarea name="description" cols="30" rows="3" class="form-control textInput serverInput" style="padding: 0.5rem 1rem !important;"></textarea>
+                </div>
+                <div class="col-md-4 server-col">
+                  <select name="group_assigned" placeholder="Choose User Groups" class="select2 serverInput" required style="width: 100%" multiple>
+                    {% for i in user_groups %}
+                      <option value="{{i}}">{{i}}</option>
+                    {% endfor %}
+                  </select>
+                </div>
+              </div>
+            </div>
+          {% endfor %}
+        {% endif %}
+      </div>
+    </div>
+    {% if not smtp_server_count_main == 0 or not smtp_server_count == 0 %}
+    <div class="card-footer">
+      <button type="button" class="btn buttonfooter" id="save_smtp_dev_details">Save <i class="fa-solid fa-floppy-disk pl-3"></i></button>
+    </div>
+
+  {% endif %}
+  {% endif %}
+
+</div>
+
+<script>
+  $('select.select2:not(.modal select.select2)').each(function(){
+    parent = $(this).parent()
+    $(this).select2({dropdownParent:parent})
+})
+$('.modal select.select2').each(function(){
+    $(this).select2()
+})
+
+  {% if current_mode == "Build" %}
+
+  let existing_data = {{existing_data | safe}}
+  existing_data.forEach(function(item, index) {
+
+    $("#developer_card").find(".server_input_row").eq(index).find(".server-col .serverInput").each(function(){
+      if(this.name == "server_name"){
+        $(this).val(item.server_name)
+        $(this).attr("disabled", "true")
+      }
+      if(this.name == "description"){
+        $(this).val(item.description)
+      }
+      if(this.name == "group_assigned"){
+        $(this).val(item.group_assigned).trigger("change")
+      }
+    })
+
+  });
+
+  $("#save_smtp_dev_details").off('click').on('click', function(){
+    server_ = []
+    $("#developer_card").find(".server_input_row").each(function(){
+        temp = {}
+        $(this).find(".server-col .serverInput").each(function() {
+            temp["app_code"] = '{{app_code}}'
+            if($(this).val() && $(this).val().length >0 ){
+                if($(this).attr('name') == "group_assigned"){
+                  va = $(this).val()
+                  temp[$(this).attr('name')] = JSON.stringify(va)
+                }else{
+                  temp[$(this).attr('name')] = $(this).val()
+                }
+
+            }
+        })
+        if(Object.keys(temp).length > 0 && Object.keys(temp).includes("group_assigned")){
+            server_.push(temp)
+        }
+    })
+
+    $.ajax({
+          url: '/users/{{app_code}}/{{current_mode}}/smtp_management/',
+          data: {
+            'operation': 'save_developer_config_to_db',
+            'app_code' : '{{app_code}}',
+            'config' : JSON.stringify(server_)
+          },
+
+          type: "POST",
+          dataType: "json",
+          success: function (data) {
+            Swal.fire({text:"SMTP details saved to Database successfully!",icon:"success"})
+            .then((result) => {
+              if (result.isConfirmed) {
+                window.location.reload()
+              }
+            })
+          },
+          error: function () {
+            Swal.fire({text:"Error",icon:"error"});
+          }
+        });
+
+  })
+
+  {% endif %}
+
+
+  {% if current_mode == "User" %}
+
+    function fetchDevServerDetails(rand_no,server){
+
+      $.ajax({
+        url: '/users/{{app_code}}/{{current_mode}}/smtp_management/',
+        data: {
+          'operation': 'fetch_user_smtp_configs',
+          'smtp_id': server,
+          'app_code' : '{{app_code}}'
+        },
+
+        type: "POST",
+        dataType: "json",
+        success: function (data) {
+            configs = data.data
+
+            $(`#${rand_no}`).find(".user_smtp_config").each(function(){
+              if(this.name == "smtp_provider" && configs.smtp_provider){
+                if ($(this).find(`option[value="${configs.smtp_provider}"]`).length == 0) {
+                  $(this).append(`<option value='${configs.smtp_provider}'>${configs.smtp_provider}</option>`)
+                }
+                $(this).val(configs.smtp_provider).trigger("change")
+              }
+              else if(this.name == "smtp_port"){
+                $(this).val(configs.smtp_port).trigger("change")
+              }
+              else if(this.name == "smtp_requires_auth"){
+                if (configs.smtp_requires_auth) {
+                  $(this).val(configs.smtp_requires_auth).trigger("change")
+                } else {
+                  $(this).val("yes").trigger("change")
+                }
+              }
+              else if(this.name == "smtp_user"){
+                $(this).val(configs.smtp_user).trigger("change")
+              }
+              else if(this.name == "smtp_password"){
+                $(this).val(configs.smtp_password).trigger("change")
+              }
+            })
+
+            dev_data = data.dev_server_data
+
+            $(`#${rand_no}`).find(".display_smtp_configs").each(function(){
+              if($(this).attr("data-name") == "smtp_description"){
+                $(this).text(dev_data.description).trigger("change")
+              }
+              else if($(this).attr("data-name") == "smtp_elementid"){
+                $(this).text(dev_data.element_id).trigger("change")
+              }
+            })
+
+        },
+        error: function () {
+        Swal.fire({text:"Error",icon:"error"});
+        }
+      });
+    }
+
+    function saveUserSmtp(rand_no,server){
+
+      let smtp_id = server
+      let smtp_provider = $(`#${rand_no} select[name="smtp_provider"]`).val()
+      let smtp_port = $(`#${rand_no} input[name="smtp_port"]`).val()
+      let smtp_requires_auth = $(`#${rand_no} input[name="smtp_requires_auth"]`).val()
+      let smtp_user = $(`#${rand_no} input[name="smtp_user"]`).val()
+      let smtp_password = $(`#${rand_no} input[name="smtp_password"]`).val()
+
+      if(smtp_id && smtp_provider && smtp_user && smtp_password){
+        $.ajax({
+          url: '/users/{{app_code}}/{{current_mode}}/smtp_management/',
+          data: {
+            'operation': 'save_user_smtp_details',
+            'smtp_id': smtp_id,
+            'smtp_provider': smtp_provider,
+            'smtp_user': smtp_user,
+            'smtp_password': smtp_password,
+            'smtp_port': smtp_port,
+            'smtp_requires_auth': smtp_requires_auth,
+            'app_code' : '{{app_code}}'
+          },
+
+          type: "POST",
+          dataType: "json",
+          success: function (data) {
+              Swal.fire({text:"SMTP details saved successfully!",icon:"success"});
+          },
+          error: function () {
+            Swal.fire({text:"Error",icon:"error"});
+          }
+        });
+      }
+      else{
+        Swal.fire({text:"Please fill in all the inputs.",icon:"warning"});
+      }
+    }
+
+  {% endif %}
+
+</script>
+
+{% endblock %}

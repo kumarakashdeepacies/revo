@@ -1,0 +1,18 @@
+{
+  "status": "done",
+  "assets": {
+    "main-d4e495fb9f11021a6ef1.js": {
+      "name": "main-d4e495fb9f11021a6ef1.js",
+      "path": "C:\\Users\\HarshalaGawli\\source\\repos\\Revolutio\\kore_investment\\static\\webpack_bundles2\\main-d4e495fb9f11021a6ef1.js"
+    },
+    "main-d4e495fb9f11021a6ef1.js.LICENSE.txt": {
+      "name": "main-d4e495fb9f11021a6ef1.js.LICENSE.txt",
+      "path": "C:\\Users\\HarshalaGawli\\source\\repos\\Revolutio\\kore_investment\\static\\webpack_bundles2\\main-d4e495fb9f11021a6ef1.js.LICENSE.txt"
+    }
+  },
+  "chunks": {
+    "main": [
+      "main-d4e495fb9f11021a6ef1.js"
+    ]
+  }
+}

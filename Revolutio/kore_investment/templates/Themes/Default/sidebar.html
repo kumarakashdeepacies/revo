@@ -1,0 +1,333 @@
+
+<!-- /.navbar -->
+<!-- Main Sidebar Container -->
+<style>
+    .pinit1{
+      transform: rotateZ(45deg);
+      font-size: 15px;
+      color: #959191;
+      cursor: pointer;
+    }
+    .color1{
+      color: #f2f2f2 !important;
+    }
+</style>
+{% if request.path != '/users/selectApplication/' and request.path != '/users/alertsSetup/' and request.path != '/users/adminPanel/' and request.path != '/users/customizeTheme/' and selected_any_app != 'false' %}
+<aside id="main-sidebar" class="main-sidebar sidebar-dark-primary sidebar-bg elevation-4" style="pointer-events: none;">
+  <div class=" d-flex">
+    {% if '<<sidebaricon>>' %}
+
+      {% if "media" not in '<<sidebaricon>>' %}
+        <a href="/users/selectApplication/" class="brand-link">
+          <img id="imageAciesLogo" src="/media/{{tenant}}/{{current_app_code}}/<<sidebaricon>>"  alt="Brand Logo"
+            class="brand-image img-responsive" align="left" style="float:left">
+        </a>
+      {% else %}
+        <a href="/users/selectApplication/" class="brand-link">
+          <img id="imageAciesLogo" src="<<sidebaricon>>" alt="Brand Logo"
+            class="brand-image img-responsive" align="left" style="float:left">
+        </a>
+      {% endif %}
+
+
+
+    {% else %}
+    <a href="/users/selectApplication/" class="brand-link">
+      <img id="imageAciesLogo" src="{% static 'images/Base_theme/A.png' %}" alt="Acies Logo"
+        class="brand-image img-responsive" align="left" style="float:left">
+    </a>
+    {% endif %}
+  </div>
+  <!-- Sidebar -->
+  <div class="sidebar" style="padding:0px 4px;">
+
+    <!-- Sidebar Menu -->
+    <nav class="mt-2" style="height: 82%;width: 105%;" id="mainSideNavBar" data-app_id="{{current_application_code}}">
+      <!--style="margin-right:8px;"-->
+      <script>
+        $("#mainSideNavBar").attr("data-app_id", currentAppCode);
+      </script>
+
+      <!-- Hide navbar elements in selectAppliation screen -->
+
+      <ul class="nav nav-pills nav-sidebar flex-column nav-collapse-hide-child nav-child-indent" data-widget="treeview" role="menu" data-accordion="false" >
+        {% if build_process_type != 'draft' %}
+        {% if sys_mgmt_home_configs_Show_or_hide_on_Navbar == True %}
+        <li class="nav-item">
+          <a class="nav-link" {% if current_application_code != 'App0' %} {% if current_application_code == 'Dev' %} {% if current_dev_mode == 'Edit' %} {% if edit_app_code != 'Not Selected' %} href="{% url 'users:homePage' edit_app_code current_dev_mode %}" {% else %} href="{% url 'users:homePage' 'Dev' current_dev_mode %}" {% endif %} {% elif current_dev_mode == 'Build' %} {% if build_app_code != 'Not Selected' %} href="{% url 'users:homePage' build_app_code current_dev_mode %}" {% else %} href="{% url 'users:select_application' %}"  {% endif %}  {% endif %} {% else %} href="{% url 'users:homePage' current_application_code 'User'%}" {% endif %} {% else %} href="{% url 'users:select_application' %}" {% endif %} data-home_page_ref="true">
+            <i class="{{sys_mgmt_home_configs_icon}} nav-icon" ></i>
+            <p data-short_name="Home"><span>Home</span></p>
+          </a>
+        </li>
+        {% endif %}
+        {% if sys_mgmt_approval_configs_Show_or_hide_on_Navbar == True %}
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'users:approval_table' current_app_code current_access_mode %}">
+            <i class="{{sys_mgmt_approval_configs_icon}} nav-icon" ></i>
+            <p data-short_name="Approval Management"><span>Approval Management</span></p>
+          </a>
+        </li>
+        {% endif %}
+        {% if sys_mgmt_report_configs_Show_or_hide_on_Navbar == True %}
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'users:pivot_report_data' current_app_code current_access_mode %}">
+            <i class="{{sys_mgmt_report_configs_icon}} nav-icon" ></i>
+            <p data-short_name="Reports"><span>Reports</span></p>
+          </a>
+        </li>
+        {% endif %}
+        {% has_perm 'users.has_application_admin_access' user current_application_code as is_application_admin %}
+        {% if is_application_admin %}
+          <li class="nav-item has-treeview">
+            <a href="#" class="nav-link"
+                  data-navsidebarouteranchortaggroupcode="Prg15">
+                  <i class="nav-icon fa fa-arrow-circle-right"></i>
+                    <p data-short_name="Application Admin">
+                      <span>Application Admin</span>
+                      <i class="right fas fa-angle-left"></i>
+                    </p>
+                </a>
+            <ul class="nav nav-treeview">
+              <li class="nav-item">
+                <a href="/users/{{current_app_code}}/{{current_access_mode}}/user_management/" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p class="process_navbar_popover" data-button1='{"tab_header":"View User Groups","tab_icon":"fas fa-atom"}' data-button2='{"tab_header":"Create User Groups","tab_icon":"fas fa-atom"}' data-button3='{"tab_header":"Assign Group Permissions","tab_icon":"fas fa-compass"}' data-button4='{"tab_header":"Assign User Groups","tab_icon":"fas fa-sitemap"}' data-button5='{"tab_header":"View User Groups","tab_icon":"fas fa-paperclip"}' data-popover="yes" data-description="Assign system access and permissions to users and user groups." data-PopOverSelector="baseMasters" data-PopOverTarget="#baseMasterPopOverContainer">
+                    User Management</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="{% url 'users:audit_trail' current_app_code current_access_mode %}" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>User Insights</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="{% url 'users:jobexecution' current_app_code current_access_mode %}" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                    <p>Scheduler</p>
+                </a>
+              </li>
+            </ul>
+          </li>
+        {% endif %}
+
+
+        {% endif %}
+
+        {% if application_selected == 'true' or edit_app_code != 'Not Selected' or build_process_type != "Not Selected"  %}
+          {% if operation == 'defaultSideNavBar' or 'mixOfDefaultAndUserSpecificNavBar' %}
+            {% for outerLiTag in defaultNavData %}
+              {% if outerLiTag.level0Code in config_navbar.processList %}
+              <li class="nav-item has-treeview">
+                <a href="#" class="nav-link"
+                  data-navsidebarouteranchortaggroupcode="{{outerLiTag.level0Code}}" data-code="{{outerLiTag.level0Code}}">
+                  <i class="{{outerLiTag.level0IconClass}} nav-icon"></i>
+                  <p data-short_name="{{outerLiTag.shortname}}">
+                    <span>{{outerLiTag.level0Name}}</span>
+                    <i class="right fas fa-angle-left"></i>
+
+                    <div class="dropdown1">
+                      {% if block_remove_navpoint == "False" or block_add_navpoint == "False" %}
+                        <div class="dropdown-content1">
+                        {% if block_remove_navpoint == "False" %}
+                            <i class="fas fa-remove" onclick="removeNavbar.call(this,'process')" data-toggle="tooltip" title="Remove navpoint"></i>
+                        {% endif %}
+                        {% if block_add_navpoint == "False" %}
+                        <i class="fas fa-plus iconClass" onclick="addNavbar.call(this,'process','{{outerLiTag.level0Code}}')" data-toggle="tooltip" title="Add navpoint"></i>
+                        {% endif %}
+                        </div>
+                      {% endif %}
+                    </div>
+                </a>
+
+                <ul class="nav nav-treeview">
+                  {% for innerLiTag in outerLiTag.childrenOfLevel0 %}
+                    {% if innerLiTag.item_code in config_navbar.subprocessList %}
+                    <li class="nav-item" data-navsidebarinnerlitagitemcode="{{innerLiTag.item_code}}" data-code="{{innerLiTag.item_code}}"
+                      data-item_pk="{{innerLiTag.id}}">
+                      {% with innerLiTag.item_url as a_url %}
+                        {% if a_url == '#' %}
+                          <a data-href_or_click="#" class="nav-link innerAnchorTag"
+                            data-related_entity="{{innerLiTag.related_entity}}" data-l3_length="{{innerLiTag.l3_length}}"
+                            {% if current_dev_mode != 'Not Selected' %}
+                              href="/users/{{current_app_code}}/Build/{{innerLiTag.item_code}}/">
+                            {% else %}
+                              href="/users/{{current_app_code}}/User/{{innerLiTag.item_code}}/">
+                            {% endif %}
+                        {% else %}
+                          <a data-href_or_click="{% url a_url %}" class="nav-link innerAnchorTag"
+                            data-related_entity="{{innerLiTag.related_entity}}"\
+                            {% if current_dev_mode != 'Not Selected' %}
+                              href="/users/{{current_app_code}}/Build/{{innerLiTag.item_code}}/">
+                            {% else %}
+                              href="/users/{{current_app_code}}/User/{{innerLiTag.item_code}}/">
+                            {% endif %}
+                        {% endif %}
+                            <i class="{{innerLiTag.subprocess_icon}} nav-icon"></i>
+                            <p class="process_navbar_popover" {% for key, value in innerLiTag.dictionary_item.items %} {{key}}="{{value}}" {% endfor %} data-description="{{innerLiTag.item_extra_details}}" data-PopOverSelector="baseMasters" data-popover="{{innerLiTag.hover_option}}" data-PopOverTarget='#baseMasterPopOverContainer'>
+                              {{innerLiTag.item_name}}
+                            </p>
+
+                              <div class="dropdown1">
+                                {% if block_remove_navpoint == "False" or block_add_navpoint == "False" %}
+                                <div class="dropdown-content1">
+                                  {% if block_remove_navpoint == "False" %}
+                                  <i class="fas fa-remove iconClass" onclick="removeNavbar.call(this,'subprocess')" data-toggle="tooltip" title="Remove navpoint"></i>
+                                  {% endif %}
+                                  {% if block_add_navpoint == "False" %}
+                                  <i class="fas fa-plus iconClass" onclick="addNavbar.call(this,'subprocess','{{innerLiTag.item_code}}')" data-toggle="tooltip" title="Add navpoint"></i>
+                                  {% endif %}
+                                </div>
+                                {% endif %}
+                              </div>
+
+                          </a>
+                      </li>
+                      {% endwith %}
+                    {% endif %}
+                  {% endfor %}
+                </ul>
+              </li>
+              {% endif %}
+            {% endfor %}
+          {% endif %}
+        {% endif %}
+      </ul>
+
+    </nav>
+    <br>
+
+  </div>
+  <div class="navpoint-pin-container" style="padding: 0 1rem;">
+    {% if block_add_navpoint == "False" %}
+    <a class="nav-link" id="" style="width:unset !important;color: #f2f2f2;">
+      <i class="fas fa-plus" onclick="addNavbar.call(this,'','')" data-toggle="tooltip" title="Add flex pages"></i>
+    </a>
+    {% endif %}
+    <div class="d-flex align-items-center" style="margin-left: auto;" onclick="sideNavPinFunc()"><i class="fa-solid fa-thumbtack pinit1" id="pinit1"
+        data-toggle="tooltip" title="Pin to screen" style="color: #343a40;"></i></div>
+  </div>
+  <!-- /.sidebar -->
+</aside>
+{% endif %}
+
+<script>
+  var currentScreen = window.location.pathname;
+  $('.main-sidebar').find(`.nav-link[href="${currentScreen}"]`).addClass('active');
+  $('.main-sidebar').find(`.nav-link[href="${currentScreen}"]`).closest('.nav-treeview').prev().addClass('active');
+  $('.main-sidebar').find(`.nav-link[href="${currentScreen}"]`).closest('.nav-treeview').parent().addClass('menu-open');
+
+  $('.nav-item.has-treeview').click(function(){
+    $('.nav-item:not(.has-treeview)').find('.nav-link').removeClass('active');
+    $('.nav-item.has-treeview').not($(this)).each(function () {
+      $(this).removeClass('menu-open');
+      $(this).find('.nav-link').removeClass('active');
+      $(this).find('.nav-treeview').css('display', '');
+    });
+  });
+</script>
+
+<script>
+  document.onreadystatechange = function(){
+  if(document.readyState.trim() === "complete" && !$("#mainSideNavBar").is(':hover')){
+      setTimeout(function(){
+        $('.main-sidebar').prop('style','pointer-events:auto')
+        $('#toggleButton').prop('style','pointer-events:auto')
+      },50)
+
+    }
+  }
+
+    //StandardList
+    $('#standardList').on('click', function (e) {
+      var url;
+      var masterName = $(this).attr('data-master_name')
+      url = window.location.href + masterName;
+      $(this).attr('href', url)
+
+    })
+
+    setTimeout(function(){
+      $("#messages-content").fadeOut('slow')
+    },15000)
+
+
+    var toggleB = document.getElementById('toggleButton');
+    if (toggleB != null) {
+      toggleB.addEventListener('click', expandCollapse)
+    }
+    function expandCollapse() {
+      var img = document.getElementById('imageAciesLogo');
+      var body = document.getElementsByTagName('BODY')
+      var bodyClasses = body[0].className;
+
+    }
+
+    function sideNavPinFunc(){
+      if($("#pinit1").hasClass("color1")){
+        $('#pinit1').removeClass("color1");
+        $(".main-sidebar").bind("mouseleave", function() {
+          $('body').addClass("sidebar-collapse",function(){
+            setTimeout(function(){
+              $(".select2-dropdown").css("width",$(".select2.select2-container.select2-container--default.select2-container--open").css("width"))
+              $(".select2-dropdown").css("min-width",$(".select2.select2-container.select2-container--default.select2-container--open").css("width"))
+            }, 300)
+
+          });
+        });
+        localStorage.setItem("sideNavState", "unpinned");
+      } else {
+        $(".main-sidebar").unbind("mouseleave");
+        $('#pinit1').toggleClass("color1");
+        localStorage.setItem("sideNavState", "pinned");
+      }
+    }
+
+    $('.main-sidebar').hover(function () {
+      $('body').removeClass("sidebar-collapse",function(){
+        setTimeout(function(){
+          $(".select2-dropdown").css("min-width",$(".select2.select2-container.select2-container--default.select2-container--open").css("width"))
+          $(".select2-dropdown").css("width",$(".select2.select2-container.select2-container--default.select2-container--open").css("width"))
+          $(".select2-dropdown").css("max-width",$(".select2.select2-container.select2-container--default.select2-container--open").css("width"))
+        }, 300)
+      });
+
+      $('#pinit1').css('color','#959191')
+    }, function () {
+        $('body').addClass("sidebar-collapse",function(){
+
+          setTimeout(function(){
+            $(".select2-dropdown").css("width",$(".select2.select2-container.select2-container--default.select2-container--open").css("width"))
+            $(".select2-dropdown").css("min-width",$(".select2.select2-container.select2-container--default.select2-container--open").css("width"))
+          }, 300)
+
+      });
+
+        if ($('body').attr("class") == "sidebar-mini layout-fixed sidebar-collapse") {
+          $('#pinit1').css('color','#343a40')
+        }
+    });
+
+    $('#toggleButton').click(function () {
+      if ($('body').attr("class") == "sidebar-mini layout-fixed sidebar-collapse") {
+        var media = window.matchMedia("(max-width: 991px)")
+        if (!media.matches){
+          $('#pinit1').css('color','#959191')
+        }
+      }
+      else {
+        var media = window.matchMedia("(max-width: 991px)")
+        if (media.matches){
+        }
+        else{
+          $('#pinit1').css('color','#343a40')
+        }
+      }
+    });
+    var sideNavState = localStorage.getItem("sideNavState");
+    if (sideNavState === "pinned") {
+      $(".main-sidebar").trigger("mouseenter");
+      $('#pinit1').addClass("color1");
+      $(".main-sidebar").unbind("mouseleave");
+    }
+</script>

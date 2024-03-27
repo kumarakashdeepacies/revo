@@ -1,0 +1,3887 @@
+<!DOCTYPE html>
+{% load rules %}
+{%load static %}
+
+<html>
+
+<head>
+  <!--<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">-->
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content=" ">
+
+
+  {% if set_favicon_appdrawer == "True" %}
+    {% if appdrawer_favicon_file|length %}
+      <link rel="icon" href="/media/{{tenant}}/TenantTheme/appdrawer/favicon/{{appdrawer_favicon_file}}">
+    {% endif %}
+  {% else %}
+    <link rel="icon" href="/static/images/favicons/favicon1.ico">
+  {% endif %}
+
+  {% if set_title_appdrawer == "True" %}
+    {% if appdrawer_title|length %}
+    <title>{{appdrawer_title}}</title>
+    {% endif %}
+  {% else %}
+    <title>Revolutio</title>
+  {% endif %}
+
+  <!-- Tell the browser to be responsive to screen width -->
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- DataTables -->
+  <link rel="stylesheet" href="{% static 'vendor/Base_theme/datatables-bs4/css/dataTables.bootstrap4.css' %}">
+  <!-- Theme style -->
+  <style>
+  :root {
+  --primary-color:#d4af37;
+  --secondary-color:black;
+  --font-color: #000000;
+  --font-hover-color: #ffffff;
+  --tableBackgroundShade:#f8f8f8;
+  --modal-fontColor: #000000;
+  --modal-bgColor: #ffffff;
+  --navbar-bg: #f8f9fa;
+  --navbar-font: #000000;
+  --sidebar-bg: #000000;
+  --sidebar-font: #ffffff;
+  --font-size:0.8rem;
+  --modal-fontSize:medium;
+  --footer-bg: #565a5e;
+  --footer-font: #000000;
+  --sidebar-size: 4.6rem;
+  --buttonBgColor:#d4af37;
+  --buttonFontColor: #ffffff;
+  --buttonShadowColor: #f7f7f7;
+  --button_shadow_x: 2px;
+  --button_shadow_y: 1px;
+  --button_blur_radius: 10px;
+  --button_shadow_thickness: 1px;
+  --buttonBorderColor:var(--primary-color);
+  --buttonBorderThickness: 0px;
+  --buttonBorderStyle: solid;
+  --buttonBgHoverColor: #000000;
+  --buttonFontHoverColor: #ffffff;
+  --userfield-hover-bg: #d4af37;
+  }
+</style>
+  <link rel="stylesheet" href="{%static 'css/Base_theme/CSS_min.min.css'%}">
+  <!-- <link rel="stylesheet" href="{%static 'css/Default.css'%}"> -->
+  <link rel="stylesheet" href="{%static 'css/Acies_theme/Stylesheet1.min.css'%}">
+
+  <!-- jQuery -->
+  <script src="{%static 'vendor/Base_theme/jquery/jquery.min.js' %}"></script>
+
+  <script src="{%static 'vendor/Base_theme/bootstrap/js/bootstrap.bundle.min.js'%}"></script>
+
+  <!--Jquery UI-->
+  <link rel="stylesheet" href="{% static 'vendor/Base_theme/jquery-ui/jquery-ui.min.css' %}">
+  <script src="{%static 'vendor/Base_theme/jquery-ui/jquery-ui.min.js'%}"></script>
+  <!-- Select2 -->
+  <link rel="stylesheet" href="{% static 'vendor/Base_theme/select2/css/select2.min.css' %}">
+  <link rel="stylesheet" href="{% static 'vendor/Base_theme/select2-bootstrap4-theme/select2-bootstrap4.min.css' %}">
+  <!-- Select2 -->
+  <script src="{% static 'vendor/Base_theme/select2/js/select2.full.min.js' %}"></script>
+
+  <!-- Touch Punch -->
+  <script src="{%static 'vendor/Base_theme/touch-punch/jquery.ui.touch-punch.min.js' %}"></script>
+
+  <link rel="stylesheet" href="{% static 'vendor/Base_theme/font-awesome/css/all.min.css' %}">
+
+  {% block new_css %} {% endblock new_css %}
+  <!-- Sweet Alert2 -->
+  <script src="{% static 'vendor/sweet_alert/sweetalert2.all.min.js' %}"></script>
+
+  <!-- Selectize JS -->
+  <script src="{% static 'vendor/selectizeJS/selectize.min.js' %}"></script>
+  <link rel="stylesheet" href="{% static 'vendor/selectizeJS/selectize.bootstrap4.min.css' %}">
+
+  <!-- Ckeditor -->
+  <script src="{% static 'js/ckeditor/ckeditor.js' %}"></script>
+  <script>
+    CKEDITOR.disableAutoInline = true;
+    CKEDITOR.on( 'instanceReady', function( ev ) {
+      ev.editor.dataProcessor.writer.setRules( 'p',
+      {
+          breakAfterClose : false
+      });
+    });
+  </script>
+  <style>
+
+    .icon-container {
+      display: none;
+    }
+
+    .icon-container-item {
+      display: none;
+    }
+
+    .modal-options-header .close{
+      background-color: unset !important;
+      background: unset !important;
+      font-size: 1.5rem;
+    }
+    .modal-options-header .close:focus{
+      outline: none;
+    }
+
+    .downsize {
+      font-size: 0.7rem;
+      margin-left:0.7rem !important;
+    }
+    .your-apps-menu{
+      height: fit-content;
+      min-width: 22em;
+      border-radius: 1rem;
+      margin:0 !important;
+      padding-top: 0 !important;
+      overflow-y: unset !important;
+      top: 100% !important;
+      left: -14px;
+      overflow: hidden;
+    }
+    i.right{
+      padding-top: 4px;
+    }
+
+    @media screen and (max-width: 450px) {
+      #customicon,.profile i:hover{
+        font-size: 18px !important;
+      }
+      .icon-container {
+        display: flex;
+        justify-content:center;
+        align-items:center
+      }
+      .icon-container-item {
+        display: block;
+      }
+
+      .customtoggle {
+        display: none !important;
+      }
+      .notification-container {
+        right: -3.6em !important;
+        width: 23em !important;
+      }
+      .notification-container .dropdown-item p, .clear-all{
+        margin-bottom: 0 !important;
+      }
+    }
+
+    {% if set_app_drawer_theme == "True" %}
+      :root {
+        --primary-color: {{primary_bgcolor}};
+        --secondary-color: {{secondary_color}};
+        --font-color: {{font_color}};
+        --font-hover-color: {{font_hover_color}};
+        --font-family:{{font_family}};
+        }
+    {% endif %}
+
+    {% if sidebar == "hide" %}
+      .main-sidebar, footer medium {
+        display: none;
+      }
+      #toggleButton{
+        pointer-events: none !important;
+      }
+    {% endif %}
+
+    {% if topbar == "hide" %}
+          .main-header,
+          footer medium {
+          display: none;
+          }
+    {% endif %}
+
+    {% if sidebar == "hide" and topbar == "hide" %}
+          body {
+          background-color: #f4f6f9 !important;
+          }
+    {% endif %}
+    {% if sidebar == "show" or topbar == "show" %}
+          body {
+          background-color: #f4f6f9 !important;
+      }
+    {% endif %}
+
+    body{
+      font-family: var(--font-family);
+    }
+
+    .breadcrumb-holder  .container-fluid.tabconfig{
+      display: flex;
+    }
+
+    .l3-breadcrumb-holder.breadcrumb-holder  .container-fluid.tabconfig{
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 1rem;
+    }
+
+    .l3-breadcrumb-holder.breadcrumb-holder .btn{
+      line-height: 0.5;
+      border-radius: 8rem;
+      padding: 0.375rem 0.5rem;
+      width: 9em;
+      font-size: 13px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .l3-breadcrumb-holder.breadcrumb-holder .b-btn{
+      background-color: var(--primary-color);
+      border: 1px solid var(--primary-color) !important;
+      color: var(--font-hover-color);
+      line-height: 0.5;
+      border-radius: 8rem;
+      padding: 0.375rem 0.5rem;
+      width: 9em;
+      font-size: 13px;
+      outline: none;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .l3-breadcrumb-holder.breadcrumb-holder .b-btn {
+      border: 1px solid var(--primary-color);
+    }
+
+    .l3-breadcrumb-holder.breadcrumb-holder .b-btn:hover{
+      background-color: var(--secondary-color) !important;
+      border-color: var(--secondary-color) !important;
+    }
+
+    .l3-breadcrumb-holder.breadcrumb-holder {
+      background-color: #e9ecef;
+      display:flex;
+      padding: 0.2rem;
+      justify-content: space-evenly;
+      padding: 0.5rem 0.2rem;
+      padding-left: 1%;
+    }
+    .l3-breadcrumbs{
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+    .toggle_arrow{
+      transform : rotate(180deg);
+    }
+    .breadcrumb-item b{
+      font-weight: 400;
+      font-style: italic;
+      font-size: 13px;
+    }
+
+    .customdropdown {
+      display: none;
+      position: absolute;
+      height: fit-content;
+      min-width: 10em;
+      border-radius: 1rem !important;
+      overflow-y: auto;
+      padding:0 !important;
+      overflow: hidden;
+      padding-top: 0% !important;
+    }
+
+    .customdropdown a {
+      display: block;
+      margin-bottom: 0px;
+      color: #333 !important;
+      text-decoration: none;
+      padding: 12% 2% !important;
+    }
+
+    .customdropdown i {
+      margin-right: 5px;
+      display: flex;
+      justify-content: start;
+      align-items: center;
+    }
+    .customdropdownUL {
+      padding: 0 !important;
+      margin: 0 !important;
+    }
+
+    ul.customdropdownUL li{
+      list-style:none !important;
+      max-width:15em;
+    }
+
+    ul.customdropdownUL .dropdown-item{
+      padding:0 !important;
+    }
+
+    .user-profile-dropdown, .admin-options-dropdown{
+      height: fit-content;
+      min-width: 15em;
+      border-radius: 1rem !important;
+      overflow-y: auto;
+      padding:0 !important;
+      overflow: hidden;
+      padding-top: 10% !important;
+    }
+    .admin-options-dropdown{
+      padding-top: 0 !important;
+    }
+    .user-profile-dropdown .dropdown-divider, .admin-options-dropdown .dropdown-divider, .customdropdown .dropdown-divider {
+      margin: 0;
+    }
+    .user-profile-dropdown.show, .admin-options-dropdown.show{
+      overflow-y: unset !important;
+    }
+    a.d-block:hover{
+      color: var(--font-color) !important;
+    }
+    .user-profile-dropdown a.dropdown-item:hover, .admin-options-dropdown a.dropdown-item:hover, .customdropdown .dropdown-item:hover{
+      background-color: var(--primary-color);
+      color: var(--font-hover-color) !important;
+    }
+    .user-profile-dropdown a.dropdown-item{
+      font-size: 85%;
+      padding: 8% 10%;
+    }
+    .admin-options-dropdown  a.dropdown-item{
+      font-size: 85%;
+      padding: 8% 6%;
+      display: flex;
+      align-items: center;
+    }
+    .dropdown-text{
+      white-space: break-spaces;
+    }
+    .profile-initials{
+      text-transform: uppercase;
+    }
+    .swal2-actions {
+      flex-wrap: nowrap;
+    }
+
+    .swal2-title{
+      font-size: 1em;
+      font-weight: 200;
+      line-height: 1.5;
+    }
+
+    .main-header{
+      transition: .3s;
+    }
+
+  .navlink-img{
+    font-size:160%;
+    color:white;
+    background-color: var(--primary-color);
+    opacity: 0.5;
+    height: 35px;
+    width: 35px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+.main-footer{
+  position: relative !important;
+  background: #f4f6f9 ;
+  color: var(--font-color);
+  padding-top: 5px;
+  padding-right: 15px !important;
+  padding-bottom: 5px;
+  padding-left: 15px !important;
+}
+
+.dropdown1 {
+  margin-left: auto;
+  position: relative;
+  right: 0.5rem;
+  width: 1rem;
+}
+
+.dropdown1:hover .dropdown-content1 {
+    display: contents;
+    margin-top: 0; /* remove the gap so it doesn't close */
+}
+
+.dropdown-content1 {
+  margin-left: 1rem !important;
+  display: none;
+  position: fixed;
+  background-color: #f9f9f9;
+  min-width: auto;
+  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+  padding: 10px;
+  margin-bottom: 2px;
+  z-index: 1;
+  background-color: var(--primary-color);
+  border-radius: 10px;
+}
+
+.iconClass {
+  margin: auto ;
+}
+
+.dropdown-content1 i{
+  margin: 0 5px;
+}
+
+.arrow {
+  border: solid black;
+  border-width: 0 3px 3px 0;
+  display: inline-block;
+  padding: 3px;
+}
+.gearClass {
+  margin-left: 2px;
+}
+.gearClass1 {
+  margin-right: 10px;
+}
+.down {
+  transform: rotate(45deg);
+  -webkit-transform: rotate(45deg);
+}
+.dropdown-menu1 {
+  height: 200px;
+  width: 10em;
+  min-width: 20em;
+  overflow-y: scroll;
+}
+
+  table.dataTable.display tbody tr td{
+  background-color:white;
+  }
+
+  table.dataTable tbody tr td{
+  background-color:white;
+  }
+
+
+  .dtfc-fixed-left{
+    z-index: 999;
+  }
+
+  .cell_selected{
+    background-color:#cfcfcf !important;
+  }
+
+    :focus {
+      outline: transparent;
+    }
+
+    .popoverCardheader{
+      color: var(--primary-color);
+      text-align: center;
+    }
+
+    #search {
+      margin-top: 0.1em;
+      height: 2.4em;
+    }
+
+    .navpoint-pin-container{
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      color: #fff;
+    }
+
+
+    #itag {
+      display: none;
+      float: right;
+      font-size: 15px;
+    }
+
+    .name {
+      cursor: pointer;
+    }
+    .popover {
+      min-width: 250px;
+    }
+    .floating-navbar{
+      margin: 15px;
+      box-shadow: 1px 1px 16px #d3d3d3d6;
+      border-radius: 6px;
+    }
+    .floating-navbar-allapps{
+      margin: 15px;
+      box-shadow: 1px 1px 16px #d3d3d3d6;
+      padding: 27px 10px;
+      border-radius: 6px;
+    }
+    .floating-wrapper{
+      padding: 1px;
+      position: relative;
+      background-color: #f4f6f9;
+    }
+    .yourapps-dropdown{
+      display: flex;
+      justify-content: space-between;
+      padding: 5px 16px;
+      background: #e4e4e48f;
+      align-items: center;
+      color: black;
+      text-transform: capitalize;
+      font-size: 13px;
+    }
+    .dropdown-search{
+      width: 100%;
+      padding: 5px 7px;
+      border: 1px solid rgba(211, 211, 211, 0.752) !important;
+      border-radius: 5px !important;
+      font-size: 13px;
+    }
+    .apps-dropdownItems{
+      display: flex;
+      flex-wrap: wrap;
+      min-height: auto;
+      max-height: 280px;
+      overflow: auto;
+    }
+    .yourapps-items{
+      width: 33.3%;
+      padding: 0px;
+      border: 1px solid rgb(211 211 211 / 16%);
+      cursor: pointer;
+    }
+    .appList {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 15px 30px;
+      color: #3c3c3c;
+    }
+    .hideit{
+      bottom: 0;
+      position: absolute;
+      margin-left: auto;
+      margin-right: auto;
+      left: 0;
+      right: 0;
+      text-align: center;
+      cursor: pointer;
+    }
+    .pinit{
+      position: absolute;
+      right: -10px;
+      top: -10px;
+      transform: rotateZ(45deg);
+      font-size: 20px;
+      color: #959191;
+      cursor: pointer;
+    }
+    .pinit1{
+      transform: rotateZ(45deg);
+      font-size: 15px;
+      color: #959191;
+      cursor: pointer;
+    }
+    .color{
+      color: black;
+      right: -7px;
+      top: -7px;
+    }
+    .color1{
+      color: #f2f2f2 !important;
+    }
+    .rotate{
+      transform: rotateZ(180deg);
+      transition: .2s;
+    }
+    .displaynone{
+      display: none !important;
+      transition: 1s;
+    }
+    .fixed{
+      position: sticky;
+      top: 15px;
+    }
+    .user-online{
+      height: 10px;
+      width: 10px;
+      background-color: #28c76f;
+      border-radius: 10em;
+      display: inline-block;
+      position: absolute;
+      bottom: 0px;
+      right: 10%;
+      border: 1px solid white;
+    }
+    .choose-buttons{
+      margin: 10px 20px;
+      width: 70%;
+      background: var(--primary-color);
+      color: var(--font-color);
+      padding: 10px 7px;
+      border: none;
+      border-radius: 20px;
+      box-shadow: 1px 1px 7px #706f6f;
+      transition: .2s;
+    }
+    .choose-buttons:hover{
+      background-color: var(--secondary-color);
+      color: var(--font-hover-color);
+    }
+    .choose-buttons:active, .choose-buttons:focus{
+      outline: 0;
+      box-shadow: 1px 1px 4px grey;
+    }
+    .yourapps-items:hover{
+      background: var(--primary-color);
+    }
+    .yourapps-items:hover .appList span{
+      color: var(--font-hover-color);
+    }
+    .spanlist{
+      font-size: 23px;
+      background: rgb(211 211 211 / 16%);
+      border-radius: 50%;
+      height: 45px;
+      width: 45px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .switch-container {
+      width: 4em;
+      height: 2em;
+      border-radius: 10em;
+      box-shadow: 2px 0px 10px 0px #cfd8dc;
+      position: relative;
+    }
+    .logout.switch-container {
+      width: 3em;
+      height: 1.5em;
+      border-radius: 10em;
+      box-shadow: 2px 0px 10px 0px #cfd8dc;
+      position: relative;
+    }
+    .logout .switch-color {
+      width: 2.8em;
+      height: 1.25em;
+      top: 9.15%;
+    }
+    .switch-container.logout label.switch-label {
+      width: 1.1em;
+      height: 1.1em;
+      top: 0.2em;
+    }
+    .logout .switch:checked ~ label.switch-label {
+      transform: translatex(1.5em) rotatez(360deg);
+      box-shadow: 2px 2px 10px 2px #ffffff;
+    }
+
+
+    input.switch {
+      display: none;
+    }
+    .switch-color {
+      width: 3.8em;
+      height: 1.8em;
+      left: 0.1em;
+      top: 0.1em;
+      background: #cfd8dc;
+      border-radius: 10em;
+      z-index: 0;
+      position: absolute;
+      transition: all 500ms cubic-bezier(0.34, 1.36, 0.2, 1);
+      opacity: 0.7;
+    }
+    .switch-color .trigger-label{
+      height: 100%;
+      width: 100%;
+      margin: 0;
+      cursor: pointer;
+    }
+    .switch-container label.switch-label {
+      width: 1.6em;
+      height: 1.6em;
+      border-radius: 10em;
+      background: white;
+      position: absolute;
+      top: 0.2em;
+      left: 0.2em;
+      box-shadow: 2px 2px 10px 2px #cfd8dc;
+      z-index: 99;
+      cursor: pointer;
+    }
+    .switch:checked ~ label.switch-label {
+      transform: translatex(2em) rotatez(360deg);
+    }
+
+    .switch:checked ~ .switch-color {
+      background: var(--primary-color);
+    }
+
+    .switch ~ label.switch-label {
+      transition: all 1s cubic-bezier(0.34, 1.36, 0.2, 1);
+    }
+
+    .more_colors {
+      border: none;
+      padding: 5px 10px;
+      border-radius: 5px;
+      text-transform: capitalize;
+      margin-bottom: 20px;
+    }
+
+    .more_colors:hover {
+      box-shadow: 1px 1px 10px #c5c5c0;
+    }
+
+  ul[class^="icon-picker-list"] {
+      display: flex;
+      flex-flow: row wrap;
+      list-style: none;
+      padding-left: 0;
+      padding-right: 5px;
+      justify-content: flex-start;
+    }
+
+    ul[class^="icon-picker-list"] li {
+      width: 16%;
+      margin-bottom: 5px;
+    }
+
+    ul[class^="icon-picker-list"] a {
+      background-color: #f9f9f9;
+      border: 1px solid #fff;
+      color: black;
+      display: block;
+      flex: 1 1 auto;
+      font-size: 20px;
+      line-height: 1.4;
+      min-height: 50px;
+      padding: 10px;
+      text-align: center;
+      user-select: none;
+    }
+
+    ul[class^="icon-picker-list"] .fa {
+      font-size: 24px;
+      margin-bottom: 10px;
+      margin-top: 5px;
+    }
+
+    ul[class^="icon-picker-list"] .name-class {
+      display: block;
+      text-align: center;
+      word-wrap: break-word;
+    }
+    div.list_of_icons{
+      margin-left:20px;
+      margin-top:10px;
+    }
+    div.list_of_icons .listoficon{
+      padding:1px !important;
+      padding-bottom: 2px;
+    }
+    .addalert a.dropdown-item, .allnotifications a.dropdown-item{
+      white-space: break-spaces;
+      word-break: break-word;
+    }
+    .notification-container{
+      max-width: 25em;
+      min-width: 20em;
+      border-radius: 1rem;
+      overflow-y: unset !important;
+      right: -4em;
+      width: 25em;
+      overflow: hidden;
+    }
+    .notification-dropdown{
+      max-height: 23em;
+      overflow-y: auto;
+    }
+    .seeallnotifications{
+      text-align: center;
+      background: #f1f1f1;
+      font-size: 13px;
+      font-weight: bold;
+      cursor: pointer;
+      display: none;
+      position: sticky;
+      bottom: 0;
+    }
+    .clearallnotifications{
+      text-align: right;
+      font-size: 11px;
+      font-weight: bold;
+      cursor: pointer;
+      margin: 5px;
+    }
+    .allnotifications{
+      display: none;
+    }
+    .allnotifications a.dropdown-item{
+      white-space: break-spaces;
+    }
+    .notification-rotate{
+      transform: rotate(180deg);
+      transition: 0.5s;
+    }
+    a.dropdown-item[data-new="new"] {
+      background-color: #f7f7f7;
+    }
+
+    a.dropdown-item[data-new="new"]:hover {
+      background-color: var(--primary-color);
+      color: var(--font-hover-color);
+    }
+    .expand_collapse_notifications{
+      margin-bottom: 0 !important;
+    }
+    .modal.show{
+      padding-right: 0 !important;
+    }
+
+  </style>
+
+  <style>
+
+    @media screen and (min-width: 769px){
+      .user-profile-photo{
+        height: 35px;
+        width: 35px;
+      }
+    }
+
+    @media only screen and (min-width:769px) and (max-width: 1024px){
+      .l3-breadcrumb-holder.breadcrumb-holder {
+        padding-left: 1.5%;
+      }
+    }
+
+    @media screen and (min-width: 992px){
+      {% if sidebar == "hide" %}
+      .sidebar-mini.sidebar-collapse .main-header {
+        margin-left: 1% !important;
+      }
+      {% else %}
+      .sidebar-mini.sidebar-collapse .content-wrapper, .sidebar-mini.sidebar-collapse .main-footer, .sidebar-mini.sidebar-collapse .main-header {
+        margin-left: 5.8rem !important;
+        margin-right: 1rem;
+      }
+      {% endif %}
+      .nav-link.profile{
+        padding-top: 0.3rem !important;
+      }
+
+
+    }
+
+    @media screen and (max-width: 768px) {
+
+      .navpoint-pin-container{
+        display: none;
+      }
+
+      .sidebar-open{
+        overflow: hidden;
+      }
+
+      .sidebar-mini.sidebar-collapse .sidebar .nav-sidebar .nav-link p span {
+        display: block;
+      }
+      .sidebar-mini.sidebar-collapse .sidebar .nav-sidebar .nav-link p:after {
+        content: "";
+      }
+
+      .sidebar-mini.sidebar-collapse .sidebar .nav-sidebar .nav-link {
+        flex-direction: row;
+      }
+      .sidebar-mini .sidebar .nav-sidebar .nav-link p {
+          margin-left: 0.5rem !important;
+          font-size: 1rem !important;
+          word-break: break-word;
+          white-space: normal;
+      }
+
+      .l3-breadcrumb-holder.breadcrumb-holder  .container-fluid.tabconfig{
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+        gap: 0.5rem;
+      }
+
+      .l3-breadcrumbs{
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+      }
+      .l3-breadcrumb-holder.breadcrumb-holder {
+        width: 100%;
+        padding: 0.5rem 0.2rem;
+        padding-left: 2.5%;
+      }
+      .l3-breadcrumb-holder.breadcrumb-holder .row:first-child {
+        margin-left: -0.5px;
+        align-items: center;
+      }
+      .l3-breadcrumb-holder.breadcrumb-holder .btn, .l3-breadcrumb-holder.breadcrumb-holder .b-btn {
+        font-size: 9px;
+        line-height: unset;
+        padding: 0.3rem 0.4rem;
+        width: 9em;
+    }
+    .breadcrumb-item b {
+      font-size: 10px;
+    }
+
+      .breadcrumb-holder{
+        flex-direction: column !important;
+      }
+      .user-profile-photo{
+        height: 25px;
+        width: 25px;
+      }
+      .main-footer{
+        line-height: 1.3 !important;
+        padding: 15px !important;
+        font-size: 11px !important;
+        margin-right: 0 !important;
+      }
+      .choose-buttons{
+        margin: 10px 20px;
+        width: 70%;
+      }
+      .user-online{
+        bottom: -1px;
+        right: 12%;
+        height: 8px;
+        width: 8px;
+      }
+      .nav-link.your-apps{
+        font-size: 11px;
+      }
+      .nav-link.profile{
+        padding-top: 0.5rem !important;
+      }
+      .floating-navbar, .content-wrapper{
+        margin: 15px !important;
+      }
+    .navbar-expand .navbar-nav .nav-link {
+      padding-right: 0.4rem;
+      padding-left: 0.4rem;
+    }
+    .navlink-img{
+      font-size: 113%;
+      color: white;
+      background-color: var(--primary-color);
+      opacity: 0.5;
+      height: 25px;
+      width: 25px;
+    }
+    .nav-link i{
+      font-size: 18px !important;
+      padding-top: 4px !important;
+    }
+    i.nav-link{
+      font-size: 18px !important;
+      padding-top: 11px;
+    }
+
+    body:not(.sidebar-mini-md) .content-wrapper{
+      margin-right: 0 !important;
+      margin-left: 0 !important;
+    }
+  }
+  .select2-selection{
+    overflow: hidden;
+  }
+  .select2-selection__rendered{
+    white-space: normal;
+    word-break: break-all;
+  }
+
+  @media screen and (max-width: 426px){
+    .l3-breadcrumb-holder.breadcrumb-holder {
+      padding-left: 4.5%;
+    }
+  }
+
+  @media screen and (max-width: 376px) {
+
+    .l3-breadcrumbs, .l3-breadcrumb-holder.breadcrumb-holder .container-fluid.tabconfig {
+      gap: 0.3rem;
+    }
+
+    .notification-container {
+      max-width: 20em;
+      min-width: 20em;
+    }
+    .nav-link.your-apps{
+        font-size: 11px;
+      }
+    .your-apps-menu{
+      min-width: 20em;
+      left: -25px;
+    }
+    .tab_name_config{
+        font-size: 12px;
+      }
+  }
+  @media screen and (max-width: 321px) {
+    .notification-container {
+      max-width: 16.5em;
+      min-width: 16.5em;
+    }
+    .your-apps-menu{
+      min-width: 16.7em;
+      left: -25px;
+    }
+  }
+
+
+    </style>
+
+{% if request.path == '/users/selectApplication/' or request.path == '/users/adminPanel/' or request.path == '/users/alertsSetup/' or request.path == '/users/customizeTheme/' or selected_any_app == 'false' %}
+<style>
+  @media (min-width:992px){
+    .allapps.main-header  {
+    margin-left: 0 !important;
+  }
+}
+</style>
+{% endif %}
+
+
+</head>
+
+<script>
+  document.onreadystatechange = function(){
+  if(document.readyState.trim() === "complete" && !$("#mainSideNavBar:hover").length){
+      setTimeout(function(){
+        $('.main-sidebar').prop('style','pointer-events:auto')
+        $('#toggleButton').prop('style','pointer-events:auto')
+      },50)
+
+    }
+  }
+</script>
+
+<body class="sidebar-mini layout-fixed sidebar-collapse">
+
+  <script src="{%static 'js/Base_theme/JS_min.js'%}"></script>
+  <!--Dummy Form For Ajax Call-->
+  <form id="dummyFormForAjaxCall">
+    {% csrf_token %}
+  </form>
+
+  <div class="wrapper floating-wrapper" >
+
+    <nav id="main-header"
+      {% if request.path == '/users/selectDashboard/' or request.path == '/users/dashboard/' %}
+        class="main-header navbar floating-navbar navbar-expand navbar-white navbar-light"
+      {% else %}
+        {% if request.path == '/users/selectApplication/' or request.path == '/users/adminPanel/' or request.path == '/users/alertsSetup/' or request.path == '/users/customizeTheme/' or selected_any_app == 'false' %}
+        class="allapps main-header navbar floating-navbar navbar-expand navbar-white navbar-light" style="margin-left: 15px !important"
+        {% else %}
+        class="main-header navbar floating-navbar navbar-expand"
+        {% endif %}
+      {% endif %}
+      >
+      <div class="nav-wrapper" style="display:flex; justify-content:space-between;width: 100%;transition: 2s; align-items: center;">
+        <!-- Left navbar links -->
+        <ul class="navbar-nav">
+          {% if request.path != '/users/selectDashboard/' %}
+          {% if request.path == '/users/selectApplication/' or request.path == '/users/adminPanel/' or request.path == '/users/alertsSetup/' or request.path == '/users/customizeTheme/' or selected_any_app == 'false' %}
+          {% if request.path not in '/users/dashboard/' %}
+            <li class="nav-item m-auto">
+              <div class="navbar-brand">
+                <a href="/users/selectApplication/">
+                  {% if logo_file_topnavbar|length %}
+                  <img src="/media/{{tenant}}/TenantTheme/appdrawer/logo/{{logo_file_topnavbar}}" alt="Acies Logo" align="left" style="float:left;height: 30px;">
+                  {% else %}
+                  <img src="{% static 'images/Base_theme/Acies_short_logo.png' %}" alt="Acies Logo" align="left" style="float:left;height: 30px;">
+                  {% endif %}
+                </a>
+              </div>
+
+            </li>
+          {% endif %}
+          {% endif %}
+          {% endif %}
+
+          {% if request.path == '/users/selectDashboard/' or request.path == '/users/dashboard/' %}
+          <li class="nav-item m-auto">
+            <a id="toggleButton" class="nav-link" data-widget="pushmenu" href="#" style="pointer-events: none;">
+              <i class="fas fa-bars" style="font-size: 20px;"></i>
+            </a>
+          </li>
+          {% else %}
+            {% if request.path != '/users/selectApplication/'  and request.path != '/users/alertsSetup/' and request.path != '/users/adminPanel/' and request.path != '/users/customizeTheme/' and selected_any_app != 'false' %}
+            <li class="nav-item m-auto">
+              <a id="toggleButton" class="nav-link" data-widget="pushmenu" href="#" style="pointer-events: none;">
+                <i class="fas fa-bars" style="font-size: 20px;"></i>
+              </a>
+            </li>
+            {% endif %}
+          {% endif %}
+
+          <li class="nav-item m-auto dropdown">
+            <a data-toggle="dropdown" class="nav-link your-apps" style="display: flex;align-items: center;font-weight: 600;">Your Apps</a>
+            <div class="dropdown-menu dropdown-menu-lg dropdown-menu-left your-apps-menu">
+              <div class="yourapps-dropdown">
+                <span>switch to</span>
+                <a class="btn btn-primary" href="/users/selectApplication/">back to app drawer</a>
+              </div>
+              <div style="display: flex;align-items: center;justify-content: center;padding: 5px 10px;">
+                <input class="dropdown-search" id="dropdown-search" placeholder="Search Application">
+              </div>
+              <div class="apps-dropdownItems" id="apps-dropdownItems">
+                {% if applications|length < 1 %}
+                    <div style="margin-left: 19px;margin-bottom: 8px;font-size: 13px;">No Apps</div>
+                {% else %}
+                  {% for i in applications %}
+                      <div class="yourapps-items" id="single_app" name="{{i.application_name}}" onclick="mode_option({{is_user_superuser}},{{is_user_dev}},'{{system_dev_mode}}','{{i.application_name}}','{{i.application_code}}')" >
+                        <div class="appList">
+                          <span class="spanlist">
+                            <i class="{{i.app_icon}}"></i>
+                          </span>
+                          <span style="font-size: 12px;margin-top: 10px;text-align: center;">{{i.application_name}}</span>
+                        </div>
+                      </div>
+                  {% endfor %}
+                {% endif %}
+              </div>
+            </div>
+          </li>
+        </ul>
+
+        <div class="d-flex">
+
+          <ul class="navbar-nav">
+            {% if selected_any_app != 'false'%}
+              {% if current_access_mode == 'Edit' or current_access_mode == 'Build' %}
+                <li class="customtoggle nav-item  m-auto dropdown" id="devToolsNavigator">
+                  <a class="nav-link" href="{% url 'users:developer_tools' current_app_code current_access_mode %}">
+                    <i class="fa-solid fa-layer-group" style="font-size: 24px;"></i>
+                  </a>
+                  <div class="dropdown-menu dropdown-menu-sm dropdown-menu-center devtools-dropdown">
+                    <div class="links-icons" style="overflow-y: scroll; overflow-x:hidden;border-radius: 0.8rem;    padding: 1rem; ">
+                      <div class="devtoolsDDGridContainer" style="display: grid;grid-template-columns: auto auto auto auto;">
+                        <div class="categoriesDiv" style="width: 95%;box-shadow: 1px 0px 0px 0px #d1d1d1;">
+                          <h5 class="devToolsHeaders" style="font-weight: 600;margin-left: 1rem;margin-bottom: 2rem;">ACCESS CONTROLS</h5>
+                            <a href="{% url 'users:user_management' current_app_code current_access_mode %}" class="dropdown-item dropdown-item-box shadow-none devToolsHeadersLink"  style="display: grid;grid-template-columns: 2rem 11rem;align-items: center;width: 80%;">
+                              <i class="fa-solid fa-universal-access  seticon" style="color: #e6576e;"></i>
+                              <h5 style="line-height: unset;margin-bottom: unset;display: flex;justify-content: start;align-items: center;margin-left: 1rem;font-weight: unset;">User Management</h5>
+                            </a>
+                            <a href="{% url 'users:audit_trail' current_app_code current_access_mode %}" class="dropdown-item dropdown-item-box shadow-none" style="display: grid;grid-template-columns: 2rem 11rem;align-items: center;width: 80%;">
+                              <i class="fa-solid fa-server seticon" style="color: #f34e69;"></i>
+                              <h5 style="line-height: unset;margin-bottom: unset;display: flex;justify-content: start;align-items: center;margin-left: 1rem;font-weight: unset;">User Insights</h5>
+                            </a>
+                            <a href="{% url 'users:jobexecution' current_app_code current_access_mode %}" class="dropdown-item dropdown-item-box shadow-none"   style="display: grid;grid-template-columns: 2rem 11rem;align-items: center;width: 80%;">
+                              <i class="fa-solid fa-calendar-check seticon" style="color: #f34e69;"></i>
+                              <h5 style="line-height: unset;margin-bottom: unset;display: flex;justify-content: start;align-items: center;margin-left: 1rem;font-weight: unset;">Scheduler</h5>
+                            </a>
+                        </div>
+                        <div class="categoriesDiv" style="width: 95%;box-shadow: 1px 0px 0px 0px #d1d1d1;">
+                          <h5 class="devToolsHeaders" style="font-weight: 600;margin-left: 1rem;margin-bottom: 2rem;">DATA AND LOGICS</h5>
+                          <a href="{% url 'users:datamanagement' current_app_code current_access_mode %}" class="dropdown-item dropdown-item-box shadow-none" style="display: grid;grid-template-columns: 2rem 11rem;align-items: center;width: 80%;">
+                            <i class="fa-solid fa-sitemap seticon" style="color: #C0DDB1;"></i>
+                            <h5 style="line-height: unset;margin-bottom: unset;display: flex;justify-content: start;align-items: center;margin-left: 1rem;font-weight: unset;">Data Management Studio</h5>
+                          </a>
+                          <a href="{% url 'users:computation_module' current_app_code current_access_mode %}" class="dropdown-item dropdown-item-box shadow-none" style="display: grid;grid-template-columns: 2rem 11rem;align-items: center;width: 80%;">
+                            <i class="fa-solid fa-toolbox seticon" style="color: #C0DDB1;"></i>
+                            <h5 style="line-height: unset;margin-bottom: unset;display: flex;justify-content: start;align-items: center;margin-left: 1rem;font-weight: unset;">Computation Studio</h5>
+                          </a>
+                        </div>
+                        <div class="categoriesDiv" style="width: 95%;box-shadow: 1px 0px 0px 0px #d1d1d1;">
+                          <h5 class="devToolsHeaders" style="font-weight: 600;margin-left: 1rem;margin-bottom: 2rem;">WORKFLOWS</h5>
+                          <a href="{% url 'users:LevelCreation' current_app_code current_access_mode %}" class="dropdown-item dropdown-item-box shadow-none" style="display: grid;grid-template-columns: 2rem 11rem;align-items: center;width: 80%;">
+                            <i class="fa-solid fa-microchip seticon" style="color: #decc73;"></i>
+                            <h5 style="line-height: unset;margin-bottom: unset;display: flex;justify-content: start;align-items: center;margin-left: 1rem;font-weight: unset;">Process Manager</h5>
+                          </a>
+                          <a href="{% url 'users:processGraphModule' current_app_code current_access_mode %}" class="dropdown-item dropdown-item-box shadow-none" style="display: grid;grid-template-columns: 2rem 11rem;align-items: center;width: 80%;">
+                            <i class="fa-solid fa-pen-ruler seticon" style="color: #decc73;"></i>
+                            <h5 style="line-height: unset;margin-bottom: unset;display: flex;justify-content: start;align-items: center;margin-left: 1rem;font-weight: unset;">Process Canvas</h5>
+                          </a>
+                          <a href="{% url 'users:FlowMonitor' current_app_code current_access_mode %}" class="dropdown-item dropdown-item-box shadow-none" style="display: grid;grid-template-columns: 2rem 11rem;align-items: center;width: 80%;">
+                            <i class="fa-solid fa-bars-staggered seticon" style="color: #decc73;"></i>
+                            <h5 style="line-height: unset;margin-bottom: unset;display: flex;justify-content: start;align-items: center;margin-left: 1rem;font-weight: unset;">Process Flow Monitor</h5>
+                          </a>
+                        </div>
+                        <div class="categoriesDiv" style="width: 95%;">
+                          <h5 class="devToolsHeaders" style="font-weight: 600;margin-left: 1rem;margin-bottom: 2rem;">APPLICATION SETTINGS</h5>
+                          <a href="{% url 'users:application' current_app_code current_access_mode %}" class="dropdown-item dropdown-item-box shadow-none" style="display: grid;grid-template-columns: 2rem 11rem;align-items: center;width: 80%;">
+                            <i class="fa-solid fa-gears seticon" style="color: #87b4ff;"></i>
+                            <h5 style="line-height: unset;margin-bottom: unset;display: flex;justify-content: start;align-items: center;margin-left: 1rem;font-weight: unset;">Application Configuration</h5>
+                          </a>
+                          <a href="{% url 'users:alert_management' current_app_code current_access_mode %}" class="dropdown-item dropdown-item-box shadow-none" style="display: grid;grid-template-columns: 2rem 11rem;align-items: center;width: 80%;">
+                            <i class="fa-solid fa-business-time seticon" style="color: #87b4ff;"></i>
+                            <h5 style="line-height: unset;margin-bottom: unset;display: flex;justify-content: start;align-items: center;margin-left: 1rem;font-weight: unset;">Alert Management</h5>
+                          </a>
+                          <a href="{% url 'users:business_model' current_app_code current_access_mode %}" class="dropdown-item dropdown-item-box shadow-none" style="display: grid;grid-template-columns: 2rem 11rem;align-items: center;width: 80%;">
+                            <i class="fa-solid fa-file-invoice-dollar seticon" style="color: #87b4ff;"></i>
+                            <h5 style="line-height: unset;margin-bottom: unset;display: flex;justify-content: start;align-items: center;margin-left: 1rem;font-weight: unset;">Business Models</h5>
+                          </a>
+                          <a data-toggle="modal" data-target="#AppThemeModal" class="dropdown-item dropdown-item-box shadow-none" style="display: grid;grid-template-columns: 2rem 11rem;align-items: center;width: 80%;">
+                            <i class="fa-solid fa-wand-magic-sparkles seticon" style="color: #87b4ff;"></i>
+                            <h5 style="line-height: unset;margin-bottom: unset;display: flex;justify-content: start;align-items: center;margin-left: 1rem;font-weight: unset;">Application Theme</h5>
+                          </a>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </li>
+              {% endif %}
+            {% endif %}
+
+            {% if allow_users_to_config_smtp and request.path != '/users/selectApplication/' and request.path != '/users/adminPanel/' and request.path != '/users/alertsSetup/' and request.path != '/users/customizeTheme/' and selected_any_app != 'false' %}
+              {% if build_app_code != 'Not Selected' %}
+                <li class="nav-item m-auto customtoggle">
+                  <a id="open_user_smtp_config" class="nav-link" href="{% url 'users:smtp_management' build_app_code current_dev_mode %}">
+                    <i class="fas fa-envelope"  style="font-size: 24px;" data-toggle="tooltip" title="SMTP Management"></i>
+                  </a>
+                </li>
+              {% elif edit_app_code != 'Not Selected' %}
+                <li class="nav-item m-auto customtoggle" >
+                  <a id="open_user_smtp_config" class="nav-link" href="{% url 'users:smtp_management' edit_app_code current_dev_mode %}">
+                    <i class="fas fa-envelope"  style="font-size: 24px;" data-toggle="tooltip" title="SMTP Management"></i>
+                  </a>
+                </li>
+              {% elif build_app_code == 'Not Selected' and edit_app_code == 'Not Selected' %}
+                {% if allow_user_mode_smtp %}
+                <li class="nav-item m-auto customtoggle">
+                  <a id="open_user_smtp_config" class="nav-link" href="{% url 'users:smtp_management' current_application_code 'User' %}">
+                    <i class="fas fa-envelope"  style="font-size: 24px;" data-toggle="tooltip" title="SMTP Management"></i>
+                  </a>
+                </li>
+              {% endif %}
+              {% endif %}
+            {% endif %}
+
+
+
+            <li id="dbHealthStatus" class="nav-item m-auto customtoggle">
+              <a class="nav-link"><i class="fa fa-heartbeat"  style="font-size: 24px;" aria-hidden="true"></i></a>
+            </li>
+
+            {% if is_user_dev == 'true' or is_user_superuser == 'true' %}
+              {% if current_application_code == 'Dev' %}
+                {% if current_dev_mode == 'Edit' %}
+                <li id="userMode" style="display: none;cursor: pointer;" class=" customtoggle nav-item m-auto">
+                  <i class="fas fa-sign-out-alt"></i> User Mode
+                </li>
+                {% endif %}
+              {% endif %}
+            {% endif %}
+
+            {% if is_user_dev == 'true' or is_user_superuser == 'true' %}
+              {% if current_application_code == 'Dev' %}
+                {% if current_dev_mode == 'Build' %}
+                  <li id="ExitpreviewProcess" style="display: none;list-style: none;cursor: pointer;margin-left:10%;" class="customtoggle nav-item m-auto">
+                    <i class="fas fa-sign-out-alt"></i>Return To Dev
+                  </li>
+                {% endif %}
+              {% endif %}
+            {% endif %}
+
+            {% if request.path != '/users/selectApplication/' and request.path != '/users/adminPanel/' and request.path != '/users/alertsSetup/' and request.path != '/users/customizeTheme/' and selected_any_app != 'false' %}
+              <li class="nav-item m-auto customtoggle">
+                <a {% if current_application_code != 'App0' %} {% if current_application_code == 'Dev' %}
+                {% if current_dev_mode == 'Edit' %} {% if edit_app_code != 'Not Selected' %}
+                href="{% url 'users:homePage' edit_app_code current_dev_mode %}"
+                {% else %}
+                href="{% url 'users:homePage' 'Dev' current_dev_mode %}"
+                {% endif %} {% elif current_dev_mode == 'Build' %} {% if build_app_code != 'Not Selected' %}
+                href="{% url 'users:homePage' build_app_code current_dev_mode %}"
+                {% else %}
+                href="{% url 'users:select_application' %}"
+                {% endif %}  {% endif %}
+                {% else %}
+                href="{% url 'users:homePage' current_application_code 'User' %}"
+                {% endif %}
+                {% else %}
+                href="{% url 'users:select_application' %}"
+                {% endif %}
+                class="nav-link"><i class="fa-solid fa-house" style="font-size: 24px;" data-toggle="tooltip" title="App Homepage"></i></a>
+              </li>
+            {% endif %}
+
+            {% if not remove_bell_icon %}
+              <li class="nav-item dropdown m-auto" id="notificationButton">
+                <a class="nav-link" href="#" data-toggle="dropdown"  >
+                  <i class="far fa-bell"   style="font-size: 24px;" data-toggle="tooltip" title="Notifications"></i>
+                  <span class="alertcount badge badge-danger navbar-badge"></span>
+                </a>
+                <div class="mydropdown dropdown-menu dropdown-menu-lg dropdown-menu-right notification-container" id="notification-container">
+                  <span class="dropdown-header" style="text-align:left;background-color:#DCDCDC;border-top-right-radius: 1rem;border-top-left-radius: 1rem;">
+                    <div class="d-flex justify-content-between">
+                      <b>Notifications</b>
+                    </div>
+                  </span>
+                  <div id="myDropdown" class="dropdown-content notification-dropdown">
+                    <div class="clearallnotifications" style="display:none">
+                      <p class="clear-all" onclick="UpdateNotifications('all')">Clear All <i class="fa-solid fa-times"></i></p>
+                    </div>
+                    <div class="dropdown-divider"></div>
+                    <div class="addalert"></div>
+                    <div class="dropdown-divider"></div>
+                    <div class="allnotifications"></div>
+                    <div class="seeallnotifications p-1">
+                      <p class="expand_collapse_notifications" >Expand <i class="fa-solid fa-chevron-down notification-arrow"></i></p>
+                    </div>
+                  </div>
+                </div>
+              </li>
+            {% endif %}
+
+            {% if is_user_dev == 'true' or is_user_superuser == 'true'%}
+              {% if system_dev_mode == 'Edit + Build'%}
+              <li class="nav-item dropdown m-auto customtoggle">
+                <a class="nav-link" data-toggle="dropdown">
+                  <i class="fa-solid fa-gear" style="font-size: 24px;" data-toggle="tooltip" title="App Settings"></i>
+                </a>
+                <div class="dropdown-menu dropdown-menu-sm dropdown-menu-right admin-options-dropdown">
+                  <a href="#" class="dropdown-item" id="refreshTenantDBConnections">
+                    <i class="fas fa-refresh" style="margin-right: 0.6rem" aria-hidden="true"></i> <span class="dropdown-text">Refresh database connectivity </span>
+                  </a>
+                  <div class="dropdown-divider"></div>
+                  <a href="#" class="dropdown-item " id="alertsSetup">
+                    <i class="fa-solid fa-gears" style="margin-right: 0.6rem"></i><span class="dropdown-text">Manage Alerts </span>
+                  </a>
+
+                  {% if is_user_dev == 'true' or is_user_superuser == 'true' %}
+                  {% if developer_mode and developer_mode == "True" %}
+                    {% if selected_any_app == 'false' %}
+                        <div class="dropdown-divider"></div>
+                        <a href="#" class="update_all_apps dropdown-item">
+                          <i class="fa-solid fa-retweet" style="margin-right: 0.6rem"></i><span class="dropdown-text">Update Apps </span>
+                        </a>
+                    {% else %}
+                      {% if current_access_mode == 'Edit' or current_access_mode == 'Build' %}
+                          <div class="dropdown-divider"></div>
+                          <a href="#" class="update_all_apps dropdown-item">
+                            <i class="fa-solid fa-retweet" style="margin-right: 0.6rem"></i><span class="dropdown-text">Update Apps </span>
+                          </a>
+                      {% endif %}
+                    {% endif %}
+                  {% endif %}
+                {% endif %}
+                </div>
+              </li>
+              {% endif %}
+            {% endif %}
+
+            {% if block_custom_homepage == "False" %}
+              {% if request.path != '/users/selectApplication/' and request.path != '/users/adminPanel/' and request.path != '/users/alertsSetup/' and request.path != '/users/customizeTheme/' and selected_any_app != 'false' %}
+                {% if build_app_code != 'Not Selected' %}
+                <li class="nav-item dropdown m-auto customtoggle">
+                  <a class="nav-link" href="/users/{{build_app_code}}/{{current_dev_mode}}/homePage/Grapejs" style="margin-top:-0.1em;">
+                    <i class='fas fa-pen-fancy' style="font-size: 24px;" data-toggle="tooltip" title="Design custom homepage"></i>
+                  </a>
+                </li>
+                {% elif edit_app_code != 'Not Selected' %}
+                <li class="nav-item dropdown m-auto">
+                  <a class="nav-link" href="/users/{{edit_app_code}}/{{current_dev_mode}}/homePage/Grapejs" style="margin-top:-0.1em;">
+                    <i class='fas fa-pen-fancy' style="font-size: 24px;" data-toggle="tooltip" title="Design custom homepage"></i>
+                  </a>
+                </li>
+                {% elif build_app_code == 'Not Selected' and edit_app_code == 'Not Selected' %}
+                <li class="nav-item dropdown m-auto">
+                  <a class="nav-link" href="/users/{{current_application_code}}/User/homePage/Grapejs" style="margin-top:-0.1em;">
+                    <i class='fas fa-pen-fancy' style="font-size: 24px;" data-toggle="tooltip" title="Design custom homepage"></i>
+                  </a>
+                </li>
+                {% endif %}
+              {% endif %}
+            {% endif %}
+
+            <li class="nav-item dropdown m-auto customtoggle">
+              <a class="profile" data-toggle="dropdown">
+                {% if user.profile.profile_pic %}
+                  <img src="{{ user.profile.profile_pic.url }}" class="img-circle elevation-2 mx-auto user-profile-photo"
+                    alt="User profile picture" >
+                    <div class="user-online"></div>
+                {% elif user.profile.first_name.0 %}
+                  <div class="img-circle elevation-2 navlink-img ">
+                    <div>
+                      <b class="profile-initials">{{user.profile.first_name.0}}{{user.profile.last_name.0}}</b>
+                    </div>
+                  </div>
+                  <div class="user-online"></div>
+                {% else %}
+                  <i class="fa fa-user nav-link" style="font-size:24px;" aria-hidden="true"></i>
+                {% endif %}
+              </a>
+              <div class="dropdown-menu dropdown-menu-sm dropdown-menu-right user-profile-dropdown">
+                <div style="display: flex; flex-direction: column; align-items: center; justify-content: space-around;">
+                  <div class="text-center pb-1" id="id_user_profile_image_or_letter">
+                    {% if user.profile.profile_pic %}
+                    <img src="{{ user.profile.profile_pic.url }}" class="img-circle elevation-2 mx-auto"
+                      alt="User profile picture" style="height: 60px; width: 60px;">
+                    {% elif user.profile.first_name.0 %}
+                    <div class="img-circle elevation-2 navlink-img "  style="font-size: 130%;height: 55px; width: 55px;">
+                      <div>
+                        <b  class="profile-initials">{{user.profile.first_name.0}}{{user.profile.last_name.0}}</b>
+                      </div>
+                    </div>
+                    {% else %}
+                      <i class="fa fa-user" style="font-size:24px;" aria-hidden="true"></i>
+                    {% endif %}
+                  </div>
+                  <div class="info">
+                    {% if user.profile.first_name %}
+                    {% if user.profile.last_name %}
+                    <a href="#" class="d-block" style="text-align:center;padding: 0.25rem;"><b class="firstname-lastname">{{ user.profile.first_name }} {{ user.profile.last_name }}</b></a>
+                    {% endif %}
+                    {% else %}
+                    <a href="#" class="d-block" style="text-align:center;padding: 0.25rem;" class="user-fullname">{{ user.get_full_name }}</a>
+                    {% endif %}
+                    <a href="#" class="d-block" style="text-align:center;font-size: 12px;padding: 0.25rem;">username: {{ user.get_username }}</a>
+                  </div>
+                </div>
+                {% if allow_user_profile and allow_user_profile == "True" %}
+                  <div class="dropdown-divider"></div>
+                  <a {% if selected_any_app == 'false' %} href="{% url 'users:userprofile'%}" {% else %} href="{% url 'users:userprofileApp' current_app_code current_access_mode %}" {% endif %} class="dropdown-item">
+                    <i class="fas fa-users mr-2"></i> User profile
+                  </a>
+                {% endif %}
+
+                {% if allow_user_forum and allow_user_forum == "True" %}
+                  <div class="dropdown-divider"></div>
+                  <a href="#" class="dropdown-item">
+                    <i class="far fa-comment-alt mr-2"></i> User forum
+                  </a>
+                {% endif %}
+
+                {% if allow_user_planner and allow_user_planner == "True" %}
+                  {% if planner_display_config.show_planner == 'true' and planner_display_config.display_position == "planner_link" %}
+                    <div class="dropdown-divider"></div>
+                    <a {% if selected_any_app == 'false' %} href="{% url 'users:planner'%}" {% else %} href="{% url 'users:plannerApp' current_app_code current_access_mode %}" {% endif %} class="dropdown-item">
+                      <i class="fas fa-calendar-alt mr-2"></i> Planner
+                    </a>
+                  {% endif %}
+                {% endif %}
+
+                {% if dashboard_display_config.show_dashboard == 'true' and dashboard_display_config.display_position == "dashboard_link" %}
+                  <div class="dropdown-divider"></div>
+                  <a href="/users/selectDashboard/" class="dropdown-item">
+                    <i class="fas fa-chart-bar mr-2"></i> Dashboard
+                  </a>
+                {% endif %}
+
+                <div class="dropdown-divider"></div>
+                <a class="dropdown-item" onclick="ClearCachealert()">
+                  <i class="fas fa-sign-out-alt mr-2"></i> Sign out
+                </a>
+              </div>
+            </li>
+          </ul>
+
+          <div class="icon-container">
+            <div class="icon-container-item" style="display: inline-block; text-align: center; list-style:none;">
+              <li class="nav-item dropdown m-auto">
+                <a class="profile" data-toggle="dropdown" onclick="customtoggleDropdown()">
+                  {% if user.profile.profile_pic %}
+                    <img src="{{ user.profile.profile_pic.url }}" class="img-circle elevation-2 mx-auto user-profile-photo"
+                      alt="User profile picture" >
+                      <div class="user-online"></div>
+                  {% elif user.profile.first_name.0 %}
+                    <div class="img-circle elevation-2 navlink-img ">
+                      <div>
+                        <b class="profile-initials">{{user.profile.first_name.0}}{{user.profile.last_name.0}}</b>
+                      </div>
+                    </div>
+                    <div class="user-online"></div>
+                  {% else %}
+                    <i class="fa fa-user nav-link" style="font-size:24px;" aria-hidden="true"></i>
+                  {% endif %}
+                </a>
+                <div class="dropdown-menu dropdown-menu-sm dropdown-menu-right user-profile-dropdown">
+                  <div style="display: flex; flex-direction: column; align-items: center; justify-content: space-around;">
+                    <div class="text-center pb-1" id="id_user_profile_image_or_letter">
+                      {% if user.profile.profile_pic %}
+                      <img src="{{ user.profile.profile_pic.url }}" class="img-circle elevation-2 mx-auto"
+                        alt="User profile picture" style="height: 60px; width: 60px;">
+                      {% elif user.profile.first_name.0 %}
+                      <div class="img-circle elevation-2 navlink-img "  style="font-size: 130%;height: 55px; width: 55px;">
+                        <div>
+                          <b  class="profile-initials">{{user.profile.first_name.0}}{{user.profile.last_name.0}}</b>
+                        </div>
+                      </div>
+                      {% else %}
+                        <i class="fa fa-user" style="font-size:24px;" aria-hidden="true"></i>
+                      {% endif %}
+                    </div>
+                    <div class="info">
+                      {% if user.profile.first_name %}
+                      {% if user.profile.last_name %}
+                      <a href="#" class="d-block" style="text-align:center;padding: 0.25rem;"><b class="firstname-lastname">{{ user.profile.first_name }} {{ user.profile.last_name }}</b></a>
+                      {% endif %}
+                      {% else %}
+                      <a href="#" class="d-block" style="text-align:center;padding: 0.25rem;" class="user-fullname">{{ user.get_full_name }}</a>
+                      {% endif %}
+                      <a href="#" class="d-block" style="text-align:center;font-size: 12px;padding: 0.25rem;">username: {{ user.get_username }}</a>
+                    </div>
+                  </div>
+                  {% if allow_user_profile and allow_user_profile == "True" %}
+                    <div class="dropdown-divider"></div>
+                    <a {% if selected_any_app == 'false' %} href="{% url 'users:userprofile'%}" {% else %} href="{% url 'users:userprofileApp' current_app_code current_access_mode %}" {% endif %} class="dropdown-item">
+                      <i class="fas fa-users mr-2"></i> User profile
+                    </a>
+                  {% endif %}
+
+                  {% if allow_user_forum and allow_user_forum == "True" %}
+                    <div class="dropdown-divider"></div>
+                    <a href="#" class="dropdown-item">
+                      <i class="far fa-comment-alt mr-2"></i> User forum
+                    </a>
+                  {% endif %}
+
+                  {% if allow_user_planner and allow_user_planner == "True" %}
+                    <div class="dropdown-divider"></div>
+                    <a {% if selected_any_app == 'false' %} href="{% url 'users:planner'%}" {% else %} href="{% url 'users:plannerApp' current_app_code current_access_mode %}" {% endif %} class="dropdown-item">
+                      <i class="fas fa-calendar-alt mr-2"></i> Planner
+                    </a>
+                  {% endif %}
+
+                  <div class="dropdown-divider"></div>
+                  <a class="dropdown-item" onclick="ClearCachealert()">
+                    <i class="fas fa-sign-out-alt mr-2"></i> Sign out
+                  </a>
+                </div>
+              </li>
+            </div>
+            <div class="icon-container-item" style="display: inline-block; text-align: center; margin: 0 5px;" onclick="toggleDropdown()">
+              <i id="customicon" class="fa-solid fa-bars mt-1"></i>
+            </div>
+
+            <div id="customdropdown" class="customdropdown dropdown-menu dropdown-menu-sm dropdown-menu-right">
+              <ul class="customdropdownUL">
+                {% if selected_any_app != 'false'%}
+                  {% if current_access_mode == 'Edit' or current_access_mode == 'Build' %}
+                    <li class="nav-item dropdown-item m-auto dropdown" id="devToolsNavigator">
+                      <a class="nav-link" href="{% url 'users:developer_tools' current_app_code current_access_mode %}" style="padding: 0; margin-top:-0.1em;padding: 0;display: flex;justify-content: start;align-items: center; height: 1.3rem;">
+                        <i class="fa-solid fa-layer-group" style="font-size: 24px; margin-left: 1rem;"></i>
+                        <span class="downsize">Developer tools</span>
+                      </a>
+                      <div class="dropdown-menu dropdown-menu-sm dropdown-menu-center devtools-dropdown">
+                        <div class="links-icons" style="overflow-y: scroll; overflow-x:hidden;border-radius: 0.8rem;    padding: 1rem; ">
+                          <div class="devtoolsDDGridContainer" style="display: grid;grid-template-columns: auto auto auto auto;">
+                            <div class="categoriesDiv" style="width: 95%;box-shadow: 1px 0px 0px 0px #d1d1d1;">
+                              <h5 class="devToolsHeaders" style="font-weight: 600;margin-left: 1rem;margin-bottom: 2rem;">ACCESS CONTROLS</h5>
+                                <a href="{% url 'users:user_management' current_app_code current_access_mode %}" class="dropdown-item dropdown-item-box shadow-none devToolsHeadersLink"  style="display: grid;grid-template-columns: 2rem 11rem;align-items: center;width: 80%;">
+                                  <i class="fa-solid fa-universal-access  seticon" style="color: #e6576e;"></i>
+                                  <h5 style="line-height: unset;margin-bottom: unset;display: flex;justify-content: start;align-items: center;margin-left: 1rem;font-weight: unset;">User Management</h5>
+                                </a>
+                                <a href="{% url 'users:audit_trail' current_app_code current_access_mode %}" class="dropdown-item dropdown-item-box shadow-none" style="display: grid;grid-template-columns: 2rem 11rem;align-items: center;width: 80%;">
+                                  <i class="fa-solid fa-server seticon" style="color: #f34e69;"></i>
+                                  <h5 style="line-height: unset;margin-bottom: unset;display: flex;justify-content: start;align-items: center;margin-left: 1rem;font-weight: unset;">User Insights</h5>
+                                </a>
+                                <a href="{% url 'users:jobexecution' current_app_code current_access_mode %}" class="dropdown-item dropdown-item-box shadow-none"   style="display: grid;grid-template-columns: 2rem 11rem;align-items: center;width: 80%;">
+                                  <i class="fa-solid fa-calendar-check seticon" style="color: #f34e69;"></i>
+                                  <h5 style="line-height: unset;margin-bottom: unset;display: flex;justify-content: start;align-items: center;margin-left: 1rem;font-weight: unset;">Scheduler</h5>
+                                </a>
+                                <a href="{% url 'users:permission_access' current_app_code current_access_mode %}" class="dropdown-item dropdown-item-box shadow-none"  style="display: grid;grid-template-columns: 2rem 11rem;align-items: center;width: 80%;">
+                                  <i class="fa-regular fa-id-card seticon" style="color: #f34e69;"></i>
+                                  <h5 style="line-height: unset;margin-bottom: unset;display: flex;justify-content: start;align-items: center;margin-left: 1rem;font-weight: unset;">User Access Approval</h5>
+                                </a>
+                            </div>
+                            <div class="categoriesDiv" style="width: 95%;box-shadow: 1px 0px 0px 0px #d1d1d1;">
+                              <h5 class="devToolsHeaders" style="font-weight: 600;margin-left: 1rem;margin-bottom: 2rem;">DATA AND LOGICS</h5>
+                              <a href="{% url 'users:datamanagement' current_app_code current_access_mode %}" class="dropdown-item dropdown-item-box shadow-none" style="display: grid;grid-template-columns: 2rem 11rem;align-items: center;width: 80%;">
+                                <i class="fa-solid fa-sitemap seticon" style="color: #C0DDB1;"></i>
+                                <h5 style="line-height: unset;margin-bottom: unset;display: flex;justify-content: start;align-items: center;margin-left: 1rem;font-weight: unset;">Data Management Studio</h5>
+                              </a>
+                              <a href="{% url 'users:computation_module' current_app_code current_access_mode %}" class="dropdown-item dropdown-item-box shadow-none" style="display: grid;grid-template-columns: 2rem 11rem;align-items: center;width: 80%;">
+                                <i class="fa-solid fa-toolbox seticon" style="color: #C0DDB1;"></i>
+                                <h5 style="line-height: unset;margin-bottom: unset;display: flex;justify-content: start;align-items: center;margin-left: 1rem;font-weight: unset;">Computation Studio</h5>
+                              </a>
+                            </div>
+                            <div class="categoriesDiv" style="width: 95%;box-shadow: 1px 0px 0px 0px #d1d1d1;">
+                              <h5 class="devToolsHeaders" style="font-weight: 600;margin-left: 1rem;margin-bottom: 2rem;">WORKFLOWS</h5>
+                              <a href="{% url 'users:LevelCreation' current_app_code current_access_mode %}" class="dropdown-item dropdown-item-box shadow-none" style="display: grid;grid-template-columns: 2rem 11rem;align-items: center;width: 80%;">
+                                <i class="fa-solid fa-microchip seticon" style="color: #decc73;"></i>
+                                <h5 style="line-height: unset;margin-bottom: unset;display: flex;justify-content: start;align-items: center;margin-left: 1rem;font-weight: unset;">Process Manager</h5>
+                              </a>
+                              <a href="{% url 'users:processGraphModule' current_app_code current_access_mode %}" class="dropdown-item dropdown-item-box shadow-none" style="display: grid;grid-template-columns: 2rem 11rem;align-items: center;width: 80%;">
+                                <i class="fa-solid fa-pen-ruler seticon" style="color: #decc73;"></i>
+                                <h5 style="line-height: unset;margin-bottom: unset;display: flex;justify-content: start;align-items: center;margin-left: 1rem;font-weight: unset;">Process Canvas</h5>
+                              </a>
+                              <a href="{% url 'users:FlowMonitor' current_app_code current_access_mode %}" class="dropdown-item dropdown-item-box shadow-none" style="display: grid;grid-template-columns: 2rem 11rem;align-items: center;width: 80%;">
+                                <i class="fa-solid fa-bars-staggered seticon" style="color: #decc73;"></i>
+                                <h5 style="line-height: unset;margin-bottom: unset;display: flex;justify-content: start;align-items: center;margin-left: 1rem;font-weight: unset;">Process Flow Monitor</h5>
+                              </a>
+                            </div>
+                            <div class="categoriesDiv" style="width: 95%;">
+                              <h5 class="devToolsHeaders" style="font-weight: 600;margin-left: 1rem;margin-bottom: 2rem;">APPLICATION SETTINGS</h5>
+                              <a href="{% url 'users:application' current_app_code current_access_mode %}" class="dropdown-item dropdown-item-box shadow-none" style="display: grid;grid-template-columns: 2rem 11rem;align-items: center;width: 80%;">
+                                <i class="fa-solid fa-gears seticon" style="color: #87b4ff;"></i>
+                                <h5 style="line-height: unset;margin-bottom: unset;display: flex;justify-content: start;align-items: center;margin-left: 1rem;font-weight: unset;">Application Configuration</h5>
+                              </a>
+                              <a href="{% url 'users:alert_management' current_app_code current_access_mode %}" class="dropdown-item dropdown-item-box shadow-none" style="display: grid;grid-template-columns: 2rem 11rem;align-items: center;width: 80%;">
+                                <i class="fa-solid fa-business-time seticon" style="color: #87b4ff;"></i>
+                                <h5 style="line-height: unset;margin-bottom: unset;display: flex;justify-content: start;align-items: center;margin-left: 1rem;font-weight: unset;">Alert Management</h5>
+                              </a>
+                              <a href="{% url 'users:business_model' current_app_code current_access_mode %}" class="dropdown-item dropdown-item-box shadow-none" style="display: grid;grid-template-columns: 2rem 11rem;align-items: center;width: 80%;">
+                                <i class="fa-solid fa-file-invoice-dollar seticon" style="color: #87b4ff;"></i>
+                                <h5 style="line-height: unset;margin-bottom: unset;display: flex;justify-content: start;align-items: center;margin-left: 1rem;font-weight: unset;">Business Models</h5>
+                              </a>
+                              <a data-toggle="modal" data-target="#AppThemeModal" class="dropdown-item dropdown-item-box shadow-none" style="display: grid;grid-template-columns: 2rem 11rem;align-items: center;width: 80%;">
+                                <i class="fa-solid fa-wand-magic-sparkles seticon" style="color: #87b4ff;"></i>
+                                <h5 style="line-height: unset;margin-bottom: unset;display: flex;justify-content: start;align-items: center;margin-left: 1rem;font-weight: unset;">Application Theme</h5>
+                              </a>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </li>
+                    <div class="dropdown-divider"></div>
+                  {% endif %}
+                {% endif %}
+
+                {% if allow_users_to_config_smtp and request.path != '/users/selectApplication/' and request.path != '/users/adminPanel/' and request.path != '/users/alertsSetup/' and request.path != '/users/customizeTheme/' and selected_any_app != 'false' %}
+                  {% if build_app_code != 'Not Selected' %}
+                    <li class="nav-item m-auto dropdown-item">
+                      <a id="open_user_smtp_config" class="nav-link" href="{% url 'users:smtp_management' build_app_code current_dev_mode %}" style="padding: 0; margin-top:-0.1em;padding: 0;display: flex;justify-content: start;align-items: center; height: 1.3rem;">
+                        <i class="fas fa-envelope"  style="font-size: 24px; margin-left: 1rem;" aria-hidden="true" data-toggle="tooltip" title="SMTP Management"></i>
+                        <span class="downsize">SMTP Management</span>
+                      </a>
+                    </li><div class="dropdown-divider"></div>
+                  {% elif edit_app_code != 'Not Selected' %}
+                    <li class="nav-item m-auto dropdown-item">
+                      <a id="open_user_smtp_config" class="nav-link" href="{% url 'users:smtp_management' edit_app_code current_dev_mode %}" style="padding: 0; margin-top:-0.1em;padding: 0;display: flex;justify-content: start;align-items: center; height: 1.3rem;">
+                        <i class="fas fa-envelope"  style="font-size: 24px; margin-left: 1rem;" aria-hidden="true" data-toggle="tooltip" title="SMTP Management"></i>
+                        <span class="downsize">SMTP Management</span>
+                      </a>
+                    </li><div class="dropdown-divider"></div>
+                  {% elif build_app_code == 'Not Selected' and edit_app_code == 'Not Selected' %}
+                    {% if allow_user_mode_smtp %}
+                    <li class="nav-item m-auto dropdown-item">
+                      <a id="open_user_smtp_config" class="nav-link" href="{% url 'users:smtp_management' current_application_code 'User' %}" style="padding: 0; margin-top:-0.1em;padding: 0;display: flex;justify-content: start;align-items: center; height: 1.3rem;">
+                        <i class="fas fa-envelope"  style="font-size: 24px; margin-left: 1rem;" aria-hidden="true" data-toggle="tooltip" title="SMTP Management"></i>
+                        <span class="downsize">SMTP Management</span>
+                      </a>
+                    </li><div class="dropdown-divider"></div>
+                  {% endif %}
+                  {% endif %}
+                {% endif %}
+
+
+                {% if is_user_dev == 'true' or is_user_superuser == 'true' %}
+                  {% if developer_mode and developer_mode == "True" %}
+                    {% if selected_any_app == 'false' %}
+                      <li class="nav-item m-auto dropdown-item">
+                        <a href="#" class="update_all_apps nav-link" style="padding: 0; margin-top:-0.1em;padding: 0;display: flex;justify-content: start;align-items: center; height: 1.3rem;">
+                          <i class="fa-solid fa-retweet" data-toggle="tooltip" title="Update Apps" style="font-size: 24px; margin-left: 1rem;" aria-hidden="true"></i>
+                          <span class="downsize">Update Apps</span>
+                        </a>
+                      </li><div class="dropdown-divider"></div>
+                    {% else %}
+                      {% if current_access_mode == 'Edit' or current_access_mode == 'Build' %}
+                        <li class="nav-item m-auto dropdown-item">
+                          <a href="#" class="update_all_apps nav-link" style="padding: 0; margin-top:-0.1em;padding: 0;display: flex;justify-content: start;align-items: center; height: 1.3rem;">
+                            <i class="fa-solid fa-retweet" data-toggle="tooltip" title="Update Apps" style="font-size: 24px; margin-left: 1rem;" aria-hidden="true"></i>
+                            <span class="downsize">Update Apps</span>
+                          </a>
+                        </li><div class="dropdown-divider"></div>
+                      {% endif %}
+                    {% endif %}
+                  {% endif %}
+                {% endif %}
+
+
+                <li id="dbHealthStatus" class="nav-item m-auto dropdown-item">
+                  <a class="nav-link" style="padding: 0; margin-top:-0.1em; display: flex; justify-content: start; align-items: center; height:1rem;"><i class="fa fa-heartbeat"  style="font-size: 24px; margin-left: 1rem;" aria-hidden="true"></i><span class="downsize">DB Health</span></a>
+                </li><div class="dropdown-divider"></div>
+
+                {% if is_user_dev == 'true' or is_user_superuser == 'true' %}
+                  {% if current_application_code == 'Dev' %}
+                    {% if current_dev_mode == 'Edit' %}
+                    <li id="userMode" style="display: none;cursor: pointer;" class="nav-item dropdown-item m-auto">
+                      <i class="fas fa-sign-out-alt"></i> User Mode
+                    </li>
+                    {% endif %}
+                  {% endif %}
+                {% endif %}
+
+                {% if is_user_dev == 'true' or is_user_superuser == 'true' %}
+                  {% if current_application_code == 'Dev' %}
+                    {% if current_dev_mode == 'Build' %}
+                      <li id="ExitpreviewProcess" style="display: none;list-style: none;cursor: pointer;margin-left:10%;" class="nav-item dropdown-item m-auto">
+                        <i class="fas fa-sign-out-alt"></i>Return To Dev
+                      </li>
+                    {% endif %}
+                  {% endif %}
+                {% endif %}
+
+                {% if request.path != '/users/selectApplication/' and request.path != '/users/adminPanel/' and request.path != '/users/alertsSetup/' and request.path != '/users/customizeTheme/' and selected_any_app != 'false' %}
+                  <li class="nav-item dropdown-item m-auto">
+                    <a {% if current_application_code != 'App0' %} {% if current_application_code == 'Dev' %}
+                    {% if current_dev_mode == 'Edit' %} {% if edit_app_code != 'Not Selected' %}
+                    href="{% url 'users:homePage' edit_app_code current_dev_mode %}"
+                    {% else %}
+                    href="{% url 'users:homePage' 'Dev' current_dev_mode %}"
+                    {% endif %} {% elif current_dev_mode == 'Build' %} {% if build_app_code != 'Not Selected' %}
+                    href="{% url 'users:homePage' build_app_code current_dev_mode %}"
+                    {% else %}
+                    href="{% url 'users:select_application' %}"
+                    {% endif %}  {% endif %}
+                    {% else %}
+                    href="{% url 'users:homePage' current_application_code 'User' %}"
+                    {% endif %}
+                    {% else %}
+                    href="{% url 'users:select_application' %}"
+                    {% endif %}
+                    class="nav-link" style="padding: 0;margin-top:-0.1em;display: flex;justify-content: start;align-items: center; height: 1.3rem;"><i class="fa-solid fa-house" style="font-size: 24px; margin-left: 1rem;" data-toggle="tooltip" title="App Homepage"></i><span class="downsize">App Homepage</span></a>
+                  </li><div class="dropdown-divider"></div>
+                {% endif %}
+
+                {% if is_user_dev == 'true' or is_user_superuser == 'true'%}
+                  {% if system_dev_mode == 'Edit + Build'%}
+                  <li class="nav-item dropdown-item dropdown m-auto">
+                    <a href="#" class="nav-link" style="padding: 0;margin-top:-0.1em;display: flex;justify-content: start;align-items: center; height: 1.3rem;" id="alertsSetup1">
+                      <i class="fa-solid fa-gears mr-2" style="font-size: 24px; margin-left: 1rem;" data-toggle="tooltip"></i>
+                      <span class="downsize">Manage Alerts</span>
+                    </a>
+                  </li><div class="dropdown-divider"></div>
+                  {% endif %}
+                {% endif %}
+
+                {% if is_user_dev == 'true' or is_user_superuser == 'true'%}
+                  {% if system_dev_mode == 'Edit + Build'%}
+                  <li class="nav-item dropdown-item dropdown m-auto">
+                    <a href="#" class="nav-link" style="padding: 0;margin-top:-0.1em;display: flex;justify-content: start;align-items: center; height: 1.3rem;" id="refreshTenantDBConnections1">
+                      <i class="fas fa-refresh mr-2" style="font-size: 24px; margin-left: 1rem;" data-toggle="tooltip"></i>
+                      <span class="downsize" style="white-space: break-spaces;">Refresh database connectivity</span>
+                    </a>
+                  </li><div class="dropdown-divider"></div>
+                  {% endif %}
+                {% endif %}
+
+
+                {% if block_custom_homepage == "False" %}
+                  {% if request.path != '/users/selectApplication/' and request.path != '/users/adminPanel/' and request.path != '/users/alertsSetup/' and request.path != '/users/customizeTheme/' and selected_any_app != 'false' %}
+                    {% if build_app_code != 'Not Selected' %}
+                    <li class="nav-item dropdown-item dropdown m-auto">
+                      <a class="nav-link" href="/users/{{build_app_code}}/{{current_dev_mode}}/homePage/Grapejs" style="margin-top:-0.1em; padding: 0;display: flex;justify-content: start;align-items: center; height: 1.3rem;">
+                        <i class='fas fa-pen-fancy' style="font-size: 24px; margin-left: 1rem;" data-toggle="tooltip" title="Design custom homepage"></i><span class="downsize" style="width: 7rem; white-space: break-spaces;">Design custom homepage</span>
+                      </a>
+                    </li>
+                    {% elif edit_app_code != 'Not Selected' %}
+                    <li class="nav-item dropdown-item dropdown m-auto">
+                      <a class="nav-link" href="/users/{{edit_app_code}}/{{current_dev_mode}}/homePage/Grapejs" style="margin-top:-0.1em; padding: 0;display: flex;justify-content: start;align-items: center; height: 1.3rem;">
+                        <i class='fas fa-pen-fancy' style="font-size: 24px; margin-left: 1rem;" data-toggle="tooltip" title="Design custom homepage"></i><span class="downsize" style="width: 7rem; white-space: break-spaces;">Design custom homepage</span>
+                      </a>
+                    </li>
+                    {% elif build_app_code == 'Not Selected' and edit_app_code == 'Not Selected' %}
+                    <li class="nav-item dropdown-item dropdown m-auto">
+                      <a class="nav-link" href="/users/{{current_application_code}}/User/homePage/Grapejs" style="margin-top:-0.1em; padding: 0;display: flex;justify-content: start;align-items: center; height: 1.3rem;">
+                        <i class='fas fa-pen-fancy' style="font-size: 24px; margin-left: 1rem;" data-toggle="tooltip" title="Design custom homepage"></i><span class="downsize" style="width: 7rem; white-space: break-spaces;">Design custom homepage</span>
+                      </a>
+                    </li>
+                    {% endif %}
+                  {% endif %}
+                {% endif %}
+              </ul>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+      <i class="fa-solid fa-angle-up hideit" id="hideit"></i>
+      <i class="fa-solid fa-thumbtack pinit" id="pinit" data-toggle="tooltip" title="Pin to screen"></i>
+    </nav>
+    <!-- Options -->
+    <div class="modal fade bd-example-modal-sm" id="mode-options"  role="dialog" aria-labelledby="mode-options">
+      <div class="modal-dialog modal-dialog-centered modal-sm" role="document">
+        <div class="modal-content modal-options">
+          <div class="modal-header modal-options-header">
+            <h5 class="modal-title" id="exampleModalLongTitle">Login as: </h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close" style="color: black;">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body modal-options-body" style="display: flex;flex-direction: column;align-items: center;justify-content: center;">
+            <button class="choose-buttons" id="chose-user" data-mode="User">User</button>
+            <button class="choose-buttons" id="chose-developer" data-mode="Build">Developer (Edit + Build)</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal" id="dbConnectionFailureModal">
+      <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+          <div class="modal-body">
+              <div>
+                Database status - <b id="dbFailureText" style="color: red;"></b>
+              </div>
+              <div>Please navigate to Management console and try to reconnect! - <a href="{% url 'users:select_application' %}"> All Apps </a></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <script>
+      document.addEventListener('click', function(event){
+        var dropdownButton = $('#notificationButton');
+        var dropdownContent = $('#notification-container')
+
+        if(dropdownContent.has(event.target).length === 0 && !dropdownContent.is(event.target) ){
+          ;
+        }
+        else{
+          dropdownButton.addClass("show")
+          dropdownContent.addClass("show")
+        }
+      })
+
+      function toggleDropdown() {
+        var dropdown = document.getElementById("customdropdown");
+        dropdown.style.display = (dropdown.style.display === "block") ? "" : "block";
+        var customicon = document.getElementById("customicon");
+        if (customicon.style.transform === "rotate(90deg)") {
+          customicon.style.transform = "rotate(0deg)";
+        } else {
+          customicon.style.transform = "rotate(90deg)";
+        }
+      }
+      function customtoggleDropdown() {
+        var dropdown = document.getElementById("customdropdown");
+        if(dropdown.style.display === "block"){
+          dropdown.style.display = "none";
+        }
+      }
+
+
+      $(document).ready(function(){
+        $('.selectize').selectize({
+          allowEmptyOption:true
+        })
+      })
+
+      $("#hideit").click(function(){
+        $(".nav-wrapper").toggleClass("displaynone")
+        $(this).toggleClass("rotate")
+      })
+
+      $("#pinit").click(function(){
+        $(".main-header").toggleClass("fixed")
+        $(this).toggleClass("color")
+      })
+
+      $('#dropdown-search').on('keyup change', function (){
+        var value = $(this).val().toLowerCase();
+
+        $("div#single_app","#apps-dropdownItems").filter(function() {
+          $(this).toggle($(this).attr("name").toLowerCase().indexOf(value) > -1)
+        });
+      })
+
+
+      function gotoApp(appCode, mode){
+        $.ajax({
+          url: '/users/selectApplication/',
+          data: {
+              'app_code' : appCode,
+              'operation': "application_selected",
+          },
+          type: "POST",
+          dataType: "json",
+          success: function(data) {
+              let loc = `/users/${appCode}/${mode}/homePage/`;
+              window.location.href = loc;
+          },
+          error: function () {
+            Swal.fire({text:"Error",icon:"error"});
+          }
+        });
+      }
+
+      function mode_option(is_user_superuser,is_user_dev,system_dev_mode,name, code){
+        var dev_applications = {{dev_applications | safe}};
+        var app_mode =""
+        if (is_user_dev || is_user_superuser){
+          if (system_dev_mode == 'Edit + Build'){
+            var flag = false
+            for(var j =0; j<dev_applications.length; j++){
+              if(code == dev_applications[j]["application_code"]){
+                flag = true
+                break
+              }
+            }
+            if(flag && "{{developer_mode}}" == "True"){
+              app_mode = "Build"
+            }else{
+              app_mode = "User"
+            }
+          }
+        }
+        else{
+          app_mode = "User"
+        }
+        if(app_mode == "Build"){
+          $("#mode-options").modal("show")
+          $("#chose-user, #chose-developer").click(function(){
+            var mode = $(this).attr("data-mode")
+            gotoApp(code, mode)
+          })
+        }else{
+          gotoApp(code, app_mode)
+        }
+      }
+
+      $('#alertsSetup').on('click', () => {
+        let loc = '/users/alertsSetup/'
+        if (window.location.href.indexOf("selectApplication") > -1){
+          window.location.href = loc;
+        }
+        else{
+          window.open(loc,'_blank');
+        }
+      });
+      $('#alertsSetup1').on('click', () => {
+        let loc = '/users/alertsSetup/'
+        if (window.location.href.indexOf("selectApplication") > -1){
+          window.location.href = loc;
+        }
+        else{
+          window.open(loc,'_blank');
+        }
+      });
+
+      $('#refreshTenantDBConnections').off('click').on('click', () => {
+        $.ajax({
+            url: '/users/adminPanel/',
+            data: {
+                'operation': 'refreshTenantDBConnections',
+            },
+            type: "POST",
+            dataType: "json",
+            success: function (data) {
+                if (data.failed_list.length > 0) {
+                    let string = 'Following database connections could not be refreshed! Please make sure the connected db servers are reachable.';
+                    string += `\n ${JSON.stringify(data.failed_list)}`;
+                    Swal.fire({text:string,icon:"error"});
+                } else {
+                    Swal.fire({text:"Connected database connections refreshed successfuly!",icon:"success"});
+                }
+            },
+            error: function () {
+                Swal.fire({text:'Error refreshing database connections!',icon:"error"})
+            }
+        });
+      });
+
+      $('#refreshTenantDBConnections1').off('click').on('click', () => {
+        $.ajax({
+            url: '/users/adminPanel/',
+            data: {
+                'operation': 'refreshTenantDBConnections',
+            },
+            type: "POST",
+            dataType: "json",
+            success: function (data) {
+                if (data.failed_list.length > 0) {
+                    let string = 'Following database connections could not be refreshed! Please make sure the connected db servers are reachable.';
+                    string += `\n ${JSON.stringify(data.failed_list)}`;
+                    Swal.fire({text:string,icon:"error"});
+                } else {
+                    Swal.fire({text:"Connected database connections refreshed successfuly!",icon:"success"});
+                }
+            },
+            error: function () {
+                Swal.fire({text:'Error refreshing database connections!',icon:"error"})
+            }
+        });
+      });
+
+    function ClearCachealert() {
+
+      Swal.fire({
+        title: 'Are you sure you want to sign out?',
+        icon: 'question',
+        html : `<form method="post" action="{% url 'logout' %}">
+            {% csrf_token %}
+            {% if redirect_field_value %}
+            <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" />
+            {% endif %}
+            <div class="d-flex justify-content-center">
+              <div class="logout switch-container">
+                <input type="checkbox" class="clear_cache switch" name="clear_cache" id="clear_cache">
+                <div class="switch-color"><label class="trigger-label" for="clear_cache"></label></div>
+                <label class="sign switch-label" for="clear_cache"></label>
+              </div>
+              <label style="font-weight:normal;font-size:0.9em;margin-left: 7px;" for="clear_cache"> Clear Cache? </label>
+            </div>
+            <button class="swal2-styled swal2-confirm" id="add" type="submit">Sign Out</button>
+            <button type="button" class="swal2-cancel swal2-styled" onclick="swal.close()" aria-label="" style="display: inline-block;">Cancel</button>
+          </form>`,
+          showCloseButton: false,
+          showCancelButton: false,
+          showConfirmButton: false,
+      })
+
+    }
+
+    </script>
+
+    <script>
+      // select app description
+      $(".select2-container").tooltip({
+          title: function() {
+              return $(this).prev().attr("title");
+          },
+          placement: "auto",
+          //container: 'body'
+      });
+
+      let currentAppCode = '{{current_application_code}}';
+      let currentApp = '{{current_application_code}}';
+      if (currentApp === 'Dev') {
+        let devMode = '{{current_dev_mode}}';
+        if (devMode === 'Build') {
+          let buildModePrType = '{{build_process_type}}';
+          currentAppCode = '{{build_app_code}}';
+
+          if (buildModePrType !== "Not Selected") {
+            if(buildModePrType === 'draft'){
+              $("#ExitpreviewProcess").css('display','block');
+            }else{
+              $("#ExitpreviewProcess").css('display','none');
+            }
+          }
+        }else {
+          currentAppCode = '{{edit_app_code}}';
+        }
+        $("#userMode").css('display','block');
+      } else {
+        $("#selectApplication").val(currentApp).trigger("change");
+        $("#userMode").css('display','none');
+        $("#ExitpreviewProcess").css('display','none');
+      }
+
+
+    </script>
+
+
+<!-- /.navbar -->
+<!-- Main Sidebar Container -->
+  {% if request.path != '/users/selectApplication/' and request.path != '/users/adminPanel/' and request.path != '/users/alertsSetup/' and request.path != '/users/customizeTheme/' and selected_any_app != 'false' %}
+    <aside id="main-sidebar" class="main-sidebar sidebar-bg sidebar-dark-primary elevation-4" style="pointer-events: none;">
+      <div class=" d-flex">
+        <a href="/users/selectApplication/" class="brand-link">
+          <img id="imageAciesLogo" src="{% static 'images/Base_theme/A.png' %}" alt="Acies Logo"
+            class="brand-image img-responsive" align="left" style="float:left">
+        </a>
+      </div>
+      <!-- Sidebar -->
+      <div class="sidebar" style="padding:0px 4px;">
+        <!-- Sidebar Menu -->
+        <nav class="mt-2" style="height: 82%;width: 105%;" id="mainSideNavBar" data-app_id="{{current_application_code}}">
+          <!--style="margin-right:8px;"-->
+          <script>
+            $("#mainSideNavBar").attr("data-app_id", currentAppCode);
+          </script>
+
+          <!-- Hide navbar elements in selectAppliation screen -->
+
+          <ul class="nav nav-pills nav-sidebar flex-column nav-collapse-hide-child nav-child-indent" data-widget="treeview" role="menu" data-accordion="false" >
+            {% if build_process_type != 'draft' %}
+            {% if sys_mgmt_home_configs_Show_or_hide_on_Navbar == True %}
+            <li class="nav-item">
+              <a class="nav-link" {% if current_application_code != 'App0' %} {% if current_application_code == 'Dev' %} {% if current_dev_mode == 'Edit' %} {% if edit_app_code != 'Not Selected' %} href="{% url 'users:homePage' edit_app_code current_dev_mode %}" {% else %} href="{% url 'users:homePage' 'Dev' current_dev_mode %}" {% endif %} {% elif current_dev_mode == 'Build' %} {% if build_app_code != 'Not Selected' %} href="{% url 'users:homePage' build_app_code current_dev_mode %}" {% else %} href="{% url 'users:select_application' %}"  {% endif %}  {% endif %} {% else %} href="{% url 'users:homePage' current_application_code 'User'%}" {% endif %} {% else %} href="{% url 'users:select_application' %}" {% endif %} data-home_page_ref="true">
+                <i class="{{sys_mgmt_home_configs_icon}} nav-icon"></i>
+                <p data-short_name="Home"><span>Home</span></p>
+              </a>
+            </li>
+            {% endif %}
+            {% if sys_mgmt_approval_configs_Show_or_hide_on_Navbar == True %}
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'users:approval_table' current_app_code current_access_mode %}">
+                <i class="{{sys_mgmt_approval_configs_icon}} nav-icon" ></i>
+                <p data-short_name="Approval Management"><span>Approval Management</span></p>
+              </a>
+            </li>
+            {% endif %}
+            {% if sys_mgmt_report_configs_Show_or_hide_on_Navbar == True %}
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'users:pivot_report_data' current_app_code current_access_mode %}">
+                <i class="{{sys_mgmt_report_configs_icon}} nav-icon" ></i>
+                <p data-short_name="Reports"><span>Reports</span></p>
+              </a>
+            </li>
+            {% endif %}
+            {% has_perm 'users.has_application_admin_access' user current_application_code as is_application_admin %}
+            {% if is_application_admin %}
+              <li class="nav-item">
+                <a href="#" class="nav-link"
+                      data-navsidebarouteranchortaggroupcode="Prg15">
+                      <i class="nav-icon fa fa-arrow-circle-right"></i>
+                        <p data-short_name="Application Admin">
+                          <span>Application Admin</span>
+                          <i class="right fas fa-angle-left"></i>
+                        </p>
+                    </a>
+                <ul class="nav nav-treeview">
+                  <li class="nav-item">
+                    <a href="/users/{{current_app_code}}/{{current_access_mode}}/user_management/" class="nav-link">
+                      <i class="far fa-circle nav-icon"></i>
+                      <p>User Management</p>
+                    </a>
+                  </li>
+                  <li class="nav-item">
+                    <a href="{% url 'users:audit_trail' current_app_code current_access_mode %}" class="nav-link">
+                      <i class="far fa-circle nav-icon"></i>
+                      <p>User Insights</p>
+                    </a>
+                  </li>
+                  <li class="nav-item">
+                    <a href="{% url 'users:jobexecution' current_app_code current_access_mode %}" class="nav-link">
+                      <i class="far fa-circle nav-icon"></i>
+                        <p>Scheduler</p>
+                    </a>
+                  </li>
+                </ul>
+              </li>
+            {% endif %}
+
+
+            {% endif %}
+
+            {% if application_selected == 'true' or edit_app_code != 'Not Selected' or build_process_type != "Not Selected"  %}
+              {% if operation == 'defaultSideNavBar' or 'mixOfDefaultAndUserSpecificNavBar' %}
+                {% for outerLiTag in defaultNavData %}
+                  {% if outerLiTag.level0Code in config_navbar.processList %}
+                  <li class="nav-item has-treeview ">
+                    <a href="#" class="nav-link"
+                      data-navsidebarouteranchortaggroupcode="{{outerLiTag.level0Code}}" data-code="{{outerLiTag.level0Code}}">
+                      <i class="{{outerLiTag.level0IconClass}} nav-icon"></i>
+                      <p data-short_name="{{outerLiTag.shortname}}">
+                        <span>{{outerLiTag.level0Name}}</span>
+                        <i class="right fas fa-angle-left"></i>
+
+                        <div class="dropdown1">
+                          {% if block_remove_navpoint == "False" or block_add_navpoint == "False" %}
+                          <div class="dropdown-content1">
+                            {% if block_remove_navpoint == "False" %}
+                                <i class="fas fa-remove" onclick="removeNavbar.call(this,'process')" data-toggle="tooltip" title="Remove navpoint"></i>
+                            {% endif %}
+                            {% if block_add_navpoint == "False" %}
+                              <i class="fas fa-plus iconClass" onclick="addNavbar.call(this,'process','{{outerLiTag.level0Code}}')" data-toggle="tooltip" title="Add navpoint"></i>
+                            {% endif %}
+                          </div>
+                          {% endif %}
+                        </div>
+                    </a>
+
+                    <ul class="nav nav-treeview">
+                      {% for innerLiTag in outerLiTag.childrenOfLevel0 %}
+                        {% if innerLiTag.item_code in config_navbar.subprocessList %}
+                        <li class="nav-item" data-navsidebarinnerlitagitemcode="{{innerLiTag.item_code}}" data-code="{{innerLiTag.item_code}}"
+                          data-item_pk="{{innerLiTag.id}}">
+                          {% with innerLiTag.item_url as a_url %}
+                            {% if a_url == '#' %}
+                              <a data-href_or_click="#" class="nav-link innerAnchorTag"
+                                data-related_entity="{{innerLiTag.related_entity}}" data-l3_length="{{innerLiTag.l3_length}}"
+                                {% if current_dev_mode != 'Not Selected' %}
+                                  href="/users/{{current_app_code}}/Build/{{innerLiTag.item_code}}/">
+                                {% else %}
+                                  href="/users/{{current_app_code}}/User/{{innerLiTag.item_code}}/">
+                                {% endif %}
+                            {% else %}
+                              <a data-href_or_click="{% url a_url %}" class="nav-link innerAnchorTag"
+                                data-related_entity="{{innerLiTag.related_entity}}"\
+                                {% if current_dev_mode != 'Not Selected' %}
+                                  href="/users/{{current_app_code}}/Build/{{innerLiTag.item_code}}/">
+                                {% else %}
+                                  href="/users/{{current_app_code}}/User/{{innerLiTag.item_code}}/">
+                                {% endif %}
+                            {% endif %}
+                                <i class="{{innerLiTag.subprocess_icon}} nav-icon"></i>
+                                <p class="process_navbar_popover" {% for key, value in innerLiTag.dictionary_item.items %} {{key}}="{{value}}" {% endfor %} data-description="{{innerLiTag.item_extra_details}}" data-PopOverSelector="baseMasters" data-popover="{{innerLiTag.hover_option}}" data-PopOverTarget='#baseMasterPopOverContainer'>
+                                  {{innerLiTag.item_name}}
+                                </p>
+
+                                  <div class="dropdown1">
+                                    {% if block_remove_navpoint == "False" or block_add_navpoint == "False" %}
+                                    <div class="dropdown-content1">
+                                      {% if block_remove_navpoint == "False" %}
+                                      <i class="fas fa-remove iconClass" onclick="removeNavbar.call(this,'subprocess')" data-toggle="tooltip" title="Remove navpoint"></i>
+                                      {% endif %}
+                                      {% if block_add_navpoint == "False" %}
+                                      <i class="fas fa-plus iconClass" onclick="addNavbar.call(this,'subprocess','{{innerLiTag.item_code}}')" data-toggle="tooltip" title="Add navpoint"></i>
+                                      {% endif %}
+                                    </div>
+                                    {% endif %}
+                                  </div>
+
+                              </a>
+                          </li>
+                          {% endwith %}
+                        {% endif %}
+                      {% endfor %}
+                    </ul>
+                  </li>
+                  {% endif %}
+                {% endfor %}
+              {% endif %}
+            {% endif %}
+          </ul>
+        </nav>
+        <br>
+      </div>
+      <div class="navpoint-pin-container" style="padding: 0 1rem;">
+      {% if block_add_navpoint == "False" %}
+        <a class="nav-link" id="" style="width:unset;color: #f2f2f2;">
+            <i class="fas fa-plus" onclick="addNavbar.call(this,'','')" data-toggle="tooltip" title="Add flex pages"></i>
+        </a>
+      {% endif %}
+      <div class="d-flex align-items-center" style="margin-left: auto;" onclick="sideNavPinFunc()"><i class="fa-solid fa-thumbtack pinit1" id="pinit1" data-toggle="tooltip" title="Pin to screen" style="color: #343a40;"></i></div>
+      </div>
+    </aside>
+  {% endif %}
+
+  <script>
+    var currentScreen = window.location.pathname;
+    $('.main-sidebar').find(`.nav-link[href="${currentScreen}"]`).addClass('active');
+    $('.main-sidebar').find(`.nav-link[href="${currentScreen}"]`).closest('.nav-treeview').prev().addClass('active');
+    $('.main-sidebar').find(`.nav-link[href="${currentScreen}"]`).closest('.nav-treeview').parent().addClass('menu-open');
+
+    $('.nav-item.has-treeview').click(function(){
+      $('.nav-item:not(.has-treeview)').find('.nav-link').removeClass('active');
+      $('.nav-item.has-treeview').not($(this)).each(function () {
+        $(this).removeClass('menu-open');
+        $(this).find('.nav-link').removeClass('active');
+        $(this).find('.nav-treeview').css('display', '');
+      });
+    });
+  </script>
+
+    <script type="text/javascript">
+
+      var windowLocation = window.location.pathname
+      var windowLocationAttr = window.location
+      var f_occ = windowLocation.indexOf('/', windowLocation.indexOf('/') + 1)
+      var s_occ = windowLocation.indexOf('/', windowLocation.indexOf('/') + f_occ +1)
+      var t_occ = windowLocation.indexOf('/', windowLocation.indexOf('/') + s_occ +1)
+      var app_code2 = windowLocation.substring(f_occ+1,s_occ)
+      var current_dev_mode2 = windowLocation.substring(s_occ+1,t_occ)
+      if(current_dev_mode2 != "Build" && current_dev_mode2 != "Edit"){
+        current_dev_mode2 = "User"
+      }
+      var urlPath = `${app_code2}/${current_dev_mode2}`
+    </script>
+
+
+  <div class="content-wrapper"
+    {% if request.path != '/users/selectDashboard/' and request.path != '/users/dashboard/' %}
+      {% if request.path == '/users/selectApplication/' or request.path == '/users/adminPanel/' or request.path == '/users/alertsSetup/' or request.path == '/users/customizeTheme/' or selected_any_app == 'false' %}
+      style="margin-left: 0px !important;margin-right: 0px !important"
+      {% endif %}
+    {% endif %}>
+      <div id='messages-content'>
+        {% include 'messages.html' %}
+      </div>
+      {% block body_block %}
+      {# Anything outside of this will be inherited if you use extend.#}
+      {% endblock %}
+    </div>
+
+
+    <aside class="control-sidebar control-sidebar-dark">
+      <!-- Control sidebar content goes here -->
+    </aside>
+
+    <!-- /.control-sidebar -->
+    {% block platform-footer %}
+    <footer id="main-footer"
+    {% if request.path == '/users/selectDashboard/' or request.path == '/users/dashboard/' %}
+   class="main-footer fixed-bottom footer-bg"
+   {% else %}
+    {% if request.path == '/users/selectApplication/' or request.path == '/users/adminPanel/' or request.path == '/users/alertsSetup/' or request.path == '/users/customizeTheme/' or selected_any_app == 'false' %}
+    class="main-footer fixed-bottom footer-bg" style="margin-left: 0px !important"
+    {% else %}
+    class="main-footer fixed-bottom footer-bg"
+    {% endif %}
+   {% endif %}
+   >
+      {% if customize_app_footer == "True" %}
+        <medium>{{ custom_footer | safe }}</medium>
+      {% else %}
+        <medium>ACIES, Acies Consulting, Acies TechWorks, Acies Ventures, Acies LightHouse, Kepler, Kore, Callisto, Carpo, Revolutio and Antares are registered trademarks of Acies LLP, Acies Consulting Pte Ltd. and its subsidiaries in different countries and territories. Unauthorized use, misrepresentation or misuse of trademarks is strictly prohibited and subject to legal action under various laws.</medium>
+      {% endif %}
+    </footer>
+    {% endblock %}
+  </div>
+
+  <div id="baseMasterPopOverContainer" style="display:none">
+    <div class="card" style="max-height:50px;overflow-y:scroll">
+      <h6 class="card-header"></h6>
+      <div class="card-body"></div>
+      <div class="card-footer"></div>
+    </div>
+  </div>
+
+  <script type="text/javascript">
+    //StandardList
+
+    $('#standardList').on('click', function (e) {
+      var url;
+      var masterName = $(this).attr('data-master_name')
+      url = window.location.href + masterName;
+      $(this).attr('href', url)
+
+    })
+
+    setTimeout(function(){
+      $("#messages-content").fadeOut('slow')
+    },15000)
+
+
+    var toggleB = document.getElementById('toggleButton');
+    if (toggleB != null) {
+      toggleB.addEventListener('click', expandCollapse)
+    }
+    function expandCollapse() {
+      var img = document.getElementById('imageAciesLogo');
+      var body = document.getElementsByTagName('BODY')
+      var bodyClasses = body[0].className;
+    }
+
+    function sideNavPinFunc(){
+      if($("#pinit1").hasClass("color1")){
+        $('#pinit1').removeClass("color1");
+        $(".main-sidebar").bind("mouseleave", function() {
+          $('body').addClass("sidebar-collapse",function(){
+            setTimeout(function(){
+              $(".select2-dropdown").css("width",$(".select2.select2-container.select2-container--default.select2-container--open").css("width"))
+              $(".select2-dropdown").css("min-width",$(".select2.select2-container.select2-container--default.select2-container--open").css("width"))
+            }, 300)
+
+          });
+        });
+        localStorage.setItem("sideNavState", "unpinned");
+      } else {
+        $(".main-sidebar").unbind("mouseleave");
+        $('#pinit1').toggleClass("color1");
+        localStorage.setItem("sideNavState", "pinned");
+      }
+    }
+
+
+    $('.main-sidebar').hover(function () {
+      $('body').removeClass("sidebar-collapse",function(){
+        setTimeout(function(){
+          $(".select2-dropdown").css("min-width",$(".select2.select2-container.select2-container--default.select2-container--open").css("width"))
+          $(".select2-dropdown").css("width",$(".select2.select2-container.select2-container--default.select2-container--open").css("width"))
+          $(".select2-dropdown").css("max-width",$(".select2.select2-container.select2-container--default.select2-container--open").css("width"))
+        }, 300)
+      });
+
+
+
+      $('#pinit1').css('color','#959191')
+    }, function () {
+        $('body').addClass("sidebar-collapse",function(){
+
+          setTimeout(function(){
+            $(".select2-dropdown").css("width",$(".select2.select2-container.select2-container--default.select2-container--open").css("width"))
+            $(".select2-dropdown").css("min-width",$(".select2.select2-container.select2-container--default.select2-container--open").css("width"))
+          }, 300)
+
+      });
+
+
+
+        if ($('body').attr("class") == "sidebar-mini layout-fixed sidebar-collapse") {
+          $('#pinit1').css('color','#343a40')
+        }
+    });
+    $('#toggleButton').click(function () {
+      if ($('body').attr("class") == "sidebar-mini layout-fixed sidebar-collapse") {
+        var media = window.matchMedia("(max-width: 991px)")
+        if (!media.matches){
+          $('#pinit1').css('color','#959191')
+        }
+      }
+      else {
+        var media = window.matchMedia("(max-width: 991px)")
+        if (media.matches){
+        }
+        else{
+          $('#pinit1').css('color','#343a40')
+        }
+      }
+    });
+    var sideNavState = localStorage.getItem("sideNavState");
+    if (sideNavState === "pinned") {
+      $(".main-sidebar").trigger("mouseenter");
+      $('#pinit1').addClass("color1");
+      $(".main-sidebar").unbind("mouseleave");
+    }
+  </script>
+
+  <script>
+
+   $('.process_navbar_popover[data-popover="yes"]').popover({
+      container: 'body',
+      delay: { "show": 10, "hide": 0 },
+      //content: 'WASSUP',
+      trigger: 'manual',
+      placement: 'left',
+      template: '<div class="popover" role="tooltip"><div class="arrow"></div><h3 class="popover-header"></h3><div class="popover-body"></div></div>',
+      html: true,
+      content: function () {
+        var targetId = $(this).attr('data-PopOverTarget')
+        var targetParentAnchorTagHrefValue = $(this).parent().parent().attr('href')
+        var titleName = $(this).text()
+        var clonePopOverContainer = $(targetId).clone()
+        clonePopOverContainer.removeAttr('id')
+        var cardHeader = clonePopOverContainer.find('.card-header')
+        var cardBody = clonePopOverContainer.find('.card-body')
+
+        $(`<div class="popoverCardheader">${titleName}</div>`).appendTo(cardHeader)
+        var string = `<div class="row" white-space="nowrap">`
+
+
+        //  var i=0
+        var list=["fas fa-compass","fas fa-atom","fas fa-sitemap","fas fa-highlighter","fas fa-globe","fas fa-paperclip","fas fa-project-diagram","fas fa-print","fas fa-table","fas fa-i-cursor","fas fa-indent","fas fa-list-alt","fas fa-list-ul","	fas fa-outdent","	far fa-building","fas fa-compass","fas fa-globe","fas fa-paperclip","fas fa-project-diagram","fas fa-bullseye","fas fa-calendar","far fa-clipboard","far fa-compass"]
+
+        $.each(this.attributes, function(i, attrib){
+        var name = attrib.name
+        var value =attrib.value
+
+          if (name.includes("data-button")){
+
+          var values= JSON.parse(value)
+
+          string+=`<a href="${targetParentAnchorTagHrefValue}?value=${values.tab_header}" title="${values.tab_header}"<span><p>&nbsp&nbsp&nbsp&nbsp&nbsp<i class="${values.tab_icon}" style="font-size:48px"></i></p></span></a>`
+
+        }
+        })
+
+        string+=` </div><br>
+        <div class="row"><p><i>${$(this).attr('data-description')}</i></p></div>`
+        cardBody.append(string)
+
+        return clonePopOverContainer.html();
+      }
+    }).on('mouseenter', function () {
+      var self = this;
+      $(this).popover("show");
+      $('body').attr("class", "sidebar-mini layout-fixed");
+      setTimeout(function(){
+        $(".select2-dropdown").css("min-width",$(".select2.select2-container.select2-container--default.select2-container--open").css("width"))
+        $(".select2-dropdown").css("width",$(".select2.select2-container.select2-container--default.select2-container--open").css("width"))
+        $(".select2-dropdown").css("max-width",$(".select2.select2-container.select2-container--default.select2-container--open").css("width"))
+      }, 300)
+
+      $(".popover").on('mouseleave', function () {
+        $(self).popover('hide');
+        $('body').attr("class", "sidebar-mini layout-fixed sidebar-collapse");
+
+        setTimeout(function(){
+          $(".select2-dropdown").css("width",$(".select2.select2-container.select2-container--default.select2-container--open").css("width"))
+          $(".select2-dropdown").css("min-width",$(".select2.select2-container.select2-container--default.select2-container--open").css("width"))
+        }, 300)
+      });
+    }).on('mouseleave', function () {
+      var self = this;
+      setTimeout(function () {
+        if (!$('.popover:hover').length) {
+          $(self).popover('hide');
+        }
+      }, 1);
+    })
+
+
+
+  </script>
+  <script>
+    var ctoken = document.getElementById('dummyFormForAjaxCall').elements[0].value;
+    $.ajaxSetup({
+      beforeSend: function (xhr, settings) {
+        xhr.setRequestHeader("X-CSRFToken", ctoken);
+      }
+    });
+  </script>
+</body>
+
+
+  <div id="flowMonitorModalL3" class="modal" role="dialog" style="display: none; backdrop-filter: brightness(0.3);">
+    <div class="modal-dialog modal-lg">
+
+      <!-- Modal content-->
+      <div class="modal-content">
+        <div class="modal-header">
+          <h6 class="modal-title" >Transaction Details</h6>
+          <button type="button" class="modalClose btn btn-primary btn-xs rounded px-2" data-dismiss="modal">&times;</button>
+        </div>
+        <div class="modal-body">
+          <table id="flowMonitorTableL3" class="display" style="width:100%;overflow-x: scroll;overflow-y:scroll;">
+            <thead style="border-bottom:1px solid var(--primary-color)">
+            <tr>
+                <th>Process name</th>
+                <th>Subprocess name</th>
+                <th>Transaction id</th>
+                <th>View detail</th>
+                <th>Created date</th>
+                <th>Flow status</th>
+            </tr>
+            </thead>
+            <tbody style="height: 80px;border-bottom:1px solid var(--primary-color)">
+
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="modal fade" id="addNavbar" tabindex="-1" role="dialog" aria-labelledby="pivotReportModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Add navigation point</h5>
+          <i class="fa-regular fa-square-plus iconsize"></i>
+        </div>
+        <div class="modal-body">
+          <div class='card'>
+            <div class='card-header' style="font-size: medium; font-weight: bold;">Navigation point
+            </div>
+            <div class='card-body'>
+              <div class="row">
+                <div class="col-4">
+                  <label>Choose waypoint folder</label>
+                  <select class="selectize form-control" id="addUl" onchange="addUl.call(this)">
+                    <option value="folder">Folder</option>
+                    <option value="file">File</option>
+                  </select>
+                </div>
+                <div class="col-4">
+                  <label>Choose operation</label>
+                  <select class="selectize form-control" id="changeOperation" onchange="changeOperation.call(this)">
+                    <option value="existing">Existing</option>
+                    <option value="new">New</option>
+                  </select>
+                </div>
+                <div class="col-4">
+                  <button type="button" class="btn buttonfooter" data-toggle="modal" id="flex_page_icon" onclick="Iconflexmodal()" style="
+                  margin-top:28px">Choose Icon</button>
+                </div>
+              </div>
+              <div class="folder row" style="margin-top: 10px;">
+                <div class="col-4 existingConfig">
+                  <select class="selectize form-control folderSelect">
+                    <option value="">Select folder</option>
+                    {% for outerLiTag in defaultNavData %}
+                      <option value="{{ outerLiTag.level0Name }}">{{ outerLiTag.level0Name }}</option>
+                    {% endfor %}
+                  </select>
+                </div>
+                <div class="col-4 newConfig" style="display: none;">
+                  <input class="form-control folderNameNew">
+                </div>
+              </div>
+              <div class="newNavpoint row" style="display: none; margin-top: 10px;">
+                <div class="col-4 existingConfig">
+                  <select class="selectize form-control navPointSelect">
+                    <option value="">Select subprocess</option>
+                    {% for outerLiTag in defaultNavData %}
+                      {% for innerLiTag in outerLiTag.childrenOfLevel0 %}
+                        <option data-process="{{outerLiTag.level0Code}}" value="{{ innerLiTag.item_code}}">{{ innerLiTag.item_name }}</option>
+                      {% endfor %}
+                    {% endfor %}
+                  </select>
+                </div>
+                <div class="col-4 newConfig" style="display: none;">
+                  <input class="form-control folderName">
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn buttonfooter" id="saveWaypoint" onclick="saveWaypoint.call(this)">Save</button>
+          <button type="button" class="btn buttonfooter" data-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal fade" id="changeNavbarName" tabindex="-1" role="dialog" aria-labelledby="pivotReportModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+      <div class="modal-content">
+        <div class="modal-header" style='background:#565a5e; color:white;'>
+          <h5 class="modal-title" style="margin-left: 29.5%;">Add navigation point</h5>
+          <button type="button" class="close" onclick="closeModalNav.call(this)" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div class='card'>
+            <div class='card-header' style="font-size: medium; color:var(--primary-color); font-weight: bold;">Navigation point
+            </div>
+            <div class='card-body'>
+              <div class="row">
+                <div class="col-4">
+                  <label>Edit name</label>
+                  <input class="form-control editNavbarName">
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn buttonfooter" id="saveWaypointName" onclick="saveWaypointName.call(this)">Save</button>
+          <button type="button" class="btn buttonfooter " data-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- Icons for flex pages -->
+  <div class="modal fade" id="choose_icons_for_flex_pages" tabindex="-1" role="dialog" aria-labelledby="basicModal" aria-hidden="true">
+    <div class="modal-dialog modal-lg-center" style="max-width: 500px; max-height: 500px;margin-top:90px;">
+      <div class="modal-content" >
+        <div class="modal-header" style="max-height: 500px; margin: 10px;">
+          <h4 class="modal-title">Flex page Icon</h4>
+        </div>
+        <div class="modal-body" >
+          <div class="list_of_icons1">
+          </div>
+          <div style="margin-top:10px; margin-left:16px;">
+            <button class="more_colors" id="flex_icon" data-toggle="modal" data-target="#moreicon_flex_page" data-backdrop="static" data-keyboard="false">more icons</button>
+          </div>
+          </div>
+              <div class="modal-footer d-flex justify-content-between" >
+                <button type="button" class="btn buttonfooter" id ="flex_page_close_icon" data-dismiss="modal">Cancel <i class="fas fa-times"></i></button>
+                <button type="button" class="btn buttonfooter save-icons" id="save_flex_page_icon" data-dismiss="modal" style="justify-content: flex-end" onclick="saveFlexIcon('Icon')">Save  <i class="fa-solid fa-floppy-disk"></i></button>
+              </div>
+          </div>
+        </div>
+      </div>
+<!-- more icon for flex pages -->
+
+<div class="modal fade" id="moreicon_flex_page" tabindex="-1" role="dialog" aria-labelledby="more_icons" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" style="max-width: 1022px;" role="document">
+    <div class="modal-content" style="min-height: 400px;width:100%">
+      <div class="modal-header">
+        <h4 class="modal-title" id="exampleModalLongTitle">More Icons</h4>
+      </div>
+      <div class="modal-body">
+        <input type="text" name="search-icons" id="searchIcon1" placeholder="Search Icons" onkeyup="search_Icon1()">
+        <div class="wrapper" style="height: 426px; overflow-y: auto;">
+          <div id="categories_of_icons1">
+            {% for category,icons in data1.icons_data.items %}
+            <h5>{{category}}</h5>
+            <ul class="icon-picker-list" id="icons1">
+              {% for i in icons %}
+              <li id="icon_3">
+                <a class="icon1" data-class="{{i}}" data-index="">
+                  <span class="{{i}}" aria-hidden="true"></span>
+                </a>
+              </li>
+              {% endfor %}
+            </ul>
+            {% endfor %}
+          </div>
+          <div class="icons_withoutany_categories" id="icons_withoutany_categories1" style="display: none;">
+            <ul class="icon-picker-list" id="icons">
+              {% for i in data1.icons_without_category %}
+              <li id="icon_4">
+                <a class="icon1" data-class="{{i}}" data-index="">
+                  <span class="{{i}}" aria-hidden="true"></span>
+                </a>
+              </li>
+              {% endfor %}
+            </ul>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer d-flex justify-content-between">
+        <button type="button" class="btn buttonfooter" data-dismiss="modal">Close <i class="fas fa-times"></i></button>
+        <button type="button" class="btn buttonfooter save-icons" data-dismiss="modal" id="save_flex_page_icon1" onclick="saveFlexIcon('moreIcon')">Save <i class="fa-solid fa-floppy-disk"></i></button>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% include 'app_theme.html' %}
+
+<script>
+
+  $(document).ready(function(){
+    let vh = window.innerHeight * 0.01;
+    document.documentElement.style.setProperty('--sidebar-height', `${vh}px`);
+  })
+
+  $('[data-toggle="tooltip"]').tooltip()
+
+  var laptop_media = window.matchMedia("(max-width: 991px)")
+  if (laptop_media.matches){
+    $('[data-toggle="tooltip"]').tooltip("disable")
+  }
+
+
+  $(".update_all_apps").click(function(){
+    $.ajax({
+      url: '/users/selectApplication/',
+      data: {"operation":"updateAllApps"},
+      type: "POST",
+      dataType: "json",
+      success: function (data) {
+        Swal.fire({text:data["response"],icon:data["icon"] || 'error'});
+
+      },
+      error: function () {
+        Swal.fire({text:"Error",icon:"error"});
+      }
+    });
+  })
+
+function Iconflexmodal(){
+$('#choose_icons_for_flex_pages').modal('show');
+}
+window.selectedIcon1 = "",
+window.flexPageIcon = ""
+var string = `<div class="row" white-space="nowrap">`
+      var iconlist = ["fas fa-compass", "fas fa-address-card", "fas fa-clipboard", "fas fa-wallet", "fas fa-dollar-sign", "fas fa-table", "fas fa-atom", "fas fa-tasks", "fas fa-th", "fas fa-business-time", "fas fa-chart-area", "fas fa-chart-line", "fas fa-chart-bar", 'fas fa-chart-pie', "fas fa-sitemap", "fas fa-highlighter", "fas fa-th-large", "fas fa-globe", "fas fa-paperclip", "fas fa-project-diagram", "fas fa-print", "fas fa-i-cursor", "fas fa-indent", "fas fa-list-alt", "fas fa-list-ul", "fas fa-outdent", "far fa-building", "fas fa-bullseye", "fas fa-calendar", "far fa-compass"]
+      for (i = 0; i < iconlist.length; i++) {
+          if(iconlist.length){
+          string += `<div class="col-2 icons"><a href="#" ><i class="${iconlist[i]} listoficon1" style="font-size:1rem;color: black;font-size: 1rem;background: #fff;padding:0px;border-radius: 5px;" ></i>&nbsp&nbsp</a></div>`
+          }
+      }
+      string += `</div>`
+
+      $(".list_of_icons1").append(string)
+      $('.listoficon1').on("click", function () {
+        $('.listoficon1').each(function () {
+          $(this).css("color", "black");
+          $(this).css("background", "#fff");
+        });
+        $(this).attr("id", "selected_icon1")
+        $(this).css("color", "white");
+        $(this).css("background", "var(--primary-color)");
+        var selectedIcon2 = $(this).attr("class").split(" ")[1]
+        selectedIcon1 = "fas " + selectedIcon2;
+        $(".icon1").each(function(){
+          $(this).removeAttr("selected_a");
+          $(this).css("background-color", "#f9f9f9");
+          $(this).css("color","black");
+        })
+      })
+
+ function search_Icon1() {
+        var input, filter, ul, div, li, a, i, txtValue, h5;
+        input = document.getElementById("searchIcon1");
+
+        if (input.value.length > 0) {
+            $("#categories_of_icons1").css("display", "none")
+            $("#icons_withoutany_categories1").css("display", "block")
+            filter = input.value.toUpperCase();
+            div = document.getElementById("icons_withoutany_categories1");
+            ul = document.getElementsByTagName("ul");
+            li = div.getElementsByTagName("li");
+              for (i = 0; i < li.length; i++) {
+                  a = li[i].getElementsByTagName("a")[0];
+                  txtValue = a.getAttribute("data-class");
+                  if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                    li[i].style.display = "";
+                  } else {
+                    li[i].style.display = "none";
+                  }
+              }
+        }
+        else {
+          $("#categories_of_icons1").css("display", "block")
+          $("#icons_withoutany_categories1").css("display", "none")
+        }
+      }
+      $(".icon1").click(function () {
+        $(".icon1").attr("selected_a", "false");
+        $(".icon1").css("background-color", "#f9f9f9");
+        $(".icon1").css("color", "black");
+        $(this).attr("selected_a", "true");
+        $(this).css("background-color", "var(--primary-color)");
+        $(this).css("color", "white");
+        selectedIcon1 = $(this).attr("data-class")
+        var list_icons = document.querySelectorAll(".icons1 a .listoficon1")
+        list_icons.forEach(element => {
+          id = element.id
+          element.removeAttribute('id')
+          element.style.backgroundColor = "white"
+          element.style.color = "black"
+
+        })
+      })
+    function saveFlexIcon(val){
+      if(val=="Icon"){
+       flexPageIcon = selectedIcon1
+       $("#save_flex_page_icon").attr('data-icon', flexPageIcon)
+       Swal.fire({text:"flex page icon saved successfully.",icon:'success'})
+      }else if(val==="moreIcon"){
+        flexPageIcon = selectedIcon1
+        $("#save_flex_page_icon1").attr('data-icon', flexPageIcon)
+        Swal.fire({text:"flex page icon saved successfully.",icon:'success'})
+        $("#flex_page_close_icon").click()
+      }
+
+    }
+  // for auto focusing select2 search dropdowns
+  $(document).on('select2:open', (e) => {
+    const selectId = e.target.id
+
+    $(".select2-search__field[aria-controls='select2-" + selectId + "-results']").each(function (
+        key,
+        value,
+    ){
+        value.focus();
+    })
+  })
+ function myFunction(){
+    $('.mydropdown').css("display","block")
+    var dis = $('#myDropdown').css("display")
+    $('#myDropdown').css("display","block")
+    if(dis == "none")
+    {
+      $("#myDropdown").css("display","block")
+
+    }
+    else{
+      $('#myDropdown').css("display","none")
+    }
+
+  }
+  function diis(){
+    var disply = $('.mydropdown').css("display")
+    $('.mydropdown').css("display","block")
+    if(disply == "none")
+    {
+      $(".mydropdown").css("display","block")
+    }
+    else{
+      $('.mydropdown').css("display","none")
+    }
+
+  }
+
+  function UpdateNotifications(id){
+    var read_ids = []
+
+    if(id == "all"){
+      $("#myDropdown").find("a[data-status=unread]").each(function(){
+        read_ids.push($(this).attr("data-id"))
+      })
+    }
+    else{
+      read_ids.push(id)
+    }
+
+
+    if(read_ids.length > 0){
+      $.ajax({
+      url: '/users/selectApplication/',
+      data: {
+        'operation': "update_notifications",
+        'read_ids': JSON.stringify(read_ids)
+      },
+      type: "POST",
+      dataType: "json",
+      success: function (data) {
+        if(id == "all"){
+          $(".clearallnotifications").css("display","none")
+          $(".alertcount").empty()
+          $("#myDropdown").find("a[data-status=unread],.dropdown-divider").each(function(){
+            $(this).fadeOut(500, function(){ $(this).remove()})
+          })
+          $(".seeallnotifications").css("display","none")
+          $(".addalert").append(`<a class="dropdown-item d-flex justify-content-between align-items-center no-notifications" >
+            <p>No New Notifications</p>
+          </a>`)
+        }
+        else{
+          $("#myDropdown").find(`a[data-id=${id}]`).fadeOut(500, function(){
+            $(this).prev('.dropdown-divider').remove()
+            $(this).remove()
+
+            if($("#myDropdown").find("a").length < 1){
+              $(".clearallnotifications").css("display","none")
+            }
+            if($(".allnotifications").find("a").length < 1){
+              $(".seeallnotifications").css("display","none")
+            }
+            else{
+              $(".addalert").append($(".allnotifications").find(".dropdown-divider").eq(0))
+              $(".addalert").append($(".allnotifications").find("a").eq(0))
+              if($(".allnotifications").find("a").length < 1){
+                $(".seeallnotifications").css("display","none")
+              }
+            }
+          })
+          alertcount = $(".navbar-badge").text()
+          if(alertcount){
+            if((parseInt(alertcount)-1)>0){
+              $(".alertcount").text(parseInt(alertcount)-1)
+            }
+            else{
+              $(".clearallnotifications").css("display","none")
+              $(".alertcount").empty()
+              $(".addalert").append(`<a class="dropdown-item d-flex justify-content-between align-items-center no-notifications" >
+                <p>No New Notifications</p>
+              </a>`)
+            }
+
+          }
+        }
+      },
+      error: function () {
+        Swal.fire({text:"Error",icon:"error"});
+      }
+    })
+
+    }
+  }
+</script>
+
+<script>
+
+  $("#selectApplication").on('change', function(){
+    if($(this).val()=="click"){
+      // window.location.href = "/users/application"
+      $( ".create_new_application" ).trigger("click");
+    }
+    else{
+      $.ajax({
+      url: '/users/selectApplication/',
+      data: {
+          'app_code' : $("#selectApplication").val(),
+          'operation': "application_selected",
+      },
+      type: "POST",
+      dataType: "json",
+      success: function(data) {
+          let appCode = $("#selectApplication").val();
+          let loc = window.location.href.split("users")[0];
+          let url_string = window.location.pathname
+          let f_occ = url_string.indexOf('/', url_string.indexOf('/') + 1)
+          let s_occ = url_string.indexOf('/', url_string.indexOf('/') + f_occ +1)
+          let t_occ = url_string.indexOf('/', url_string.indexOf('/') + s_occ +1)
+          let app_code2 = url_string.substring(f_occ+1,s_occ)
+          let current_dev_mode2 = url_string.substring(s_occ+1,t_occ)
+          if(current_dev_mode2 != "Build" && current_dev_mode2 != "Edit"){
+            current_dev_mode2 = "User"
+          }
+          loc = loc + `users/${appCode}/${current_dev_mode2}/homePage/`;
+          window.location.href = loc;
+      },
+      error: function () {
+        Swal.fire({text:"Error",icon:"error"});
+      }
+    });
+  }
+  });
+
+
+$('#ExitpreviewProcess').on('click',function(){
+  let url_string = window.location.pathname
+  let f_occ = url_string.indexOf('/', url_string.indexOf('/') + 1)
+  let s_occ = url_string.indexOf('/', url_string.indexOf('/') + f_occ +1)
+  let t_occ = url_string.indexOf('/', url_string.indexOf('/') + s_occ +1)
+  let app_code2 = url_string.substring(f_occ+1,s_occ)
+  let current_dev_mode2 = url_string.substring(s_occ+1,t_occ)
+  let modes = ["Build","Edit"]
+  let url = ""
+  if(current_dev_mode2 != "Build" && current_dev_mode2 != "Edit"){
+    current_dev_mode2 = "User"
+  }
+  $.ajax({
+      url: '/users/selectApplication/',
+      data: {
+          'operation': "return_dev_mode",
+      },
+      type: "POST",
+      dataType: "json",
+      success: function(data) {
+          let loc = window.location.href.split("users")[0];
+          loc = loc + `users/${app_code2}/${current_dev_mode2}/Levelcreation/`;
+          window.location.href = loc;
+      },
+      error: function () {
+        Swal.fire({text:"Error",icon:"error"});
+      }
+    });
+})
+
+  $("#userMode").on('click', function(){
+    let url_string = window.location.pathname
+    let f_occ = url_string.indexOf('/', url_string.indexOf('/') + 1)
+    let s_occ = url_string.indexOf('/', url_string.indexOf('/') + f_occ +1)
+    let t_occ = url_string.indexOf('/', url_string.indexOf('/') + s_occ +1)
+    let app_code2 = url_string.substring(f_occ+1,s_occ)
+    let current_dev_mode2 = url_string.substring(s_occ+1,t_occ)
+    let modes = ["Build","Edit"]
+    let url = ""
+    if(current_dev_mode2 != "Build" && current_dev_mode2 != "Edit"){
+      current_dev_mode2 = "User"
+    }
+    $.ajax({
+      url: '/users/selectApplication/',
+      data: {
+        'operation': "exit_dev_edit_mode",
+      },
+      type: "POST",
+      dataType: "json",
+      success: function(data) {
+          window.location.href = "{% url 'users:homePage' current_application_code 'Dev'%}";
+      },
+      error: function () {
+        Swal.fire({text:"Error",icon:"error"});
+      }
+    });
+  });
+
+</script>
+<script>
+function reload() {
+  if($(`.tab-pane`).eq(0).hasClass('approval')) {
+    window.location.reload();
+  }
+}
+
+function flowTabChange(pr_code="") {
+
+};
+</script>
+<script>
+  if($(".create_new_application").length > 0){
+    if ($("#selectApplication").find("option").length == 0) {
+      $("#selectApplication").append(`<option value="click" data-toggle = "tooltip" title = "Create New Application"> Click To Create New Application </option>`)
+    }
+    $("#selectApplication").val("").trigger("change")
+  }
+
+
+</script>
+<script src="{% static 'js/Kore_TI_js/Standardized_JS/standard_button_js.js' %}"></script>
+<script>masterStandardButtonFunc();</script>
+<script>
+var websocketUrlPrefix = 'ws://';
+if (window.location.protocol === 'https:') {
+    websocketUrlPrefix = 'wss://';
+}
+  var jobConnection = new WebSocket(
+      websocketUrlPrefix + window.location.host +
+      `/ws/queued_navbar_update/`);
+
+  jobConnection.onopen = function(event) {
+    jobConnection.send(JSON.stringify({path: window.location.pathname}))
+  };
+
+  var count = 0;
+
+
+  $(".seeallnotifications").click(function(){
+    $( ".allnotifications" ).toggle()
+    if($( ".allnotifications" ).css("display") == "none"){
+      $(this).find("p").eq(0).html("Expand <i class='fa-solid fa-chevron-down notification-arrow'></i>")
+    }
+    else{
+      $(this).find("p").eq(0).html("Collapse <i class='fa-solid fa-chevron-up notification-arrow'></i>")
+    }
+  })
+
+  maximum_limit = parseInt('{{limit_notification}}')
+
+  jobConnection.onmessage = function(event){
+      var data = JSON.parse(event.data);
+
+
+      if(data.hasOwnProperty('show_notifications')){
+
+        var show_notifications=[]
+        var other_notifications=[]
+
+        if (Object.keys(data).includes("show_notifications")){
+          show_notifications=JSON.parse(data.show_notifications)
+        }
+
+        if (Object.keys(data).includes("other_notifications")){
+          other_notifications=JSON.parse(data.other_notifications)
+        }
+
+        if(show_notifications.length > 0){
+          $(".no-notifications").remove()
+        }
+
+        if($( ".addalert" ).children().length == 0){
+
+          show_notifications.map((dict) => {
+            $( ".addalert" ).append(`<div class="dropdown-divider"></div><a class="dropdown-item d-flex justify-content-between align-items-center" style="white-space: break-spaces;" data-id="${dict.id}" data-status="${dict.status}"><p>${dict.notification_message}</p><i class="fa-solid fa-times" style="margin-left: 10px;" onclick="UpdateNotifications(${dict.id})"></i></a>`)
+          })
+
+          if(other_notifications.length > 0){
+            $(".seeallnotifications").css("display","block")
+            other_notifications.map((dict) => {
+              $( ".allnotifications" ).append(`<div class="dropdown-divider"></div><a class="dropdown-item d-flex justify-content-between align-items-center" style="white-space: break-spaces;" data-id="${dict.id}" data-status="${dict.status}"><p>${dict.notification_message}</p><i class="fa-solid fa-times" style="margin-left: 10px;" onclick="UpdateNotifications(${dict.id})"></i></a>`)
+            })
+          }
+        }
+        else{
+
+          alertcount = $(".navbar-badge").text()
+
+          show_notifications.map((dict) => {
+            if($( ".addalert" ).children(`a[data-id=${dict.id}]`).length == 0 && $( ".allnotifications" ).children(`a[data-id=${dict.id}]`).length == 0)
+            {
+              $( ".addalert" ).prepend(`<div class="dropdown-divider"></div><a class="dropdown-item d-flex justify-content-between align-items-center" style="white-space: break-spaces;" data-new="new" data-id="${dict.id}" data-status="${dict.status}"><p>${dict.notification_message}</p><i class="fa-solid fa-times" style="margin-left: 10px;" onclick="UpdateNotifications(${dict.id})"></i></a>`)
+
+              $(".clearallnotifications").css("display", "block")
+
+              if ($(".addalert").find("a").length > maximum_limit) {
+                removed_element = $(".addalert").find("a").last().remove()
+                $(".seeallnotifications").css("display","block")
+                $(".allnotifications").prepend(`<div class="dropdown-divider"></div>`)
+                $(".allnotifications").prepend(removed_element)
+              }
+            }
+          })
+        }
+
+
+
+        if(show_notifications.length > 0){
+          $(".clearallnotifications").css("display", "block")
+
+          count = show_notifications.length + other_notifications.length
+          $(".alertcount").text(count)
+        }
+        else{
+          $(".clearallnotifications").css("display", "none")
+          $(".alertcount").empty()
+          $(".addalert").append(`<a class="dropdown-item d-flex justify-content-between align-items-center no-notifications" >
+                        <p>No New Notifications</p>
+                      </a>`)
+        }
+
+      }
+
+
+      if (Object.keys(data).includes("operation")) {
+
+
+        if (data.operation === 'db_health') {
+          if (data.un_healthy_count.length > 0) {
+            $('#dbHealthStatus').find('i').css('color', 'red');
+            $('#dbHealthStatus').find('i').find('small').css('color', 'black');
+            $('#dbHealthStatus').attr('data-toggle', 'tooltip')
+            $('#dbHealthStatus').attr('title', `DB Health: Lost connection with ${JSON.stringify(data.un_healthy_count)} database(s)`)
+          } else {
+            $('#dbHealthStatus').find('i').css('color', 'green');
+            $('#dbHealthStatus').find('i').find('small').css('color', 'black');
+            $('#dbHealthStatus').attr('data-toggle', 'tooltip');
+            $('#dbHealthStatus').attr('title', `DB Health: All databases connections are healthy`);
+          }
+          if (data.current_db !== 'No application selected') {
+            if (data.current_db !== 'Healthy') {
+              $('#dbFailureText').text(data.current_db);
+              $('body').css('pointer-events', 'none');
+              $('#dbConnectionFailureModal').modal({backdrop: 'static', keyboard: false})
+              $('#dbConnectionFailureModal').modal('show');
+            }
+          } else {
+            if (window.location.pathname !== "/users/adminPanel/") {
+              $('body').css('pointer-events', 'all');
+              $('#dbConnectionFailureModal').modal('hide');
+            }
+          }
+        }
+        else if (data.operation === 'html') {
+          if(data.status == "finished"){
+            let msg = "<b>successful</b>";
+            if(data.stats == false){
+              msg = "<b>unsuccessful</b>";
+            }
+
+            noti_msg = `Regeneration of <b>${data.subprocess_name}</b> in the application has been ${msg}`
+
+            $(".no-notifications").remove()
+
+            $( ".addalert" ).prepend(`<div class="dropdown-divider"></div><a class="dropdown-item d-flex align-items-center justify-content-between" data-new="new" data-id="${data.notification_id}" data-status="unread"><p>${noti_msg}</p><i class="fa-solid fa-times" style="margin-left: 10px;" onclick="UpdateNotifications(${data.notification_id})"></i></a>`);
+
+            $(".clearallnotifications").css("display", "block")
+
+            if ($(".addalert").find("a").length > maximum_limit) {
+              removed_element = $(".addalert").find("a").last().remove()
+              $(".seeallnotifications").css("display","block")
+              $(".allnotifications").prepend(`<div class="dropdown-divider"></div>`)
+              $(".allnotifications").prepend(removed_element)
+            }
+
+            count = count + 1
+            $( ".alertcount" ).html(count);
+          }
+        }
+        else if (data.operation === 'navbar_message') {
+          if(data.status == "finished"){
+
+            let msg = `Permissions/process details have been updated for user - ${data.username} <i class="fas fa-refresh refreshNavbarView" aria-hidden="true" data-new="new" data-toggle="tooltip" title="Click here to refresh view"></i>`;
+            if(data.stats == false){
+              msg = `Permissions/process details update failed for user - ${data.username}`
+            }
+
+            $(".no-notifications").remove()
+
+            $( ".addalert" ).prepend(`<div class="dropdown-divider"></div><a class="dropdown-item d-flex align-items-center justify-content-between" data-new="new" data-id="${data.notification_id}" data-status="unread"><p>${msg}</p><i class="fa-solid fa-times" style="margin-left: 10px;" onclick="UpdateNotifications(${data.notification_id})"></i></a>`);
+
+            $(".clearallnotifications").css("display", "block")
+
+            if ($(".addalert").find("a").length > maximum_limit) {
+              removed_element = $(".addalert").find("a").last().remove()
+              $(".seeallnotifications").css("display","block")
+              $(".allnotifications").prepend(`<div class="dropdown-divider"></div>`)
+              $(".allnotifications").prepend(removed_element)
+            }
+
+            $(".refreshNavbarView").off('click').on('click', ()=>{
+              window.location.reload();
+            })
+          }
+
+          count = count + 1
+          $( ".alertcount" ).html(count)
+        }
+        else if (data.operation === 'migration_checker') {
+          if (data.unapplied_migration === "true" && window.location.pathname !== "/users/adminPanel/") {
+            $('body').css('pointer-events', 'none');
+            Swal.fire({text:"There is an unapplied update for the central database! Please update the database. Redirecting to management console.",icon:"info"})
+            window.location.href = window.location.pathname.replace('selectApplication', 'adminPanel');
+          }
+        }
+        else if (data.operation === 'alert_message') {
+          if(count <= Number("{{max_alert}}")) {
+            if(data.status == "finished"){
+              var alert_message = data.alert_message;
+
+              $(".no-notifications").remove()
+
+              $( ".addalert" ).prepend(`<div class="dropdown-divider"></div>
+                <a class="dropdown-item">${alert_message}</a>`);
+
+            } else{
+
+              $(".no-notifications").remove()
+
+              $( ".addalert" ).prepend(`<div class="dropdown-divider"></div>
+              <a class="dropdown-item"> Failed - ${alert_message}
+              </a>`);
+
+            }
+            count = count + 1;
+            $( ".alertcount" ).html(count);
+          }
+        }
+
+        else if (data.operation === 'concurrent_session_breach') {
+          if (data.delete == "yes"){
+            ip = data.ip
+            Swal.fire({text:`You have logged in from another device ${ip}. Maximum allowed sessions exceeded logging you out.`,icon:"warning"})
+            jobConnection.close(1000);
+            window.location.reload();
+          }
+        }
+        else if (data.operation === 'force_logout_user') {
+          if (data.logout == "yes"){
+            Swal.fire({text:`You have been logged out of the system by the Admin.`,icon:"info"})
+            jobConnection.close(1000);
+            window.location.reload();
+          }
+        }
+        else if (data.operation === 'deactivate_logout_user') {
+          if (data.logout == "yes"){
+            Swal.fire({text:`You have been logged out of the system by the Admin.`,icon:"info"})
+            jobConnection.close(1000);
+            window.location.href = "{% url 'applicationlogin' %}";
+          }
+        }
+
+      }
+  };
+  jobConnection.onerror = function() {
+      jobConnection.close(1000);
+  };
+
+
+  function navigateScreen() {
+    let app_code = $(this).attr("data-app_code");
+    let nameTemplate = $(this).attr("data-name");
+    let codeTemplate = $(this).attr("data-code");
+    let modeTemplate = $(this).attr("data-mode");
+    window.location.href = `/users/${app_code}/${modeTemplate}/${nameTemplate}${codeTemplate}/`
+  }
+let curr_ref_element
+let curr_ref_type = ""
+let current_dev_mode1 = "{{current_dev_mode}}"
+function addNavbar(type,code){
+  $("#addNavbar").modal("show")
+  $("#addNavbar").attr("data-prgcode",code)
+  if(type == ""){
+    $("#changeOperation").prop('disabled',false)
+    $("#changeOperation").val("existing").trigger("change")
+    $("#saveWaypoint").attr("data-new","new")
+  } else {
+    $("#changeOperation").val("new").trigger("change")
+    $("#changeOperation").prop('disabled',true)
+    $("#saveWaypoint").removeAttr("data-new")
+  }
+  curr_ref_type = type
+  curr_ref_element = $(this)
+  $("#toggleButton").trigger("click")
+}
+
+function editNavbar(type,code,inject_code = "",method = "existing",event){
+  event.preventDefault()
+  let name = $(this).closest("a").find("p").text();
+  name = name.trim()
+  $(".editNavbarName").val(name).trigger("change")
+  $("#saveWaypointName").attr('data-code1',code)
+  $("#saveWaypointName").attr('data-type1',type)
+  $("#saveWaypointName").attr('data-method1',method)
+  $("#saveWaypointName").attr('data-injectcode',inject_code)
+  $("#changeNavbarName").modal("show")
+  $("#toggleButton").trigger("click")
+}
+
+function saveWaypointName() {
+  let code = $("#saveWaypointName").attr('data-code1')
+  let type = $("#saveWaypointName").attr('data-type1')
+  let method = $("#saveWaypointName").attr('data-method1')
+  let inject_code = $("#saveWaypointName").attr('data-injectcode')
+  $.ajax({
+    url: `/users/${urlPath}/dynamicVal/`,
+    data: {
+    'operation': "editNavbar",
+    'code':code,
+    'name': $(".editNavbarName").val(),
+    'type':type,
+    'method': method,
+    'inject_code': inject_code,
+    "dev_mode": current_dev_mode1
+    },
+    type: "POST",
+    dataType: "json",
+      success: function (data) {
+        window.location.reload()
+      },
+      error: function () {
+        Swal.fire({text:"Error",icon:"error"});
+      }
+  })
+}
+
+function removeNavbar(type,method="old"){
+  let code = ""
+  let inject_code = $(this).attr("data-injectcode")
+  if (inject_code == undefined){
+    inject_code = ""
+  }
+  if(type == "process"){
+    code = $(this).closest("a").attr("data-code")
+  } else {
+    code = $(this).closest("li").attr("data-code")
+  }
+  event.preventDefault()
+  $.ajax({
+    url: `/users/${urlPath}/dynamicVal/`,
+    data: {
+    'operation': "removeNavbar",
+    'code': code,
+    'type':type,
+    'method':method,
+    'inject_code':inject_code,
+    "dev_mode": current_dev_mode1
+    },
+    type: "POST",
+    dataType: "json",
+      success: function (data) {
+        window.location.reload()
+      },
+      error: function () {
+      }
+  })
+}
+function addUl() {
+  if($(this).val() == "folder"){
+    $(".folder").css("display","flex");
+    $(".newNavpoint").css("display","none");
+    if($("#changeOperation").attr("data-new") != "new"){
+      $("#changeOperation").val("new").trigger("change");
+      $("#changeOperation").prop('disabled',true)
+    } else {
+      $("#changeOperation").prop('disabled',false)
+    }
+  } else {
+    $(".folder").css("display","none");
+    $(".newNavpoint").css("display","flex")
+    $("#changeOperation").prop('disabled',false)
+  }
+}
+
+let navBarConfig = {{defaultNavData | safe}}
+
+function saveWaypoint() {
+  method = "new"
+  $(".htmlButton").prop("disabled",false)
+  $("#changeOperation").removeAttr("data-new")
+  let prgCode = $("#addNavbar").attr("data-prgcode")
+  $("#addNavbar").removeAttr("data-prgcode")
+  if ($("#addUl").val() != "file"){
+    let p_code = ""
+    let p_name = ""
+    let new_html = ``
+    for (let i = 0; i < navBarConfig.length; i++){
+      if($(".folderSelect").val() == navBarConfig[i].level0Name){
+        p_code = navBarConfig[i].level0Code
+        p_name = navBarConfig[i].level0Name
+        new_html = new_html + `
+          <li class="nav-item has-treeview">
+            <a href="#" class="nav-link"
+              data-navsidebarouteranchortaggroupcode="${navBarConfig[i].level0Code}">
+                <i class="${navBarConfig[i].level0IconClass} nav-icon"></i>
+              <p data-short_name="${ navBarConfig[i].level0Name }">
+                <span>${ navBarConfig[i].level0Name }</span>
+                {% if block_remove_navpoint == "False" %}
+                <i class="fas fa-remove" onclick="removeNavbar.call(this,event,'process')"></i>
+                {% endif %}
+                <i class="fas fa-edit" onclick="editNavbar.call(this,'process',event)"></i>
+                {% if block_add_navpoint == "False" %}
+                <i class="fas fa-plus" onclick="addNavbar.call(this,'process','navBarConfig[i].level0Code')" style=""></i>
+                {% endif %}
+                <i class="right fas fa-angle-left"></i>
+              </p>
+            </a>
+
+            <ul class="nav nav-treeview">`
+        for(let j = 0; j < navBarConfig[i].childrenOfLevel0.length; j++){
+          new_html = new_html + `
+          <li class="nav-item" data-navsidebarinnerlitagitemcode="${navBarConfig[i].childrenOfLevel0[j].item_code}"
+            data-item_pk="${navBarConfig[i].childrenOfLevel0[j].id}">
+              <a class="nav-link" href="/users/${urlPath}/${navBarConfig[i].childrenOfLevel0[j].item_code}"
+                data-related_entity="${navBarConfig[i].childrenOfLevel0[j].related_entity}"
+                <p>
+                  ${navBarConfig[i].childrenOfLevel0[j].item_name}
+                  {% if block_remove_navpoint == "False" %}
+                  <i class="fas fa-remove" onclick="removeNavbar(this,event,'subprocess')"></i>
+                  {% endif %}
+                  <i class="fas fa-edit" onclick="editNavbar(this,'subprocess',event)"></i>
+                </p>
+              </a>
+          </li>
+          `
+        }
+        new_html = new_html + "</ul>"
+      }
+    }
+    new_html = new_html + "</li>"
+    if($(this).attr("data-new") == "new"){
+      $(".nav-pills").append(new_html)
+      for (let i = 0; i < navBarConfig.length; i++){
+        if(p_code == navBarConfig[i].level0Code){
+          method = "existing"
+        }
+      }
+      if(p_name == ""){
+        p_code = "Rg" + String(Math.random()).replace('.',"")
+        p_name = $(".folderNameNew").val()
+      }
+      p_name = p_name.replace(/<script>|<\/script>|['"]/g, '');
+      let parser = new DOMParser();
+      let doc = parser.parseFromString(p_name, 'text/html');
+      p_name = doc.body.textContent || ""
+      $.ajax({
+        url: `/users/${urlPath}/dynamicVal/`,
+        data: {
+        'operation': "addNavbar",
+        'code': p_code,
+        'name': p_name,
+        'type':'process',
+        'method':method,
+        'inject_code':"default",
+        "dev_mode": current_dev_mode1
+        },
+        type: "POST",
+        dataType: "json",
+          success: function (data) {
+            window.location.reload()
+          },
+          error: function () {
+            Swal.fire({text:"Error",icon:"error"});
+          }
+      })
+    } else{
+      curr_ref_element.closest("li").find("ul").eq(0).append(new_html)
+      for (let i = 0; i < navBarConfig.length; i++){
+          if(p_code == navBarConfig[i].level0Code){
+            method = "existing"
+          }
+        }
+        if(method == "new") {
+          p_code = "Rg" + String(Math.random()).replace('.',"")
+          p_name = $(".folderNameNew").val()
+        }
+        $.ajax({
+          url: `/users/${urlPath}/dynamicVal/`,
+          data: {
+          'operation': "addNavbar",
+          'code': p_code,
+          'name': p_name,
+          'type':'process',
+          'method':method,
+          'inject_code':prgCode,
+          "dev_mode": current_dev_mode1
+          },
+          type: "POST",
+          dataType: "json",
+            success: function (data) {
+              window.location.reload()
+            },
+            error: function () {
+              Swal.fire({text:"Error",icon:"error"});
+            }
+        })
+    }
+  } else {
+    let new_html = ``
+    let p_code = ""
+    let p_name = ""
+    for (let i = 0; i < navBarConfig.length; i++){
+      for(let j = 0; j < navBarConfig[i].childrenOfLevel0.length; j++){
+        if($(".navPointSelect").val() == navBarConfig[i].childrenOfLevel0[j].item_code){
+          $(".navPointSelect").find(`option`).each(function() {
+            if($(this).val() == navBarConfig[i].childrenOfLevel0[j].item_code){
+              if(prgCode == $(this).attr("data-process")){
+                method = "existing"
+              }
+            }
+          })
+          p_code = navBarConfig[i].childrenOfLevel0[j].item_code
+          p_name = navBarConfig[i].childrenOfLevel0[j].item_name
+          new_html = new_html + `
+          <li class="nav-item" data-navsidebarinnerlitagitemcode="${navBarConfig[i].childrenOfLevel0[j].item_code}"
+            data-item_pk="${navBarConfig[i].childrenOfLevel0[j].id}">
+              <a class="nav-link" href="/users/${urlPath}/${navBarConfig[i].childrenOfLevel0[j].item_code}"
+                <p class="fontclass" style="margin-left:1.5em" >
+                  ${navBarConfig[i].childrenOfLevel0[j].item_name}
+                  {% if block_remove_navpoint == "False" %}
+                  <i class="fas fa-remove" onclick="removeNavbar(this,event,'subprocess')"></i>
+                  {% endif %}
+                  <i class="fas fa-edit" onclick="editNavbar(this,'subprocess',event)"></i>
+              </a>
+          </li>
+          `
+        }
+      }
+    }
+    if($(this).attr("data-new") == "new"){
+      $(".nav-pills").append(new_html)
+      if(p_name == ""){
+        p_name = $(".folderName").val()
+        p_code = "Rgr" + String(Math.random()).replace('.',"")
+        method = "new"
+      }
+      p_name = p_name.replace(/<script>|<\/script>|['"]/g, '');
+      let parser = new DOMParser();
+      let doc = parser.parseFromString(p_name, 'text/html');
+      p_name = doc.body.textContent || ""
+      $.ajax({
+        url: `/users/${urlPath}/dynamicVal/`,
+        data: {
+        'operation': "addNavbar",
+        'code': p_code,
+        'name': p_name,
+        'type':'subprocess',
+        'method':"new",
+        'inject_code': "default",
+        "dev_mode": current_dev_mode1,
+        "Icon":flexPageIcon,
+        },
+        type: "POST",
+        dataType: "json",
+          success: function (data) {
+            if ($("#changeOperation").val() == "new") {
+              localStorage.setItem('config',JSON.stringify({'code':p_code,'name':p_name,'app_code':app_code2}))
+              window.location.href = `/users/${urlPath}/staticPage/?code=${p_code}&name=${p_name}`
+            } else {
+              window.location.reload()
+            }
+          },
+          error: function () {
+          }
+      })
+    } else{
+      curr_ref_element.closest("li").find("ul").eq(0).append(new_html)
+      if(p_name == ""){
+        p_name = $(".folderName").val()
+        p_code = "Rgr" + String(Math.random()).replace('.',"")
+        method = "new"
+      }
+      $.ajax({
+          url: `/users/${urlPath}/dynamicVal/`,
+          data: {
+          'operation': "addNavbar",
+          'code': p_code,
+          'name': p_name,
+          'type':'subprocess',
+          'method':method,
+          'inject_code': prgCode,
+          "dev_mode": current_dev_mode1,
+          "Icon":flexPageIcon,
+          },
+          type: "POST",
+          dataType: "json",
+            success: function (data) {
+              if ($("#changeOperation").val() == "new") {
+                localStorage.setItem('config',JSON.stringify({'code':p_code,'name':p_name,'app_code':app_code2}))
+                window.location.href = `/users/${urlPath}/staticPage/?code=${p_code}&name=${p_name}`
+              } else {
+                window.location.reload()
+              }
+            },
+            error: function () {
+            }
+        })
+    }
+  }
+}
+
+
+function processHtml(key,key1,value1,html) {
+  html_ = `
+  <li class="nav-item has-treeview">
+        <a href="#" class="nav-link"
+          data-navsidebarouteranchortaggroupcode="${key1}" data-code="${key1}">
+          <i class="nav-icon fa fa-edit"></i>
+          <p data-short_name='${value1}'>
+            <span>${value1}</span>
+            <i class="right fas fa-angle-left"></i>
+          </p>
+            ${html}
+            `
+      html_ =  html_ +`
+            {% if block_add_navpoint == "False" %}
+            <i class="fas fa-plus iconClass" onclick="addNavbar.call(this,'process','${key1}')" style="" data-toggle="tooltip" title="Add navpoint"></i>
+            {% endif %}
+          </div>
+        </div>
+        </a>
+        <ul class="nav nav-treeview">
+        </ul>
+      </li>
+  `
+  return html_
+}
+function subprocessHtml(key, key1, value1, value2, html, urlPath) {
+  let html_ = `
+    <li class="nav-item subprocessWaypointList" data-navsidebarinnerlitagitemcode="${key1}" data-code="${key1}" data-item_pk="${key1}" style="width: -webkit-fill-available;">
+      <a data-href_or_click="#" class="nav-link forwardTo" data-related_entity="" data-l3_length="2" data-navsidebarinnerlitagitemcode="${key1}" href="/users/${urlPath}/${key1}/">
+        <i class="${value2} nav-icon"></i>
+        <p href="/users/${urlPath}/${key1}/">${value1}</p>
+        ${html}
+      </a>
+    </li>
+  `;
+  return html_;
+}
+
+function staticPageForward() {
+  $("#configureNavpoint").modal("show")
+}
+
+function closeModalNav()  {
+  $("#toggleButton").trigger("click")
+}
+
+function forward(event) {
+  event.preventDefault();
+  window.location.href = $(this).attr("href")
+}
+function changeOperation() {
+  if($(this).val() == "existing"){
+    $(".existingConfig").css("display","block")
+    $(".newConfig").css("display","none")
+  } else {
+    $(".existingConfig").css("display","none")
+    $(".newConfig").css("display","block")
+  }
+}
+
+</script>
+
+{% if selected_any_app != 'false' %}
+
+<script>
+let config_navbar_ = {};
+let subprocessObj ={};
+if ({{config_navbar | safe }}) {
+  config_navbar_ = {{config_navbar| safe}}
+
+}
+if(config_navbar_ == ""){
+  window.location.reload();
+}
+if (Object.keys(config_navbar_).length) {
+  config_navbar = config_navbar_["new"]["Build"]
+} else {
+  config_navbar = {}
+}
+for(let [key,value] of Object.entries(config_navbar)){
+  let new_html = ""
+  if (value["existing"].hasOwnProperty("subprocess")) {
+  for (let [key1, value1] of Object.entries(value["existing"]["subprocess"])) {
+
+    if (typeof value1 === "string") {
+      subprocessObj["name"] = value1;
+      subprocessObj["Icon"] = "fa fa-edit";
+    } else {
+      subprocessObj["name"] = value1["name"];
+      subprocessObj["Icon"] = value1.hasOwnProperty("Icon") ? value1["Icon"] : "fa fa-edit";
+    }
+
+    new_html = "";
+    let html = `
+    `;
+    html =
+      html +
+      `
+        <div class="dropdown1">
+          <div class="dropdown-content1">`;
+
+    if (key1.includes("Rgr")) {
+      html =
+        html +
+        `<i class="fas fa-pen-fancy" href="/users/{{current_app_code}}/Build/staticPage/?code=${key1}&name=${subprocessObj['name']}" onclick="forward.call(this,event)" style=" margin-left: 1px;" data-toggle="tooltip" title="Edit html"></i>`;
+    }
+    html =
+      html +
+      `{% if block_remove_navpoint == "False" %}
+          <i class="fas fa-remove" data-injectcode="${key}" onclick="removeNavbar.call(this,'subprocess','${key1}','new',event)" data-toggle="tooltip" title="Remove navpoint"></i>
+        {% endif %}
+          <i class="fas fa-edit iconClass" data-injectcode="${key}" onclick="editNavbar.call(this,'subprocess','${key1}','${key}','new',event)" data-toggle="tooltip" title="Edit name"></i>
+        `;
+    html = html + `</div></div>`;
+    new_html = new_html + subprocessHtml(key, key1, subprocessObj["name"],subprocessObj["Icon"], html, urlPath);
+
+      if (key != "default"){
+        $(`a[data-code="${key}"]`).closest("li").find("ul").append(new_html)
+      } else {
+        $(".nav-pills.nav-sidebar").append(new_html)
+      }
+    }
+  }
+  new_html = ""
+  if(value["existing"].hasOwnProperty("process")){
+    for(let [key1,value1] of Object.entries(value["existing"]["process"])){
+      new_html = ""
+      let html = `
+      <div class="dropdown1">
+          <div class="dropdown-content1">
+      `
+        html = html + `
+        {% if block_remove_navpoint == "False" %}
+            <i class="fas fa-remove" data-injectcode="${key}" onclick="removeNavbar.call(this,'process','${key1}','new',event)" ></i>
+        {% endif %}
+        <i class="fas fa-edit iconClass" onclick="editNavbar.call(this,'process','${key1}','${key}','new',event)" ></i>
+        `
+      new_html = new_html  + processHtml(key, key1, value1, html)
+    }
+    if (key != "default"){
+      $(`a[data-code="${key}"]`).closest("li").find("ul").append(new_html)
+    } else {
+      $(".nav-pills.nav-sidebar").append(new_html)
+    }
+  }
+}
+
+if (current_dev_mode1 != "Build"){
+  config_navbar = config_navbar_["new"]["{{request_user}}"]
+  for(let [key,value] of Object.entries(config_navbar)){
+
+    let new_html = ""
+    if(value["existing"].hasOwnProperty("subprocess")){
+      for(let [key1,value1] of Object.entries(value["existing"]["subprocess"])){
+
+        if (typeof value1 === "string") {
+          subprocessObj["name"] = value1;
+          subprocessObj["Icon"] = "fa fa-edit";
+        } else {
+          subprocessObj["name"] = value1["name"];
+          subprocessObj["Icon"] = value1.hasOwnProperty("Icon") ? value1["Icon"] : "fa fa-edit";
+        }
+
+        new_html = ""
+        let html = `
+        <div class="dropdown1">
+            <div class="dropdown-content1">
+        `
+        if (key1.includes("Rgr")) {
+          html = html + `<i class="fas fa-pen-fancy" href="/users/{{current_app_code}}/User/staticPage/?code=${key1}&name=${value1['name']}" onclick="forward.call(this)" style=" margin-left: 1px;" data-toggle="tooltip" title="Edit html"></i>`
+        }
+        if(1){
+          html = html + `
+          {% if block_remove_navpoint == "False" %}
+            <i class="fas fa-remove" data-injectcode="${key}" onclick="removeNavbar.call(this,'subprocess','${key1}','new',event)" data-toggle="tooltip" title="Remove navpoint"></i>
+          {% endif %}
+            <i class="fas fa-edit iconClass" data-injectcode="${key}" onclick="editNavbar.call(this,'subprocess','${key1}','${key}','new',event)" data-toggle="tooltip" title="Edit name"></i>
+          `
+        }
+        html = html + `</div>
+        </div>`
+        new_html =  new_html  + subprocessHtml(key,key1,subprocessObj["name"],subprocessObj["Icon"],html, urlPath)
+
+        if (key != "default"){
+          $(`a[data-code="${key}"]`).closest("li").find("ul").append(new_html)
+        } else {
+          $(".nav-pills.nav-sidebar").append(new_html)
+        }
+      }
+    }
+    new_html = ""
+    if(value["existing"].hasOwnProperty("process")){
+      for(let [key1,value1] of Object.entries(value["existing"]["process"])){
+        new_html = ""
+        let html = `
+        <div class="dropdown1">
+            <div class="dropdown-content1">
+        `
+        if(1){
+          html = html + `
+          {% if block_remove_navpoint == "False" %}
+              <i class="fas fa-remove " data-injectcode="${key}" onclick="removeNavbar.call(this,'process','${key1}','new',event)" data-toggle="tooltip" title="Remove navpoint"></i>
+          {% endif %}
+              <i class="fas fa-edit iconClass" onclick="editNavbar.call(this,'process','${key1}','${key}','new',event)" data-toggle="tooltip" title="Edit name"></i>
+          `
+        }
+        new_html = new_html  + processHtml(key, key1, value1, html)
+      }
+      if (key != "default"){
+        $(`a[data-code="${key}"]`).closest("li").find("ul").append(new_html)
+      } else {
+        $(".nav-pills.nav-sidebar").append(`` + new_html + ``)
+      }
+    }
+  }
+}
+
+$(document).on("wheel", ".approvalWallModal .modal-content", function(){
+  $(".cke_autocomplete_panel").removeClass("cke_autocomplete_opened")
+})
+
+
+</script>
+{% endif %}
+<script>
+</script>
+</html>

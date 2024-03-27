@@ -1,0 +1,2937 @@
+
+      <div class="breadcrumb-holder" style="background-color: #e9ecef; display:flex" >
+        <div class="container-fluid">
+          <ul class="breadcrumb" style="padding: .25rem 1rem; margin-block-end: 0em;" id="dynamic">
+            <li class="breadcrumb-item"><a {% if current_application_code != 'App0' %} {% if current_application_code == 'Dev' %} {% if current_dev_mode == 'Edit' %} {% if edit_app_code != 'Not Selected' %} href="{% url 'users:homePage_developer_edit_mode' edit_app_code %}" {% else %} href='{% url "users:homePage_developer_edit_mode" "Dev" %}' {% endif %} {% elif current_dev_mode == 'Build' %} {% if build_app_code != 'Not Selected' %} href="{% url 'users:homePage_developer_build_mode' build_app_code %}" {% else %} href="{% url 'users:select_application' %}"  {% endif %}  {% endif %} {% else %} href="{% url 'users:homePage' current_application_code %}" {% endif %} {% else %} href="{% url 'users:select_application' %}" {% endif %}>
+              <b> Home </b></a></li>      <li class="breadcrumb-item"> <b> Application_test </b></li>      <li class="breadcrumb-item"> <b> Test_subprocess </b></li> </ul>
+        </div>
+        <i style="font-size: 20px;margin-right: 2%; cursor: pointer;;" data-data_list='{"process08790576004318207": {"order": "1", "show": "1"}, "whiteSpacewrap07924047665288709": {"order": "2", "show": "1"}}' onclick="populateTabFuctionalities.call(this)" data-toggle="modal" data-target="#tabsMultiFunc" class="fas"></i><span style="white-space:nowrap; margin-right:2%;">Tab config</span>
+      </div>
+      <datalist id="hosting-plan">
+        <option value="=Count"/>
+        <option value="=Count Distinct"/>
+        <option value="=Sum"/>
+        <option value="=Average"/>
+        <option value="=Minimum"/>
+        <option value="=Maximum"/>
+        <option value="=Standard Deviation"/>
+        <option value="=Variance"/>
+        <option value="=Median"/>
+        <option value="=Skewness"/>
+        <option value="=Kurtosis"/>
+      </datalist>
+
+    <div class="modal fade" id="ckEditorModal" tabindex="-1" role="dialog" aria-labelledby="ckEditorModal" aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title">Text Editor</h5>
+               <button
+                type="button"
+                class="close"
+                data-dismiss="modal"
+                aria-label="Close"
+              >
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+
+            <div class="modal-body">
+              <div class='card'>
+                <div class='card-body tabsMultiFuncBody'>
+                  <form>
+                      <ul class="nav nav-tabs rtf_action_tab" role="tablist">
+                        <li class="nav-item" role="presentation" style="margin-left: 2px;">
+                          <button class="nav-link active" data-bs-toggle="tab" data-bs-target="Text" type="button" role="tab" aria-controls="Text" aria-selected="true">Text Format</button>
+                        </li>
+                        <li class="nav-item" role="presentation" style="margin-left: 2px;">
+                          <button class="nav-link "  data-bs-toggle="tab" data-bs-target="Insert" type="button" role="tab" aria-controls="Insert" aria-selected="false">Insert</button>
+                        </li>
+                        <li class="nav-item" role="presentation" style="margin-left: 2px;">
+                          <button class="nav-link" data-bs-toggle="tab" data-bs-target="Form" type="button" role="tab" aria-controls="Form" aria-selected="false">Form</button>
+                        </li>
+                        <li class="nav-item" role="presentation" style="margin-left: 2px;">
+                          <button class="nav-link" data-bs-toggle="tab" data-bs-target="Page Layout" type="button" role="tab" aria-controls="Page Layout" aria-selected="false">Page Layout</button>
+                        </li>
+                      </ul>
+                      <textarea name="text_editor">&nbsp;</textarea>
+                    </form>
+                </div>
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button onclick="saveCkEditor.call(this)" type="button" class="btn btn-primary">Save</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    <div class="modal fade" id="tabsMultiFunc" tabindex="-1" role="dialog" aria-labelledby="tabsMultiFunc" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Order show hide</h5>
+             <button
+              type="button"
+              class="close"
+              data-dismiss="modal"
+              aria-label="Close"
+            >
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+
+          <div class="modal-body">
+            <div class='card'>
+              <div class='card-body tabsMultiFuncBody'>
+                <table id="tabsMultiFuncBodyTable" class="display" style="width:100%;overflow-x: scroll;overflow-y:scroll;">
+                  <thead style="border-bottom:1px solid #B58d2b" >
+                    <tr style="text-align:center">
+                      <th>Tab name</th>
+                      <th>Tab order</th>
+                      <th>Tab display</th>
+                    </tr>
+                  </thead>
+                  <tbody style="height: 80px;border-bottom:1px solid #B58d2b;">
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button onclick="saveTabsFunc.call(this)" type="button" class="btn btn-primary">Save</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="modal fade" id="viewCompScenario" tabindex="-1" role="dialog" aria-labelledby="viewCompScenario" aria-hidden="true">
+      <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" style="margin-left: auto;color: darkgoldenrod;">View Scenario</h5>
+             <button
+              type="button"
+              class="close"
+              data-dismiss="modal"
+              aria-label="Close"
+            >
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+
+          <div class="modal-body" style="background-color:whitesmoke">
+            <div class='card'>
+              <div class='card-body viewCompScenarioBody'>
+                <div style="background:whitesmoke;border:solid 1.5px black;max-height:30rem;overflow:auto;padding: 0;">
+                  <div id="model_inputs_scenario_" > </div>
+                </div>
+                <br>
+                <div class="form-inline">
+                  <label for="scenario_name_">Scenario Name:</label>
+                  &nbsp;&nbsp;<input type="text" id="scenario_name_" data-element_id="" class="textinput textInput form-control" required="" >
+                </div>
+                <br>
+                <div class="form-inline">
+                  <label for="scenario_configuration_date_">Configuration date:</label>
+                  &nbsp;&nbsp;<input type="text" placeholder="YYYY-MM-DD" id="scenario_configuration_date_" class="form-control datepickerinput" required="" >
+                </div>
+                <br>
+                <div class="custom-control custom-checkbox">
+                    <input type="checkbox" name="runWithBaseModel_" class="checkboxinput custom-control-input" id="runWithBaseModel_" value="Risk_Measures" required="" >
+                    <label for="runWithBaseModel_" class="custom-control-label">
+                    Run with base model
+                    </label>
+                </div>
+                <br>
+                <div class="row" style="overflow: auto;">
+                  <table class="table table-bordered table-hover">
+                    <thead class="thead-dark">
+                      <tr>
+                        <th scope="col" style="text-align: center;">Model input</th>
+                        <th scope="col" style="text-align: center;">Scenario type - Base Data</th>
+                        <th scope="col" style="text-align: center;">Scenario type - Scenario Data</th>
+                        <th scope="col" style="text-align: center;">Action</th>
+                      </tr>
+                    </thead>
+                    <tbody id="element_incremental_data_"></tbody>
+                  </table>
+                </div>
+                <button type="button" id="run_saved_scenario"  class="btn btn-primary btn-xs mx-1 my-1 rounded px-2">Run Scenario &nbsp;<i class="fas fa-play"></i></button>
+                <button type="button" id="save_edited_scenario"  class="btn btn-primary btn-xs mx-1 my-1 rounded px-2">Save &nbsp;<i class="fas fa-save"></i></button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="modal" id="EBDisplayModel">
+        <div>
+            <div style="height:100vh;overflow:auto;background:whitesmoke;z-index:10;position: relative;">
+
+                <div id="EBbody">
+
+                    <div class="overlay" id="overlay" style="display:none;"></div>
+                    <div class="popup" id="popup" style="display:none;">
+                        <div class="popup-inner">
+                            <input type="button" name="Close" class="s3-btn-close" onclick="popupClose();" value="&times;">
+
+                            <h2 id='funcHeading' style="font-size:28px"></h2>
+                            <br />
+                            <div id="funcInput" class='ScrollStyle'>
+                            </div>
+                            <p id='funcDesc' style="font-size:22px;"></p>
+                        </div>
+                    </div>
+
+                    <div class="equation-left">
+                        <div class="fav-functions">
+                            <div class="functions-search">
+                                <h2>Favourite Functions</h2>
+                            </div>
+
+                            <div id="favouriteList">
+
+                            </div>
+                        </div>
+
+                        <div class="eq-functions">
+                            <div class="functions-search">
+                                <h2>Search Functions</h2>
+                                <div class="searchWrapper">
+                                    <input type="text" name="searchBar" id="searchBar"
+                                        placeholder="Search for a function" />
+                                </div>
+                            </div>
+
+                            <div id="functionsList">
+
+                            </div>
+                        </div>
+                    </div>
+                    <div class="equation-right">
+                        <div class="search-table">
+                            <div class="searchWrapper">
+                                <input type="text" name="searchTable" id="searchTable" placeholder="Search for table" />
+                            </div>
+                             <div id="tableList">
+      <div onClick='selectTable(`alertbasetable`)' class="tableItem btn-xs btn">
+          <p class="tableItemP"
+              onClick="selectTable(e.target.value);changeTableandColumns(e.target.value)"
+              value="alertbasetable">alertbasetable</p>
+      </div>
+
+      <div onClick='selectTable(`Application`)' class="tableItem btn-xs btn">
+          <p class="tableItemP"
+              onClick="selectTable(e.target.value);changeTableandColumns(e.target.value)"
+              value="Application">Application</p>
+      </div>
+
+      <div onClick='selectTable(`Approval_Email_Details`)' class="tableItem btn-xs btn">
+          <p class="tableItemP"
+              onClick="selectTable(e.target.value);changeTableandColumns(e.target.value)"
+              value="Approval_Email_Details">Approval_Email_Details</p>
+      </div>
+
+      <div onClick='selectTable(`ApprovalTable`)' class="tableItem btn-xs btn">
+          <p class="tableItemP"
+              onClick="selectTable(e.target.value);changeTableandColumns(e.target.value)"
+              value="ApprovalTable">ApprovalTable</p>
+      </div>
+
+      <div onClick='selectTable(`Business_Models`)' class="tableItem btn-xs btn">
+          <p class="tableItemP"
+              onClick="selectTable(e.target.value);changeTableandColumns(e.target.value)"
+              value="Business_Models">Business_Models</p>
+      </div>
+
+      <div onClick='selectTable(`Category_Subelement`)' class="tableItem btn-xs btn">
+          <p class="tableItemP"
+              onClick="selectTable(e.target.value);changeTableandColumns(e.target.value)"
+              value="Category_Subelement">Category_Subelement</p>
+      </div>
+
+      <div onClick='selectTable(`Category_Subelement_Attributes`)' class="tableItem btn-xs btn">
+          <p class="tableItemP"
+              onClick="selectTable(e.target.value);changeTableandColumns(e.target.value)"
+              value="Category_Subelement_Attributes">Category_Subelement_Attributes</p>
+      </div>
+
+      <div onClick='selectTable(`computation_function_repository`)' class="tableItem btn-xs btn">
+          <p class="tableItemP"
+              onClick="selectTable(e.target.value);changeTableandColumns(e.target.value)"
+              value="computation_function_repository">computation_function_repository</p>
+      </div>
+
+      <div onClick='selectTable(`computation_model_configuration`)' class="tableItem btn-xs btn">
+          <p class="tableItemP"
+              onClick="selectTable(e.target.value);changeTableandColumns(e.target.value)"
+              value="computation_model_configuration">computation_model_configuration</p>
+      </div>
+
+      <div onClick='selectTable(`computation_model_flowchart`)' class="tableItem btn-xs btn">
+          <p class="tableItemP"
+              onClick="selectTable(e.target.value);changeTableandColumns(e.target.value)"
+              value="computation_model_flowchart">computation_model_flowchart</p>
+      </div>
+
+      <div onClick='selectTable(`computation_model_run_history`)' class="tableItem btn-xs btn">
+          <p class="tableItemP"
+              onClick="selectTable(e.target.value);changeTableandColumns(e.target.value)"
+              value="computation_model_run_history">computation_model_run_history</p>
+      </div>
+
+      <div onClick='selectTable(`computation_output_repository`)' class="tableItem btn-xs btn">
+          <p class="tableItemP"
+              onClick="selectTable(e.target.value);changeTableandColumns(e.target.value)"
+              value="computation_output_repository">computation_output_repository</p>
+      </div>
+
+      <div onClick='selectTable(`computation_scenario_repository`)' class="tableItem btn-xs btn">
+          <p class="tableItemP"
+              onClick="selectTable(e.target.value);changeTableandColumns(e.target.value)"
+              value="computation_scenario_repository">computation_scenario_repository</p>
+      </div>
+
+      <div onClick='selectTable(`ConfigTable`)' class="tableItem btn-xs btn">
+          <p class="tableItemP"
+              onClick="selectTable(e.target.value);changeTableandColumns(e.target.value)"
+              value="ConfigTable">ConfigTable</p>
+      </div>
+
+      <div onClick='selectTable(`CountryMaster`)' class="tableItem btn-xs btn">
+          <p class="tableItemP"
+              onClick="selectTable(e.target.value);changeTableandColumns(e.target.value)"
+              value="CountryMaster">CountryMaster</p>
+      </div>
+
+      <div onClick='selectTable(`CreditorOutstandingbalance`)' class="tableItem btn-xs btn">
+          <p class="tableItemP"
+              onClick="selectTable(e.target.value);changeTableandColumns(e.target.value)"
+              value="CreditorOutstandingbalance">CreditorOutstandingbalance</p>
+      </div>
+
+      <div onClick='selectTable(`CurrencyMaster`)' class="tableItem btn-xs btn">
+          <p class="tableItemP"
+              onClick="selectTable(e.target.value);changeTableandColumns(e.target.value)"
+              value="CurrencyMaster">CurrencyMaster</p>
+      </div>
+
+      <div onClick='selectTable(`Curve_Data`)' class="tableItem btn-xs btn">
+          <p class="tableItemP"
+              onClick="selectTable(e.target.value);changeTableandColumns(e.target.value)"
+              value="Curve_Data">Curve_Data</p>
+      </div>
+
+      <div onClick='selectTable(`Curve_Repository`)' class="tableItem btn-xs btn">
+          <p class="tableItemP"
+              onClick="selectTable(e.target.value);changeTableandColumns(e.target.value)"
+              value="Curve_Repository">Curve_Repository</p>
+      </div>
+
+      <div onClick='selectTable(`data_management_computed_fields_config`)' class="tableItem btn-xs btn">
+          <p class="tableItemP"
+              onClick="selectTable(e.target.value);changeTableandColumns(e.target.value)"
+              value="data_management_computed_fields_config">data_management_computed_fields_config</p>
+      </div>
+
+      <div onClick='selectTable(`data_management_computed_fields_flow`)' class="tableItem btn-xs btn">
+          <p class="tableItemP"
+              onClick="selectTable(e.target.value);changeTableandColumns(e.target.value)"
+              value="data_management_computed_fields_flow">data_management_computed_fields_flow</p>
+      </div>
+
+      <div onClick='selectTable(`data_mapping_error_report`)' class="tableItem btn-xs btn">
+          <p class="tableItemP"
+              onClick="selectTable(e.target.value);changeTableandColumns(e.target.value)"
+              value="data_mapping_error_report">data_mapping_error_report</p>
+      </div>
+
+      <div onClick='selectTable(`Draft_FormData`)' class="tableItem btn-xs btn">
+          <p class="tableItemP"
+              onClick="selectTable(e.target.value);changeTableandColumns(e.target.value)"
+              value="Draft_FormData">Draft_FormData</p>
+      </div>
+
+      <div onClick='selectTable(`DraftProcess`)' class="tableItem btn-xs btn">
+          <p class="tableItemP"
+              onClick="selectTable(e.target.value);changeTableandColumns(e.target.value)"
+              value="DraftProcess">DraftProcess</p>
+      </div>
+
+      <div onClick='selectTable(`Error_Master_Table`)' class="tableItem btn-xs btn">
+          <p class="tableItemP"
+              onClick="selectTable(e.target.value);changeTableandColumns(e.target.value)"
+              value="Error_Master_Table">Error_Master_Table</p>
+      </div>
+
+      <div onClick='selectTable(`flow_monitor_error_log`)' class="tableItem btn-xs btn">
+          <p class="tableItemP"
+              onClick="selectTable(e.target.value);changeTableandColumns(e.target.value)"
+              value="flow_monitor_error_log">flow_monitor_error_log</p>
+      </div>
+
+      <div onClick='selectTable(`group_config`)' class="tableItem btn-xs btn">
+          <p class="tableItemP"
+              onClick="selectTable(e.target.value);changeTableandColumns(e.target.value)"
+              value="group_config">group_config</p>
+      </div>
+
+      <div onClick='selectTable(`Hierarchy_groups`)' class="tableItem btn-xs btn">
+          <p class="tableItemP"
+              onClick="selectTable(e.target.value);changeTableandColumns(e.target.value)"
+              value="Hierarchy_groups">Hierarchy_groups</p>
+      </div>
+
+      <div onClick='selectTable(`Hierarchy_levels`)' class="tableItem btn-xs btn">
+          <p class="tableItemP"
+              onClick="selectTable(e.target.value);changeTableandColumns(e.target.value)"
+              value="Hierarchy_levels">Hierarchy_levels</p>
+      </div>
+
+      <div onClick='selectTable(`Hierarchy_table`)' class="tableItem btn-xs btn">
+          <p class="tableItemP"
+              onClick="selectTable(e.target.value);changeTableandColumns(e.target.value)"
+              value="Hierarchy_table">Hierarchy_table</p>
+      </div>
+
+      <div onClick='selectTable(`Holiday_Calendar_Repository`)' class="tableItem btn-xs btn">
+          <p class="tableItemP"
+              onClick="selectTable(e.target.value);changeTableandColumns(e.target.value)"
+              value="Holiday_Calendar_Repository">Holiday_Calendar_Repository</p>
+      </div>
+
+      <div onClick='selectTable(`jobs_scheduled`)' class="tableItem btn-xs btn">
+          <p class="tableItemP"
+              onClick="selectTable(e.target.value);changeTableandColumns(e.target.value)"
+              value="jobs_scheduled">jobs_scheduled</p>
+      </div>
+
+      <div onClick='selectTable(`list_of_scheduling_jobs`)' class="tableItem btn-xs btn">
+          <p class="tableItemP"
+              onClick="selectTable(e.target.value);changeTableandColumns(e.target.value)"
+              value="list_of_scheduling_jobs">list_of_scheduling_jobs</p>
+      </div>
+
+      <div onClick='selectTable(`ml_model_repository`)' class="tableItem btn-xs btn">
+          <p class="tableItemP"
+              onClick="selectTable(e.target.value);changeTableandColumns(e.target.value)"
+              value="ml_model_repository">ml_model_repository</p>
+      </div>
+
+      <div onClick='selectTable(`Mobile`)' class="tableItem btn-xs btn">
+          <p class="tableItemP"
+              onClick="selectTable(e.target.value);changeTableandColumns(e.target.value)"
+              value="Mobile">Mobile</p>
+      </div>
+
+      <div onClick='selectTable(`Model_Repository`)' class="tableItem btn-xs btn">
+          <p class="tableItemP"
+              onClick="selectTable(e.target.value);changeTableandColumns(e.target.value)"
+              value="Model_Repository">Model_Repository</p>
+      </div>
+
+      <div onClick='selectTable(`NavigationSideBar`)' class="tableItem btn-xs btn">
+          <p class="tableItemP"
+              onClick="selectTable(e.target.value);changeTableandColumns(e.target.value)"
+              value="NavigationSideBar">NavigationSideBar</p>
+      </div>
+
+      <div onClick='selectTable(`Ocr_Template`)' class="tableItem btn-xs btn">
+          <p class="tableItemP"
+              onClick="selectTable(e.target.value);changeTableandColumns(e.target.value)"
+              value="Ocr_Template">Ocr_Template</p>
+      </div>
+
+      <div onClick='selectTable(`Person_Web_Socket_Test`)' class="tableItem btn-xs btn">
+          <p class="tableItemP"
+              onClick="selectTable(e.target.value);changeTableandColumns(e.target.value)"
+              value="Person_Web_Socket_Test">Person_Web_Socket_Test</p>
+      </div>
+
+      <div onClick='selectTable(`Plan_Buckets`)' class="tableItem btn-xs btn">
+          <p class="tableItemP"
+              onClick="selectTable(e.target.value);changeTableandColumns(e.target.value)"
+              value="Plan_Buckets">Plan_Buckets</p>
+      </div>
+
+      <div onClick='selectTable(`Plans`)' class="tableItem btn-xs btn">
+          <p class="tableItemP"
+              onClick="selectTable(e.target.value);changeTableandColumns(e.target.value)"
+              value="Plans">Plans</p>
+      </div>
+
+      <div onClick='selectTable(`Process_flow_model`)' class="tableItem btn-xs btn">
+          <p class="tableItemP"
+              onClick="selectTable(e.target.value);changeTableandColumns(e.target.value)"
+              value="Process_flow_model">Process_flow_model</p>
+      </div>
+
+      <div onClick='selectTable(`Process_master`)' class="tableItem btn-xs btn">
+          <p class="tableItemP"
+              onClick="selectTable(e.target.value);changeTableandColumns(e.target.value)"
+              value="Process_master">Process_master</p>
+      </div>
+
+      <div onClick='selectTable(`Process_subprocess_flowchart`)' class="tableItem btn-xs btn">
+          <p class="tableItemP"
+              onClick="selectTable(e.target.value);changeTableandColumns(e.target.value)"
+              value="Process_subprocess_flowchart">Process_subprocess_flowchart</p>
+      </div>
+
+      <div onClick='selectTable(`summary_table`)' class="tableItem btn-xs btn">
+          <p class="tableItemP"
+              onClick="selectTable(e.target.value);changeTableandColumns(e.target.value)"
+              value="summary_table">summary_table</p>
+      </div>
+
+      <div onClick='selectTable(`Tables`)' class="tableItem btn-xs btn">
+          <p class="tableItemP"
+              onClick="selectTable(e.target.value);changeTableandColumns(e.target.value)"
+              value="Tables">Tables</p>
+      </div>
+
+      <div onClick='selectTable(`TabScreens`)' class="tableItem btn-xs btn">
+          <p class="tableItemP"
+              onClick="selectTable(e.target.value);changeTableandColumns(e.target.value)"
+              value="TabScreens">TabScreens</p>
+      </div>
+
+      <div onClick='selectTable(`Tasks_Planner`)' class="tableItem btn-xs btn">
+          <p class="tableItemP"
+              onClick="selectTable(e.target.value);changeTableandColumns(e.target.value)"
+              value="Tasks_Planner">Tasks_Planner</p>
+      </div>
+
+      <div onClick='selectTable(`Templates`)' class="tableItem btn-xs btn">
+          <p class="tableItemP"
+              onClick="selectTable(e.target.value);changeTableandColumns(e.target.value)"
+              value="Templates">Templates</p>
+      </div>
+
+      <div onClick='selectTable(`test_table1`)' class="tableItem btn-xs btn">
+          <p class="tableItemP"
+              onClick="selectTable(e.target.value);changeTableandColumns(e.target.value)"
+              value="test_table1">test_table1</p>
+      </div>
+
+      <div onClick='selectTable(`test_table2`)' class="tableItem btn-xs btn">
+          <p class="tableItemP"
+              onClick="selectTable(e.target.value);changeTableandColumns(e.target.value)"
+              value="test_table2">test_table2</p>
+      </div>
+
+      <div onClick='selectTable(`Upload_Error_History`)' class="tableItem btn-xs btn">
+          <p class="tableItemP"
+              onClick="selectTable(e.target.value);changeTableandColumns(e.target.value)"
+              value="Upload_Error_History">Upload_Error_History</p>
+      </div>
+
+      <div onClick='selectTable(`UserConfig`)' class="tableItem btn-xs btn">
+          <p class="tableItemP"
+              onClick="selectTable(e.target.value);changeTableandColumns(e.target.value)"
+              value="UserConfig">UserConfig</p>
+      </div>
+
+      <div onClick='selectTable(`UserProfile`)' class="tableItem btn-xs btn">
+          <p class="tableItemP"
+              onClick="selectTable(e.target.value);changeTableandColumns(e.target.value)"
+              value="UserProfile">UserProfile</p>
+      </div>
+
+                                </div>
+
+                        </div>
+                        <div id='selectedTablesDiv'>
+
+                        </div>
+                        <div id="table-columns" class="dragAreaPossible"></div>
+                        <div class="eq-workspace">
+                            <div class="workspace-left">
+                                <div class="ebSteps">
+                                    <h2>Steps</h2>
+                                    <div id="stepNumsEb"></div>
+                                </div>
+                                <div class="ebFunctions dragAreaPossible">
+                                    <h2>Functions</h2>
+                                </div>
+                                <div id="dataElementParent" class="ebDataElements">
+                                    <h2>Data Elements</h2>
+                                </div>
+                            </div>
+                            <div class="workspace-right">
+                                <h2>Preview</h2>
+                                <div id="functionPreviews"></div>
+                            </div>
+                        </div>
+                        <div class="eq-preview">
+                                    <div class="modal-content-eq">
+
+                                <!-- Modal body -->
+                                <div class="modal-body" id="viewData1" style="max-height:50rem;overflow:auto;">
+                                    <table id="exampledata1" class="display compact" style="width:100%;" data-parent_group_no="g3">
+                                        <thead>
+                                            <tr>
+                                                <th id="thid1"></th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                        </tbody>
+                                      </table>
+                                </div>
+
+                              </div>
+                            <!-- </div> -->
+                        <!-- </div> -->
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" id="where_condition" class="btn btn-primary btn-xs rounded">Configure where condition</button>
+                    <button type="button" class="btn btn-primary btn-xs mx-2 rounded px-2" id="export_data_equ">Export Data to DB</button>
+                    <button type="button" class="btn btn-primary btn-xs mx-2 rounded px-2 closeEqBuilder" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary btn-xs mx-2 rounded px-2" id="save_workflow_equ">Save</button>
+                </div>
+            </div>
+        </div>
+    </div>
+      <div class="modal" id="exportEquModal">
+            <div class="modal-dialog modal-lg modal-dialog-centered">
+              <div class="modal-content">
+
+                <!-- Modal Header -->
+                <div class="modal-header">
+                  <h6 class="modal-title">Select Configurations</h6>
+                  <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+
+                <!-- Modal body -->
+                <div class="modal-body" id="exportEqData" style="max-height:25rem;overflow:auto;">
+                        <div class="dropdown">
+
+                            <div class="form-group" id="exportTable1">
+                                <label for="exportTable1">Select table to export Data:</label>
+                                <select id="selectExportTable1" class="form-control" name="exportTable1">
+                                <option value="" disabled selected>Select Table Name</option>
+      <option value="alertbasetable">alertbasetable</option>
+      <option value="Application">Application</option>
+      <option value="Approval_Email_Details">Approval_Email_Details</option>
+      <option value="ApprovalTable">ApprovalTable</option>
+      <option value="Business_Models">Business_Models</option>
+      <option value="Category_Subelement">Category_Subelement</option>
+      <option value="Category_Subelement_Attributes">Category_Subelement_Attributes</option>
+      <option value="computation_function_repository">computation_function_repository</option>
+      <option value="computation_model_configuration">computation_model_configuration</option>
+      <option value="computation_model_flowchart">computation_model_flowchart</option>
+      <option value="computation_model_run_history">computation_model_run_history</option>
+      <option value="computation_output_repository">computation_output_repository</option>
+      <option value="computation_scenario_repository">computation_scenario_repository</option>
+      <option value="ConfigTable">ConfigTable</option>
+      <option value="CountryMaster">CountryMaster</option>
+      <option value="CreditorOutstandingbalance">CreditorOutstandingbalance</option>
+      <option value="CurrencyMaster">CurrencyMaster</option>
+      <option value="Curve_Data">Curve_Data</option>
+      <option value="Curve_Repository">Curve_Repository</option>
+      <option value="data_management_computed_fields_config">data_management_computed_fields_config</option>
+      <option value="data_management_computed_fields_flow">data_management_computed_fields_flow</option>
+      <option value="data_mapping_error_report">data_mapping_error_report</option>
+      <option value="Draft_FormData">Draft_FormData</option>
+      <option value="DraftProcess">DraftProcess</option>
+      <option value="Error_Master_Table">Error_Master_Table</option>
+      <option value="flow_monitor_error_log">flow_monitor_error_log</option>
+      <option value="group_config">group_config</option>
+      <option value="Hierarchy_groups">Hierarchy_groups</option>
+      <option value="Hierarchy_levels">Hierarchy_levels</option>
+      <option value="Hierarchy_table">Hierarchy_table</option>
+      <option value="Holiday_Calendar_Repository">Holiday_Calendar_Repository</option>
+      <option value="jobs_scheduled">jobs_scheduled</option>
+      <option value="list_of_scheduling_jobs">list_of_scheduling_jobs</option>
+      <option value="ml_model_repository">ml_model_repository</option>
+      <option value="Mobile">Mobile</option>
+      <option value="Model_Repository">Model_Repository</option>
+      <option value="NavigationSideBar">NavigationSideBar</option>
+      <option value="Ocr_Template">Ocr_Template</option>
+      <option value="Person_Web_Socket_Test">Person_Web_Socket_Test</option>
+      <option value="Plan_Buckets">Plan_Buckets</option>
+      <option value="Plans">Plans</option>
+      <option value="Process_flow_model">Process_flow_model</option>
+      <option value="Process_master">Process_master</option>
+      <option value="Process_subprocess_flowchart">Process_subprocess_flowchart</option>
+      <option value="summary_table">summary_table</option>
+      <option value="Tables">Tables</option>
+      <option value="TabScreens">TabScreens</option>
+      <option value="Tasks_Planner">Tasks_Planner</option>
+      <option value="Templates">Templates</option>
+      <option value="test_table1">test_table1</option>
+      <option value="test_table2">test_table2</option>
+      <option value="Upload_Error_History">Upload_Error_History</option>
+      <option value="UserConfig">UserConfig</option>
+      <option value="UserProfile">UserProfile</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group" id="exportTypeContainer1">
+                                <label for="selectExportDataType1">Export type: </label>
+                                <select class="form-control" name="selectExportDataType1" id="selectExportDataType1">
+                                    <option value='append' selected>Append to existing data</option>
+                                    <option value='update'>Update existing data</option>
+                                    <option value='replace'>Replace the existing data</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group"  id="exportColumn1">
+                                <label for="column1">Column Name:</label>
+                                <select id="exportselectColumn1" class="form-control" name="column1" multiple>
+                                </select>
+                            </div>
+
+                            <div class="form-group" id="updateIdentifierContainer1" style="display: none;">
+                                <label for="selectUpdateIdentifierCol1">Select identifier columns: </label>
+                                <select class="form-control" name="selectUpdateIdentifierCol1" id="selectUpdateIdentifierCol1" multiple>
+                                </select>
+                            </div>
+                            <div class="form-group" id="updateColumnContainer1" style="display: none;">
+                                <label for="selectUpdateCol1">Select columns to update: </label>
+                                <select class="form-control" name="selectUpdateCol1" id="selectUpdateCol1" multiple>
+                                </select>
+                            </div>
+
+                            <br>
+
+                            <div class="form-group" style="text-align: left;">
+                                <button type="button" id="save_buttonExportData1" class="btn btn-primary btn-xs mx-2 rounded px-2">Save</button>
+                                <button type="submit" id="run_stepExportData1" class="btn btn-primary btn-xs mx-2 rounded px-2">Run</button>
+                            </div>
+                        </div>
+
+                        <br>
+                </div>
+
+                <!-- Modal footer -->
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-primary btn-xs mx-2 rounded px-2" data-dismiss="modal">Close</button>
+                </div>
+
+              </div>
+            </div>
+        </div>
+        <div class="modal" id="where_condition_Modal">
+          <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content">
+
+              <!-- Modal Header -->
+              <div class="modal-header">
+                <h6 class="modal-title">Set Condition</h6>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+              </div>
+
+              <!-- Modal body -->
+              <div class="modal-body">
+                  <div class="btn-group">
+                      <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                        {{_("Add Filter")}}
+                        <span class="caret"></span>
+                      </button>
+                      <ul class="dropdown-menu" id="condition_dropdown">
+                      </ul>
+                  </div><br>
+                  <br>
+                  <div style="float: left;"><button type="button" id="filter_condition_import" class="btn btn-primary btn-xs mx-2 rounded px-2" style="display:none; float: right;">Filter Data</button></div><br>
+                  <br>
+                  <div id="select_filter_columns_div" style="display: none;">
+                      <div class="col-4">
+                          <label for="select_parent_column">Select Parent Column</label>
+                          <select name="select_parent_column" id="select_parent_column" class="select2"></select>
+                      </div>
+                      <div class="col-4">
+                          <label for="select_current_column">Select Filter Column</label>
+                          <select name="select_current_column" id="select_current_column" class="select2"></select>
+                      </div>
+                  </div>
+                  <div class="row" id="items">
+                      <table class="table" id="filter-table">
+                      </table>
+                  </div>
+              </div>
+
+              <!-- Modal footer -->
+              <div class="modal-footer">
+                <button type="button" id="btn_search" class="btn btn-primary btn-xs mx-2 rounded px-2" data-dismiss="modal">Save</button>
+                <button type="button" class="btn btn-primary btn-xs mx-2 rounded px-2" data-dismiss="modal">Close</button>
+              </div>
+
+            </div>
+          </div>
+        </div>
+        <div class="modal fade" id="scenarioModal" tabindex="-1" role="dialog" aria-labelledby="tabsMultiFunc" aria-hidden="true">
+          <div class="modal-dialog modal-xl" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title">Scenarios</h5>
+                 <button
+                  type="button"
+                  class="close"
+                  data-dismiss="modal"
+                  aria-label="Close"
+                >
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+
+              <div class="modal-body">
+              </div>
+            </div>
+          </div>
+        </div>
+  <section class='content'><div class='container-fluid'> <form id='form1' method='post'>{% csrf_token %}</form><ul class='nav nav-tabs nav-fill' id='myTab' role='tablist' style='flex-wrap:nowrap;overflow-x: scroll;overflow-y: hidden;'><li class='nav-item' data-tab_pk='1' style='display:inline-block;white-space: nowrap;'><a class='nav-link l3items' id='process08790576004318207-tab'  data-toggle='tab' href='#process08790576004318207_tab_content' role='tab'aria-controls='process08790576004318207_tab_content' aria-selected='true'><span class='span_content_editable'>Retail customers</span></a></li><li class='nav-item' data-tab_pk='2' style='display:inline-block;white-space: nowrap;'><a class='nav-link l3items' id='whiteSpacewrap07924047665288709-tab'  data-toggle='tab' href='#whiteSpacewrap07924047665288709_tab_content' role='tab'aria-controls='whiteSpacewrap07924047665288709_tab_content' aria-selected='true'><span class='span_content_editable'>Create users</span></a></li></ul>
+
+    <style>
+      .commentboxcard {
+        height: 400px;
+        width: 500px;
+        flex-wrap:wrap;
+      }
+      strong {
+        font-weight: bold;
+      }
+      .select2-container{
+        width:auto;
+      }
+      .row {
+        flex-wrap: wrap;
+      }
+    </style>
+
+    <style>
+      h2 {
+        font-size: medium;
+      }
+      .ebDataElementsDiv {
+        margin-bottom: 5px;
+      }
+      .popup {
+        height:80%;
+      }
+      .select2-dropdown {
+        z-index:9999
+      }
+    </style>
+
+  <div class="modal fade" id="draftModal" tabindex="-1" role="dialog" aria-labelledby="draftModal"  aria-modal="true" style="z-index:1052 !important;">
+          <div class="modal-dialog  modal-lg modal-dialog-centered"  role="document">
+              <div class="modal-content" style="margin-right: auto;margin-left: auto;max-width:1000px;max-height: 700px;text-align: center;font-size:small">
+
+
+              <div class="modal-header"  style="background:#565a5e;text-align: center;">
+                  <h6 class="modal-title"  style="width:100%;color:white;margin:auto;font-weight:bold;">Draft Versions</h6>
+                  <button type="button" class="close" data-dismiss="modal">&times;</button>
+              </div>
+
+              <div class="modal-body " style="overflow: scroll;">
+                  <table class="table table-striped" id="previewTable">
+
+                  </table>
+              </div>
+
+              <div class="modal-footer">
+                  <button type="button" class="btn btn-primary btn-xs mx-2 rounded px-2" data-dismiss="modal">Close</button>
+              </div>
+
+              </div>
+          </div>
+      </div><div class="modal fade" id="previewCreateViewModal" tabindex="-1" role="dialog" aria-labelledby="previewCreateViewModal"  aria-modal="true" style="z-index:1052 !important;">
+          <div class="modal-dialog  modal-lg modal-dialog-centered"  role="document">
+              <div class="modal-content" style="margin-right: auto;margin-left: auto;max-width:1000px;max-height: 700px;text-align: center;font-size:small">
+
+
+              <div class="modal-header"  style="background:#565a5e;text-align: center;">
+                  <h6 class="modal-title"  style="width:100%;color:white;margin:auto;font-weight:bold;">Create View Preview</h6>
+                  <button type="button" class="close" data-dismiss="modal">&times;</button>
+              </div>
+
+              <div class="modal-body " style="overflow: scroll;" id="previewCreateViewBody">
+
+              </div>
+
+              <div class="modal-footer" id='previewCreateView_footer'>
+                  <button type="button" class="btn btn-primary btn-xs mx-2 rounded px-2" data-dismiss="modal">Close</button>
+              </div>
+
+              </div>
+          </div>
+      </div>
+    <div class='tab-content'>
+
+        <div class="tab-pane fade" style='height:auto;' id="process08790576004318207_tab_content" role="tabpanel" aria-labelledby="process08790576004318207-tab">
+        <div class="modal fade FilePreviewModalClass" id="FilePreviewModal_process08790576004318207" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="FilePreviewModalLabel" aria-hidden="true">
+          <div class="modal-dialog modal-dialog-scrollable modal-xl" style="height:100%">
+            <div class="modal-content text-center">
+              <div class="modal-header">
+                <h5 class="modal-title" id="FilePreviewModalLabel">Modal title</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">x</button>
+              </div>
+              <div class="modal-body filetoappend">
+              Modal
+              </div>
+              <div class="modal-footer">
+                <a type="button" class="acies_btn acies_btn-primary">Download</a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="modal fade" id="viewDetailOnModal" style="display: none; backdrop-filter: brightness(0.4);" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+            <div class="modal-dialog modal-lg" role="document" style="margin-top: 5%">
+              <div class="modal-content">
+                <div class="modal-header" style='background:#565a5e; color:white;'>
+                  <h5 class="modal-title" style="padding-left: 40%;">View Column Details</h5>
+                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                  </button>
+                </div>
+                <div class="modal-body">
+
+                </div>
+                <div class="modal-footer">
+
+                </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="modal fade" id="addTableCardprocess08790576004318207" style="backdrop-filter: brightness(0.4);" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+            <div class="modal-dialog modal-xm" role="document" style="margin-top: 5%">
+              <div class="modal-content">
+                <div class="modal-header" style='background:#565a5e; color:white;'>
+                  <h5 class="modal-title" style="padding-left: auto;">Add table card</h5>
+                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                  </button>
+                </div>
+                <div class="modal-body">
+                  <select class="form-control select2 saveTableBtnSelect"><option value="alertbasetable">alertbasetable</option><option value="Application">Application</option><option value="Approval_Email_Details">Approval_Email_Details</option><option value="ApprovalTable">ApprovalTable</option><option value="Business_Models">Business_Models</option><option value="Category_Subelement">Category_Subelement</option><option value="Category_Subelement_Attributes">Category_Subelement_Attributes</option><option value="computation_function_repository">computation_function_repository</option><option value="computation_model_configuration">computation_model_configuration</option><option value="computation_model_flowchart">computation_model_flowchart</option><option value="computation_model_run_history">computation_model_run_history</option><option value="computation_output_repository">computation_output_repository</option><option value="computation_scenario_repository">computation_scenario_repository</option><option value="ConfigTable">ConfigTable</option><option value="CountryMaster">CountryMaster</option><option value="CreditorOutstandingbalance">CreditorOutstandingbalance</option><option value="CurrencyMaster">CurrencyMaster</option><option value="Curve_Data">Curve_Data</option><option value="Curve_Repository">Curve_Repository</option><option value="data_management_computed_fields_config">data_management_computed_fields_config</option><option value="data_management_computed_fields_flow">data_management_computed_fields_flow</option><option value="data_mapping_error_report">data_mapping_error_report</option><option value="Draft_FormData">Draft_FormData</option><option value="DraftProcess">DraftProcess</option><option value="Error_Master_Table">Error_Master_Table</option><option value="flow_monitor_error_log">flow_monitor_error_log</option><option value="group_config">group_config</option><option value="Hierarchy_groups">Hierarchy_groups</option><option value="Hierarchy_levels">Hierarchy_levels</option><option value="Hierarchy_table">Hierarchy_table</option><option value="Holiday_Calendar_Repository">Holiday_Calendar_Repository</option><option value="jobs_scheduled">jobs_scheduled</option><option value="list_of_scheduling_jobs">list_of_scheduling_jobs</option><option value="ml_model_repository">ml_model_repository</option><option value="Mobile">Mobile</option><option value="Model_Repository">Model_Repository</option><option value="NavigationSideBar">NavigationSideBar</option><option value="Ocr_Template">Ocr_Template</option><option value="Person_Web_Socket_Test">Person_Web_Socket_Test</option><option value="Plan_Buckets">Plan_Buckets</option><option value="Plans">Plans</option><option value="Process_flow_model">Process_flow_model</option><option value="Process_master">Process_master</option><option value="Process_subprocess_flowchart">Process_subprocess_flowchart</option><option value="summary_table">summary_table</option><option value="Tables">Tables</option><option value="TabScreens">TabScreens</option><option value="Tasks_Planner">Tasks_Planner</option><option value="Templates">Templates</option><option value="test_table1">test_table1</option><option value="test_table2">test_table2</option><option value="Upload_Error_History">Upload_Error_History</option><option value="UserConfig">UserConfig</option><option value="UserProfile">UserProfile</option>
+                  </select>
+                </div>
+                <div class="modal-footer">
+                  <button  name="saveTableBtn"  type="button"
+                    class="btn btn-primary saveTableBtn" onclick="saveTableBtn.call(this)"   data-table_name="test_table1" data-elementID="process08790576004318207" >Save
+                  </button>
+                </div>
+            </div>
+          </div>
+        </div>
+
+
+        <div class='card col-12' style='height:auto;'>
+
+          <div class="card-body bodyListview"><div> <button id="uploadButtonprocess08790576004318207" type="button" data-toggle="tooltip" title="Upload File"
+                      class="btn btn-primary btn-xs mx-2 rounded px-2 my-1" data-elementID="process08790576004318207" name="List_view__Data_table__Upload" ><i class="fa fa-upload"></i>
+                        </button><button id="saveTemplateButtonprocess08790576004318207" type="button" data-toggle="tooltip" title="Save Template"
+                    class="btn btn-primary btn-xs mx-2 rounded px-2 my-1" >
+                    Save
+                    template
+                  </button><button type="button" value="Expand" onclick="fnShowHideListView('process08790576004318207')" data-elementID="process08790576004318207" data-toggle="tooltip" title="Expand/Contract" id="example1_expandprocess08790576004318207" class="btn btn-primary btn-xs mx-2 rounded px-2 my-1" >
+                      Expand
+                    </button><div class="filtershow" id="filtershowprocess08790576004318207" style="display:none;" data-parent_group_no="g1">
+
+                  <div id="card1process08790576004318207" class="card">
+                    <div class="card-body cardbody1">
+                      <button type="button" class="btn btn-tool" id="close_filter_card_buttonprocess08790576004318207" data-elementID="process08790576004318207" style="float:right;"><i class="fas fa-remove"></i></button>
+                      <div>
+                          <div class="row">
+                              <div class="col-1.5" style="margin-top:0.25rem;margin-left:0.5rem">
+                                  <b >Date Range Filter: </b>
+                              </div>
+                              <div class="col-2">
+                                  <select class="select2 fa fa-area-chart"  id="filter_dateprocess08790576004318207" >
+                                                <option>Latest</option>
+                                                <option>Today</option>
+                                                <option>Yesterday</option>
+                                                <option>This Week</option>
+                                                <option>This Month</option>
+                                                <option>This Quarter</option>
+                                                <option>This Year</option>
+                                                <option>Previous Week</option>
+                                                <option>Previous Month</option>
+                                                <option>Previous Quarter</option>
+                                                <option>Previous Year</option>
+                                                <option>Custom</option>
+                                  </select>
+                                </div>
+                                    <div  id ="startandenddateprocess08790576004318207" style="display:none" class="col-8">
+                                <div class="row">
+                                  <div class="col-4" style="align-items: center;display:flex;">
+                                  <div style="display:flex;width: 100px;">
+                                        <b>Start Date:</b>
+                                        </div>
+                                         <div class="input-group date" style="max-width:25em;"><input type="date" id="startdateprocess08790576004318207" placeholder="YYYY-MM-DD" class="datepickerinput form-control" required="" dp_config="{'id': 'dp_11', 'picker_type': 'DATETIME', 'linked_to': null, 'options': {'showClose': true, 'showClear': true, 'showTodayButton': true, 'format': 'DD-MM-YYYY HH:mm:ss'}}"><div class="input-group-addon input-group-append" data-target="#datetimepicker1" data-toggle="datetimepickerv"></div></div>
+                                  </div>
+
+                                  <div class="col-4" style="align-items: center;display:flex;">
+                                  <div style="display:flex;width: 100px;">
+                                      <b>End Date:</b>
+                                      </div>
+                                        <div class="input-group date" style="max-width:25em;"><input type="date" id="enddateprocess08790576004318207" placeholder="YYYY-MM-DD" class="datepickerinput form-control" required="" dp_config="{'id': 'dp_11', 'picker_type': 'DATETIME', 'linked_to': null, 'options': {'showClose': true, 'showClear': true, 'showTodayButton': true, 'format': 'DD-MM-YYYY HH:mm:ss'}}"><div class="input-group-addon input-group-append" data-target="#datetimepicker1" data-toggle="datetimepickerv"></div></div>
+                                    </div>
+                                </div>
+                            </div>
+                                  <button type="button" class="btn  btn-sm btn-primary" id="daterange_filterprocess08790576004318207" daterange_field="None" daterange_table="None" style="font-size:inherit;margin-left: auto;">
+                                        Filter
+                                        <i class="fa fa-calendar"></i>
+                                      </button>
+                              </div>
+                              <br>
+                              <hr style='background-color:darkgoldenrod;'>
+                              <br>
+                          </div><form id="filter_form" class="form-search" method="get">   {%csrf_token%}    <div class="btn-group">
+                          <button type="button" class="btn btn-default dropdown-toggle filter-button_listview" data-toggle="dropdown">
+                            Add Filter
+                            <span class="caret"></span>
+                          </button>
+                          <ul class="dropdown-menu"> <li class="dropdown-item">
+                                <a href="javascript:void(0)" name=id data-elementID="process08790576004318207" class="filter_btnprocess08790576004318207" style="display:block; width:100%">
+                                  Id
+                                </a>
+                              </li> <li class="dropdown-item">
+                                <a href="javascript:void(0)" name=name data-elementID="process08790576004318207" class="filter_btnprocess08790576004318207" style="display:block; width:100%">
+                                  Name
+                                </a>
+                              </li> <li class="dropdown-item">
+                                <a href="javascript:void(0)" name=pan data-elementID="process08790576004318207" class="filter_btnprocess08790576004318207" style="display:block; width:100%">
+                                  Pan
+                                </a>
+                              </li> <li class="dropdown-item">
+                                <a href="javascript:void(0)" name=created_by data-elementID="process08790576004318207" class="filter_btnprocess08790576004318207" style="display:block; width:100%">
+                                  Created By
+                                </a>
+                              </li> <li class="dropdown-item">
+                                <a href="javascript:void(0)" name=created_date data-elementID="process08790576004318207" class="filter_btnprocess08790576004318207" style="display:block; width:100%">
+                                  Created Date
+                                </a>
+                              </li> <li class="dropdown-item">
+                                <a href="javascript:void(0)" name=modified_by data-elementID="process08790576004318207" class="filter_btnprocess08790576004318207" style="display:block; width:100%">
+                                  Modified By
+                                </a>
+                              </li> <li class="dropdown-item">
+                                <a href="javascript:void(0)" name=modified_date data-elementID="process08790576004318207" class="filter_btnprocess08790576004318207" style="display:block; width:100%">
+                                  Modified Date
+                                </a>
+                              </li> <li class="dropdown-item">
+                                <a href="javascript:void(0)" name=approval_status data-elementID="process08790576004318207" class="filter_btnprocess08790576004318207" style="display:block; width:100%">
+                                  approval_status
+                                </a>
+                              </li> <li class="dropdown-item">
+                                <a href="javascript:void(0)" name=approved_by data-elementID="process08790576004318207" class="filter_btnprocess08790576004318207" style="display:block; width:100%">
+                                  approved_by
+                                </a>
+                              </li> <li class="dropdown-item">
+                                <a href="javascript:void(0)" name=active_from data-elementID="process08790576004318207" class="filter_btnprocess08790576004318207" style="display:block; width:100%">
+                                  Active From
+                                </a>
+                              </li> <li class="dropdown-item">
+                                <a href="javascript:void(0)" name=active_to data-elementID="process08790576004318207" class="filter_btnprocess08790576004318207" style="display:block; width:100%">
+                                  Active To
+                                </a>
+                              </li> <li class="dropdown-item">
+                                <a href="javascript:void(0)" name=transaction_id data-elementID="process08790576004318207" class="filter_btnprocess08790576004318207" style="display:block; width:100%">
+                                  Transaction_Id
+                                </a>
+                              </li>  </ul>
+                        </div>
+
+                        <div class="row" id="items">
+                          <table class="table filter-tableprocess08790576004318207" data-elementID="process08790576004318207">
+                          </table>
+                        </div>
+
+                        <button type="button" class="standard_button_click btn  btn-sm btn-primary btn_searchprocess08790576004318207" data-elementID="process08790576004318207" style="font-size:inherit;">
+                          Filter
+                          <i class="fa fa-filter"></i>
+                        </button>
+                      </form>
+                    </div>
+
+                    <!-- /.card-footer -->
+                    <div class="card-footer cardfooter1" style="display: none;">
+                    </div>
+                  </div>
+
+                </div><button id="filter_button_list_viewprocess08790576004318207" type="button" data-elementID="process08790576004318207" data-toggle="tooltip" title="Filter"
+                        class="btn btn-primary btn-xs mx-2 rounded px-2 my-1" >
+                        Filter
+                      </button><button id="removeFilterprocess08790576004318207" type="button" title="Remove filter"
+                      class="btn btn-primary btn-xs mx-2 rounded px-2 my-1" data-elementID="process08790576004318207" name="Remove filter" style="display:none">Remove filter</button> <button id="editListViewprocess08790576004318207" type="button" title="Edit Mode List View"
+                    class="btn btn-primary btn-xs mx-2 rounded px-2 my-1" data-elementID="process08790576004318207" name="Editmode_listview" data-table-name="test_table1"  data-edit-status='off' onclick="editModeListView(elementID='process08790576004318207')" >Edit Mode:OFF</button>  <button id="saveEditListViewprocess08790576004318207" type="button" title="Save Edit Mode List View" data-list-type='Default' data-table-name="test_table1" data-element-id="process08790576004318207" class="btn btn-primary btn-xs mx-2 rounded px-2 my-1" data-elementID="process08790576004318207" name="save_editmode_listview" style='display:none' ">Save Edited Data</button> <button id="tablegenerator_process08790576004318207" type="button" title="Paste tabular data" class="btn btn-primary btn-xs mx-2 rounded px-2 my-1" data-toggle="modal"  data-target="#table_generator_modal_process08790576004318207" data-elementID="process08790576004318207" name="Paste tabular data" onclick="refreshTablegenerator(elementID='process08790576004318207')"> Paste tabular data </button> <button id="listview_clearall_process08790576004318207" type="button" title="Delete all data" class="btn btn-primary btn-xs mx-2 rounded px-2 my-1" model_name="test_table1"   data-elementID="process08790576004318207" name="Delete all data" onclick="listviewClearall(elementID='process08790576004318207')"> Delete all data</button>  <button data-toggle="modal" data-target="#find_replace_modal" data-table-name="test_table1" id="find_replace_process08790576004318207" type="button" title="Find and replace" class="findreplace btn btn-primary btn-xs mx-2 rounded px-2 my-1" data-table-name="test_table1" data-elementID="process08790576004318207" name="Find and replace" onclick="findReplaceButton(this)"> Find and replace </button>  <button data-toggle="modal" data-target="#freeze_pane_modal" data-table-name="test_table1" id="freeze_pane_process08790576004318207" type="button" title="Freeze Panes" class="freezepane btn btn-primary btn-xs mx-2 rounded px-2 my-1" data-table-name="test_table1" data-elementID="process08790576004318207" name="Freeze Panes" onclick="freezePaneButton(this)"> Freeze Panes </button>  <button data-toggle="modal" data-target="#formatter_modal" data-table-name="test_table1" id="formatter_process08790576004318207" type="button" title="Formatters" class="btn btn-primary btn-xs mx-2 rounded px-2 my-1" data-table-name="test_table1" data-elementID="process08790576004318207" name="Formatters" onclick="formatterButton(this)"> Formatters </button>  <button  name="viewTransaction"  type="button" class="btn btn-primary btn-xs mx-2 rounded px-2 my-1" data-toggle="tooltip" title="Click to view transactions" data-elementID="process08790576004318207" onclick="showTransactions.call(this,'process08790576004318207')" id="showTransactionsprocess08790576004318207" data-color='#B58D2B' >&nbsp;View Transaction Status</button>  <button data-toggle="modal" data-target="#add_comp_modal" data-table-name="test_table1" id="addComp_field_process08790576004318207" type="button" title="Add Computed Fields" class="btn btn-primary btn-xs mx-2 rounded px-2 my-1" data-table-name="test_table1" data-elementID="process08790576004318207" name="Add Computed Fields" onclick="addCompButton(this)"> Add Computed Fields </button>
+        <table id="example1process08790576004318207" class="display compact stripe row-border order-column" style="width:100%; height:fit-content; background-color:white;" data-parent_group_no="g3">
+                    <thead>
+                      <tr>
+                      </tr>
+                    </thead>
+                    <tfoot>
+                      <tr>
+                      </tr>
+                  </tfoot>
+                    <tbody>
+                    </tbody>
+                  </table>
+             </div>
+        </div>
+        </div>
+        <div class="modal fade" id="popupprocess08790576004318207" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+          <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+              <div class="modal-header" style='background:#565a5e; color:white;'>
+                <h5 class="modal-title" style="padding-left: 43%;">Upload</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              <form method="post" enctype="multipart/form-data" data-form-id='uploadfileformprocess08790576004318207'>   {%csrf_token%}
+  <div class="modal-body">
+                  <div class="form-group">
+                     <div class="custom-file">
+                    <input type="file" class="custom-file-input" id='uploadFileprocess08790576004318207'  data-file-id="process08790576004318207" style="border-bottom-color:white; width:230px" name="file" >
+                    <label id="c" class="custom-file-label" >Choose file</label>
+                    </div>
+                    <input type="hidden" name="tableName" value="users_test_table1">
+                    <input type="hidden"  name="modelName" value="test_table1">
+                  </div>
+                  <div class="form-group">
+                    <p><b>Note:</b> Please upload .csv file only.</p>
+                  </div>
+              </div>
+              <div class="modal-footer">
+               <button  name="customValidation"  type="button"
+                                  class="btn btn-primary  customValidationButton"  data-table-name="test_table1" data-toggle="modal" data-target="#customValidationprocess08790576004318207" data-elementID="process08790576004318207" >&nbsp;Custom Validation
+                                </button>
+
+                  <button  name="ColumnMapper"  type="button"
+                class="btn btn-primary columnMapperButton" data-toggle="modal" data-target="#columnMapperModalprocess08790576004318207"  data-table-name="test_table1" data-elementID="process08790576004318207" >Map Columns</button>
+
+               <input id="downloadButtonprocess08790576004318207" type="submit"
+                class="btn btn-primary" data-elementID="process08790576004318207" value="Download Format" data-dbTableName="users_test_table1" data-modelName="test_table1" >
+                <input type="hidden" name="listOrDelete" value="downloadFormat">
+                <input type="hidden" name="dbTableName" value="users_test_table1">
+                <input type="hidden" name="modelName" value="test_table1">
+                <input type="hidden" name="eleId" value="process08790576004318207">
+
+                <input type="hidden" name="masterCol" value='null'>
+                <input type="hidden" name="columnMaster" value='null'>
+                <input type="hidden" name="masterTable" value='null'>
+                <input type="hidden" name="tab" value="['null']">
+                <input type="hidden" name="columnmapperDict" id="columnmapperDictprocess08790576004318207" value="" data-save-config="" data-element_id="columnmapperDictprocess08790576004318207">
+               <input type="hidden"  name="customValidationList" id="customValidationListprocess08790576004318207" value=""  data-save-config="" data-element_id="customValidationListprocess08790576004318207">
+              <button id="uploadButton2process08790576004318207" name="listOrDelete" value="U" type="button"
+                class="btn btn-primary button_standard_save" data-elementID="process08790576004318207">Submit</button>
+              </div>
+              </form>
+              </div>
+            </div>
+          </div>
+            <!--UPLOAD POPUP CODE ENDS-->
+       <!--Visual Plots Bokeh-->
+
+        <!-- end modal--><div class="modal fade" id="setconditionmodalprocess08790576004318207" role="dialog">
+        <div class="modal-dialog" style="max-width:700px">
+
+          <!-- Modal content-->
+          <div class="modal-content">
+            <div class="modal-header">
+              <div style="color:#b58d2b"><h5>Set Condition</h5></div>
+              <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+            <div class="modal-body">
+               <ul class="nav nav-tabs" id="myTab" role="tablist">
+                <li class="nav-item">
+                  <a class="nav-link active" id="home-tab2process08790576004318207" data-toggle="tab" href="#home2process08790576004318207" role="tab" aria-controls="home" aria-selected="true">Set Conditions</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" id="profile-tab2process08790576004318207" data-toggle="tab" href="#profile2process08790576004318207" role="tab" aria-controls="profile" aria-selected="false">Set Color</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" id="contact-tab2process08790576004318207" data-toggle="tab" href="#contact2process08790576004318207" role="tab" aria-controls="contact" aria-selected="false">Set Text</a>
+                </li>
+              </ul>
+              <div class="tab-content" id="myTabContentprocess08790576004318207">
+                <div class="tab-pane show active" id="home2process08790576004318207" role="tabpanel" aria-labelledby="home-tab2process08790576004318207">
+                  <br>
+                  <div id="setcolumnheadernameprocess08790576004318207" style="display:none"></div>
+                  <div id="setcolumnname1process08790576004318207" style="display:none"></div>
+                  <div id="setrowname1process08790576004318207" style="display:none"></div>
+                  <div class="row">
+                    <div class="col-12"><br>
+                      <div class="row">
+                        <!-- <div class="col-4">Select Column on which you want to set condition :</div> -->
+                        <div class="col-4">
+                          <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" style="width:13em;">
+                            Condition Parameter:
+                            <span class="caret"></span>
+                          </button>
+                          <ul class="dropdown-menu" style="font-size:small;padding-left:1em;">                     <li>
+                              <a href="javascript:void(0)" name=id class="filter_btn1process08790576004318207">
+                                Id
+                              </a>
+                            </li>                     <li>
+                              <a href="javascript:void(0)" name=name class="filter_btn1process08790576004318207">
+                                Name
+                              </a>
+                            </li>                     <li>
+                              <a href="javascript:void(0)" name=pan class="filter_btn1process08790576004318207">
+                                Pan
+                              </a>
+                            </li>                     <li>
+                              <a href="javascript:void(0)" name=created_by class="filter_btn1process08790576004318207">
+                                Created By
+                              </a>
+                            </li>                     <li>
+                              <a href="javascript:void(0)" name=created_date class="filter_btn1process08790576004318207">
+                                Created Date
+                              </a>
+                            </li>                     <li>
+                              <a href="javascript:void(0)" name=modified_by class="filter_btn1process08790576004318207">
+                                Modified By
+                              </a>
+                            </li>                     <li>
+                              <a href="javascript:void(0)" name=modified_date class="filter_btn1process08790576004318207">
+                                Modified Date
+                              </a>
+                            </li>                     <li>
+                              <a href="javascript:void(0)" name=approval_status class="filter_btn1process08790576004318207">
+                                approval_status
+                              </a>
+                            </li>                     <li>
+                              <a href="javascript:void(0)" name=approved_by class="filter_btn1process08790576004318207">
+                                approved_by
+                              </a>
+                            </li>                     <li>
+                              <a href="javascript:void(0)" name=active_from class="filter_btn1process08790576004318207">
+                                Active From
+                              </a>
+                            </li>                     <li>
+                              <a href="javascript:void(0)" name=active_to class="filter_btn1process08790576004318207">
+                                Active To
+                              </a>
+                            </li>                     <li>
+                              <a href="javascript:void(0)" name=transaction_id class="filter_btn1process08790576004318207">
+                                Transaction_Id
+                              </a>
+                            </li>                   </ul>
+                        </div>
+                      </div>
+                      <br>
+                      <div class="row">
+                        <div class="setname" style="padding-left:2em;"></div>
+                        <div class="row" id="itemsprocess08790576004318207">
+                          <div class="alert-tableheader"></div>
+                          <table class="table" id="alert-tableprocess08790576004318207">
+                          </table>
+                        </div>
+                      </div>
+
+                    </div>
+                    <!-- <div class="col-6"><br>
+                      Limit : <input type="text" id="limit1">
+                    </div> -->
+                  </div>
+                </div>
+                <div class="tab-pane fade" id="profile2process08790576004318207" role="tabpanel" aria-labelledby="profile-tab2process08790576004318207">
+                  <br><div class="row">
+                    <div class="col-6"><br>
+                      <div class="row">
+                        <div class="col-6">Select Color :</div>
+                        <div class="col-6">
+                         <input type="color" id="colorsetprocess08790576004318207" value="#aaaaaa">
+                        </div>
+                      </div>
+                    </div>
+                    </div>
+                  </div>
+                <div class="tab-pane fade" id="contact2process08790576004318207" role="tabpanel" aria-labelledby="contact-tab2process08790576004318207">
+                  <br><div class="row">
+                    <div class="col-6"><br>
+                      <div class="row">
+                        <div class="col-6">Select Conditional Text :</div>
+                        <div class="col-6">
+                         <input type="text" id="conditionaltextsprocess08790576004318207" val="">
+                        </div>
+                      </div>
+                    </div>
+                    </div>
+                </div>
+
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button type="button" id="conditionsaveprocess08790576004318207" class="btn btn-default" data-elementid="process08790576004318207">Save</button>
+              <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+          </div>
+
+        </div>
+        </div>
+
+
+        <div class="container-fluid" style="display: none;" id="setalertcardprocess08790576004318207">
+          <div class="row justify-content-center">
+            <div class="card col-12">
+              <div class="card-header">
+                <h6 class="card-title" style="color:darkgoldenrod;">Alert details</h6>
+                <div class="card-tools">
+                  <button type="button" value="Move to Alert" onclick=alertAgg();  class=" btn btn-primary alertAgg btn-xs" title="Move to Alert"><i class='fas fa-arrow-alt-circle-right' style='font-size:1rem'></i></button>
+                </div>
+              </div>
+              <div class="card-body" style="display:block;">
+              <div class="row" style="margin-bottom:1em;">
+                <button id="irowprocess08790576004318207" class="btn-xs" style="border: 0px;color: white;background-color: #b58d2b;border-radius: .2em;padding: .2em .5em;margin-left:0.5em;" data-toggle="modal" data-target="#setalertmodal1process08790576004318207"><i class="fa fa-plus"></i> Alert</button>
+                <button id="icolprocess08790576004318207" class="btn-xs" style="border: 0px;color: white;background-color: #b58d2b;border-radius: .2em;padding: .2em .5em;margin-left:1em;"><i class="fa fa-plus"></i> Limit</button>
+                <input id="colprocess08790576004318207" style="text-align:center;display:none;margin-left:0.5em;" placeholder="Enter Column Name"/>
+                  <!-- <button id="irow" class="btn-xs" style="border: 0px;color: white;background-color: #b58d2b;border-radius: .2em;padding: .2em .5em;">Insert Row</button> -->
+              </div>
+
+              <div id="col-12">
+                <table id="example111process08790576004318207" class="display nowrap" data-elementid="process08790576004318207" style="width:100%">
+                <thead>
+                  <tr>
+                  <th>Actions</th>        <th style="text-align:center;">id</th>         <th style="text-align:center;">alert_id</th>         <th style="text-align:center;">name</th>         <th style="text-align:center;">tag</th>         <th style="text-align:center;">description</th>         <th style="text-align:center;">model_name</th>             </tr>
+              </thead>
+                <tbody>      </tbody>
+              </table>
+
+          </div>
+            <br/><br/>
+
+              </div>
+              </div>
+              </div>
+              </div>
+
+
+        <div class="container-fluid" style="display: none; " id="plotSectionprocess08790576004318207">
+
+          <div class="row justify-content-center">
+            <div class='card col-12'>
+              <div class="card-header">
+                <!--<h6 class="card-title" style="color:darkgoldenrod;">Visual Plot</h6>-->
+
+                <div class="card-tools">
+                  <button id="saveChartConfigButtonprocess08790576004318207" data-elementID="process08790576004318207" type="button" class="btn btn-primary standard_button_click" style="height: 25px;border-radius:5px;border-color:none;color:white;padding-left:9px;padding-top:2px;"> <i
+                      class="fa fa-save"></i>&nbsp; Save</button>
+
+
+                      <button id="printChartConfigButtonprocess08790576004318207" data-elementID="process08790576004318207" type="button" class="btn btn-primary" style="height: 25px;border-radius:5px;border-color:none;color:white;padding-left:9px;padding-top:2px;"> <i
+                        class="fa fa-file-pdf-o"></i>&nbsp; PDF</button>
+                </div>
+
+              </div>
+              <div class="card-body" style="display:block;">
+                <div class="row justify-content-left" style="background: whitesmoke;">
+                  <div class="form-inline" style="margin-left:0.5rem;">
+                  <label>Cross Filter:&nbsp;</label>
+                  <label class="switch" style="margin-top: 0.2rem;">
+                    <input type="checkbox" id="crossFilterToggleprocess08790576004318207" data-t.elementID="process08790576004318207">
+                    <span class="slider round"></span>
+                  </label>
+                </div>
+              </div>
+                <div class="row justify-content-center" id="areaToPlotDifferentGraphsprocess08790576004318207">
+              </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- End Visual Plots Bokeh-->
+
+
+
+<!--Modal to edit single row datatable in list view tab-->
+<div class="modal fade" id="list_view_edit_modal_process08790576004318207" tabindex="-1" role="dialog" aria-labelledby="process08790576004318207_exampleModalCenterTitle" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-xl" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Update</h5>
+        <button type="button" class="close" id="closeModalprocess08790576004318207" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body" id="modalBodyprocess08790576004318207">
+  </div>
+</div>
+
+</div>
+</div>
+
+<!--Modal For Find and replace-->
+  <div class="modal fade" id="find_replace_modal_process08790576004318207" role="dialog">
+    <div class="modal-dialog" style="max-width:700px;">
+      <!-- Modal content-->
+      <div class="modal-content">
+        <!-- Modal header-->
+        <div class="modal-header">
+          <h6 class="modal-title">Find and replace</h6>
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+        </div>
+        <!-- Modal body-->
+        <div class="modal-body">
+            <div class="form-group row">
+                    <label class="acies_label col-sm-2 col-form-label">Select Column</label>
+                    <div class="col-sm-10">
+                        <select id="selectcolumnprocess08790576004318207" data-elementID="process08790576004318207" form="columnform" class="form-control select2 selectcolumnclass" onchange="findreplacechange(this)">
+                          <option value="" disabled selected></option>
+                        </select>
+                    </div>
+                  </div>
+            <div class="form-group row">
+                    <label class="acies_label col-sm-2 col-form-label">Match Case</label>
+                    <div class="col-sm-10">
+                        <select data-elementID="process08790576004318207" id="selectcaseprocess08790576004318207" form="columnform" class="form-control select2">
+                          <option value="Equal to" selected>Equal to</option>
+                          <option value="Contains">Contains</option>
+                        </select>
+                    </div>
+                  </div>
+            <div class="form-group row">
+                <label class="acies_label col-sm-2 col-form-label" id="findlabelprocess08790576004318207">Find what</label>
+                <div class="col-sm-10" id="findlistL3process08790576004318207">
+                </div>
+              </div>
+                <div class="form-group row">
+                <label class="acies_label col-sm-2 col-form-label" id="replacelabelprocess08790576004318207">Replace with</label>
+                <div class="col-sm-10" id="replacelistL3process08790576004318207">
+                </div>
+              </div>
+              <p id="findtextprocess08790576004318207"></p>
+            </div>
+        <!-- Modal footer-->
+        <div class="modal-footer">
+          <button data-elementID="process08790576004318207" data-table-name="test_table1" type="button" class="btn btn-primary btn-xs float-right" is_find="True" onclick="findreplacesave(this)">Find</button>
+          <button data-elementID="process08790576004318207" data-table-name="test_table1" type="button" class="btn btn-primary btn-xs float-right findreplacesave" id="findreplacesave_process08790576004318207" onclick="findreplacesave(this)">Update</button>
+        </div>
+      </div>
+    </div>
+  </div><script>$(`#selectcolumnprocess08790576004318207`).select2()
+    </script>
+
+
+<!--Modal For Freeze Panes-->
+  <div class="modal fade" id="freeze_pane_modal_process08790576004318207" role="dialog">
+    <div class="modal-dialog modal-dialog-center" style="left: 71px;">
+<div class="modal-content" style="width:20rem">
+<div class="modal-header" style="background:#565a5e; color:white; text-align:center;padding-bottom:2%;padding-top:3%;">
+<span class="modal-title w-100" id="myModalLabel" style="font-size:1.2rem">Freeze Panes</span>
+<button type="button" class="close" data-dismiss="modal" id="freeze_pane_close_process08790576004318207" aria-label="Close">
+<span aria-hidden="true">&times;</span>
+</button>
+</div>
+<div class="modal-body" id="freeze_pane_body_process08790576004318207" style="max-height:26rem;overflow:auto">
+
+<label style="text-align: center;">Choose from which side :</label>
+<div style="display: flex;flex-direction: row;align-content: space-between;justify-content: space-around;align-items: center;margin-top: 33px;">
+<div class="custom-control custom-checkbox">
+      <input type="checkbox" id="freeze_left_process08790576004318207" data-elementID="process08790576004318207" name="left_process08790576004318207"  class="freezeCheckbox checkboxinput custom-control-input" value="left">
+      <label for="freeze_left_process08790576004318207" class="custom-control-label"> Left </label><br>
+</div>
+<div class="custom-control custom-checkbox">
+      <input type="checkbox" id="freeze_right_process08790576004318207" data-elementID="process08790576004318207" name="right_process08790576004318207" class="freezeCheckbox checkboxinput custom-control-input" value="right">
+      <label for="freeze_right_process08790576004318207" class="custom-control-label"> Right </label><br>
+</div>
+</div>
+
+</div>
+<div class="modal-footer">
+    <button data-elementID="process08790576004318207" data-table-name="test_table1" type="button" id="unfreezepanesave_process08790576004318207" onclick="unfreezepanesave(this)" class="btn btn-primary btn-xs rounded px-2 unfreezepanesave">Unfreeze</button>
+    <button data-elementID="process08790576004318207" data-table-name="test_table1" type="button" id="freezepanesave_process08790576004318207" onclick="freezepanesave(this)" class="btn btn-primary btn-xs rounded px-2 freezepanesave">Freeze</button>
+</div>
+</div>
+</div>
+  </div><script>$(`#selectcolumnprocess08790576004318207`).select2()
+    </script>
+
+<!-- Formatter Main Modal -->
+<div class="modal" id="fmodal1_process08790576004318207">
+      <div class="modal-dialog modal-lg modal-dialog-centered" style="justify-content: center;">
+        <div class="modal-content" style="width: 75%;text-align: center;justify-content: center;" >
+
+          <div class="modal-header" style="background:#565a5e;color:white;">
+            <h6 class="modal-title" style="flex: auto;">Formatters</h6>
+            <button type="button" class="close" data-dismiss="modal">&times;</button>
+          </div>
+
+          <div class="modal-body" style="height: 25rem;overflow: auto;">
+
+		  <div class="form-group" style="display:none;" id="showformatTable1_process08790576004318207">
+        <div class="form-group col-12" id='formatTableDisp1_process08790576004318207'>
+          <label class="acies_label col-md-12">Select Tables</label>
+          <select id="formatTab1_process08790576004318207" class="select2 form-control" name="template" multiple>
+          </select>
+        </div>
+        </div>
+
+        <div class="form-group">
+          <div class="form-group col-12" id='formatColumnDisp1_process08790576004318207'>
+            <label class="acies_label col-md-12">Select columns</label>
+            <select id="formatColumn1_process08790576004318207" class="select2 form-control" name="template" onchange="formatterColChange(this)" multiple>
+            </select>
+          </div>
+          </div>
+
+          <div class="row">
+            <table class="table table-bordered table-hover fformatTable1_process08790576004318207" style="overflow: auto;">
+              <thead class="thead-dark">
+                <tr>
+                  <th scope="col" style="text-align: center;">Table name</th>
+                  <th scope="col" style="text-align: center;">Column name</th>
+                  <th scope="col" style="text-align: center;">Action</th>
+                </tr>
+              </thead>
+              <tbody id="formatterTable1_process08790576004318207">
+
+              </tbody>
+            </table>
+          </div>
+
+        <input type="hidden" id="configFormat1_process08790576004318207" value="" data-config_formatter1_process08790576004318207="">
+
+          </div>
+
+          <div class="modal-footer">
+            <button type="button" id="btn_formatSaveMain_process08790576004318207" onclick="saveFormatconfig.call(this)" class="btn btn-primary btn-xs mx-2 rounded px-2" data-dismiss="modal">Save</button>
+            <button type="button" class="btn btn-primary btn-xs mx-2 rounded px-2" data-dismiss="modal">Close</button>
+          </div>
+
+        </div>
+      </div>
+    </div><script>
+    $(`#formatTab1_process08790576004318207`).select2()
+    $(`#formatColumn1_process08790576004318207`).select2()
+    $(`#formatTab1_process08790576004318207`).select2()
+    </script>
+
+<!-- Formatter Modal -->
+<div class="modal" id="fmodal2_process08790576004318207">
+      <div class="modal-dialog modal-lg modal-dialog-centered" style="justify-content: center;">
+        <div class="modal-content" style="width: 70%;text-align: center;justify-content: center;" >
+
+          <div class="modal-header" style="background:#565a5e;color:white;">
+            <h6 class="modal-title" style="flex: auto;">Apply Formatters</h6>
+            <button type="button" class="close" data-dismiss="modal">&times;</button>
+          </div>
+
+          <div class="modal-body" style="height: 12rem;overflow: auto;">
+
+            <div class="form-group">
+              <select class="select2 form-control" name="formatoptions" id="formatOption1_process08790576004318207" onchange="formatOptionChange.call(this)">
+                <option value="" disabled selected> Choose formatter </option>
+                <option value='number' id="numberFormat1_process08790576004318207">Number</option>
+                <option value='currency' id="currencyFormat1_process08790576004318207">Currency</option>
+                <option value='date' id="dateFormat1_process08790576004318207">Date</option>
+                <option value='time' id='timeFormat1_process08790576004318207'>Time</option>
+                <option value='percentage' id='percentageFormat1_process08790576004318207'>Percentage</option>
+                <option value='scientific' id='scientificFormat1_process08790576004318207'>Scientific</option>
+              </select>
+            </div>
+
+            <div class="row">
+            <div class="form-group col-6" style="display:none;" id="Dformat1_process08790576004318207">
+              <label for="decimalFormat1_process08790576004318207">Decimal places: </label>
+              <input type="number" name="decimalFormat1_process08790576004318207" id="decimalFormat1_process08790576004318207" class="textinput textInput form-control" min="0">
+            </div>
+            <br>
+            <div class="form-group custom-control custom-checkbox" style="display:none;margin-top: 2rem;margin-left: 3rem" id="SFormat1_process08790576004318207">
+                <input type="checkbox" name="sepFormatter1_process08790576004318207" class="checkboxinput custom-control-input notRequired" id="sepFormat1_process08790576004318207" value="sepFormatter1_process08790576004318207">
+                <label for="sepFormat1_process08790576004318207" class="custom-control-label">Use 1000 Separator</label>
+            </div>
+            <br>
+            <div class="form-group col-6" style="display:none;" id="syFormat1_process08790576004318207">
+              <label for="symbolFormat1_process08790576004318207">Symbol</label>
+              <select class="select2 form-control" name="symbolFormat1_process08790576004318207" id="symbolFormat1_process08790576004318207">
+                <option value="" disabled selected> None </option>
+              </select>
+            </div>
+            <br>
+            <div class="form-group col-6" style="display:none;" id="DTFormat1_process08790576004318207">
+              <label for="formatdate1_process08790576004318207">Select Date Format: </label>
+              <select class="select2 form-control" name="formatdate1_process08790576004318207" id="formatDate1_process08790576004318207">
+                <option value="" disabled selected> None </option>
+                <option value='%Y-%m-%d' id="dformat1">YYYY-MM-DD</option>
+                <option value='%d-%m-%Y' id="dformat2">DD-MM-YYYY</option>
+                <option value='%m-%d-%Y' id="dformat3">MM-DD-YYYY</option>
+                <option value='%d %B %Y' id='dformat4'>14 March 2020</option>
+              </select>
+            </div>
+            <br>
+            <div class="form-group col-6" style="display:none;" id="TimefFormat1_process08790576004318207">
+              <label for="formattime1_process08790576004318207">Select Time Format: </label>
+              <select class="select2 form-control" name="formattime1_process08790576004318207" id="formatTime1_process08790576004318207">
+                <option value="" disabled selected> None </option>
+                <option value='%H:%M' id="tformat1">24 hrs</option>
+                <option value='%I:%M %p' id="tformat2">12 hrs</option>
+                <option value='%H:%M:%S' id="tformat3">24 hrs with seconds</option>
+                <option value='%I:%M:%S %p' id='tformat4'>12 hrs with seconds</option>
+              </select>
+            </div>
+          </div>
+
+          </div>
+
+          <div class="modal-footer">
+            <button type="button" id="btn_formatSave1_process08790576004318207" class="btn btn-primary btn-xs mx-2 rounded px-2" data-dismiss="modal">Save</button>
+            <button type="button" class="btn btn-primary btn-xs mx-2 rounded px-2" data-dismiss="modal">Close</button>
+          </div>
+
+        </div>
+      </div>
+    </div><script>
+    $(`#formatOption1_process08790576004318207`).select2()
+    $(`#symbolFormat1_process08790576004318207`).select2()
+    $(`#formatDate1_process08790576004318207`).select2()
+    $(`#formatTime1_process08790576004318207`).select2()
+    </script>
+
+<!-- Computed Field Modal -->
+<div class="modal" id="addCompFields_process08790576004318207">
+      <div class="modal-dialog modal-lg modal-dialog-centered" style="justify-content: center;">
+        <div class="modal-content" style="width: 75%;text-align: center;justify-content: center;" >
+
+          <div class="modal-header" style="background:#565a5e;color:white;">
+            <h6 class="modal-title" style="flex: auto;">Add Computed Fields</h6>
+            <button type="button" class="close" data-dismiss="modal">&times;</button>
+          </div>
+
+          <div class="modal-body" style="height: 25rem;overflow: auto;">
+
+
+		  <div style="display: flex;flex-direction: row;align-content: space-between;justify-content: space-around;align-items: center;margin-top: 33px;">
+			<div class="custom-control custom-checkbox">
+				<input type="checkbox" id="existingComp_process08790576004318207" data-elementID="process08790576004318207" name="existing_process08790576004318207"  class="removeCompCheckbox checkboxinput custom-control-input" value="existing">
+				<label for="existingComp_process08790576004318207" class="custom-control-label"> Existing Field </label><br>
+			</div>
+			<div class="custom-control custom-checkbox">
+				<input type="checkbox" id="newComp_process08790576004318207" data-elementID="process08790576004318207" name="newComp_process08790576004318207" class="removeCompCheckbox checkboxinput custom-control-input" value="new">
+				<label for="newComp_process08790576004318207" class="custom-control-label"> New Field </label><br>
+			</div>
+			</div>
+
+
+      <div class="form-group" id="dropdown_process08790576004318207" style="display:none;">
+          <label for="compcol">Select Column: </label>
+          <select class="select2 form-control" name="compcol" id="dropdown1_process08790576004318207" required>
+              <option value="" disabled selected> Select Column</option>
+          </select>
+      </div>
+		  <hr/>
+
+
+			<div class="row justify-content-start">
+            <div class="fields">
+              <div class="row">
+              <div class="col-6 form-group">
+                <label style="float:left;margin-left:1rem;">Field name</label>
+                <input type="text" name="Field Name" id="fieldmdl_process08790576004318207" textarea class="form-control" placeholder="Field Name" />
+              </div>
+                <div class="col-6 form-group">
+                  <label style="padding-left:0.3em;float:left;">Field name alias (verbose name)</label>
+                  <input type="text" name="Field Verbose Name" class="form-control" id="compField_verbose_name_process08790576004318207"
+                    placeholder="Verbose Name" />
+                </div>
+                <div class="col-6 form-group">
+                  <label class="acies_label" style="padding-left:0.3em;">Field data type</label>
+                  <select class="select2 datatype2 form-control" id="compfield_datatype_process08790576004318207" name="Field DataType">
+                    <option value="" disabled selected>Select data type</option>
+                    <option value="IntegerField">IntegerField (Integer numbers)</option>
+                    <option value="FloatField">FloatField (Integer or decimal numbers)</option>
+                  </select>
+                </div>
+                <div class="col-6 form-group">
+                  <label class="acies_label" style="padding-left:0.3em;">Can take null values?</label>
+                  <select class="select2 nullField form-control" id="comp_null_field_edit_process08790576004318207" name="null_field">
+                    <option value="" disabled selected>Select option</option>
+                    <option value="Yes">Yes</option>
+                    <option value="No">No</option>
+                  </select>
+                </div>
+                <div class="col-3 form-group">
+                <label class="acies_label col-md-12">Computed Field</label>
+                <input type="text" name="Computed Field" id="comp_Comp_Field_process08790576004318207" textarea class="form-control" readonly />
+              </div>
+                <div class="col-3 form-group">
+                  <span class="equationBuilder2" style="margin-top: 46px;">
+                    <a data-toggle="tooltip" title="Equation Builder" value="eq" id="comp_EBDisplayButtonID_process08790576004318207"><i name="actions1" value="eq" class="fas fa-square-root-alt ihover javaSC thin-icontrash" style="font-size: 18px;margin-top: 30px;"></i></a>
+                  </span>
+                </div>
+                <div class="col-6 form-group">
+                  <label class="acies_label" style="padding-left:0.3em;">Unique</label>
+                  <select class="select2 nullField form-control" id="comp_unique_process08790576004318207" name="unique">
+                    <option value="" disabled selected>Select option</option>
+                    <option value="Yes">Yes</option>
+                    <option value="No">No</option>
+                  </select>
+                </div>
+
+              </div>
+            </div>
+          </div>
+
+
+          </div>
+
+          <div class="modal-footer">
+            <button type="button" id="btn_removeCompField_process08790576004318207" class="btn btn-primary btn-xs mx-2 rounded px-2">Remove Computed Field</button>
+            <button type="button" id="btn_formatCompField_process08790576004318207" class="btn btn-primary btn-xs mx-2 rounded px-2" data-dismiss="modal">Save</button>
+            <button type="button" class="btn btn-primary btn-xs mx-2 rounded px-2" data-dismiss="modal">Close</button>
+          </div>
+
+        </div>
+      </div>
+    </div><script>
+    $(`#compfield_datatype_process08790576004318207`).select2()
+    $(`#comp_null_field_edit_process08790576004318207`).select2()
+    $(`#comp_unique_process08790576004318207`).select2()
+    </script>
+
+<!-- Custom Validation Modal -->
+      <div class="modal fade" id="customValidationprocess08790576004318207" tabindex="-1" role="dialog" aria-labelledby="customValidationprocess08790576004318207" aria-hidden="true" style= "height: 100vh;" >
+        <div class="modal-dialog modal-xl" role="document" >
+          <div class="modal-content" style='height:600px;'>
+            <div class="modal-header" style='background:#565a5e; color:white;text-align: center;'>
+              <h5 class="modal-title" id="customValidationprocess08790576004318207" style="width:100%;text-align: center;height:auto;">Configure Custom Validation</h5>
+              <button type="button" class="close" data-dismiss="modal"  data-target='#customValidationprocess08790576004318207' aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+             <div class="modal-body" style= "height: 40vh;overflow-y: auto">
+              <div id="carouselCustomValidationprocess08790576004318207" class="carousel slide" data-interval="false" >
+                <div class="card">
+                  <div class="card-body">
+
+                    <div class="carousel-inner">
+
+                        <!-- Existing  Configuration -->
+                        <div class="carousel-item active" name='existing_config'>
+                          <div class='card'>
+                            <div class='card-header' style="font-size: medium; color:#B58D2B; font-weight: bold;">Configure Custom Validation</div>
+                            <div class='card-body' style='overflow:auto'>
+                              <div class="row" style="width: 100%;display: flex;justify-content: flex-end; align-items: center;">
+
+                              </div>
+                              <div>
+                                <table class="table" id="reload_custom_table">
+                                  <thead style="text-align:center">
+                                    <tr>
+                                      <th>Sr.no</th>
+                                      <th>Table Name</th>
+                                      <th>Actions</th>
+                                    </tr>
+                                  </thead>
+                                  <tbody style="text-align:center" id="configuration_val_row_process08790576004318207">
+
+                                  </tbody>
+                                </table>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+
+                          <!-- Setting Condition  -->
+                            <div class="carousel-item" name='setting_config'>
+                              <div class='card'>
+                                <div class='card-header' style="font-size: medium; color:#B58D2B; font-weight: bold;"> Custom Condition Set:</div>
+                                <div class='card-body' style='overflow:auto'>
+
+                                  <div class="row">
+                                    <div class="col-4">
+                                      <select id="custommValidationSelection_process08790576004318207" class="select2 form-control" name="table" onchange="conditionalTable(elementID='process08790576004318207')">
+                                        <option value="" disabled selected>Select Table name</option>
+                                      </select>
+                                    </div>
+                                  </div>
+
+                                  <div style="margin-top:2em;">
+                                    <div class="btn-group">
+                                      <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                                      Add Condition
+                                        <span class="caret"></span>
+                                      </button>
+                                      <ul class="dropdown-menu" id="condition_dropdownprocess08790576004318207">
+                                      </ul>
+                                    </div>
+                                    <div class="row" id="items">
+                                      <table class="table " id= 'custom_validation_table_process08790576004318207'>
+                                      </table>
+                                    </div>
+                                  </div>
+
+                                  <button type="button" style="float:right"
+                                    class="btn btn-xs btn-primary save_custom_validation" data-elementID="process08790576004318207"  onclick="saveCustomValidation(elementID='process08790576004318207')" data-slide="next">Save Validation</button>
+
+                                </div>
+                              </div>
+                            </div>
+                    </div>
+                    <span class="carousel-control-prev-icon carousel-control-prev" href="#carouselCustomValidationprocess08790576004318207"
+                      role="button" data-slide="prev" aria-hidden="true" style="background-color:black;"></span>
+                    <span class="sr-only">Previous</span>
+
+                    <span class="carousel-control-next-icon carousel-control-next" href="#carouselCustomValidationprocess08790576004318207"
+                      role="button" data-slide="next" aria-hidden="true" style="background-color:black;"></span>
+                    <span class="sr-only">Next</span>
+                  </div>
+                </div>
+              </div>
+              </div>
+              <div class="modal-footer">
+                 <button type="button" class="btn btn-primary submitcustomvalidation"   data-elementID="process08790576004318207" >Set Custom Validation</button>
+                 <button type="button" class="btn btn-primary removecustomvalidation"   data-elementID="process08790576004318207" >Remove Custom Validation</button>
+               <button type="button" class="btn btn-secondary" data-dismiss="modal" id="close" data-target='#customValidationprocess08790576004318207'>Close</button>
+               </div>
+            </div>
+          </div>
+        </div>
+    <!-- End Custom Validation -->
+
+<!--Modal For Table Generator-->
+<div class="modal fade" id="table_generator_modal_process08790576004318207" data-element-id="process08790576004318207" class='tablegenerator modal' tabindex="-1" role="dialog" aria-labelledby="table_generator_modal_process08790576004318207" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header" style='background:#565a5e; color:white;text-align: center;'>
+        <h5 class="modal-title" style="width:100%;text-align: center;">Configure Tabular data</h5>
+        <button type="button" class="close" data-dismiss="modal" data-target='#table_generator_modal_process08790576004318207' aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body" id="modalBodyTableGeneratorprocess08790576004318207">
+      <textarea name='excel_data_table_generator2' data-element-id="process08790576004318207" style="border-radius: 5px;height: 200px;width: 100%;"></textarea>
+      <br><hr><br>
+      <div id='result_table_generated_process08790576004318207' style='display:none'>
+        <table id="save_generated_table_process08790576004318207" class="row-border display" style="display: none;">
+          <thead class="table_generator_header">
+            <th>No Data Found</th>
+          </thead>
+          <tbody id='save_generated_table_body_process08790576004318207'>
+
+          </tbody>
+        </table>
+      </div>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-primary" id='savetablegenerator_process08790576004318207'  data-current-table='test_table1'  data-elementID="process08790576004318207" onclick="savegeneratorData(elementID='process08790576004318207')" disabled> Upload Data </button>
+   <button type="button" class="btn btn-primary tablecreator"   data-elementID="process08790576004318207" onclick="generateTable(elementID='process08790576004318207')">Generate Table</button>
+
+ <button type="button" class="btn btn-secondary" data-dismiss="modal"  id="close">Close</button>
+ </div>
+</div>
+
+</div>
+</div>
+ <!-- Upload Map Columns Modal -->
+      <div class="modal fade" id="columnMapperModalprocess08790576004318207" tabindex="-1" role="dialog" aria-labelledby="columnMapperModalprocess08790576004318207" aria-hidden="true" style= "height: 70vh;" >
+        <div class="modal-dialog modal-lg" role="document" >
+          <div class="modal-content">
+            <div class="modal-header" style='background:#565a5e; color:white;text-align: center;'>
+              <h5 class="modal-title" id="columnMapperModalprocess08790576004318207" style="width:100%;text-align: center;height:auto">Configure Column Mapper</h5>
+              <button type="button" class="close" data-dismiss="modal" data-target='#columnMapperModalprocess08790576004318207' aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+             <div class="modal-body" style= "height: 40vh;overflow-y: auto">
+              <div class='card'>
+                <div class='card-header' style="font-size: medium; color:#B58D2B; font-weight: bold;">Column Mapper</div>
+                <div class='card-body' style="max-height: 15rem; overflow-y: scroll;">
+                  <div class="row">
+                    <div class="form-group col-10">
+                      <select id="Columnmapperprocess08790576004318207" class="select2 form-control" name="Columnmapper"  data-placeholder="Column Mapper">
+                        <option value="value" selected disabled>Select Option Name</option>
+                      </select>
+
+                    </div>
+                    <div class="form-group col-2" style="float: right;">
+                      <button type="button" class="btn btn-primary columnconfiguremapper"   data-elementID="process08790576004318207"><i class="fa fa-upload"></i></button>
+                      </div>
+                  </div>
+                  <table id="columnmapperdoneprocess08790576004318207" class="table table-bordered table-sm table-hover" >
+                    <thead id="modal-table-head-doneprocess08790576004318207">
+                      <th>Table Name</th>
+                      <th>Reconfigure</th>
+                      <th>Apply</th>
+                    </thead>
+                    <tbody id="modal-table-body-columnmapperdoneprocess08790576004318207">
+
+                    </tbody>
+                  </table>
+                  <table id="columnmapperprocess08790576004318207" class="table table-bordered table-sm table-hover">
+                    <thead id="modal-table-headprocess08790576004318207">
+
+                    </thead>
+                    <tbody id="modal-table-body-columnmapperprocess08790576004318207">
+
+                    </tbody>
+                  </table>
+                  <br>
+                  <div id="samecolumnwarningprocess08790576004318207" style="color:red">
+                  </div>
+                  <br>
+                </div>
+              </div>
+            </div>
+              <div class="modal-footer">
+                 <button type="button" class="btn btn-primary submitconfigmapper"  style="display: none;" data-elementID="process08790576004318207" >Save and Submit</button>
+                <button type="button" class="btn btn-primary savecolumnconfiguremapper"  style="display: none;" data-elementID="process08790576004318207" >Save</button>
+                <button type="button" class="btn btn-primary saveConfigMapper" data-elementID="process08790576004318207">Save Configuration</button>
+                <button type="button" class="btn btn-primary loadConfigMapper"  data-elementID="process08790576004318207">Load Configuration</button>
+              <button type="button" class="btn btn-secondary" data-dismiss="modal" id="close">Close</button>
+              </div>
+
+          </div>
+        </div>
+      </div>
+      <!-- Upload Map Columns Modal End -->
+
+
+<!---- Delete Row data ------>
+<div class="modal" id="deleteMessageCheckerprocess08790576004318207" tabindex="-1" role="dialog" aria-labelledby="deleteMessageChecker" aria-hidden="true" >
+  <div class="modal-dialog modal-md modal-dialog-centered" style="justify-content: center;">
+    <div class="modal-content" style="width: 100%;text-align: center;justify-content: center;" >
+
+      <div class="modal-header" style="width:100%;background:#565a5e;text-align: center;justify-content: center;">
+        <h6 class="modal-title" style="color:white;margin:auto;font-weight:bold;">Delete Record</h6>
+
+      </div>
+
+      <div class="modal-body">
+
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" id="btn_delete_operationprocess08790576004318207" class="btn btn-primary rounded px-2"  style="color:white;background:black;" data-element-id=process08790576004318207 onmouseover="this.style.background='#cb504d'" onmouseout="this.style.background='#565a5e'">Delete</button>
+        <button type="button" class="btn btn-primary  rounded px-2 close_delete_modal" data-dismiss="modal" data-element-id=process08790576004318207>Close</button>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+
+    <div class="modal fade" id="setalertmodalprocess08790576004318207" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
+        aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Set Alert</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <div class="row">
+              <div class="col-4">
+                <div class="form-group">
+                  <label  class=" requiredField">
+                    Alert Name<span class="asteriskField">*</span>
+                  </label>
+                  <div class=""> <input type="text" id="alertnameprocess08790576004318207" required="">
+                  </div>
+                </div>
+              </div>
+              <div class="col-4">
+                <div class="form-group">
+                  <label>
+                    Alert tag multiple
+                  </label>
+                  <div class="">
+                    <select class="form-control js-example-basic-multiple select2" id="select2multipleprocess08790576004318207" multiple="multiple">
+                    </select>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-4">
+                <div class="form-group">
+                  <label>
+                    Alert Description
+                  </label>
+                  <div class=""> <input type="text" id="alertdescriptionprocess08790576004318207">
+                  </div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+          <div class="modal-footer">
+            <!-- <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button> -->
+            <button type="button" class="btn btn-primary button_standard_save" data-dismiss="modal" id="setalertfunctionprocess08790576004318207" data-elementid="process08790576004318207">Save</button>
+          </div>
+        </div>
+        </div>
+        </div>
+
+<div class="modal fade" id="conditionmodal" role="dialog">
+  <div class="modal-dialog" style="max-width:700px">
+
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header">
+        <div style="color:#b58d2b;">Set Condition</div>
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+      </div>
+      <div class="modal-body">
+         Set Condition For : <input type="text" id="selectedfield" style="border-bottom:0px;" disabled><br><br>
+
+         <ul class="nav nav-tabs" id="myTab" role="tablist">
+          <li class="nav-item">
+            <a class="nav-link active" id="home-tab1" data-toggle="tab" href="#home1" role="tab" aria-controls="home" aria-selected="true">Set Conditions</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" id="profile-tab" data-toggle="tab" href="#profile" role="tab" aria-controls="profile" aria-selected="false">Set Color</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" id="contact-tab" data-toggle="tab" href="#contact" role="tab" aria-controls="contact" aria-selected="false">Set Text</a>
+          </li>
+        </ul>
+        <div class="tab-content" id="myTabContent">
+          <div class="tab-pane show active" id="home1" role="tabpanel" aria-labelledby="home-tab1">
+            <br><div class="row">
+              <div class="col-6"><br>
+                <div class="row">
+                  <div class="col-5">Select Conditions :</div>
+                  <div class="col-6">
+                    <select class="select2" id="condition">
+                    </select>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <br><button type="button" class="btn btn-primary btn-xs">Save</button>
+          </div>
+          <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">
+            <br><div class="row">
+              <div class="col-6"><br>
+                <div class="row">
+                  <div class="col-6">Select Color :</div>
+                  <div class="col-6">
+                   <input type="color">
+                  </div>
+                </div>
+              </div>
+              </div>
+
+                      <br><button type="button" class="btn btn-primary btn-xs">Save</button>
+            </div>
+          <div class="tab-pane fade" id="contact" role="tabpanel" aria-labelledby="contact-tab">
+            <br><div class="row">
+              <div class="col-6"><br>
+                <div class="row">
+                  <div class="col-6">Select Conditional Text :</div>
+                  <div class="col-6">
+                   <input type="text" id="text" value="">
+                  </div>
+                </div>
+              </div>
+              </div>
+                      <br><button type="button" class="btn btn-primary btn-xs" onclick="conditionset()">Save</button>
+          </div>
+
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+
+  </div>
+</div>
+<div class="modal fade" id="setconditionmodalprocess08790576004318207" role="dialog">
+  <div class="modal-dialog" style="max-width:700px">
+
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header">
+        <div style="color:#b58d2b"><h5>Set Condition</h5></div>
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+      </div>
+      <div class="modal-body">
+         <ul class="nav nav-tabs" id="myTab" role="tablist">
+          <li class="nav-item">
+            <a class="nav-link active" id="home-tab2process08790576004318207" data-toggle="tab" href="#home2process08790576004318207" role="tab" aria-controls="home" aria-selected="true">Set Conditions</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" id="profile-tab2process08790576004318207" data-toggle="tab" href="#profile2process08790576004318207" role="tab" aria-controls="profile" aria-selected="false">Set Color</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" id="contact-tab2process08790576004318207" data-toggle="tab" href="#contact2process08790576004318207" role="tab" aria-controls="contact" aria-selected="false">Set Text</a>
+          </li>
+        </ul>
+        <div class="tab-content" id="myTabContentprocess08790576004318207">
+          <div class="tab-pane show active" id="home2process08790576004318207" role="tabpanel" aria-labelledby="home-tab2process08790576004318207">
+            <br>
+            <div id="setcolumnheadernameprocess08790576004318207" style="display:none"></div>
+            <div id="setcolumnname1process08790576004318207" style="display:none"></div>
+            <div id="setrowname1process08790576004318207" style="display:none"></div>
+            <div class="row">
+              <div class="col-12"><br>
+                <div class="row">
+                  <!-- <div class="col-4">Select Column on which you want to set condition :</div> -->
+                  <div class="col-4">
+                    <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" style="width:13em;">
+                      Condition Parameter:
+                      <span class="caret"></span>
+                    </button>
+                    <ul class="dropdown-menu" style="font-size:small;padding-left:1em;">   <li>
+                        <a href="javascript:void(0)" name=id class="filter_btn1process08790576004318207" >
+                          Id
+                        </a>   <li>
+                        <a href="javascript:void(0)" name=name class="filter_btn1process08790576004318207" >
+                          Name
+                        </a>   <li>
+                        <a href="javascript:void(0)" name=pan class="filter_btn1process08790576004318207" >
+                          Pan
+                        </a>   <li>
+                        <a href="javascript:void(0)" name=created_by class="filter_btn1process08790576004318207" >
+                          Created By
+                        </a>   <li>
+                        <a href="javascript:void(0)" name=created_date class="filter_btn1process08790576004318207" >
+                          Created Date
+                        </a>   <li>
+                        <a href="javascript:void(0)" name=modified_by class="filter_btn1process08790576004318207" >
+                          Modified By
+                        </a>   <li>
+                        <a href="javascript:void(0)" name=modified_date class="filter_btn1process08790576004318207" >
+                          Modified Date
+                        </a>   <li>
+                        <a href="javascript:void(0)" name=approval_status class="filter_btn1process08790576004318207" >
+                          approval_status
+                        </a>   <li>
+                        <a href="javascript:void(0)" name=approved_by class="filter_btn1process08790576004318207" >
+                          approved_by
+                        </a>   <li>
+                        <a href="javascript:void(0)" name=active_from class="filter_btn1process08790576004318207" >
+                          Active From
+                        </a>   <li>
+                        <a href="javascript:void(0)" name=active_to class="filter_btn1process08790576004318207" >
+                          Active To
+                        </a>   <li>
+                        <a href="javascript:void(0)" name=transaction_id class="filter_btn1process08790576004318207" >
+                          Transaction_Id
+                        </a>                  </li>
+                    </ul>
+                  </div>
+                </div>
+                <br>
+                <div class="row">
+                  <div class="setname" style="padding-left:2em;"></div>
+                  <div class="row" id="itemsprocess08790576004318207">
+                    <div class="alert-tableheader"></div>
+                    <table class="table" id="alert-tableprocess08790576004318207">
+                    </table>
+                  </div>
+                </div>
+
+              </div>
+              <!-- <div class="col-6"><br>
+                Limit : <input type="text" id="limit1">
+              </div> -->
+            </div>
+          </div>
+          <div class="tab-pane fade" id="profile2process08790576004318207" role="tabpanel" aria-labelledby="profile-tab2process08790576004318207">
+            <br><div class="row">
+              <div class="col-6"><br>
+                <div class="row">
+                  <div class="col-6">Select Color :</div>
+                  <div class="col-6">
+                   <input type="color" id="colorsetprocess08790576004318207" value="#aaaaaa">
+                  </div>
+                </div>
+              </div>
+              </div>
+            </div>
+          <div class="tab-pane fade" id="contact2process08790576004318207" role="tabpanel" aria-labelledby="contact-tab2process08790576004318207">
+            <br><div class="row">
+              <div class="col-6"><br>
+                <div class="row">
+                  <div class="col-6">Select Conditional Text :</div>
+                  <div class="col-6">
+                   <input type="text" id="conditionaltextprocess08790576004318207" val="">
+                  </div>
+                </div>
+              </div>
+              </div>
+          </div>
+
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" id="conditionsaveprocess08790576004318207" class="btn btn-default" data-elementid="process08790576004318207">Save</button>
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+
+  </div>
+</div>
+<div class="modal fade" style="display:none" id="setalertmodal1process08790576004318207" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
+        aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title">Set Alert</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+              <div class="row">
+                <div class="col-4">
+                  <div class="form-group">
+                    <label  class=" requiredField">
+                      Alert Name<span class="asteriskField">*</span>
+                    </label>
+                    <div class=""> <input type="text" id="alertname1process08790576004318207" required="">
+                    </div>
+                  </div>
+                </div>
+                <div class="col-4">
+                  <div class="form-group">
+                    <label>
+                      Alert tag multiple
+                    </label>
+                    <div class="">
+                      <select class="form-control js-example-basic-multiple" id="select2multiple1process08790576004318207" multiple="multiple">
+                      </select>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-4">
+                  <div class="form-group">
+                    <label>
+                      Alert Description
+                    </label>
+                    <div class=""> <input type="text" id="alertdescription1process08790576004318207">
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+              <button type="button" id="rowaddprocess08790576004318207" class="btn btn-primary" data-elementid="process08790576004318207" data-dismiss="modal">Save</button>
+            </div>
+          </div>
+        </div>
+        </div>
+<div class="modal fade" id="PlotElementsprocess08790576004318207" data-tablename="test_table1" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
+aria-hidden="true">
+<div class="modal-dialog modal-dialog-centered" role="document">
+  <div class="modal-content">
+    <div class="modal-header" style="background:#565a5e; color:white; text-align:center;padding-bottom:2%;padding-top:3%;padding-left: 11.8rem;">
+      <h5 class="modal-title" id="exampleModalLongTitleprocess08790576004318207">Insert Chart</h5>
+      <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    <div class="modal-body">
+
+      <!--<div id="plotTypes">-->
+      <div class="row">
+        <div class="col-4">
+          <form id="bokehFormprocess08790576004318207" method="post">   {%csrf_token%}     <div class="row">
+              <div class="form-group col-12">
+                <!--<label class="acies_label col-md-12">Plot Category:</label>-->
+                <table>
+                  <tr>
+                    <th>
+                      <center>Chart Category</center>
+                    </th>
+                  </tr>
+                  <tr>
+                    <td><br></td>
+                  </tr>
+                  <tbody>
+                    <tr>
+                      <td>
+                        <button type="button" value="X Y Scatter" id="XYScatterprocess08790576004318207"
+                          class=" btn btn-primary plotCategoryprocess08790576004318207" data-elementID="process08790576004318207"
+                          style="height: 25px;width:7rem;border-radius:5px;border-color:none;color:white;padding-left:9px;padding-top:2px;"
+                          data-toggle="modal">
+                          <i class="fas fa-grip-vertical"></i>&nbsp;&nbsp;X Y Scatter
+                        </button>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td><br></td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <button type="button" value="Line" id="Lineprocess08790576004318207" class=" btn btn-primary plotCategoryprocess08790576004318207"
+                        data-elementID="process08790576004318207"
+                          style="    height: 25px;
+                              width: 7rem;
+                              border-radius: 5px;
+                              border-color: none;
+                              color: white;
+                              padding-left: 9px;
+                              padding-top: 2px;
+                          " data-toggle="modal">
+                          <i class="fa fa-line-chart"></i>&nbsp;&nbsp;Line
+                        </button>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td><br></td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <button type="button" value="Bar" id="Barprocess08790576004318207" class=" btn btn-primary plotCategoryprocess08790576004318207" data-elementID="process08790576004318207"
+                          style="height: 25px;width:7rem;border-radius:5px;border-color:none;color:white;padding-left:9px;padding-top:2px;"
+                          data-toggle="modal">
+                          <i class="fa fa-bar-chart"></i>&nbsp;&nbsp;Bar
+                        </button>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td><br></td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <button type="button" value="Pie" id="Pieprocess08790576004318207" class=" btn btn-primary plotCategoryprocess08790576004318207" data-elementID="process08790576004318207"
+                          style="    height: 25px;
+width: 7rem;
+border-radius: 5px;
+border-color: none;
+color: white;
+padding-left: 9px;
+padding-top: 2px;" data-toggle="modal">
+                          <i class="fa fa-pie-chart"></i>&nbsp;&nbsp;Pie
+                        </button>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td><br></td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <button type="button" value="Boxplot" id="Boxplotprocess08790576004318207" class=" btn btn-primary plotCategoryprocess08790576004318207" data-elementID="process08790576004318207"
+                          style="    height: 25px;
+width: 7rem;
+border-radius: 5px;
+border-color: none;
+color: white;
+padding-left: 9px;
+padding-top: 2px;" data-toggle="modal">
+                          <!-- <i class="fa fa-pie-chart"></i>&nbsp;&nbsp; -->
+                          Boxplot
+                        </button>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td><br></td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <button type="button" value="Aggregation Function" id="AggregationFunctionprocess08790576004318207"
+                          class=" btn btn-primary plotCategoryprocess08790576004318207" data-elementID="process08790576004318207" style="    height: 25px;
+width: 7rem;
+border-radius: 5px;
+border-color: none;
+color: white;
+padding-left: 9px;
+padding-top: 2px;
+" data-toggle="modal">
+                          <i class="fas fa-percentage"></i>&nbsp;&nbsp;Aggregation
+                        </button>
+                      </td>
+                    </tr>
+
+
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </form>
+        </div>
+
+        <div class="col-8" style="border-left:solid;">
+          <form id="bokehForm1process08790576004318207" method="post">   {%csrf_token%}     <div class="row">
+              <div class="form-group col-12">
+                <label class="acies_label col-md-12">Select Chart Type:</label>
+                <select id="selectPlotprocess08790576004318207" class="select2 plotTypeprocess08790576004318207 form-control" data-elementID="process08790576004318207" name="sel">
+                  <option value="" disabled selected>--------------------</option>
+                </select>
+              </div>
+            </div>
+
+
+
+            <div class="font-weight-light">
+              <div class="card col-12" id="chartTypesprocess08790576004318207" style="display: none">
+
+                <div class="card-body" style="display:block;">
+                  <div id="inputsprocess08790576004318207">
+                    <div id="Scatterprocess08790576004318207" style="display:none">
+                      <!--Scatter-->
+                      <div class=" form-row">
+                        <div class="col-12" id="Xlabelprocess08790576004318207">
+                          <div class="form-group">
+                            <label class="acies_label col-md-12">Select X Axis:</label>
+                            <select id="selectXprocess08790576004318207" class="select2 plotAjax form-control" name="sel" required>
+                              <option value="" disabled selected>--------------------</option>         <option value="Id">Id</option>         <option value="Name">Name</option>         <option value="Pan">Pan</option>         <option value="Created By">Created By</option>         <option value="Modified By">Modified By</option>         <option value="Created Date">Created Date</option>         <option value="Modified Date">Modified Date</option>         <option value="Active From">Active From</option>         <option value="Active To">Active To</option>         <option value="Transaction_Id">Transaction_Id</option>           </select>
+                          </div>
+                        </div>
+                        <div class="col-12" id="Ylabelprocess08790576004318207">
+                          <div class="form-group">
+                            <label class="acies_label col-md-12">Select Y Axis:</label>
+                            <select id="selectYprocess08790576004318207" class="select2 plotAjax form-control" name="sel" required>
+                              <option value="" disabled selected>--------------------</option>    <option value="Id">Id</option>    <option value="Name">Name</option>    <option value="Pan">Pan</option>    <option value="Created By">Created By</option>    <option value="Modified By">Modified By</option>    <option value="Created Date">Created Date</option>    <option value="Modified Date">Modified Date</option>    <option value="Active From">Active From</option>    <option value="Active To">Active To</option>    <option value="Transaction_Id">Transaction_Id</option>       </select>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <!--Scatter-->
+                    <div id="VerticalBarprocess08790576004318207" style="display:none">
+                      <!--Vertical Bar-->
+                      <div class=" form-row">
+                        <div class="col-12" id="XVbarlabelprocess08790576004318207">
+                          <div class="form-group">
+                            <label class="acies_label col-md-12">Select X Axis:</label>
+                            <select id="selectXVBarprocess08790576004318207" class="select2 plotAjax form-control" name="sel"
+                              required>
+                              <option value="" disabled selected>--------------------</option>      <option value="Id">Id</option>      <option value="Name">Name</option>      <option value="Pan">Pan</option>      <option value="Active From">Active From</option>      <option value="Active To">Active To</option>      <option value="Transaction_Id">Transaction_Id</option>                        </select>
+                          </div>
+                        </div>
+                        <div class="col-12" id="YVbarlabelprocess08790576004318207">
+                          <div class="form-group">
+                            <label class="acies_label col-md-12">Select Y Axis:</label>
+                            <select id="selectYVBarprocess08790576004318207" class="select2 plotAjax form-control" name="sel"
+                              required>
+                              <option value="" disabled selected>--------------------</option>  <option value="Id">Id</option>        </select>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <!--Vertical Bar-->
+                    <div id="VerticalBarStackedprocess08790576004318207" style="display:none">
+                      <!--Vertical Bar Stacked-->
+                      <div class=" form-row">
+                        <div class="col-12" id="X1VStackedbarlabelprocess08790576004318207">
+                          <div class="form-group">
+                            <label class="acies_label col-md-12">Select X1 Axis:</label>
+                            <select id="selectX1VStackedBarprocess08790576004318207" class="select2 plotAjax form-control" name="sel"
+                              required>
+                              <option value="" disabled selected>--------------------</option>   <option value="Name">Name</option>   <option value="Pan">Pan</option>   <option value="Active From">Active From</option>   <option value="Active To">Active To</option>   <option value="Transaction_Id">Transaction_Id</option>                        </select>
+                          </div>
+                        </div>
+                        <div class="col-12" id="X2VStackedbarlabelprocess08790576004318207">
+                          <div class="form-group">
+                            <label class="acies_label col-md-12">Select X2 Axis:</label>
+                            <select id="selectX2VStackedBarprocess08790576004318207" class="select2 plotAjax form-control" name="sel"
+                              required>
+                              <option value="" disabled selected>--------------------</option>    <option value="Name">Name</option>    <option value="Pan">Pan</option>    <option value="Active From">Active From</option>    <option value="Active To">Active To</option>    <option value="Transaction_Id">Transaction_Id</option>        </select>
+                          </div>
+                        </div>
+                        <div class="col-12" id="YVStackedbarlabelprocess08790576004318207">
+                          <div class="form-group">
+                            <label class="acies_label col-md-12">Select Y Axis:</label>
+                            <select id="selectYVStackedBarprocess08790576004318207" class="select2 plotAjax form-control" name="sel"
+                              required>
+                              <option value="" disabled selected>--------------------</option>     <option value="Id">Id</option>                        </select>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <!--Vertical Bar Stacked-->
+                    <!--Vertical Area Stacked-->
+                  <div id="VerticalAreaStackedprocess08790576004318207" style="display:none">
+                    <div class=" form-row">
+                      <div class="col-12" id="XVAreaStackedbarlabelprocess08790576004318207">
+                        <div class="form-group">
+                          <label class="acies_label col-md-12">Select X Axis:</label>
+                          <select id="selectXVAreaStackedBarprocess08790576004318207" class="select2 plotAjax form-control" name="sel"
+                            required>
+                            <option value="" disabled selected>--------------------</option>     <option value="Name">Name</option>     <option value="Pan">Pan</option>     <option value="Active From">Active From</option>     <option value="Active To">Active To</option>     <option value="Transaction_Id">Transaction_Id</option>                      </select>
+                        </div>
+                      </div>
+                      <div class="col-12" id="Y1VAreaStackedbarlabelprocess08790576004318207">
+                        <div class="form-group">
+                          <label class="acies_label col-md-12">Select Y1 Axis:</label>
+                          <select id="selectY1VAreaStackedBarprocess08790576004318207" class="select2 plotAjax form-control" name="sel"
+                            required>
+                            <option value="" disabled selected>--------------------</option>   <option value="Id">Id</option>       </select>
+                        </div>
+                      </div>
+                      <div class="col-12" id="Y2VAreaStackedbarlabelprocess08790576004318207">
+                        <div class="form-group">
+                          <label class="acies_label col-md-12">Select Y2 Axis:</label>
+                          <select id="selectY2VAreaStackedBarprocess08790576004318207" class="select2 plotAjax form-control" name="sel"
+                            required>
+                            <option value="" disabled selected>--------------------</option>  <option value="Id">Id</option>                      </select>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <!--Vertical Area Stacked-->
+                    <div id="HorizontalBarprocess08790576004318207" style="display:none">
+                      <!--Horizontal Bar-->
+                      <div class=" form-row">
+                        <div class="col-12" id="XHbarlabelprocess08790576004318207">
+                          <div class="form-group">
+                            <label class="acies_label col-md-12">Select X Axis:</label>
+                            <select id="selectXHBarprocess08790576004318207" class="select2 plotAjax form-control" name="sel"
+                              required>
+                              <option value="" disabled selected>--------------------</option>  <option value="Id">Id</option>      </select>
+                          </div>
+                        </div>
+                        <div class="col-12" id="YHbarlabelprocess08790576004318207">
+                          <div class="form-group">
+                            <label class="acies_label col-md-12">Select Y Axis:</label>
+                            <select id="selectYHBarprocess08790576004318207" class="select2 plotAjax form-control" name="sel"
+                              required>
+                              <option value="" disabled selected>--------------------</option>    <option value="Name">Name</option>    <option value="Pan">Pan</option>    <option value="Active From">Active From</option>    <option value="Active To">Active To</option>    <option value="Transaction_Id">Transaction_Id</option>        </select>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <!--Horizontal Bar-->
+                    <div id="HorizontalBarStackedprocess08790576004318207" style="display:none">
+                      <!--Horizontal Bar Stacked-->
+                      <div class=" form-row">
+                        <div class="col-12" id="XHStackedbarlabelprocess08790576004318207">
+                          <div class="form-group">
+                            <label class="acies_label col-md-12">Select X Axis:</label>
+                            <select id="selectXHStackedBarprocess08790576004318207" class="select2 plotAjax form-control" name="sel"
+                              required>
+                              <option value="" disabled selected>--------------------</option>     <option value="Id">Id</option>       </select>
+                          </div>
+                        </div>
+                        <div class="col-12" id="Y1HStackedbarlabelprocess08790576004318207">
+                          <div class="form-group">
+                            <label class="acies_label col-md-12">Select Y1 Axis:</label>
+                            <select id="selectY1HStackedBarprocess08790576004318207" class="select2 plotAjax form-control" name="sel"
+                              required>
+                              <option value="" disabled selected>--------------------</option>         <option value="Name">Name</option>         <option value="Pan">Pan</option>         <option value="Active From">Active From</option>         <option value="Active To">Active To</option>         <option value="Transaction_Id">Transaction_Id</option>           </select>
+                          </div>
+                        </div>
+                        <div class="col-12" id="Y2HStackedbarlabelprocess08790576004318207">
+                          <div class="form-group">
+                            <label class="acies_label col-md-12">Select Y2 Axis:</label>
+                            <select id="selectY2HStackedBarprocess08790576004318207" class="select2 plotAjax form-control" name="sel"
+                              required>
+                              <option value="" disabled selected>--------------------</option>       <option value="Name">Name</option>       <option value="Pan">Pan</option>       <option value="Active From">Active From</option>       <option value="Active To">Active To</option>       <option value="Transaction_Id">Transaction_Id</option>          </select>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <!--Horizontal Bar Stacked-->
+                    <!--Horizontal Area Stacked-->
+                    <div id="HorizontalAreaStackedprocess08790576004318207" style="display:none">
+                    <div class=" form-row">
+                      <div class="col-12" id="X1HAreaStackedbarlabelprocess08790576004318207">
+                        <div class="form-group">
+                          <label class="acies_label col-md-12">Select X1 Axis:</label>
+                          <select id="selectX1HAreaStackedBarprocess08790576004318207" class="select2 plotAjax form-control" name="sel"
+                            required>
+                            <option value="" disabled selected>--------------------</option>      <option value="Id">Id</option>       </select>
+                        </div>
+                      </div>
+                      <div class="col-12" id="X2HAreaStackedbarlabelprocess08790576004318207">
+                        <div class="form-group">
+                          <label class="acies_label col-md-12">Select X2 Axis:</label>
+                          <select id="selectX2HAreaStackedBarprocess08790576004318207" class="select2 plotAjax form-control" name="sel"
+                            required>
+                            <option value="" disabled selected>--------------------</option>    <option value="Id">Id</option>            </select>
+                        </div>
+                      </div>
+                      <div class="col-12" id="YHAreaStackedbarlabelprocess08790576004318207">
+                        <div class="form-group">
+                          <label class="acies_label col-md-12">Select Y Axis:</label>
+                          <select id="selectYHAreaStackedBarprocess08790576004318207" class="select2 plotAjax form-control" name="sel"
+                            required>
+                            <option value="" disabled selected>--------------------</option>      <option value="Name">Name</option>      <option value="Pan">Pan</option>      <option value="Active From">Active From</option>      <option value="Active To">Active To</option>      <option value="Transaction_Id">Transaction_Id</option>           </select>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                <!-- </Horizontal Area Stacked> -->
+
+                    <div id="PieChartprocess08790576004318207" style="display:none">
+                      <!--Pie Chart-->
+                      <div class=" form-row">
+                        <div class="col-12" id="XPielabelprocess08790576004318207">
+                          <div class="form-group">
+                            <label class="acies_label col-md-12">Select Category</label>
+                            <select id="selectXPieprocess08790576004318207" class="select2 plotAjax form-control" name="sel" required>
+                              <option value="" disabled selected>--------------------</option>      <option value="Name">Name</option>      <option value="Pan">Pan</option>      <option value="Active From">Active From</option>      <option value="Active To">Active To</option>      <option value="Transaction_Id">Transaction_Id</option>         </select>
+                          </div>
+                        </div>
+                        <div class="col-12" id="YPielabelprocess08790576004318207">
+                          <div class="form-group">
+                            <label class="acies_label col-md-12">Select Values</label>
+                            <select id="selectYPieprocess08790576004318207" class="select2 plotAjax form-control" name="sel" required>
+                              <option value="" disabled selected>--------------------</option>        <option value="Id">Id</option>         </select>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <!--Pie Chart-->
+                    <!-- Boxplot -->
+                  <div id="VerticalBoxplotprocess08790576004318207" style="display:none">
+                    <div class=" form-row">
+                      <div class="col-12" id="XVBoxplotlabelprocess08790576004318207">
+                        <div class="form-group">
+                          <label class="acies_label col-md-12">Select X Axis:</label>
+                          <select id="selectXVBoxplotprocess08790576004318207" class="select2 plotAjax form-control" name="sel"
+                            required>
+                            <option value="" disabled selected>--------------------</option>      option value="Name">Name</option>      option value="Pan">Pan</option>      option value="Active From">Active From</option>      option value="Active To">Active To</option>      option value="Transaction_Id">Transaction_Id</option>         </select>
+                        </div>
+                      </div>
+                      <div class="col-12" id="YVBoxplotlabelprocess08790576004318207">
+                        <div class="form-group">
+                          <label class="acies_label col-md-12">Select Y Axis:</label>
+                          <select id="selectYVBoxplotprocess08790576004318207" class="select2 plotAjax form-control" name="sel"
+                            required>
+                            <option value="" disabled selected>--------------------</option>     <option value="Id">Id</option>      </select>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <!--Boxplot-->
+                  <div id="Aggregation1process08790576004318207" style="display:none">
+                    <!--Aggregation-->
+                    <div id="mnameprocess08790576004318207" value="" style="display:none;"></div>
+                    <div class=" form-row">
+                      <div class="col-12" id="AggColumn1process08790576004318207">
+                        <div class="form-group">
+                          <div class="row">
+                            <div class="col-4">Select</div>
+                            <div class="col-8 pr-0"><select id="aggregation11process08790576004318207" style="max-width:12.8em !important;" class="select2 plotAjax form-control" name="sel"
+                            required>
+                            <option value="" disabled selected>Column Name</option> <option value="id">Id</option>       </select></div>
+                        </div>
+                        </div>
+                      </div>
+                      <div class="col-12" id="AggType1process08790576004318207">
+                        <div class="form-group">
+                          <div class="row">
+                          <div class="col-4">Function</div>
+                          <div class="col-8 pr-0">
+                          <select id="aggregation111process08790576004318207" style="max-width:12.8em !important;" class="select2 plotAjax form-control" name="sel">
+                            <option value="" selected>--------------------</option>
+                            <option value="Count">Count</option>
+                            <option value="Count Distinct">Count Distinct</option>
+                            <option value="Sum">Sum</option>
+                            <option value="Average">Average</option>
+                            <option value="Minimum">Minimum</option>
+                            <option value="Maximum">Maximum</option>
+                            <option value="Standard Deviation">Standard Deviation</option>
+                            <option value="Variance">Variance</option>
+                            <option value="Median">Median</option>
+                            <option value="Skewness">Skewness</option>
+                            <option value="Kurtosis">Kurtosis</option>
+                          </select>
+                        </div>
+                      </div>
+                    </div>
+                      </div>
+                      <div class="col-12" id="AggCol11process08790576004318207">
+                        <div class="form-group">
+                          <div class="row">
+                          <div class="col-4">Where</div>
+                          <div class="col-8">
+                            <div class="btn-group">
+                              <div style="min-width:12.8em !important">
+                              <select class="select2 xaxisprocess08790576004318207" id="whereconditionprocess08790576004318207" style="min-width:12.8em !important">
+                                <option>---</option>            <option value= id>
+                                    Id
+                                </option>            <option value= name>
+                                    Name
+                                </option>            <option value= pan>
+                                    Pan
+                                </option>            <option value= created_by>
+                                    Created By
+                                </option>            <option value= created_date>
+                                    Created Date
+                                </option>            <option value= modified_by>
+                                    Modified By
+                                </option>            <option value= modified_date>
+                                    Modified Date
+                                </option>            <option value= approval_status>
+                                    approval_status
+                                </option>            <option value= approved_by>
+                                    approved_by
+                                </option>            <option value= active_from>
+                                    Active From
+                                </option>            <option value= active_to>
+                                    Active To
+                                </option>            <option value= transaction_id>
+                                    Transaction_Id
+                                </option>          </select>
+                            </div>
+                            </div>
+                            <div class="row" id="itemsprocess08790576004318207" style="margin-left:0em;">
+                              <table class="table filter-table1process08790576004318207">
+                              </table>
+                            </div>
+                            <div class="row changefctn" id="itemsprocess08790576004318207">
+                              <div style="min-width:12.8em !important ;margin-left:0.5em;">
+                            <select id="andorprocess08790576004318207" class="select2 plotAjax form-control" name="sel1"
+                      required>
+                      <option value="" disabled selected>--</option>
+                      <option>AND</option>
+                      <option>OR</option>
+                    </select></div>
+                  </div>
+                    <br>
+
+                            <!-- <div class="row show" id="items">
+                              <table class="table filter-table2" style="display:none;">
+                              </table>
+                            </div> -->
+                        </div>
+                      </div>
+                      <div class="showcolprocess08790576004318207" style="display:none;padding-left:6em;"">
+
+                        <div class="col-8">
+                          <div class="btn-group">
+                            <div style="min-width:12.8em !important">
+                            <select class="select2 xaxis1process08790576004318207" id="wherecondition1process08790576004318207" style="min-width:12.8em !important">
+                              <option>---</option>          <option value= id>
+                                  Id
+                              </option>          <option value= name>
+                                  Name
+                              </option>          <option value= pan>
+                                  Pan
+                              </option>          <option value= created_by>
+                                  Created By
+                              </option>          <option value= created_date>
+                                  Created Date
+                              </option>          <option value= modified_by>
+                                  Modified By
+                              </option>          <option value= modified_date>
+                                  Modified Date
+                              </option>          <option value= approval_status>
+                                  approval_status
+                              </option>          <option value= approved_by>
+                                  approved_by
+                              </option>          <option value= active_from>
+                                  Active From
+                              </option>          <option value= active_to>
+                                  Active To
+                              </option>          <option value= transaction_id>
+                                  Transaction_Id
+                              </option>          </select>
+                          </div>
+                          </div>
+                          <div class="row" id="items1process08790576004318207" style="width:13.5em !important">
+                            <table class="table filter-table2process08790576004318207" style="margin-left:0.5em;">
+                            </table>
+                          </div>
+                          </div></div></div>
+
+                    </div>
+                    </div>
+
+                    </div>
+                  <!-- Query Aggregations -->
+
+                    <div id="Aggregationprocess08790576004318207" style="display:none">
+                      <!--Aggregation-->
+                      <div class=" form-row">
+                        <div class="col-12" id="AggColumnprocess08790576004318207">
+                          <div class="form-group">
+                            <label class="acies_label col-md-12">Select Column</label>
+                            <select id="selectAggColumnprocess08790576004318207" class="select2 plotAjax form-control" name="sel"
+                              required>
+                              <option value="" disabled selected>--------------------</option>     <option value="Id">Id</option>            </select>
+                          </div>
+                        </div>
+                        <div class="col-12" id="AggTypeprocess08790576004318207">
+                          <div class="form-group">
+                            <label class="acies_label col-md-12">Aggregation Type:</label>
+                            <select id="selectAggprocess08790576004318207" class="select2 plotAjax form-control" name="sel">
+                              <option value="" selected>--------------------</option>
+                              <option value="Count">Count</option>
+                              <option value="Count Distinct">Count Distinct</option>
+                              <option value="Sum">Sum</option>
+                              <option value="Average">Average</option>
+                              <option value="Minimum">Minimum</option>
+                              <option value="Maximum">Maximum</option>
+                              <option value="Standard Deviation">Standard Deviation</option>
+                              <option value="Variance">Variance</option>
+                              <option value="Skewness">Skewness</option>
+                              <option value="Kurtosis">Kurtosis</option>
+                              <option value="Median">Median</option>
+                            </select>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <!--Aggregation-->
+                    <br />
+                    <div class="row buttonalign" id="plotButtonDivprocess08790576004318207" style="display:none">
+                      <button id="plotButtonprocess08790576004318207" type="button" data-elementID="process08790576004318207" name="plotForm" value="f1"
+                        class=" btn btn-primary" style="    height: 27px;
+width: 80px;
+border-radius: 5px;
+color: darkgoldenrod;
+border-color: none;
+color: white;
+padding-left: 9px;
+padding-top: 2px;
+">
+                        <i class="fa fa-area-chart"></i>&nbsp;Plot
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+</div>
+</div>
+
+    <!--single alerts modal-->
+        <div class="modal fade" id="singlealert" role="dialog">
+        <div class="modal-dialog">
+
+            <div class="modal-content">
+            <div class="modal-header">
+                <h6 class="modal-title">Add a new Alert</h6>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+            <div class="modal-body"  data-alert_pk="">
+                <div class="row justify-content-start">
+                <div class="col-4">
+                    <label>
+                    Column Name:
+                    <input id="modal_new_column" type="text" name="name_col_name" readonly class="form-control-plaintext">
+                    </label>
+                </div>
+                <div class="col-4">
+                    <label>
+                    Column Condition:
+                    <input id="modal_new_column_condition" type="text" name="name_col_cond" readonly
+                        class="form-control-plaintext">
+                    </label>
+                </div>
+                <div class="col-4" style="display:none;">
+                    <label>
+                    id:
+                    <input id="myid" type="text" readonly class="form-control-plaintext">
+                    </label>
+                </div>
+                </div>
+                <form class="thisform" action="">
+                <div class="d-flex align-items-center p-1">
+                    <div class="col-2 form-inline"><label>Limit:<input id="limit" class="p-0 text-center col-md-6" type="text"
+                        name="name_limit" value=""></label></div>
+
+                    <span class="w-auto">Color:</span>
+                    <div class="col-2 form-inline"><label>Color:<input style="width:20px" id="color" type="color"
+                        class="border-0 rounded-0 p-0 m-0" name="name_color_active" value=""></label></div>
+                </div>
+                </form>
+                <div><button class="btn btn-primary btn-xs float-right" id="clicking"
+                    onclick="addsinglealert(myid)">Save</button></div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+            </div>
+
+        </div>
+        </div>
+        <!--single alerts modal ends-->
+        <!-- Alert condition Modal -->
+        <div class="modal fade" id="alert_modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
+        aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+            <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLongTitle">Set Alert</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                <!--<div class="col-6">
+                    <div id="div_id_alert_color_status_inactive" class="form-group">
+                    <label for="id_alert_color_status_inactive" class=" requiredField">
+                        Set Color When InActive<span class="asteriskField">*</span>
+                    </label> <div class=""> <input type="color" value="#b58d2b" name="name_alert_color_status_inactive" required="" id="id_alert_modal_color_status_inactive"> </div>
+                    </div>
+                </div>-->
+                <div class="col-6">
+                    <div class="form-group">
+                    <label class=" requiredField">
+                        Set Color When Active<span class="asteriskField">*</span>
+                    </label>
+                    <div class=""> <input type="color" value="#b58d2b" name="name_alert_color_status_active" required="">
+                    </div>
+                    </div>
+                </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" id="alert_modal_button_save">Save changes</button>
+            </div>
+            </div>
+        </div>
+        </div>
+
+        <!--Alter modal ends-->
+
+        <!--Modal to edit multiple rows datatable in list view tab-->
+        <div class="modal fade" id="list_view_multi_edit_modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-xl" role="document">
+            <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Update</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+
+            </div>
+            </div>
+        </div>
+        </div>
+              <div class="modal" id='showDetailListflowprocess08790576004318207' tabindex="-1" role="dialog" aria-labelledby="formModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content" style="position: relative;">
+            <div class="modal-header" style='background:#565a5e; color:white;text-align: center;'>
+              <h5 class="modal-title" id="showDetailListflow" style="margin-left: 40%;">View Details</h5>
+              <button type="button" class="closeDetailflow close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body" style="overflow-y: scroll ;max-height: 30rem;">
+              <div class='card'>
+                <div class='card-body'>
+                  <table id='showDetailListflowtableprocess08790576004318207' class="row-border">
+                    <thead>
+                    </thead>
+
+                    <tbody>
+
+                    </tbody>
+
+                  </table>
+                </div>
+            </div>
+          </div>
+            </div>
+        </div>
+    </div>
+            </div>
+
+ <div class='tab-pane fade'  id='whiteSpacewrap07924047665288709_tab_content' role='tabpanel' aria-labelledby='whiteSpacewrap07924047665288709-tab'><div class='container-fluid'> <div class='font-weight-light'> <div class='card' id='createviewwhiteSpacewrap07924047665288709' onclick='enableSaveButton.call(this)'  style='overflow:auto;width:100%'><div class="card-body"> <form method="post" enctype="multipart/form-data"> {%csrf_token%}<div class="form-row form-row"> <div class='form-group col-md-3' > <div id='div_id_name' class='form-group'><label style="display:inline-block" for='id_name_whiteSpacewrap07924047665288709' class='requiredField' style="display:inline-block">Name<span class='asteriskField'></span> </label><div id='name_whiteSpacewrap07924047665288709_div' class=''> <input   type='text' name='test_table1__name'  maxlength = '256'  Datatype = 'CharField'   id='id_name_whiteSpacewrap07924047665288709' class='textinput textInput form-control p-2'   data-tablename='test_table1'></div> </div> </div> <div class='form-group col-md-3' > <div id='div_id_pan' class='form-group'><label style="display:inline-block" for='id_pan_whiteSpacewrap07924047665288709' class='requiredField' style="display:inline-block">Pan<span class='asteriskField'>*</span> </label><div id='pan_whiteSpacewrap07924047665288709_div' class=''> <input   type='text' name='test_table1__pan'  maxlength = '10'  Datatype = 'CharField'   id='id_pan_whiteSpacewrap07924047665288709' class='textinput textInput form-control p-2'  required data-tablename='test_table1'></div> </div> </div></div> <div class='form-group'> <div class=''> <input type='hidden' name='tablename' value='["test_table1"]'> <input type='hidden' name='tableCol' value='{"test_table1":["test_table1__name","test_table1__pan"]}'> <input type='hidden' name='elementid' value='whiteSpacewrap07924047665288709'><input type='submit' name='submit' value='Save' class='btn btn-primary buttonstyling acies_btn acies_btn-primary button_standard_save' id='savebutton_whiteSpacewrap07924047665288709' data-color='#B58D2B' data-table-name='["test_table1"]' data-template-name='Default' data-element-id='whiteSpacewrap07924047665288709' ></div> </div> </form></div></div></div></div></div>
+            </div></section>

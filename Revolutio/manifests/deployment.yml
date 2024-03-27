@@ -1,0 +1,19 @@
+apiVersion : apps/v1
+kind: Deployment
+metadata:
+  name: revolutio
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: revolutio
+  template:
+    metadata:
+      labels:
+        app: revolutio
+    spec:
+      containers:
+        - name: revolutio
+          image: revolutio.azurecr.io/revolutio
+          ports:
+          - containerPort: 8000

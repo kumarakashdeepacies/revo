@@ -1,0 +1,39 @@
+<script>
+  final_msg = ""
+  icon = ""
+  iconHtml = ""
+
+  {% for message in messages %}
+    {% if message.level_tag == 'alert-success'%}
+      icon = "success"
+      {% if message.extra_tags %}
+      iconHtml = `<i class="{{message.extra_tags | safe}}" style="border: 0 !important;"></i>`
+      {% endif %}
+      final_msg = final_msg + `{{ message | safe }}`
+    {% elif message.level_tag == 'alert-danger' %}
+      icon = "error"
+      {% if message.extra_tags %}
+      iconHtml = `<i class="{{message.extra_tags | safe}}" style="border: 0 !important;"></i>`
+      {% endif %}
+      final_msg = final_msg + `{{ message | safe }}`
+    {% elif message.level_tag == 'alert-info' %}
+      icon = "info"
+      {% if message.extra_tags %}
+      iconHtml = `<i class="{{message.extra_tags | safe}}" style="border: 0 !important;"></i>`
+      {% endif %}
+      final_msg = final_msg + `{{ message | safe }}`
+    {% else %}
+      icon = "warning"
+      {% if message.extra_tags %}
+      iconHtml = `<i class="{{message.extra_tags | safe}}" style="border: 0 !important;"></i>`
+      {% endif %}
+      final_msg = final_msg + `{{ message | safe }}`
+    {% endif %}
+  {% endfor %}
+
+  if (final_msg){
+    Swal.fire({icon: icon,iconHtml,text: final_msg});
+    final_msg = ""
+  }
+
+</script>

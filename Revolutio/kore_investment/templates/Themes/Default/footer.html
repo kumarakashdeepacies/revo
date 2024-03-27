@@ -1,0 +1,16 @@
+<!-- /.control-sidebar -->
+<footer id="main-footer"
+    {% if request.path == '/users/selectDashboard/' or request.path == '/users/dashboard/' %}
+   class="main-footer fixed-bottom footer-bg"
+   {% elif request.path == '/users/planner/' %}
+   class="main-footer fixed-bottom footer-bg" style="margin-left: 0px !important"
+   {% else %}
+    {% if request.path == '/users/selectApplication/' or request.path == '/users/adminPanel/' or request.path == '/users/alertsSetup/' or request.path == '/users/customizeTheme/' or selected_any_app == 'false' %}
+    class="main-footer fixed-bottom footer-bg" style="margin-left: 0px !important"
+    {% else %}
+    class="main-footer fixed-bottom footer-bg"
+    {% endif %}
+   {% endif %}
+   >
+    <medium> <<footertext>> </medium>
+</footer>

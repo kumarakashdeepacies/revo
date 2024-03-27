@@ -1,0 +1,19 @@
+version: "3.9"  # optional since v1.27.0
+services:
+  coord:
+    image: revolutiodev.azurecr.io/revolutio_kubernetes/pg_auto_failover:citus_coordinator
+    build:
+      context: ./pg_auto_failover
+    environment:
+      PGDATA: /tmp/pgaf
+      PGUSER: ad
+      PGDATABASE: analytics
+      PG_AUTOCTL_MONITOR: "postgres://autoctl_node@ha-demo-monitor.centralindia.cloudapp.azure.com/pg_auto_failover?sslmode=require"
+      COORD_HOST: ha-demo-instancea-coord.centralindia.cloudapp.azure.com
+    command:  coordinator
+    entrypoint: /var/lib/postgres/entrypoint_coord
+    hostname: ha-demo-instancea-coord.centralindia.cloudapp.azure.com
+    expose:
+      - 5432
+    ports:
+      - 5432:5432

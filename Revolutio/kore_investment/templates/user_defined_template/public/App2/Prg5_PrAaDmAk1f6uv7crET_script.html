@@ -1,0 +1,1206 @@
+
+      <style>
+        .buttonstyling{
+          margin-bottom:10px;
+        }
+      </style>
+     <script>
+      var dashboardSave_ = true;
+      function editNameIndex(){
+        let id_ = $(this).attr("id").replace("tabHeader","indextab");
+        $(`#${id_}`).find("a").html($(this).text());
+      }
+      const gotoTab = (parent, index) => {
+          let id = '#analysis' + index;
+          $(id).trigger('click');
+        }</script>
+    <script>
+        let activeElement = "no";        var None = 'None';        var listViewTableDict={};        var listViewEditTemplate = {};        var createViewIdList = [];        var elementIDList=[];        var chartConfigDict={};        var crossFilterDict={};        var element_table_IDList = [];        var computationElementIdsArray = [];        var previousRunComputeElementIdArray = [];        var element_page = [];        var names = {};
+        var app_code_home = '';        var user_home = '';        var item_code_list = [];        var grapejs = 1;        var m_col_basefilter = {};        var globalFuncList_scenario = [];        var variableList_scenario = [];        var analysiselementIDList=[];        var mColBasefilter = {};        var chartSaveEleIdList = [];        var chartSaveEleId = "";        var slicerTabConfigDict = {};        var sharedConfig = {"element_id":"", "config":[]};        var editType = "Enable";        var button_ids = ["savebutton_","saveDraftbutton_","customValidationList","calculateComp","viewHistory_","button-id-back","resetDraft_","previewDraft_","rejectedRecords","viewTransactions"];        function enableSaveButton () {        
+ $(this).find('button[value=Save]').prop('disabled',false);      
+};
+
+      function bta_apply() {
+            let lba_data = {{lba_data | safe}};
+            for (var key of Object.keys(lba_data)) {
+              if(Object.keys(lba_data[key]).length != 0) {
+              e_id = key;
+              if (e_id.startsWith("whiteSpacewrap")) {
+                if (!lba_data[key].includes("CreateView - Save")) {
+                  $(`#savebutton_${e_id}`).attr("disabled", "true");
+                  $(`#compare_existing_${e_id}`).attr("disabled", "true");
+                }
+
+                if (!lba_data[key].includes("CreateView - Save as Draft")) {
+                  $(`#saveDraftbutton_${e_id}`).attr("disabled", "true");
+                  $(`#resetDraft_${e_id}`).attr("disabled", "true");
+                  $(`#previewDraft_${e_id}`).attr("disabled", "true");
+                }
+
+                if (!lba_data[key].includes("CreateView - Custom Validation")) {
+                  $(`#customValidationList${e_id}`).attr("disabled", "true");
+                  $(`#customValidation${e_id}`).attr("disabled", "true");
+                }
+
+                if (!lba_data[key].includes("CreateView - Refresh Computation")) {
+                  $(`#calCompVal_${e_id}`).attr("disabled", "true");
+                }
+
+                if (!lba_data[key].includes("CreateView - Back")) {
+                  $(`#button-id-back${e_id}`).attr("disabled", "true");
+                }
+
+                if (!lba_data[key].includes("CreateView - View History")) {
+                  $(`#viewHistory_${e_id}`).attr("disabled", "true");
+                }
+                if (!lba_data[key].includes("CreateView - View Rejected Records")) {
+                  $(`#rejectedRecords${e_id}`).attr("disabled", "true");
+                }
+
+                if (!lba_data[key].includes("CreateView - View Transaction Status")) {
+                  $(`#showTransactions${e_id}`).attr("disabled", "true");
+                  $(`#viewTransactions${e_id}`).attr("disabled", "true");
+                }
+              }
+              if (e_id.startsWith("ellipse")) {
+                if (!lba_data[key].includes("Analysis - Previous Versions")) {
+                  $(`#previousVersion${e_id}`).attr("disabled", "true");
+                }
+                if (!lba_data[key].includes("Analysis - Save and Share")) {
+                  $(`#saveShare${e_id}`).attr("disabled", "true");
+                }
+                if (!lba_data[key].includes("Analysis - Plot charts")) {
+                  $(`#plotCharts${e_id}`).attr("disabled", "true");
+                }
+                if (!lba_data[key].includes("Analysis - PDF")) {
+                  $(`#analysisPDF${e_id}`).attr("disabled", "true");
+                }
+                if (!lba_data[key].includes("Analysis - Save")) {
+                  $(`#saveChartConfigButton${e_id}`).attr("disabled", "true");
+                }
+                if (!lba_data[key].includes("Analysis - Global Settings")) {
+                  $(`#globalButton${e_id}`).attr("disabled", "true");
+                }
+                if (!lba_data[key].includes("Analysis - Add tab")) {
+                  $(`#analysisAddTab${e_id}`).attr("disabled", "true");
+                }
+                if (!lba_data[key].includes("Analysis - Tab config")) {
+                  $(`#TabSettings${e_id}`).attr("disabled", "true");
+                }
+                if (!lba_data[key].includes("Analysis - Import dashboard")) {
+                  $(`#importDashboard${e_id}`).attr("disabled", "true");
+                }
+                if (!lba_data[key].includes("Analysis - Publish")) {
+                  $(`#publishDashboard${e_id}`).attr("disabled", "true");
+                }
+              }
+
+              if (e_id.startsWith("parallelogram")) {
+                if (!lba_data[key].includes("Computation - Run Model")) {
+                  $(`#runModel_${e_id}`).attr("disabled", "true");
+                }
+
+                if (!lba_data[key].includes("Computation - Configure Scenario")) {
+                  $(`#scenarios_${e_id}`).attr("disabled", "true");
+                }
+
+                if (!lba_data[key].includes("Computation - Filter")) {
+                  $(`#filter_button_prev_run_computation${e_id}`).attr(
+                    "disabled",
+                    "true"
+                  );
+                  $(`#freezepane_button_prev_run_computation${e_id}`).attr(
+                    "disabled",
+                    "true"
+                  );
+                }
+              }
+              if (e_id.startsWith("document")) {
+                if (!lba_data[key].includes("UploadView - Upload")) {
+                  $(`#uploadFile${e_id}`).attr("disabled", "true");
+                  $(`#downloadButton${e_id}`).attr("disabled", "true");
+                }
+
+                if (!lba_data[key].includes("UploadView - Map Columns")) {
+                  $(`#columnMapperButton${e_id}`).attr("disabled", "true");
+                }
+                if (!lba_data[key].includes("UploadView - Custom Validation")) {
+                  $(`#customValidationButton${e_id}`).attr("disabled", "true");
+                }
+                if (!lba_data[key].includes("UploadView - Add computation logic")) {
+                  $(`#computedFieldMapperButton${e_id}`).attr("disabled", "true");
+                }
+                if (!lba_data[key].includes("UploadView - Download data")) {
+                  $(`#downloadData${e_id}`).attr("disabled", "true");
+                }
+                if (!lba_data[key].includes("UploadView - Upload history")) {
+                  $(`#downloadHistory${e_id}`).attr("disabled", "true");
+                }
+                if (!lba_data[key].includes("UploadView - Last upload errors")) {
+                  $(`#downloadLastUploadErrors${e_id}`).attr("disabled", "true");
+                }
+                if (!lba_data[key].includes("UploadView - Detailed error log")) {
+                  $(`#downloadErrorLog${e_id}`).attr("disabled", "true");
+                }
+                if (!lba_data[key].includes("UploadView - Transaction status")) {
+                  $(`#showTransactions${e_id}`).attr("disabled", "true");
+                }
+                if (!lba_data[key].includes("UploadView - SFTP connectors")) {
+                  $(`#sftpUploadButton${e_id}`).attr("disabled", "true");
+                }
+              }
+              if (e_id.startsWith("process")) {
+                if (!lba_data[key].includes("ListView - Upload")) {
+                  $(`#uploadButton${e_id}`).attr("disabled", "true");
+                }
+                if (!lba_data[key].includes("ListView - Save template")) {
+                  $(`#saveTemplateButton${e_id}`).attr("disabled", "true");
+                }
+                if (!lba_data[key].includes("ListView - Set Alerts")) {
+                  $(`#displayalert${e_id}`).attr("disabled", "true");
+                }
+                if (!lba_data[key].includes("ListView - Paste Tabular Data")) {
+                  $(`#tablegenerator_${e_id}`).attr("disabled", "true");
+                }
+                if (!lba_data[key].includes("ListView - Edit Mode")) {
+                  $(`#editListView${e_id}`).attr("disabled", "true");
+                }
+                if (!lba_data[key].includes("ListView - Delete all data")) {
+                  $(`#listview_clearall_${e_id}`).attr("disabled", "true");
+                }
+                if (!lba_data[key].includes("ListView - Find and replace")) {
+                  $(`#find_replace_${e_id}`).attr("disabled", "true");
+                }
+                if (!lba_data[key].includes("ListView - Freeze Panes")) {
+                  $(`#freeze_pane_${e_id}`).attr("disabled", "true");
+                }
+                if (!lba_data[key].includes("ListView - Formatters")) {
+                  $(`#formatter_${e_id}`).attr("disabled", "true");
+                }
+                if (!lba_data[key].includes("ListView - Transactions Status")) {
+                  $(`#showTransactions${e_id}`).attr("disabled", "true");
+                }
+                if (!lba_data[key].includes("ListView - Plot Charts")) {
+                  $(`#plotCharts${e_id}`).attr("disabled", "true");
+                }
+                if (!lba_data[key].includes("ListView - Filter")) {
+                  $(`#filter_button_list_view${e_id}`).attr("disabled", "true");
+                }
+                if (!lba_data[key].includes("ListView - Add Computed Fields")) {
+                  $(`#addComp_field_${e_id}`).attr("disabled", "true");
+                }
+                if (!lba_data[key].includes("ListView - Expand")) {
+                  $(`#example1_expand${e_id}`).attr("disabled", "true");
+                }
+                if (!lba_data[key].includes("ListView - Extract Data")) {
+                  $(`#extract_data_${e_id}`).attr("disabled", "true");
+                }
+                if (!lba_data[key].includes("ListView - Bulk Update")) {
+                  $(`#bulk_update_${e_id}`).attr("disabled", "true");
+                }
+                if (!lba_data[key].includes("ListView - Conditional Delete")) {
+                  $(`#conditional_delete_${e_id}`).attr("disabled", "true");
+                }
+                if (!lba_data[key].includes("ListView - Approve all")) {
+                  $(`#approve_all_ApprovalTemplate_${e_id}`).attr("disabled", "true");
+                }
+                if (!lba_data[key].includes("ListView - Reject all")) {
+                  $(`#reject_all_ApprovalTemplate_${e_id}`).attr("disabled", "true");
+                }
+                if (!lba_data[key].includes("ListView - Approve Multiple")) {
+                  $(`#approve_multiple_ApprovalTemplate_${e_id}`).attr("disabled", "true");
+                }
+                if (!lba_data[key].includes("ListView - Reject Multiple")) {
+                  $(`#reject_multiple_ApprovalTemplate_${e_id}`).attr("disabled", "true");
+                }
+              }
+              $("section").addClass('visible-section')
+          }else{
+            $("section").addClass('visible-section')
+          }
+        }
+      }
+      $(document).ready(bta_apply);
+    </script>
+  
+<script>
+              var bulkUploadTableDetails = [];
+              $("#documenttableUS[data-element-id='document009269146370358428'] > tbody").find("tr").each(function(){
+
+                var uploadTargetBtn = $(this).find(".downloadButtondocument009269146370358428");
+                bulkUploadTableDetails.push($(this).find('td > input').eq(0).val());
+              })
+              var uploadElementId =  "document009269146370358428" ;
+
+              var ctoken = $('form').find(`input[name='csrfmiddlewaretoken']`).attr('value');
+              $.ajaxSetup({
+                  beforeSend: function (xhr, settings) {
+                      xhr.setRequestHeader("X-CSRFToken", ctoken);
+                  }
+              });
+              $.ajax({
+                url: windowLocation,
+                data:{
+                  table_details: JSON.stringify(bulkUploadTableDetails),
+                  element_id: uploadElementId,
+                  operation: "fetchUploadTableDetails",
+                },
+                type: "POST",
+                dataType: "json",
+                success: function (data) {
+                  var uploadElementId = data.element_id;
+                  for (let index = 0; index < data.table_info_list.length; index++) {
+                    const element = data.table_info_list[index];
+                    $(`#tableUSLUD${uploadElementId}${element.DBtableName}`).val(element.lastuploaddate).trigger('change');
+                  }
+
+                },
+                error: function(){
+                  if(windowLocation.includes("Pr")){
+                    Swal.fire({icon: 'error',text: 'Error! Failure in fetching the upload details. Please try again.'});
+                  }
+                }
+              })
+
+                $.ajax({
+                  url: `/users/${urlPath}/constriant_get_data/`,
+                  data: {
+                    elementID: uploadElementId,
+                    operation: 'reload_config_mapper',
+                  },
+                  type: 'POST',
+                  dataType: 'json',
+                  success: function (data) {
+                    if (
+                      Object.prototype.hasOwnProperty.call(data, 'reload_custom_validation')
+                    ) {
+                      if (data.reload_custom_validation) {
+                        const rowData = JSON.parse(data.reload_custom_validation);
+                        $(`#configuration_val_row_${data.element_id}`).empty();
+                        let rowHtml = '';
+                        let count = 1;
+                        for (const rowName in rowData) {
+                          rowHtml += `<tr> <td>${count}</td> <td value='${rowName}'>${rowName}</td> <td><button type="button" class="btn-primary reconfigurecustomvalidation" name="${rowName}" data-element-id=${data.element_id}' id="reconfigurecustomvalidation_${rowName}"><i class="fas fa-trash"></i></button> <button type="button" class="btn-primary editcustomexist_validation" name="${rowName}" data-element-id="${data.element_id}" href="#carouselCustomValidation${data.element_id}" data-slide="next" id="editcustomexist_validation_${rowName}"><i class="fas fa-edit"></i></button></td></tr>`;
+
+                          count++;
+                        }
+                        $(`#configuration_val_row_${data.element_id}`).append(rowHtml);
+                        $(`#customValidationList1${data.element_id}`).attr(
+                          'value',
+                          data.reload_custom_validation
+                        );
+                      }
+                    }
+
+                    if(Object.prototype.hasOwnProperty.call(data, 'reload_data')){
+                      if (data.reload_data){
+                        $(`#columnmapperDict${data.element_id}`).attr(
+                          'value',
+                          data.reload_data
+                        );
+                      }
+                    }
+                  },
+                  error: function () {
+                    window.Swal.fire({icon: 'error',text: 'Error! Please try again.'});;
+                  },
+                });
+
+
+                              $('#doe_form_document009269146370358428').find(".doe_field_selection").select2({width:'60%'})
+                // Select Type of  Date Of Extraction Field
+
+
+                   $('#date_extraction_checkerdocument009269146370358428').on('change',function(){
+                   if(this.checked == true){
+
+
+                      if($(this).attr('data-file-type')){
+                            $('#doe_sheet_selectiondocument009269146370358428').css('display','block')
+
+                        }else{
+                            $('#doe_field_selectiondocument009269146370358428').css('display','block')
+                        }
+
+                   }else{
+                      $('input[data-date-extraction=date_extract_document009269146370358428]').css('display','none')
+                      $('#doe_field_selectiondocument009269146370358428').css('display','none')
+                      $('input[data-date-extraction=date_extract_document009269146370358428]').val("")
+                    $('#doe_sheet_value_document009269146370358428').val("").trigger('change');
+                   }
+                 })
+
+                           $('#doe_sheet_value_document009269146370358428').on('select2:select',function(){
+                  var data_form = new FormData($(`form[data-form-id=uploadfileformdocument009269146370358428]`)[0]);
+                  let table_name = $(this).val()
+                  $('#doe_field_value_document009269146370358428').val("").trigger('change')
+                  data_form.append('elementID','document009269146370358428')
+                   $('input[data-date-extraction=date_extract_document009269146370358428]').val("")
+                    $('input[data-date-extraction=date_extract_document009269146370358428]').css('display','none')
+                  data_form.append('operation','date_of_extraction_field_selection')
+                  data_form.append('table_name',table_name)
+                  var itemCode = windowLocation.split("/")[4];
+                  if(! itemCode.includes("Pr")) {
+                    var id_ele = 'document009269146370358428'
+                    for(let z = 0; z < item_code_list.length; z++) {
+                      if(item_code_list[z].hasOwnProperty(id_ele)) {
+                        itemCode = item_code_list[z][id_ele]
+                        break
+                      }
+                    }
+                  };
+                    var tablelist= $(this).attr('tablelist')
+                data_form.append('tablelist',tablelist)
+               $.ajax({
+                      url: `/users/${urlPath}/${itemCode}/`,
+                      data:data_form,
+                      contentType:false,
+                      cache:false,
+                      async: false,
+                      processData:false,
+                      type: "POST",
+                      dataType: "json",
+                        success: function (data) {
+
+                          $('#doe_field_selectiondocument009269146370358428').css('display','block')
+
+
+                        if(data.hasOwnProperty('columnList')){
+                            let columnList = JSON.parse(data.columnList)
+
+                            $('#doe_field_value_document009269146370358428').empty()
+                            $('#doe_field_value_document009269146370358428').append(`<option value='' selected disabled>Select Date Field</option>`)
+
+                            if(Object.keys(columnList).includes(table_name)){
+                              for(let i in columnList[table_name]){
+                              $('#doe_field_value_document009269146370358428').append(`<option value='${Object.keys(columnList[table_name])[0]}' data-type='${columnList[table_name][i]['type']}'>${columnList[table_name][i]['verbose_name']}</option>`)
+                            }
+                            }else{
+                              for(let k=0;k<Object.keys(columnList).length;k++){
+
+                                for(let i in columnList[Object.keys(columnList)[k]]){
+                              $('#doe_field_value_document009269146370358428').append(`<option value='${Object.keys(columnList[Object.keys(columnList)[k]])[0]}' data-type='${columnList[Object.keys(columnList)[k]][i]['type']}'>${columnList[Object.keys(columnList)[k]][i]['verbose_name']}</option>`)
+                            }
+                              }
+
+                            }
+
+                          }
+                        },
+                        error: function () {
+                          Swal.fire({icon: 'error',text: 'Error! Please try again.'});
+                        }
+                      });
+                 })
+
+                //  Set DateOfextraction Field
+                        $('#doe_field_value_document009269146370358428').on('select2:select',function(){
+                  let field_type = $(this).find('option:selected').attr('data-type')
+                    $('#doe_field_type_document009269146370358428').val(field_type).trigger('change')
+                    $('#doe_field_selectiondocument009269146370358428').css('display','block')
+                  if(field_type == 'DateTimeField'){
+                    $('input[data-date-extraction=date_extract_document009269146370358428]').css('display','block')
+                    $('input[data-date-extraction=date_extract_document009269146370358428]').attr('type','datetime-local')
+                  }else{
+                    $('input[data-date-extraction=date_extract_document009269146370358428]').css('display','block')
+                    $('input[data-date-extraction=date_extract_document009269146370358428]').attr('type','date')
+                  }
+
+
+                })
+
+                    var table_list = []
+                 $(`#downloadLastUploadErrorsdocument009269146370358428`).parent().find("input[name=table_name]").each(function(){
+                     table_list.push($(this).val())
+                 })
+                 $(`.columnMapperButton[data-elementid=document009269146370358428]`).attr('data-table-name',JSON.stringify(table_list))
+                 $(`.customValidationButton[data-elementid=document009269146370358428]`).attr('data-table-name',JSON.stringify(table_list))
+                 $(`.computedFieldMapperButton[data-elementid=document009269146370358428]`).attr('data-table-name',JSON.stringify(table_list))
+                  $(`#edit_upload_savedocument009269146370358428`).attr('tablelist',JSON.stringify(table_list))
+                  $(`#uploadButton3document009269146370358428`).attr('tablelist',JSON.stringify(table_list))
+                    $('#doe_sheet_value_document009269146370358428').attr('tablelist',JSON.stringify(table_list))
+                    $("#uploadFiledocument009269146370358428").attr('tablelist',JSON.stringify(table_list))
+                  $(`.upload_tables_US`).attr('value',JSON.stringify(table_list))
+
+
+
+
+$('#carouselCustomValidationdocument009269146370358428').on('slide.bs.carousel', function onSlide (ev) {
+
+  var name = ev.relatedTarget.getAttribute('name');
+
+  if(name != 'existing_config'){
+    $(`.submitcustomvalidation[data-elementid=document009269146370358428]`).css('display','none')
+  }else{
+    $(`.submitcustomvalidation[data-elementid=document009269146370358428]`).css('display','block')
+  }
+
+})
+$("#uploadFiledocument009269146370358428").on('change',function(){
+// Remove
+  $(`#edit_upload_savedocument009269146370358428`).removeAttr('sheetname')
+  $("#edit_upload_savedocument009269146370358428").removeAttr('data-edit')
+  $(`#edit_upload_savedocument009269146370358428`).removeAttr('data-sheet-details')
+  $(`#SkipSheetInfodocument009269146370358428`).removeAttr('data-skip-sheet')
+
+//Added
+  $("#edit_upload_savedocument009269146370358428").removeAttr('data-edit')
+
+  $("#date_extraction_checkerdocument009269146370358428").removeAttr('data-file-type')
+  $(`#EditModalTabdocument009269146370358428 a[href="#edit_data_tab$document009269146370358428"]`).show();
+  $('input[data-date-extraction=date_extract_document009269146370358428]').css('display','none')
+  $('input[data-date-extraction=date_extract_document009269146370358428]').val("")
+  $('#doe_field_selectiondocument009269146370358428').css('display','none')
+  $('#doe_field_value_document009269146370358428').val("").trigger('change')
+  $('#doe_field_value_document009269146370358428').removeAttr('data-file-type')
+  $('#doe_sheet_selectiondocument009269146370358428').css('display','none')
+  $('#doe_sheet_value_document009269146370358428').val('').trigger('change');
+  $('#date_extraction_checkerdocument009269146370358428').prop('checked',false)
+
+
+
+  var itemCode = windowLocation.split("/")[4];
+  if(! itemCode.includes("Pr")) {
+    var id_ele = 'document009269146370358428'
+    for(let z = 0; z < item_code_list.length; z++) {
+      if(item_code_list[z].hasOwnProperty(id_ele)) {
+        itemCode = item_code_list[z][id_ele]
+        break
+      }
+    }
+  };
+  var data_form = new FormData($(`form[data-form-id=uploadfileformdocument009269146370358428]`)[0]);
+  data_form.append('elementID','document009269146370358428')
+  data_form.append('operation','date_of_extraction_field_selection')
+
+  var tablelist= $(this).attr('tablelist')
+  data_form.append('tablelist',tablelist)
+
+
+
+  if($(this)[0].files[0].name){
+        let filename = $(this)[0].files[0].name.split('.')[0]
+     $.ajax({
+
+       url: `/users/${urlPath}/${itemCode}/`,
+        data:data_form,
+        contentType:false,
+        cache:false,
+        async: false,
+        processData:false,
+        type: "POST",
+        dataType: "json",
+        success: function (data) {
+
+
+          if(data.hasOwnProperty('fileType')){
+            if(data.fileType == "xlsx"){
+              let sheet_list = JSON.parse(data.sheetnames)
+
+              if(sheet_list.length > 1){
+                $("#date_extraction_checkerdocument009269146370358428").attr('data-file-type','xlsx')
+                $('#doe_sheet_value_document009269146370358428').empty()
+                  $('#doe_sheet_value_document009269146370358428').append(`<option value='' selected disabled>Select Sheet Name</option>`)
+                  for(let i=0;i < sheet_list.length;i++){
+                    $('#doe_sheet_value_document009269146370358428').append(`<option value='${sheet_list[i]}'>${sheet_list[i]}</option>`)
+                  }
+              }else{
+                if(data.hasOwnProperty('columnList')){
+                let columnList = JSON.parse(data.columnList)
+
+                let sheet_name = sheet_list[0]
+                $('#doe_field_value_document009269146370358428').empty()
+                $('#doe_field_value_document009269146370358428').append(`<option value='' selected disabled>Select Date Field</option>`)
+
+                for(let i in columnList[sheet_name]){
+                  $('#doe_field_value_document009269146370358428').append(`<option value='${Object.keys(columnList[sheet_name])[0]}' data-type='${columnList[sheet_name][i]['type']}'>${columnList[sheet_name][i]['verbose_name']}</option>`)
+                }
+              }
+              }
+            }else{
+              if(data.hasOwnProperty('columnList')){
+                let columnList = JSON.parse(data.columnList)
+                $('#doe_field_value_document009269146370358428').empty()
+                $('#doe_field_value_document009269146370358428').append(`<option value='' selected disabled>Select Date Field</option>`)
+
+                for(let i in columnList[filename]){
+                  $('#doe_field_value_document009269146370358428').append(`<option value='${Object.keys(columnList[filename])[0]}' data-type='${columnList[filename][i]['type']}'>${columnList[filename][i]['verbose_name']}</option>`)
+                }
+              }
+            }
+          }
+
+        },
+        error: function () {
+          Swal.fire({icon: 'error',text: 'Error! Please try again.'});
+        }
+      });
+  }
+
+})
+
+function addDashRow(y) {
+  var select_html = `<select style="margin-left:50px; width: 300px;" class="form-control col-3 mx-4 m-2 select_dash_null dash_null" data-tablename="${y}" multiple>`
+  $(`#select_dash_null_${y} option`).each(function()
+  {
+    select_html += `<option value="${$(this).attr('value')}">${$(this).text()}</option>`
+  });
+  select_html += '</select>'
+  $(`#dashRow_${y}`).append(`
+  <div class="row m-2" style="margin-left: 210px !important">
+  <div class="form-inline">
+  ${select_html}
+  <div class="col-3">
+  <select style="width: 200px;" class="form-control m-2 select_dash_value dash_null" data-tablename="${y}">
+  <option value="" disabled selected>Select value for '-'</option>
+  <option value="-">-</option>
+  <option value="0">0</option>
+  <option value="">Null/Empty</option>
+  </select>
+  </div>
+  </div>
+  </div>`)
+  $(".dash_null").select2();
+}
+
+//Main Upload Button
+$(`#uploadButton3document009269146370358428`).click(function(){
+  var elementID = 'document009269146370358428'
+  var data_form = new FormData($(`form[data-form-id=uploadfileformdocument009269146370358428]`)[0]);
+  data_form.append('elementID',elementID);
+     var tablelist = $(this).attr('tablelist')
+  data_form.append('tablelist',tablelist)
+  if($(this).attr('data-preview-mode') == 'on'){
+    previewUploadElementData(elementID='document009269146370358428',dataForm=data_form);
+  }else{
+  data_form.append('uploadbuttonUS','US')
+  // Remove
+    $(`#edit_upload_savedocument009269146370358428`).removeAttr('sheetname')
+    $("#edit_upload_savedocument009269146370358428").removeAttr('data-edit')
+    $(`#edit_upload_savedocument009269146370358428`).removeAttr('data-sheet-details')
+  $(`#SkipSheetInfodocument009269146370358428`).removeAttr('data-skip-sheet')
+  UploadDatafunc(data_form,elementID)
+  }
+  $(".dash_null").select2();
+})
+
+function flowUICreator(elementsArray,container,element_id,data,configs) {
+  var count = 0
+  for (let k in elementsArray){
+    if (elementsArray[k]['group'] =='nodes'){
+      if (elementsArray[k]['data']['id'] in configs){
+        elementsArray[k]['data']['text'] = configs[elementsArray[k]['data']['id']]
+      }
+      count ++
+    }
+  }
+  if (count >= 5){
+    container.css('height','20rem');
+  }
+  if (configs['shapes_options_text'] =='inside'){
+    var styles = {
+      'shape': configs['shapes_options'],
+      'label': 'data(text)',
+      'text-valign': 'center',
+      'font-size': configs['font-size'],
+      'color':configs['font-color'],
+      'width': configs['shape_width'],
+      'height': configs['shape_height'],
+      'text-wrap': 'wrap',
+      'text-max-width': `${String(configs['shape_width'])}px`,
+    }
+  }else{
+    var styles = {
+      'shape': configs['shapes_options'],
+      'label': 'data(text)',
+      'font-size': configs['font-size'],
+      'color':configs['font-color'],
+      'width': configs['shape_width'],
+      'height': configs['shape_height'],
+      'text-wrap': 'wrap',
+      'text-max-width': `${String(configs['shape_width'])}px`,
+    }
+  }
+  var cy = cytoscape({
+    container: container,
+    zoomingEnabled: false,
+    userZoomingEnabled: false,
+    elements: elementsArray,
+    style: [
+      {
+        selector: 'node',
+        style: styles,
+      },
+      {
+        selector: 'edge',
+        style: {
+          width: 1
+        }
+      }
+    ],
+    layout: {
+      name: "dagre",
+      rankDir: "LR",
+      padding: 10,
+      spacingFactor: 1.25,
+      fit: true,
+      nodeDimensionsIncludeLabels: true,
+      avoidOverlap: true,
+      pan: { x: 200, y: 100 }
+    }
+  });
+  if (data != undefined){
+    cy.nodes().forEach(function(ele, i, eles){
+       for (let k in data){
+        if (data[k]['element_id'] == ele.id()){
+          if (data[k]['current_status'] == 'Pass'){
+            ele.css('background-color','#4bb543')
+          }
+        }
+       }
+     });
+  }else{
+    flag = true
+    cy.nodes().forEach(function(ele, i, eles){
+      if(flag){
+        ele.css('background-color','#4bb543')
+      }
+      if (element_id == ele.id()){
+        flag = false
+      }
+    });
+  }
+}
+function processDesignDiv_upload(obj){
+  var eleId = $(obj).attr('data-id')
+  $(obj).parent().parent().find('.processflowdiv').toggleClass("displaynone")
+
+  if ($(obj).parent().parent().find('.processflowdiv').hasClass("displaynone") == false){
+    $(obj).prev().find('.stepper-wrapper').empty()
+    if ($(obj).attr('data-trans')!= undefined){
+      if ($(obj).attr('data-trans')!=''){
+        var trans_code = $(obj).attr('data-trans')
+        var flag = true
+        if (trans_code.startsWith("[")){
+          trans_code = JSON.parse(trans_code)
+          trans_code = trans_code[0]
+          flag = true
+        }else if (trans_code == "NULL") {
+          trans_code = ''
+          flag = false
+        }
+        if (flag){
+          $.ajax({
+            url:`/users/${urlPath}/dynamicVal/`,
+            data: {
+            "operation":"fetch_process_flow_model_trans",
+            'trans_code':trans_code,
+            },
+            type: "POST",
+            dataType: "json",
+            success: function (data) {
+             flowUICreator(data.data,$(obj).closest('.modal-body').find('.processflowdiv'),eleId,data.flow,JSON.parse($(obj).attr('data-list')))
+            },
+            failure: function () {
+              Swal.fire({icon: 'error',text: 'Error! Please try again.'});
+            },
+          })
+        }
+
+      }
+    }else{
+      $.ajax({
+        url:`/users/${urlPath}/dynamicVal/`,
+        data: {
+        "operation":"fetch_process_flow_model_xml",
+        'sub_pr_code':$(obj).attr('data-sub-process'),
+        'pr_code':$(obj).attr('data-process'),
+        },
+        type: "POST",
+        dataType: "json",
+        success: function (data) {
+          flowUICreator(data.elements_list,$(obj).closest('.card-body').find('.processflowdiv'),eleId,undefined,JSON.parse($(obj).attr('data-list')))
+        },
+        failure: function () {
+          Swal.fire({icon: 'error',text: 'Error! Please try again.'});
+        },
+      })
+    }
+
+  }
+
+  $(obj).toggleClass("rotate")
+}
+
+//Preview Upload Submit
+$(`#uploadButton3_previewdocument009269146370358428`).click(function(){
+   $(`#previewUploadModaldocument009269146370358428`).modal('hide');
+  $(`#bulk_upload_in_progress_document009269146370358428`).addClass('show');
+  $(this).closest("body").css("pointer-events", "none")
+
+  var elementID = 'document009269146370358428'
+  var data_form = new FormData($(`form[data-form-id=uploadfileformdocument009269146370358428]`)[0]);
+  data_form.append('elementID',elementID);
+  var dash_null_dict = {}
+  $(".select_dash_null").each(function() {
+      if (!dash_null_dict[$(this).attr("data-tablename")]) {dash_null_dict[$(this).attr("data-tablename")] = {}}
+      for (i in $(this).val()) {
+        dash_null_dict[$(this).attr("data-tablename")][$(this).val()[i]] = $(this).parent().find(".select_dash_value").val()
+      }
+  })
+  data_form.append('dash_null_dict',JSON.stringify(dash_null_dict));
+     var tablelist = $(`#uploadButton3document009269146370358428`).attr('tablelist')
+  data_form.append('tablelist',tablelist)
+data_form.append('uploadbuttonUS','US')
+  // Remove
+    $(`#edit_upload_savedocument009269146370358428`).removeAttr('sheetname')
+    $("#edit_upload_savedocument009269146370358428").removeAttr('data-edit')
+    $(`#edit_upload_savedocument009269146370358428`).removeAttr('data-sheet-details')
+  $(`#SkipSheetInfodocument009269146370358428`).removeAttr('data-skip-sheet')
+  UploadDatafunc(data_form,elementID)
+
+
+})
+
+
+
+//Edit Modal Upload Button
+$('#edit_upload_savedocument009269146370358428').on('click',function(){
+  var element_id = 'document009269146370358428'
+  var elementID = 'document009269146370358428'
+  var tablelist = $(this).attr('tablelist')
+  var stored_data = {}
+let null_list = new Array("nan","nat","null","none",null)
+
+
+  var data_form = new FormData($(`form[data-form-id=uploadfileformdocument009269146370358428]`)[0]);
+  data_form.append('elementID',element_id)
+  data_form.append('tablelist',tablelist)
+  data_form.append('uploadbuttonUS','US')
+
+  if($('#edit_upload_savedocument009269146370358428').attr('data-edit')){
+    var update_data =  $('#edit_upload_savedocument009269146370358428').attr('data-edit')
+    stored_data = JSON.parse(update_data)
+    $('#edit_data_tabdocument009269146370358428').find('table').find('#edit_upload_content').find('tr').each(function(){
+    var col_data_dict={}
+
+    $(this).find('td').each(function(){
+       if (null_list.includes($(this).text().toLowerCase())!= true){
+        col_data_dict[`${$(this).attr('data-key')}`] = $(this).text()
+      }else{
+        col_data_dict[`${$(this).attr('data-key')}`] = null
+      }
+    })
+
+    stored_data[$(this).attr('data-index')]=col_data_dict
+  })
+      data_form.append('edit_config',JSON.stringify(stored_data))
+  }
+
+  // Change SheetName
+  if($(this).attr('data-sheet-details')){
+    data_form.append('ChangeSheetName',$(this).attr('data-sheet-details'))
+  }
+
+  //Update Sheet
+    if($(`#edit_upload_savedocument009269146370358428`).attr('sheetname')){
+    let sheet_list = $(`#edit_upload_savedocument009269146370358428`).attr('sheetname')
+    data_form.append('UpdateSheet',sheet_list)
+  }
+
+  // Skip Sheet
+if($(`#SkipSheetInfodocument009269146370358428`).attr('data-skip-sheet')){
+  data_form.append('SkipSheetName',$(`#SkipSheetInfodocument009269146370358428`).attr('data-skip-sheet'))
+}
+  UploadDatafunc(data_form,elementID)
+})
+
+
+
+                 document.getElementById('canceldocument009269146370358428').onclick = function () {
+             $("#uploadFiledocument009269146370358428 ").val('');
+             $("#id_Date_of_Extraction").val('');
+             document.getElementById('canceldocument009269146370358428').disabled=true
+             document.getElementById('uploadButton3document009269146370358428').disabled=true
+             };
+             $("#uploadFiledocument009269146370358428 ").change(function () {
+                if($(this).val()==null){
+                  document.getElementById('canceldocument009269146370358428').disabled=true
+                  document.getElementById('uploadButton3document009269146370358428').disabled=true
+              } else {
+                 document.getElementById('canceldocument009269146370358428').disabled=false
+                 document.getElementById('uploadButton3document009269146370358428').disabled=false
+             }
+           });
+           $('.downloadFormatButtondocument009269146370358428').click(downloadFormatUpload)
+           function downloadFormatUpload () {
+              $.ajax({
+                url: `/users/${urlPath}/downloadCsv/`,
+                data: {
+                  "operation": "downloadFormat",
+                  "dbTableName": "users_" + ($(this).attr('data-dbTableName')).toLowerCase(),
+                  "modelName":  $(this).attr('data-modelName')
+                },
+                type: "POST",
+                dataType: "json",
+                success: function (data) {
+                  Swal.fire({icon: 'success',text: 'Download successful!'});
+                },
+                error: function () {
+                  Swal.fire({icon: 'error',text: 'Error! Failure in executing download request. Please try again.'});
+                }
+              })
+           };
+               </script>
+       <script>
+          $('#downloadDatadocument009269146370358428').click(function(){
+            $($(this).attr('data-target')).find('select').each(function(){
+              parent = $(this).parent()
+              $(this).select2({dropdownParent:parent})
+            })
+
+            $($(this).attr('data-target')).modal('show')
+          })
+          $('#fromdocument009269146370358428 , #todocument009269146370358428').on('change', function(){
+            $('#fromdocument009269146370358428').attr('max', $('#todocument009269146370358428').val());
+            $('#todocument009269146370358428').attr('min', $('#fromdocument009269146370358428').val());
+          });
+          $('#advance_pandas_settings_uploaddocument009269146370358428').click(function(){
+              event.preventDefault();
+              $($(this).attr('data-target')).modal('show');
+          })
+
+          $('#saveImportEngineConfigUploaddocument009269146370358428').on('click', function(){
+            event.preventDefault()
+            var importEngineConfig = {};
+            var fieldTypeConfig = {};
+            var engineParameterConfig = {};
+            $('#importCSVFieldTypeContainerUploaddocument009269146370358428').find('.form-group').each(function(){
+                var fieldName = $(this).find('label').text();
+                var fieldType = $(this).find('select').val();
+                fieldTypeConfig[fieldName] = fieldType;
+            });
+            importEngineConfig['field_type'] = fieldTypeConfig;
+            $('#importCSVEngineConfigContainerUploaddocument009269146370358428').find('.form-group').each(function(){
+                var parameterName = $(this).find('label').attr('for');
+                var parameterValue = $(this).find('input,select').val();
+                if (parameterValue != '' && parameterValue != [] && parameterValue) {
+                    if ($(this).find('input[type="number"]').length) {
+                        parameterValue = Number(parameterValue);
+                    }
+                    engineParameterConfig[parameterName] = parameterValue;
+                }
+            });
+            importEngineConfig['parameter_config'] = engineParameterConfig;
+            $('#advance_pandas_settings_uploaddocument009269146370358428').attr('data-config', JSON.stringify(importEngineConfig));
+
+            $('#csvImportEngineConfigModalUploaddocument009269146370358428').modal('hide');
+          });
+
+          $('#csvImportFetchColumnDetailsUploaddocument009269146370358428').on('click', function(){
+              var file_input = new FormData($(`form[data-form-id=uploadfileformdocument009269146370358428]`)[0]);
+              file_input.append('operation', 'file_upload_csv_field_info');
+              var existingConfig = $('#advance_pandas_settings_upload').attr('data-config');
+              if (existingConfig) {
+                  existingConfig = JSON.parse(existingConfig);
+              } else {
+                  existingConfig = {};
+              }
+              var engineParameterConfig = {};
+              $('#importCSVEngineConfigContainerUploaddocument009269146370358428').find('.form-group').each(function(){
+                  var parameterName = $(this).find('label').attr('for');
+                  var parameterValue = $(this).find('input,select').val();
+                  if (parameterValue != '' && parameterValue != [] && parameterValue) {
+                      if ($(this).find('input[type="number"]').length) {
+                          parameterValue = Number(parameterValue);
+                      }
+                      engineParameterConfig[parameterName] = parameterValue;
+                  }
+              });
+              file_input.append('action', 'bulk_upload')
+              file_input.append('engine_parameter', JSON.stringify(engineParameterConfig));
+              if (Object.keys(existingConfig).length == 0) {
+                  $.ajax({
+                      url: `/users/${urlPath}/computationModule/upload-handler/`,
+                      data: file_input,
+                      type: 'POST',
+                      cache: false,
+                      contentType: false,
+                      processData: false,
+                      success: function (context) {
+                          if (typeof(context) == "string") {
+                              context = JSON.parse(context);
+                          }
+                          $('#importCSVFieldTypeContainerUploaddocument009269146370358428').empty();
+                          for (let [key, val] of Object.entries(context.field_info)) {
+                              $('#importCSVFieldTypeContainerUploaddocument009269146370358428').append(`
+                                  <div class="form-group col-3">
+                                      <label for="fieldInfo">${key}</label>
+                                      <select name="fieldInfo" class="form-control select2">
+                                          <option value="object">Text</option>
+                                          <option value="float64">Float</option>
+                                          <option value="int64">Integer</option>
+                                          <option value="date">Date</option>
+                                          <option value="time">Time</option>
+                                          <option value="bool">Boolean</option>
+                                      </select>
+                                  </div>
+                              `);
+                              if (existingConfig.field_type) {
+                                  if (existingConfig.field_type[key]) {
+                                      val = existingConfig.field_type[key];
+                                  }
+                              }
+                              $('#importCSVFieldTypeContainerUploaddocument009269146370358428').find('.form-group').eq(-1).find('select').val(val).trigger('change');
+                              $('#importCSVFieldTypeContainerUploaddocument009269146370358428').find('.form-group').eq(-1).find('select').select2();
+                          }
+                          $('#headingImportEngineOneUploaddocument009269146370358428 > .fa-circle-notch').css('display', 'none');
+                      },
+                      error: function () {
+                          $('#headingImportEngineOneUploaddocument009269146370358428 > .fa-circle-notch').css('display', 'none');
+                          Swal.fire({icon: 'error',text: 'Error! Failure in reading field information. Please try again.'});
+                      }
+                  });
+              }
+              $('#csvImportEngineConfigModalUploaddocument009269146370358428').modal('show');
+          });
+
+
+
+
+          $('#fromdocument009269146370358428 , #todocument009269146370358428').on('change', function(){
+            $('#fromdocument009269146370358428').attr('max', $('#todocument009269146370358428').val());
+            $('#todocument009269146370358428').attr('min', $('#fromdocument009269146370358428').val());
+          });
+
+          $('#downloadHistorydocument009269146370358428').click(function(){
+            $($(this).attr('data-target')).find('select').each(function(){
+              parent = $(this).parent()
+              $(this).select2({dropdownParent:parent})
+            })
+
+            $($(this).attr('data-target')).modal('show')
+          })
+          $('#fromHistorydocument009269146370358428 , #toHistorydocument009269146370358428').on('change', function(){
+            $('#fromHistorydocument009269146370358428').attr('max', $('#toHistorydocument009269146370358428').val());
+            $('#toHistorydocument009269146370358428').attr('min', $('#fromHistorydocument009269146370358428').val());
+          });
+          $('#downloadErrorLogdocument009269146370358428').click(function(){
+            $($(this).attr('data-target')).find(".select2")('select').each(function(){
+              parent = $(this).parent()
+              $(this).select2({dropdownParent:parent})
+            })
+
+            $($(this).attr('data-target')).modal('show')
+          })
+          $('#fromErrorLogdocument009269146370358428 , #toErrorLogdocument009269146370358428 ').on('change', function(){
+            $('#fromErrorLogdocument009269146370358428').attr('max', $('#toErrorLogdocument009269146370358428').val());
+            $('#toErrorLogdocument009269146370358428 ').attr('min', $('#fromErrorLogdocument009269146370358428').val());
+          });
+          $('#selectDateErrorLogdocument009269146370358428').on("select2:select",function(){
+            if($(this).val() == "Custom"){
+              $('#ErrorLogdocument009269146370358428').css('display','block')
+            }
+            else{
+              $('#ErrorLogdocument009269146370358428').css('display','none')
+            }
+          })
+        </script>
+              
+          <script>
+          $('.span_content_editable').each(function () {
+          $(this).on('click', function () {
+            $(this).attr('data-currentName', $(this).text());
+          $(this).attr("contenteditable", "true")
+          $(this).focus()
+          })
+          $(this).focusout(function () {
+          var tab_header = this.innerText
+          tab_header = tab_header.trim()
+          if (tab_header.length == 0){
+              this.innerText = "Set Name"
+              $(this).removeAttr("contenteditable");
+              $(this).addClass("bg-danger")
+              $(this).trigger("click")
+
+          }
+          else{
+          $(this).removeAttr("contenteditable");
+          $(this).removeClass("bg-danger")
+          if (tab_header != $(this).attr('data-currentName')) {
+            $(this).removeAttr("data-currentName");
+            $.ajax({
+                url: `/users/${urlPath}/ajax/tabConfig/`,
+
+                data: {
+                'operation': "update_tab_header_name_populate",
+                'id': $(this).parent().parent().attr('data-tab_pk'),
+                'user_name':'{{ user.get_username }}',
+                'tab_header_name': tab_header,
+
+                },
+                type: "POST",
+                dataType: "json",
+                success: function (data) {
+
+
+                },
+                error: function () {
+                Swal.fire({icon: 'error',text: 'Error! Please try again.'});
+                }
+            });
+          }
+          }
+
+          })
+      })
+      var populateTabFuctionalities = function() {
+      var tab_data = JSON.parse($(this).attr('data-data_list'));
+      var tab_data_ordered = {};
+      var count = 0;
+      for(let [key,value] of Object.entries(tab_data)) {
+        count++;
+        for(let [key1,value1] of Object.entries(tab_data)) {
+          if(count == parseInt(value1["order"])) {
+            tab_data_ordered[key1] = {}
+            tab_data_ordered[key1]["order"] = count
+            tab_data_ordered[key1]["show"] = value1["show"]
+          }
+        }
+      };
+      $('#tabsMultiFuncBodyTable').find('tbody').empty();
+
+      html_tab = ''
+      id_gen = 0
+      for(let [key,value] of Object.entries(tab_data_ordered)) {
+        id_gen++
+        html_tab = html_tab + `<tr style="text-align:center;background:#f3f3f3;cursor: move;" data-element_id='${key}'>`
+        html_tab = html_tab +`<td minimum=1 maximum='${count}' data-value="${value["order"]}"><span class="ui-icon ui-icon-arrowthick-2-n-s mt-1" data-toggle="tooltip" title="Drag Up/ Down to reorder"></span></td>`
+        if(value["show"] == "1") {
+          html_tab = html_tab + `
+          <td>
+            <div class="d-flex">
+              <div class="switch-container">
+                <input class="float-right switch" type="checkbox" id="input${id_gen}" style="margin-right: 20rem;" name="input${id_gen}" value="input${id_gen}" checked>
+                <div class="switch-color"><label class="trigger-label" for="input${id_gen}"></label></div>
+                <label class="switch-label" for="input${id_gen}"></label>
+              </div>
+            </div>
+          </td>`
+        } else {
+          html_tab = html_tab + `
+          <td>
+            <div class="d-flex">
+              <div class="switch-container">
+                <input class="float-right switch" type="checkbox" id="input${id_gen}" style="margin-right: 20rem;" name="input${id_gen}" value="input${id_gen}">
+                <div class="switch-color"><label class="trigger-label" for="input${id_gen}"></label></div>
+                <label class="switch-label" for="input${id_gen}"></label>
+              </div>
+            </div>
+          </td>`
+        }
+        html_tab = html_tab + `<td><span class="tab_name_config" style="word-break:break-word;white-space:break-spaces;text-align:left;display:block;margin-left:10px;">${$('#'+key+'-tab').text()}</span></td></tr>`
+
+
+      }
+      $('#tabsMultiFuncBodyTable').find('tbody').append(html_tab)
+
+      $("#tabsMultiFuncBodyTable tbody").disableSelection();
+
+      $("#tabsMultiFuncBodyTable tbody").sortable({
+        axis: "y",
+        containment: "parent",
+        cursor: "grabbing",
+        handle: "td",
+        helper: "original",
+        opacity: 0.6,
+        update: function(event, ui) {
+          var sortedItems = $(this).find("tr");
+          sortedItems.each(function(index) {
+            $(this).find('td').eq(0).attr("data-value",index + 1);
+          });
+        },
+      });
+
+      $("#tabsMultiFuncBodyTable tbody tr").draggable({
+        connectToSortable: "#tabsMultiFuncBodyTable tbody",
+        helper: "original",
+        revert: "invalid"
+      }).draggable("enable");
+
+    }
+    var validation = function() {
+      if(parseInt($(this).val()) < 1) {
+        $(this).val(1).trigger('change')
+      }
+      if(parseInt($(this).val()) > parseInt($(this).attr('maximum'))) {
+        $(this).val(parseInt($(this).attr('maximum'))).trigger('change')
+      }
+    }
+    var saveTabsFunc = function() {
+      $('#tabsMultiFunc').find('.modal-footer').find('button').html(`<i class="fa fa-circle-notch fa-spin"></i>`)
+      var order_data = {}
+      var validation = 0
+      var len = $('#tabsMultiFuncBodyTable').find('tbody').find('tr').length;
+      for(let j = 0; j < len; j++) {
+        validation = 0
+        var dummy = parseInt($('#tabsMultiFuncBodyTable').find('tbody').find('tr').eq(j).find('td').eq(0).attr('data-value'));
+        for(let i = 0; i < len; i++) {
+          var dummy1 = parseInt($('#tabsMultiFuncBodyTable').find('tbody').find('tr').eq(i).find('td').eq(0).attr('data-value'))
+          if (dummy == dummy1) {
+            validation = validation + 1;
+            if(validation > 1) {
+              break;
+            }
+          }
+        }
+        if(validation > 1) {
+          break;
+        }
+        if(!dummy){
+          validation = 2;
+          break;
+        }
+      }
+      if(validation < 2) {
+        $('#tabsMultiFuncBodyTable').find('tbody').find('tr').each(function() {
+          var ele_ids = $(this).attr('data-element_id')
+          var show
+          if ($(this).find('td').eq(1).find('input').prop('checked')){
+            show = "1"
+          } else {
+            show = "0"
+          }
+          order_data[ele_ids] = {'tab_name':$(this).find('td').eq(2).text(),
+              'data': {
+                'order': String($(this).find('td').eq(0).attr('data-value')),
+                'show': show
+              }
+          }
+        });
+        $.ajax({
+        url: `/users/${urlPath}/processGraphModule/`,
+        data: {
+            'operation': 'saveTabOrder',
+            'order_data': JSON.stringify(order_data),
+            'pr_code':windowLocation.split('/')[4],
+          },
+          type: "POST",
+          dataType:"json",
+          success:function(data){
+            $('#tabsMultiFunc').find('.modal-footer').html(`<button onclick="saveTabsFunc.call(this)" type="button" class="btn btn-primary">Save</button>`)
+            window.location.reload();
+          },
+          error: function () {
+            $('#tabsMultiFunc').find('.modal-footer').html(`<button onclick="saveTabsFunc.call(this)" type="button" class="btn btn-primary">Save</button>`)
+            Swal.fire({icon: 'error',text: 'Error! Please try again.'});
+          }
+        })
+      } else {
+        $('#tabsMultiFunc').find('.modal-footer').html(`<button onclick="saveTabsFunc.call(this)" type="button" class="btn btn-primary">Save</button>`)
+        Swal.fire({icon: 'warning',text: 'Order cannot be left blank or cannot be the same.'});
+      }
+
+    }
+      </script>
+          

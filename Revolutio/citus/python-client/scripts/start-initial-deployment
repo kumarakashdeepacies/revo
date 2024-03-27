@@ -1,0 +1,12 @@
+#!/bin/bash
+
+set -o errexit
+set -o pipefail
+set -o nounset
+
+python3 manage.py collectstatic --no-input
+python manage.py compress
+python3 /opt/revolutio/manage.py migrate_schemas
+python3 /opt/revolutio/tenant_context_manage.py createsuperuser --noinput --username $DJANGO_SUPERUSER_USERNAME --email $DJANGO_SUPERUSER_EMAIL
+uvicorn config.asgi:application --port 5000 --host 0.0.0.0
+#python3 manage.py runserver 0.0.0.0:5000

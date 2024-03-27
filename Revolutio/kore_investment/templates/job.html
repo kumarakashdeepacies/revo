@@ -1,0 +1,148 @@
+{% extends extend_template %}
+{% load crispy_forms_tags %}
+{% load static %}
+
+{% block body_block %}
+<link rel="stylesheet" href="{% static 'css/KoreD/jquery.dataTables.css' %}">
+<link rel="stylesheet" href="{% static 'vendor/Base_theme/datatables-responsive/css/responsive.bootstrap4.min.css' %}">
+<link rel="stylesheet" href="{% static 'vendor/Base_theme/datatables-colreorder/css/colReorder.bootstrap4.min.css' %}">
+<link rel="stylesheet" href="{% static 'css/KoreD/buttons.dataTables.min.css' %}">
+
+<!-- DataTables -->
+<script src="{% static 'vendor/Base_theme/datatables/jquery.dataTables.js' %}"></script>
+<script src="{% static 'vendor/Base_theme/datatables-responsive/js/dataTables.responsive.min.js' %}"></script>
+<script src="{% static 'vendor/Base_theme/datatables-fixedheader/js/dataTables.fixedHeader.min.js' %}"></script>
+<script src="{% static 'vendor/Base_theme/datatables-colreorder/js/dataTables.colReorder.min.js' %}"></script>
+<script src="{%static 'vendor/Base_theme/datatables-bs4/js/dataTables.bootstrap4.js'%}"></script>
+
+<script src="{%static 'vendor/Base_theme/datatables-buttons/js/dataTables.buttons.min.js'%}"></script>
+<script src="{%static 'vendor/Base_theme/jszip/jszip.min.js'%}"></script>
+<script src="{%static 'vendor/Base_theme/pdfmake/pdfmake.min.js'%}"></script>
+<script src="{%static 'vendor/Base_theme/pdfmake/vfs_fonts.js'%}"></script>
+<script src="{%static 'vendor/Base_theme/datatables-buttons/js/buttons.html5.min.js'%}"></script>
+<script src="{%static 'vendor/Base_theme/datatables-buttons/js/buttons.colVis.min.js'%}"></script>
+<script src="{%static 'vendor/Base_theme/datatables-buttons/js/buttons.print.min.js'%}"></script>
+<script src="{%static 'vendor/Base_theme/datatables-buttons/js/buttons.print.js'%}"></script>
+<script src="{%static 'vendor/Base_theme/datatables-buttons/js/buttons.flash.min.js'%}"></script>
+
+<section class="content-header">
+  <div class="container-fluid">
+    <div class="row mb-2">
+      <div class="col-sm-6">
+        <ol class="breadcrumb float-sm-left">
+          <li class="breadcrumb-item"><a href="/users/homePage/"><b>Home</b></a></li>
+          <li class="breadcrumb-item "><b>Scheduler</b></li>
+        </ol>
+      </div>
+      <div class="col-sm-6">
+      </div>
+    </div>
+  </div>
+</section>
+<section class="content">
+    <div class="container-fluid">
+        <div class="card">
+            <div class="card-header">
+                <h5 style="color:var(--primary-color);">Schedule details</h5>
+            </div>
+            <div class="card-body">
+                <!-- <div class="form-group form-inline">
+                    <label for="exampleInputEmail1">Email address</label>
+                        <input type="email" class="form-control" id="exampleInputEmail1" placeholder="Email">
+                </div> -->
+                <div class="form-group form-inline">
+                    <label for="name" style="margin-right:3.5em">Name</label>
+                      <select class="selectize form-control" id="name" name="selectTable" style="width:12%;">
+                        <option value="" disabled selected>--------------------</option>
+                        {% for jn in job_name %}
+                        <option value="{{jn.job_name}}">{{jn.job_verbose_name}}</option>
+                        {% endfor %}
+                      </select>
+                  </div>
+                  <div class="form-group form-inline">
+                        <label for="start_date">Start Date</label>
+                        <input type="date" id="start_date" style="margin-left:1.6em">
+                  </div>
+
+                  <div class="form-group form-inline">
+                    <label for="end_date">End Date</label>
+                    <input type="date" id="end_date" style="margin-left:2em">
+                </div>
+                <div class="form-group form-inline">
+                      <label for="duration" style="margin-right:2.1em">Periodicity</label>
+                      <select class="selectize form-control" id="duration" name="selectTable" style="width:12%;">
+                        <option value="" disabled selected>--------------------</option>
+                        <option value="Daily" >Daily</option>
+                        <option value="Weekly" >Weekly</option>
+                        <option value="Monthly" >Monthly</option>
+                        <option value="Yearly" >Yearly</option>
+                      </select>
+                  </div>
+                  <div class="form-group form-inline">
+                      <label for="time">Time</label>
+                      <input type="time" id="time" name="appt" style="width:11em;margin-left:3.8em">
+                  </div>
+                  <button type="button" id="schedule" class="btn btn-primary btn-xs mt-2 rounded px-2">Schedule</button>
+            </div>
+        </div>
+    </div>
+</section>
+<script>
+     $('[data-toggle="popover"]').popover({ trigger: 'hover' });
+  // Initialise select elements
+  $('.select2bs4').select2();
+
+  $('select.select2:not(.modal select.select2)').each(function(){
+    parent = $(this).parent()
+    $(this).select2({dropdownParent:parent})
+})
+$('.modal select.select2').each(function(){
+    $(this).select2()
+})
+  $('[data-toggle="tooltip"]').tooltip({
+    placement: 'top'
+  });
+  $(".js-example-tags").select2({
+  tags: true
+});
+$('#schedule').click(function(){
+    var sverbose_name = $("#name option:selected").text()
+    var sname = $("#name").val()
+    var sstart_date = $("#start_date").val()
+    var send_date = $("#end_date").val()
+    var sduration = $("#duration").val()
+    var stime = $("#time").val()
+    var job_scheduler = new Array()
+    var schedule = {name:sname , verbose_name:sverbose_name, start_date:sstart_date, end_date:send_date,duration:sduration,time:stime}
+    job_scheduler.push(schedule)
+    let url_string = window.location.pathname
+    let f_occ = url_string.indexOf('/', url_string.indexOf('/') + 1)
+    let s_occ = url_string.indexOf('/', url_string.indexOf('/') + f_occ +1)
+    let t_occ = url_string.indexOf('/', url_string.indexOf('/') + s_occ +1)
+    let app_code2 = url_string.substring(f_occ+1,s_occ)
+    let current_dev_mode2 = url_string.substring(s_occ+1,t_occ)
+    let modes = ["Build","Edit"]
+    let url = ""
+    if(current_dev_mode2 != "Build" && current_dev_mode2 != "Edit"){
+      current_dev_mode2 = "User"
+    }
+    $.ajax({
+        url: `/users/${app_code2}/${current_dev_mode2}/scheduler_post/`,
+
+        data: {
+          'operation': 'details_scheduler',
+          'details': JSON.stringify(job_scheduler),
+        },
+        type: "POST",
+        dataType: "json",
+        success: function (data) {
+          Swal.fire({icon: 'success',text: 'Scheduler saved successfully!'});
+        },
+        error: function () {
+          Swal.fire({icon: 'error',text: 'Error! Failure in saving scheduler. Please try again'});
+        }
+      })
+})
+
+</script>
+{% endblock %}

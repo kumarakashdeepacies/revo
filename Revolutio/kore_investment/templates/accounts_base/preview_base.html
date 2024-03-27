@@ -1,0 +1,1250 @@
+{% load static i18n compress%}
+{% load static %}
+{% load i18n %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+   <meta charset="utf-8">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  <title>{% block title %}Revolutio - Login Preview{% endblock title %}</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="">
+  <meta name="author" content="">
+
+  <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+  <link rel="icon" href="{% static 'images/favicons/favicon1.ico' %}">
+
+  {% block css %}
+
+
+  <!-- Your stuff: Third-party CSS libraries go here -->
+
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="{%static 'vendor/Base_theme/fontawesome-free/css/all.min.css'%}">
+
+  <!-- Theme style -->
+  <link rel="stylesheet" href="{%static 'css/Base_theme/CSS_min.min.css'%}">
+
+  <link rel="stylesheet" href="{%static 'css/Acies_theme/Stylesheet1.css'%}">
+  {% endblock %}
+
+  <!--Jquery UI-->
+  <link rel="stylesheet" href="{% static 'vendor/Base_theme/jquery-ui/jquery-ui.css' %}">
+
+  <!-- jQuery -->
+  <script src="{%static 'vendor/Base_theme/jquery/jquery.min.js'%}"></script>
+
+  <script src="{%static 'vendor/Base_theme/bootstrap/js/bootstrap.bundle.min.js'%}"></script>
+  <!--Jquery UI-->
+  <script src="{%static 'vendor/Base_theme/jquery-ui/jquery-ui.js'%}"></script>
+
+  <!-- Select2 -->
+  <link rel="stylesheet" href="{% static 'vendor/Base_theme/select2/css/select2.min.css' %}">
+  <link rel="stylesheet" href="{% static 'vendor/Base_theme/select2-bootstrap4-theme/select2-bootstrap4.min.css' %}">
+
+<!-- Select2 -->
+<script src="{% static 'vendor/Base_theme/select2/js/select2.full.min.js' %}"></script>
+
+<script type="text/javascript" src="{% static 'vendor/Base_theme/background/jquery.youtube-background.min.js' %}"></script>
+
+  <style>
+    {% if root_css|length %}
+      {{root_css }}
+    {% endif %}
+
+    .body-background video{
+      min-width: 100%;
+      max-width: 100%;
+      max-height: 100%;
+      object-fit: fill;
+    }
+    .body-background iframe{
+      min-width: 100%;
+      max-width: 100%;
+      object-fit: fill;
+    }
+    #bg_image_static{
+      position: fixed;
+      min-width: 100%;
+      min-height: 100%;
+      max-height: 100%;
+      max-width: 100%;
+      object-fit: fill;
+    }
+    .login-page-container{
+      padding: 0 !important;
+    }
+    .textInput{
+      border-radius: 5px !important;
+      padding: 5px !important;
+    }
+    .acies_head_logo{
+      width: 15%;
+    }
+    .acies_head_logo img{
+      top: 0;
+      left: 0;
+      object-fit: contain;
+      width: 100%;
+    }
+
+    .cb-slideshow{
+      position: fixed;
+      width: 100%;
+      height: 100%;
+      top: 0px;
+      left: 0px;
+      z-index: -2;
+      list-style-type: none;
+    }
+    .cb-slideshow li span {
+        width: 100%;
+        height: 100%;
+        position: absolute;
+        top: 0px;
+        left: 0px;
+        color: transparent;
+        background-size: cover;
+        background-position: 50% 50%;
+        background-repeat: none;
+        opacity: 0;
+        z-index: 0;
+    }
+    .cb-slideshow li span img{
+      display:block;
+      width:100%;
+      height:100%;
+      object-fit: cover;
+    }
+    .cb-slideshow li:nth-child(2) span {
+      animation-delay: 6s;
+    }
+    .cb-slideshow li:nth-child(3) span {
+        animation-delay: 12s;
+    }
+    .cb-slideshow li:nth-child(4) span {
+        animation-delay: 18s;
+    }
+    .cb-slideshow li:nth-child(5) span {
+        animation-delay: 24s;
+    }
+    .alert{
+    padding: .15rem 0.15rem 0.15rem 1rem !important;
+    border: none;
+    }
+    .alert-danger{
+      background: #f54545e8 !important;
+    }
+    .alert-success{
+      background: #008000a1 !important;
+    }
+
+    .alert .close{
+      padding: 0.1rem 0.5rem !important;
+      color: #fff;
+      top: -3px !important;
+      opacity: 1;
+      right: unset;
+      left: 0 !important;
+    }
+
+    .login-page .login-card-body{
+      border-radius: 10px;
+    }
+    #backtoSignin{
+      float: right;
+      text-align: center;
+      color: var(--font-hover-color);
+      position: relative;
+      right: 0%;
+      top: 1vh;
+      background: var(--primary-color);
+      padding: 0.4rem;
+      border-radius: 4px;
+    }
+
+    #backtoSignin:hover{
+      color:var(--font-hover-color);
+      background: var(--secondary-color);
+    }
+
+    @keyframes imageAnimationSlow {
+        0% { opacity: 0;
+            animation-timing-function: ease-out;
+          }
+        8% { opacity: 1; animation-timing-function: ease-in; }
+        17% { opacity: 1;}
+        50% { opacity: 0 }
+        100% { opacity: 0 }
+    }
+
+    @keyframes imageAnimationFast {
+      0% { opacity: 0;
+          animation-timing-function: ease-out;
+        }
+      8% { opacity: 1; animation-timing-function: ease-in; }
+      17% { opacity: 1;}
+      50% { opacity: 0 }
+      100% { opacity: 0 }
+   }
+
+   @keyframes imageAnimationNoLoop {
+    0% { opacity: 0;
+        animation-timing-function: ease-out;
+      }
+    8% { opacity: 1; animation-timing-function: ease-in; }
+    17% { opacity: 1;}
+    50% { opacity: 1 }
+    100% { opacity: 1 }
+ }
+
+    .acies_logo_short{
+      margin-bottom: 15px;
+    }
+    .login-container{
+      position: relative;
+      width: 800px;
+      height: 500px;
+      margin: 20px;
+    }
+    .bluebg{
+      position: absolute;
+      top: 40px;
+      width: 100%;
+      height: 420px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background-color: var(--primary-color) !important;
+      box-shadow: 0 5px 45px rgba(0,0,0,0.15);
+      border-radius: 10px;
+    }
+    .intro{
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+    }
+    .bluebg .box{
+      position: relative;
+      width: 50%;
+      height: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+    }
+    .bluebg .box h2{
+      color: white;
+      font-size: 2.8em;
+      font-weight: 500;
+      margin-bottom: 10px;
+    }
+    .bluebg .box p{
+      color: white;
+    }
+    .bluebg .box button{
+      cursor: pointer;
+      padding: 8px 20px;
+      background-color: transparent;
+      color: #333;
+      font-size: 16px;
+      font-weight: 500;
+      border: 2px solid white;
+      border-radius: 30px;
+      color: white;
+      transition: .3s;
+    }
+    .bluebg .box button:hover{
+      background: white;
+      color: var(--primary-color);
+    }
+
+    .bluebg .box button:active {
+    transform: scale(0.95);
+    cursor: pointer;
+   }
+
+  .bluebg .box button:focus {
+    outline: none;
+    cursor: pointer;
+  }
+    .formBx{
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 50%;
+      height: 100%;
+      background-color: #fff;
+      z-index: 1000;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      box-shadow: 0 5px 45px rgba(0,0,0,0.15);
+      transform-style: preserve-3d;
+      transition: 0.5s ease-in-out;
+      transition-delay: 0.2s;
+      overflow: hidden;
+      border-radius: 10px;
+    }
+    .formBx.active{
+      left: 50%;
+    }
+    .formBx .form{
+      position: absolute;
+      left: 0;
+      width: 100%;
+      padding: 30px;
+      transition: 0.5s;
+    }
+    .bg-overlay{
+      position: absolute;
+      width: 100%;
+      height: 100vh;
+      z-index: -1;
+      background: rgba(0,0,0,0.1);
+    }
+    .copyright-footer{
+      position: fixed;
+      bottom: 0;
+      margin: 0 4%;
+      font-size: 15px;
+      z-index: 0;
+      text-align: left;
+      width: 92%;
+    }
+    .videoBackground{
+      width: 100%;
+      position: absolute;
+    }
+    #aciessigninbutton:hover{
+      border-color: var(--secondary-color);
+    }
+    .switch-container {
+      width: 4em;
+      height: 2em;
+      border-radius: 10em;
+      box-shadow: 2px 0px 10px 0px #cfd8dc;
+      position: relative;
+    }
+    input.switch {
+      display: none;
+    }
+    .switch-color {
+      width: 3.45em;
+      height: 1.8em;
+      left: 0.1em;
+      top: 0.1em;
+      background: #cfd8dc;
+      border-radius: 10em;
+      z-index: 0;
+      position: absolute;
+      transition: all 500ms cubic-bezier(0.34, 1.36, 0.2, 1);
+    }
+    .switch-color .trigger-label{
+      height: 100%;
+      width: 100%;
+      margin: 0;
+      cursor: pointer;
+    }
+    .switch-container label.switch-label {
+      width: 1.6em;
+      height: 1.6em;
+      border-radius: 10em;
+      background: white;
+      position: absolute;
+      top: 0.15em;
+      left: 0.2em;
+      box-shadow: 2px 2px 10px 2px #cfd8dc;
+      z-index: 99;
+      cursor: pointer;
+    }
+    .switch:checked ~ label.switch-label {
+      transform: translatex(1.65em) rotatez(360deg);
+    }
+
+    .switch:checked ~ .switch-color {
+      background: var(--primary-color);
+    }
+
+    .switch ~ label.switch-label {
+      transition: all 1s cubic-bezier(0.34, 1.36, 0.2, 1);
+    }
+    .switch-container.terms-check{
+      width: 3em;
+      height: 1.5em;
+
+    }
+    .terms-check .switch-color {
+      width: 2.8em;
+      height: 1.25em;
+      top: 9.15%;
+    }
+    .switch-container.terms-check label.switch-label {
+      width: 1.1em;
+      height: 1.1em;
+      top: 0.2em;
+    }
+    .terms-check .switch:checked ~ label.switch-label {
+      transform: translatex(1.5em) rotatez(360deg);
+      box-shadow: 2px 2px 10px 2px #ffffff;
+    }
+    .terms-check + .form-check-label{
+      margin-left: 3%;
+      margin-bottom: 0%;
+      padding: 0;
+    }
+
+    @media (max-height: 568px), (max-width: 395px)
+    {
+      .copyright-footer {
+        display: none;
+      }
+    }
+    @media screen and (max-width: 768px){
+      .login-page-container{
+        width: 100% !important;
+      }
+      .formBx .form, .signinForm, .signupForm{
+        padding: 30px 25px;
+      }
+      .content.terms-conditions{
+        font-size: 13px;
+      }
+      .content.terms-conditions h1{
+        font-size: 1.7rem !important;
+      }
+      .content.terms-conditions h2{
+        font-size: 1.6rem !important;
+      }
+      .content.terms-conditions h3{
+        font-size: 1.5rem !important;
+      }
+      .content.terms-conditions h4{
+        font-size: 1.4rem !important;
+      }
+      .content.terms-conditions h5{
+        font-size: 1.3rem !important;
+      }
+      .content.terms-conditions h6
+      {
+        font-size: 1.2rem !important;
+      }
+      .content.terms-conditions p,
+      .content.terms-conditions a,
+      .content.terms-conditions div{
+        font-size: 13px !important;
+      }
+
+      .content.terms-conditions span{
+        font-size: 20px !important;
+      }
+    }
+    @media (max-width: 991px){
+      .copyright-footer {
+        display: none;
+      }
+      .videoBackground{
+        height: 100%;
+        width: unset;
+        position: absolute;
+      }
+      .login-container{
+        max-width: 400px;
+        height: 650px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+      .acies_head_logo {
+        width: 22%;
+      }
+      .login-container .bluebg{
+        top: 25px;
+        height: 93%;
+      }
+
+      .bluebg .box{
+        position: absolute;
+        width: 100%;
+        height: 150px;
+        border: 0;
+      }
+      .bluebg .box h2{
+        font-size: 2em;
+        text-align: center;
+        margin-top: 5px;
+        margin-bottom: 0 !important;
+      }
+      .bluebg .box p{
+        padding: 5px 30px;
+        text-align: center;
+      }
+      .bluebg .box button {
+        padding: 4px 20px;
+        font-size: 14px;
+      }
+      .copyright-footer{
+        font-size: 12px;
+      }
+      .copyright-footer p{
+        margin-bottom: 0.5rem;
+      }
+    }
+    input[type=text]{
+          background: transparent;
+          border: 1px solid #ced4da !important;
+        }
+        input[type=text]:focus{
+          color: #495057;
+          background-color:var(--font-hover-color);
+          border-color: var(--primary-color) !important;
+          outline: 0;
+        }
+        label{
+          top: unset;
+        }
+        .formBx .signinForm{
+          transition-delay: 0.25s;
+        }
+        .formBx.flipped {
+          transform: rotateY(3.142rad);
+          opacity: 0;
+          z-index: -1;
+        }
+        .forgot-password{
+          background: white;
+          border-radius: 10px;
+          position: absolute;
+          top: 0;
+          left: 0;
+          width: 50%;
+          height: 100%;
+          z-index: -1;
+          opacity: 0;
+          transition: 0.3s;
+          transition-delay: 0.4s;
+          box-shadow: 0 5px 45px rgb(0 0 0 / 15%);
+        }
+        .forgot-password.isVisible{
+          opacity: 1;
+          z-index: 1000;
+        }
+        .formBx .signupForm {
+          left: 100%;
+          transition-delay: 0s;
+
+        }
+        .formBx.active .signupForm{
+          left: 0;
+          transition-delay: 0.25s;
+          margin-top: 10%;
+        }
+
+        .formBx.active .signinForm{
+          left: -100%;
+          transition-delay: 0s;
+        }
+        .social-container {
+          margin-top: 15px;
+          margin-bottom: 20px;
+          text-align: center;
+        }
+
+        .social-container a {
+          border: 1px solid #ffffff;
+          border-radius: 50%;
+          display: inline-flex;
+          justify-content: center;
+          align-items: center;
+          margin: 0 2px;
+          height: 35px;
+          width: 35px;
+        }
+
+        .smGlobalBtn{
+            display: inline-block;
+            position: relative;
+            cursor: pointer;
+            width: 50px;
+            height: 50px;
+            box-shadow: 0 2px 2px #999;
+            padding: 0px;
+            text-decoration: none;
+            text-align: center;
+            color: #fff;
+            font-size: 18px;
+            font-weight: normal;
+            line-height: 2em;
+            border-radius: 25px;
+            -moz-border-radius:25px;
+            -webkit-border-radius:25px;
+            transition: .3s;
+        }
+
+        .smGlobalBtn:hover{
+          transform: scale(1.1);
+        }
+
+        .facebookBtn{
+            background: #4060A5;
+        }
+
+        .googleBtn{
+            background: #f1df6b6b;
+        }
+        .fa-google {
+          background: conic-gradient(from -45deg, #ea4335 110deg, #4285f4 90deg 180deg, #34a853 180deg 270deg, #fbbc05 270deg) 73% 55%/150% 150% no-repeat;
+          -webkit-background-clip: text;
+          background-clip: text;
+          color: transparent;
+          -webkit-text-fill-color: transparent;
+        }
+
+        .microsoftBtn{
+          background: #ececec;
+        }
+        .fa-microsoft{
+          background: conic-gradient(from 0deg,#7FBA00 90deg, #FFB900 90deg 180deg, #00A4EF 180deg 270deg, #F25022 270deg) 56% 55%/150% 150% no-repeat;
+          -webkit-background-clip: text;
+          background-clip: text;
+          color: transparent;
+          -webkit-text-fill-color: transparent;
+        }
+        .twitterBtn{
+          background: #00acee;
+        }
+        .amazonBtn{
+          background: #e47911;
+        }
+        .appleBtn{
+          background: #A2AAAD;
+        }
+
+        .ui.horizontal.divider {
+          font-size: 1rem;
+          height: auto;
+          line-height: 1;
+          margin-top: 0.5rem;
+          text-align: center;
+          font-weight: bold;
+          text-transform: uppercase;
+          letter-spacing: 0.05em;
+          color: rgba(0, 0, 0, 0.85);
+          -webkit-user-select: none;
+          -moz-user-select: none;
+          -ms-user-select: none;
+          user-select: none;
+          -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+        }
+        .form-control{
+          padding: 5px !important;
+          border-radius: 4px !important;
+        }
+        .messages-content{
+          position: relative;
+        }
+        .fade-scale {
+          transform: scale(0);
+          opacity: 0;
+          -webkit-transition: all .3s linear;
+          -o-transition: all .3s linear;
+          transition: all .3s linear;
+        }
+
+        .fade-scale.in {
+          opacity: 1;
+          transform: scale(1);
+        }
+        .terms-header{
+          text-align: center;
+          width: fit-content;
+          margin: auto;
+          padding-bottom: 10px;
+          letter-spacing: 2px;
+          font-weight: bold;
+          padding-top: 30px;
+        }
+        .hr{
+          width: 126px;
+          color: var(--primary-color);
+          height: 0.5px;
+        }
+        .terms-conditions{
+          margin-top: 30px;
+        }
+        .acies-text-left{
+          text-align: justify;
+        }
+        .terms-close{
+          display: flex;
+          justify-content: flex-end;
+        }
+        .terms-conditions .container{
+          width: 90%;
+          margin-top: 1rem;
+        }
+        .terms-conditions ul li{
+          font-size: 16px;
+        }
+        .Modal-content {
+          background-color: #f7f7f7;
+          margin: auto;
+          padding: 12px;
+          border-radius: 15px;
+          max-width: 80%;
+          height: 96%;
+          overflow: hidden;
+        }
+        .Modal-content .wrapper {
+          position: relative;
+          overflow: auto;
+          height: 92%;
+          padding: 0 10px;
+          min-height: unset;
+        }
+        .content-header{
+          margin-top: 1rem;
+        }
+
+        @media screen and (max-width: 768px){
+
+          .content-header h1 {
+            font-size: 1.4rem;
+            text-align: center;
+          }
+          .terms-conditions .container{
+            width: 95%;
+          }
+          .acies-text-left,.acies-text-left a {
+            font-size: 13px;
+          }
+          .terms-conditions ul li {
+            font-size: 13px !important;
+            text-align: justify;
+          }
+          .Modal-content {
+            padding: 8px;
+          }
+          .acies_logo_short {
+            margin-bottom: 10px;
+          }
+          .alert{
+            margin-bottom: 0.2rem;
+          }
+
+        .terms-header{
+          font-size: 1.5rem;
+        }
+       }
+
+        @media (max-width: 991px){
+          .box.signup p{
+            margin-bottom: 0;
+          }
+
+          .formBx, .forgot-password{
+            width: 100%;
+            height: 480px;
+            top: 25px;
+          }
+          .box.signin{
+            top: -6px;
+          }
+          .box.signup{
+            bottom: -12px;
+          }
+          .formBx.active{
+            left: 0;
+            top: 160px;
+          }
+          .bluebg .box.signup{
+            flex-direction: column-reverse;
+          }
+          .acies_logo_short{
+            margin-top: 1rem;
+          }
+          .box.signin p{
+            margin-bottom: 0.4rem !important;
+          }
+          .form-check-label {
+            margin-bottom: 0;
+            padding-left: 0.3rem !important;
+          }
+        }
+
+        input[type=text], input[type=password], input[type=email]{
+          height: 2.8em;
+          padding: 15px;
+        }
+        .select2-selection__rendered {
+          line-height: 31px !important;
+        }
+        .select2-container .select2-selection--single {
+            height: 2.8em !important;
+            padding-left: 15px;
+            padding-top: 10px;
+        }
+        .select2-selection__arrow {
+            height: 34px !important;
+        }
+        .added_icons{
+          padding-left: 35px !important;
+        }
+
+
+        <<no-signup-preview>>
+
+        <<button-hover-preview>>
+
+        <<button-hover-font-preview>>
+
+
+
+        <<copyright-size-preview>>
+
+        <<copyright-placement-preview>>
+
+        <<copyright-color-preview>>
+
+        <<remove_all_social_preview>>
+
+        <<remove_facebook_preview>>
+        <<remove_google_preview>>
+        <<remove_microsoft_preview>>
+        <<remove_twitter_preview>>
+        <<remove_amazon_preview>>
+        <<remove_apple_preview>>
+
+        <<login-bg-preview>>
+
+        <<no-remember-me-preview>>
+
+        <<no-labels-preview>>
+
+        <<remove_admin_toggle>>
+
+
+      </style>
+
+
+</head>
+
+<body>
+  <!-- jQuery -->
+  <script src="{%static 'vendor/lazyload/lazyload.min.js'%}"></script>
+  <!--EXTRA CODE-->
+  <div class="body-background">
+    <styleBodyBgPreview>
+      <ul class="cb-slideshow"  id="cb-slideshow">
+        <backgroundStyleForLoginPreview>
+      </ul>
+
+
+    <div class="bg-overlay"></div>
+
+    <script>
+      lazyload();
+    </script>
+
+    <div class="mb-1">
+      <div class="acies_head_logo">
+        <a href="{% url 'account_login' %}">
+          <img src="<logo_on_screen_dynamic_preview>"  style="<screen_logo_style_preview>"
+               alt="Acies Logo">
+        </a>
+      </div>
+
+      <div class="login-page-container">
+        <div class="login-page">
+            <div class="login-container">
+              <div class="bluebg">
+                <div class="box signin">
+                  <h2>Welcome Back!</h2>
+                  <p>Sign in to access your apps</p>
+                  <button class="signinBtn">Sign in</button>
+                </div>
+                <div class="box signup">
+                  <div class="intro">
+                    <h2><<signupheader>></h2>
+                    <p><<signupmsg>></p>
+                  </div>
+                  <button class="signupBtn">Sign up</button>
+                </div>
+              </div>
+              <div class="formBx">
+                <div class="form signupForm">
+                  <a href="" style="display: none">
+                    <img src="<logo_on_form_dynamic_preview>" style="<form_logo_style_preview>" alt="Acies Logo" class="acies_logo_short" height="50" width="60">
+                  </a>
+                  <form onsubmit="return false">
+                    <div class="form-group" id="signup_username">
+                      <label for="username" class=" requiredField">
+                        Username<span class="asteriskField">*</span> </label>
+                        <div>
+                          <input type="text" name="username" class="textinput textInput form-control" placeholder="Username" />
+                        </div>
+                    </div>
+                    <div class="form-group" id="signup_email">
+                      <label for="email" class=" requiredField">
+                        Email<span class="asteriskField">*</span> </label>
+                        <div>
+                          <input type="email" name="email" class="textinput textInput form-control" placeholder="Email" />
+                        </div>
+                    </div>
+                    <div class="form-group" id="signup_password">
+                      <label for="Password" class=" requiredField">
+                        Password<span class="asteriskField">*</span> </label>
+                        <div>
+                          <input type="password" name="Password" class="textinput textInput form-control" placeholder="Password" />
+                        </div>
+                    </div>
+                    <div class="form-group" id="signup_confirm_password">
+                      <label for="c_password" class=" requiredField">
+                        Confirm Password<span class="asteriskField">*</span> </label>
+                        <div>
+                          <input type="password" name="c_password" class="textinput textInput form-control" placeholder="Confirm Password" />
+                        </div>
+                    </div>
+                    <button class="primaryAction btn btn-primary" disabled>Sign Up</button>
+                    <div class="ui horizontal divider">OR</div>
+                    <div class="social-container">
+                        <a href="#" class="social smGlobalBtn facebookBtn" data-toggle="tooltip" data-placement="bottom" title="Sign in with Facebook">
+                          <i class="fab fa-facebook-f "></i>
+                        </a>
+                        <a href="#" class="social smGlobalBtn googleBtn" data-toggle="tooltip" data-placement="bottom" title="Sign in with Google">
+                          <i class="fab fa-google"></i>
+                        </a>
+                        <a href="#" class="social smGlobalBtn microsoftBtn" data-toggle="tooltip" data-placement="bottom" title="Sign in with Microsoft">
+                          <i class="fab fa-microsoft"></i>
+                        </a>
+                        <a href="#" class="social smGlobalBtn twitterBtn" data-toggle="tooltip" data-placement="bottom" title="Sign in with Twitter">
+                          <i class="fab fa-twitter"></i>
+                        </a>
+                        <a href="#" class="social smGlobalBtn amazonBtn" data-toggle="tooltip" data-placement="bottom" title="Sign in with Amazon">
+                          <i class="fab fa-amazon"></i>
+                        </a>
+                        <a href="#" class="social smGlobalBtn appleBtn" data-toggle="tooltip" data-placement="bottom" title="Sign in with Apple">
+                          <i class="fab fa-apple"></i>
+                        </a>
+                    </div>
+                    <br>
+                  </form>
+                </div>
+                <div class="form signinForm">
+                  <form class="login" id="login" onsubmit="return false">
+                    <div class="logo_checkbox_wrapper d-flex justify-content-between">
+                      <a href="{% url 'account_login' %}">
+                        <img src="<logo_on_form_dynamic_preview>" style="margin-bottom: 10px;margin-top: -8px;<form_logo_style_preview>" alt="Acies Logo" class="acies_logo_short" height="50" width="60">
+                      </a>
+                      <div class="form-check admin-check">
+                        <div class="d-flex">
+                          <label style="margin-right: 5%;">Admin</label>
+                          <div class="switch-container">
+                            <input class="float-right switch" type="checkbox" id="admin_login"
+                                name="admin_login" value="admin_login">
+                            <div class="switch-color"><label class="trigger-label" for="admin_login"></label></div>
+                            <label class="switch-label" for="admin_login"></label>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="form-group" id="div_id_login">
+                        <label for="username" class=" requiredField">
+                            Username<span class="asteriskField">*</span>
+                        </label>
+                        <div>
+                          <input type="text" name="username" class="textinput textInput form-control" placeholder="Username" />
+                        </div>
+                    </div>
+                    <div class="form-group" id="div_id_password">
+                        <label for="loginpassword" class=" requiredField">
+                        Password<span class="asteriskField">*</span> </label>
+                        <div>
+                          <input type="password" name="loginpassword" class="textinput textInput form-control" placeholder="Password" />
+                        </div>
+                    </div>
+
+                    <div class="row">
+                      <!--<div class="col-6">
+                        <a href="{{ signup_url }}" class="acies-text-center">Register account</a>
+                      </div>-->
+                    </div>
+                    <div class="form-group" id="div_id_remember">
+                      <div class="form-check" style="padding-left: 0" >
+                        <div class="d-flex align-items-center justify-content-start">
+                          <div class="switch-container terms-check">
+                            <input type="checkbox" class="checkboxinput form-check-input switch" id="remember-checkbox" >
+                            <div class="switch-color"><label class="trigger-label" for="remember-checkbox"></label></div>
+                            <label class="switch-label" for="remember-checkbox"></label>
+                          </div>
+                          <label for="remember-checkbox" class="form-check-label">
+                            Remember me
+                          </label>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="form-group" id="#terms_div">
+                      <div class="form-check" style="padding-left: 0" >
+                        <div class="d-flex align-items-center justify-content-start">
+                          <div class="switch-container terms-check">
+                            <input type="checkbox" class="checkboxinput form-check-input switch" id="master-checkbox" style="top:3.5px;"
+                              onchange="document.getElementById('aciessigninbutton').disabled = !this.checked;">
+                              <div class="switch-color"><label class="trigger-label" for="master-checkbox"></label></div>
+                              <label class="switch-label" for="master-checkbox"></label>
+                          </div>
+                          <label for="master-checkbox" class="form-check-label">
+                            Accept
+                            <a onMouseOver="this.style.color='black'" onMouseOut="this.style.color='var(--primary-color)'" id="myBtn"
+                              class="acies-nrm-text" style="color: var(--primary-color);">
+                              <font size="2">Terms & Conditions</font>
+                            </a>
+
+                          </label>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="row" style="vertical-align:middle;">
+                      <div class="col-4">
+                        <button disabled  id='aciessigninbutton'
+                          class="primaryAction btn btn-primary btn-block depends-on-master-checkbox btnActiveOverride"
+                          >{% trans "Sign In" %}</button>
+                      </div>
+                      <div class="col-6" style="position: relative; right: -6px; bottom: -6px;">
+                        <a class="acies-text-center" id="forgotpasswordFlip">{% trans "Forgot Password?" %}</a>
+                      </div>
+                    </div>
+                    <div class="ui horizontal divider">OR</div>
+                    <div class="social-container">
+                      <a href="#" class="social smGlobalBtn facebookBtn" data-toggle="tooltip" data-placement="bottom" title="Sign in with Facebook">
+                        <i class="fab fa-facebook-f "></i>
+                      </a>
+                      <a href="#" class="social smGlobalBtn googleBtn" data-toggle="tooltip" data-placement="bottom" title="Sign in with Google">
+                        <i class="fab fa-google"></i>
+                      </a>
+                      <a href="#" class="social smGlobalBtn microsoftBtn" data-toggle="tooltip" data-placement="bottom" title="Sign in with Microsoft">
+                        <i class="fab fa-microsoft"></i>
+                      </a>
+                      <a href="#" class="social smGlobalBtn twitterBtn" data-toggle="tooltip" data-placement="bottom" title="Sign in with Twitter">
+                        <i class="fab fa-twitter"></i>
+                      </a>
+                      <a href="#" class="social smGlobalBtn amazonBtn" data-toggle="tooltip" data-placement="bottom" title="Sign in with Amazon">
+                        <i class="fab fa-amazon"></i>
+                      </a>
+                      <a href="#" class="social smGlobalBtn appleBtn" data-toggle="tooltip" data-placement="bottom" title="Sign in with Apple">
+                        <i class="fab fa-apple"></i>
+                      </a>
+                    </div>
+                  </form>
+                </div>
+              </div>
+              <div class="forgot-password">
+                <div class="card-body login-card-body" style="padding: 30px 25px;">
+                  {% if user.is_authenticated %}
+                  {% include "account/snippets/already_logged_in.html" %}
+                  {% endif %}
+                  <!--EXTRA CODE-->
+                  <a href="{% url 'account_login' %}">
+                    <img src="<logo_on_form_dynamic_preview>" style="<form_logo_style_preview>"
+                         alt="Acies Logo" height="50" width="60">
+                  </a>
+
+                  <a id="backtoSignin">Sign In <i class="fa fa-arrow-right"></i></a>
+                  <p></p>
+                  <div style="margin-top: 3rem;padding: .5rem;">
+                    <h6 style="text-align: left;"><b>{% trans "Password Reset" %}</b></h6>
+                    <div id="email-sent" style="display: none;">
+                      <p style="text-align:left;">{% blocktrans %}We have sent you an e-mail. Please contact us if you do not receive it within a few minutes.{% endblocktrans %}</p>
+                      <p style="text-align:left;">Did not receive the password reset email?</p>
+                      <button class="btn btn-primary btn-xs rounded" id="resend-email" style="padding: 5px 10px;">Resend Email</button>
+                    </div>
+                    <div id="reset-username-form">
+                      <p style="text-align:left;">{% trans "Forgot your password? Enter your Username below, and we'll send you an e-mail allowing you to reset it." %}</p>
+                      <form onsubmit="return false">
+                        {% csrf_token %}
+                        <label for="reset_email_username">Username:</label>
+                        <input type="text" class="textinput textInput form-control" required id="reset_email_username" placeholder="Username">
+                        <br>
+                        <button type="button" class="btn btn-primary btn-xs rounded" style="padding: 5px 10px;">Reset My Password</button>
+                      </form>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+      </div> <!-- /container -->
+    </div> <!--EXTRA CODE-->
+    <div id="myModal" class="Modal fade-scale">
+        <div class="Modal-content" id="Modal-content">
+            <div class="wrapper">
+              <!-- Content Header (Page header) -->
+              <div class="content-header" id="content-header">
+                <div class="container">
+                  <h3 class="terms-header" id="terms-header">Terms of Use</h3>
+                  <hr class="hr">
+                  <!-- /.container-fluid -->
+                  <div class="acies-nrm-text"></div>
+                </div>
+              </div>
+              <div class="content terms-conditions">
+                <div class="container">
+                  <div class="row">
+                    <div class="col-lg-12">
+                      <termsandconditionspreview>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          <div class="modal-footer" style="justify-content: space-between;">
+            <a href="#content-header" id="scrollToTop" class="btn btn-primary"><i class="fa fa-arrow-up"></i></a>
+            <button id="closeModal1" class="btn btn-primary">Close</button>
+          </div>
+        </div>
+    </div>
+    <div class="copyright-footer">
+      <p class="copyright-text"><custom_footer_preview></p>
+    </div>
+  </div> <!--Background Image-->
+    {% block modal %}{% endblock modal %}
+
+  <!-- Le javascript
+  ================================================== -->
+  <!-- Placed at the end of the document so the pages load faster -->
+  {% block javascript %}
+
+  <script>
+    <<rename_username>>
+    <<rename_email>>
+    <<rename_password>>
+    <<rename_confirm_password>>
+    <<block_autocomplete_credentials>>
+    <<no-terms-preview>>
+    <<termsAndConditionsEverytimePreview>>
+
+    var tracker = 0
+
+    const signinBtn = document.querySelector('.signinBtn');
+    const signupBtn = document.querySelector('.signupBtn');
+    const formBx = document.querySelector('.formBx');
+
+    signupBtn.onclick = function (){
+      formBx.classList.add('active')
+      forgotPassword.classList.remove('isVisible')
+      card.classList.remove('flipped');
+    }
+
+    signinBtn.onclick = function (){
+      formBx.classList.remove('active')
+      if(tracker==1){
+        forgotPassword.classList.add('isVisible')
+        card.classList.add('flipped');
+      }
+      else if(tracker==2){
+        forgotPassword.classList.add('isVisible')
+        card.classList.add('flipped');
+        $("#reset-username-form").fadeOut("fast");
+        $("#email-sent").fadeIn(3000);
+      }
+      else{
+        forgotPassword.classList.remove('isVisible')
+        card.classList.remove('flipped');
+      }
+    }
+
+    <<put-icons-preview>>
+
+    var select_options = `<div class="form-group" id="select-form-group">
+        <select class="select2 form-control" id="admin_login_options">
+          <option selected disabled>Enter as</option>
+          <option value="platform_admin">Platform admin</option>
+          <option value="tenant_admin">Tenant admin</option>
+        </select>
+      </div>`
+
+    $("#admin_login").change(function() {
+        if(this.checked) {
+            $(select_options).insertAfter("#div_id_password");
+            $('#admin_login_options').select2();
+            $('.select2-selection').css('border-color','#ced4da');
+            }else{
+            $( "#select-form-group" ).remove();
+        }
+    });
+  </script>
+
+  <script>
+    var card = document.querySelector('.formBx');
+    var forgotPassword = document.querySelector('.forgot-password')
+    var backtoSignin = document.querySelector("#backtoSignin")
+
+    document.getElementById('forgotpasswordFlip').addEventListener('click', function() {
+      card.classList.add('flipped');
+      forgotPassword.classList.add('isVisible')
+      tracker=1
+    }, false);
+
+    backtoSignin.addEventListener('click', function() {
+      tracker=0
+        card.classList.remove('flipped');
+        forgotPassword.classList.remove('isVisible')
+    }, false);
+
+    var messages = document.querySelector(".messages-content")
+    $(".alert button.close").click(function (e) {
+      $(this).parent().slideUp('slow');
+    });
+  </script>
+  <script>
+      document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function (e) {
+            e.preventDefault();
+
+            document.querySelector(this.getAttribute('href')).scrollIntoView({
+                behavior: 'smooth'
+            });
+        });
+    });
+
+    var modal = document.getElementById("myModal");
+    var btnOpen1 = document.getElementById("myBtn");
+    var btnClose1 = document.getElementById("closeModal1");
+    btnOpen1.addEventListener('click', function () {
+        //modal.className = "Modal"
+        modal.classList.add("in")
+    })
+    //btnOpen1.onclick = function () {
+    //      console.log('hello')
+    //          modal.className="Modal"}
+
+    btnClose1.onclick = function () {
+        //modal.className = "Modal is-hidden is-visuallyHidden"
+        modal.classList.remove("in")
+
+    }
+  </script>
+  <script type="text/javascript">
+    jQuery(document).ready(function() {
+      jQuery('[data-youtube], [data-vbg]').youtube_background();
+    });
+
+    <<userscript-preview>>
+    <<emailscript-preview>>
+    <<passwordscript-preview>>
+    <<icon-color>>
+
+  </script>
+
+  <!-- Your stuff: Third-party javascript libraries go here -->
+  <!-- place project specific Javascript in this file -->
+
+    {% endblock javascript %}
+</body>
+</html>
+

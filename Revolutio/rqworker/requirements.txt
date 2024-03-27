@@ -1,0 +1,7 @@
+Click==7.0
+fabric==2.5.0
+humanize==2.4.0
+invoke==1.4.1
+redis==3.3.11
+rq==1.11.0
+six==1.13.0

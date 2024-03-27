@@ -1,0 +1,440 @@
+
+      <div class="breadcrumb-holder l3-breadcrumb-holder">
+      <div class="row" style="width: 100%;">
+        <div class="col-5 container-fluid breadcrumb-container l3-breadcrumbs">
+          <div>
+            <a {% if current_application_code != 'App0' %} {% if current_application_code == 'Dev' %}
+              {% if current_dev_mode == 'Edit' %} {% if edit_app_code != 'Not Selected' %}
+              href="{% url 'users:homePage' edit_app_code current_dev_mode %}"
+              {% else %}
+              href="{% url 'users:homePage' 'Dev' current_dev_mode %}"
+              {% endif %} {% elif current_dev_mode == 'Build' %} {% if build_app_code != 'Not Selected' %}
+              href="{% url 'users:homePage' build_app_code current_dev_mode %}"
+              {% else %}
+              href="{% url 'users:select_application' %}"
+              {% endif %}  {% endif %}
+              {% else %}
+              href="{% url 'users:homePage' current_application_code 'User' %}"
+              {% endif %}
+              {% else %}
+              href="{% url 'users:select_application' %}"
+              {% endif %} >
+              <i class="fa-solid fa-house" style="font-size: 18px;margin-top:3px;" data-toggle="tooltip" title="App Homepage"></i>
+            </a>
+          </div>
+          <div> <button class="b-btn" style="border-radius:8rem" onclick="window.history.back();"><i class="fa-solid fa-clock-rotate-left mr-1"></i> Back</button> </div>
+
+
+       </div>
+        <div class='col-7 container-fluid tabconfig'>
+          <div>
+            <button class="btn btn-dark tabconfig_button" data-data_list='{}' onclick="populateTabFuctionalities.call(this)" data-toggle="modal" data-target="#tabsMultiFunc" >
+              <i class="fas mr-1"></i> <div style="white-space:nowrap;"> Manage Tabs </div>
+            </button>
+          </div>
+          <div>
+            <button class="b-btn view_breadcrumbs" style="border-radius:8rem">View Path <i class="fa-solid fa-chevron-down ml-1 customtoggle"></i> </button>
+          </div>
+        </div>
+        </div>
+      </div>
+      <style>
+        .breadcrumb_item_mobile{
+          padding: 2px 12px;
+          background: var(--primary-color);
+          border-radius: 8px;
+          width: 90%;
+          text-align: left;
+          color: var(--font-hover-color);
+          min-height: 60px;
+          display: flex;
+          align-items: center;
+        }
+        .mobile_breadcrumbs{
+          display:flex;
+          flex-direction: column;
+          align-items: center;
+        }
+        .mobile_breadcrumbs .down-arrow{
+          color: var(--primary-color);
+        }
+
+
+      </style>
+
+      <div class="modal fade" id="view_breadcrumbs_modal" tabindex="-1" role="dialog" data-focus="false" aria-labelledby="view_breadcrumbs_modal" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document" style="width: 85%;margin: auto;">
+          <div class="modal-content">
+            <div class="modal-header" style="border-bottom:0">
+              <div class="modal-title">Your Path</div>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close" style="background-color: transparent; color: #000; padding: 0; font-size: 28px; margin:unset;">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body" style="padding-bottom: 2.8rem;padding-top: 0rem;">
+
+              <div class="mobile_breadcrumbs">
+
+                <div class="">
+                  <a {% if current_application_code != 'App0' %} {% if current_application_code == 'Dev' %}
+                    {% if current_dev_mode == 'Edit' %} {% if edit_app_code != 'Not Selected' %}
+                    href="{% url 'users:homePage' edit_app_code current_dev_mode %}"
+                    {% else %}
+                    href="{% url 'users:homePage' 'Dev' current_dev_mode %}"
+                    {% endif %} {% elif current_dev_mode == 'Build' %} {% if build_app_code != 'Not Selected' %}
+                    href="{% url 'users:homePage' build_app_code current_dev_mode %}"
+                    {% else %}
+                    href="{% url 'users:select_application' %}"
+                    {% endif %}  {% endif %}
+                    {% else %}
+                    href="{% url 'users:homePage' current_application_code 'User' %}"
+                    {% endif %}
+                    {% else %}
+                    href="{% url 'users:select_application' %}"
+                    {% endif %} >
+                    <i class="fa-solid fa-house" style="font-size: 25px;margin-top:3px;" data-toggle="tooltip" title="App Homepage"></i>
+                  </a>
+                </div>
+              
+                <div class="down-arrow"><i class="fa-solid fa-down-long"></i></div>
+                <div class="breadcrumb_item_mobile">
+                  <span>Balance sheet scenarios</span>
+                </div>
+                <div class="down-arrow"><i class="fa-solid fa-down-long"></i></div>
+                <div class="breadcrumb_item_mobile">
+                  <span>Scenario configuration</span>
+                </div>
+
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+       
+
+          <ul class="breadcrumb breadcrumb-accordion" style="display:none; padding: .25rem 1rem; margin-block-end: 0em;" id="dynamic">
+        <li class="breadcrumb-item"><a {% if current_application_code != 'App0' %} {% if current_application_code == 'Dev' %}
+              {% if current_dev_mode == 'Edit' %} {% if edit_app_code != 'Not Selected' %}
+              href="{% url 'users:homePage' edit_app_code current_dev_mode %}"
+              {% else %}
+              href="{% url 'users:homePage' 'Dev' current_dev_mode %}"
+              {% endif %} {% elif current_dev_mode == 'Build' %} {% if build_app_code != 'Not Selected' %}
+              href="{% url 'users:homePage' build_app_code current_dev_mode %}"
+              {% else %}
+              href="{% url 'users:select_application' %}"
+              {% endif %}  {% endif %}
+              {% else %}
+              href="{% url 'users:homePage' current_application_code 'User' %}"
+              {% endif %}
+              {% else %}
+              href="{% url 'users:select_application' %}"
+              {% endif %} >
+          <b> Home </b></a></li>      <li class="breadcrumb-item"> <b> Balance sheet scenarios </b></li>      <li class="breadcrumb-item"> <b> Scenario configuration </b></li> </ul>
+
+      <script>
+      $(".view_breadcrumbs").click(function(){
+        var media = window.matchMedia("(min-width: 450px)")
+        if (media.matches){
+          $(this).closest(".breadcrumb-holder").siblings(".breadcrumb-accordion").slideToggle()
+          $(this).find("i").toggleClass("toggle_arrow")
+        }
+        else{
+          $("#view_breadcrumbs_modal").modal("show")
+        }
+      })
+      </script>
+      
+      <datalist id="hosting-plan">
+        <option value="=Count"/>
+        <option value="=Count Distinct"/>
+        <option value="=Sum"/>
+        <option value="=Average"/>
+        <option value="=Minimum"/>
+        <option value="=Maximum"/>
+        <option value="=Standard Deviation"/>
+        <option value="=Variance"/>
+        <option value="=Median"/>
+        <option value="=Skewness"/>
+        <option value="=Kurtosis"/>
+      </datalist>
+    
+    <div class="modal fade" id="tabsMultiFunc" tabindex="-1" role="dialog" data-focus="false" aria-labelledby="tabsMultiFunc" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Manage Tabs</h5>
+             <button
+              type="button"
+              class="close"
+              data-dismiss="modal"
+              aria-label="Close"
+              style="
+                  background: unset;
+                  font-size: 1.5rem;
+                  color: black;
+              "
+            >
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+
+          <div class="modal-body">
+            <div class=''>
+              <div class='tabsMultiFuncBody'>
+              <style>
+              #tabsMultiFuncBodyTable thead tr{
+                background: var(--primary-color);
+                color: var(--font-hover-color);
+              }
+              #tabsMultiFuncBodyTable tbody tr{
+                background: #fff !important;
+              }
+              #tabsMultiFuncBodyTable tbody tr:hover{
+                background: rgb(243, 243, 243) !important;
+              }
+              #tabsMultiFuncBodyTable .switch-container {
+                  width: 3.6em;
+                  height: 1.6em;
+              }
+              #tabsMultiFuncBodyTable .switch-color {
+                width: 3.4em;
+                height: 1.4em;
+              }
+              #tabsMultiFuncBodyTable .switch-container label.switch-label {
+                width: 1.2em;
+                height: 1.2em;
+              }
+              #tabsMultiFuncBodyTable td, #tabsMultiFuncBodyTable th {
+                  vertical-align: middle !important;
+              }
+
+              </style>
+                <table id="tabsMultiFuncBodyTable" class="table table-bordered" style="width:100%;overflow-x: scroll;overflow-y:scroll;">
+                  <thead style="border-bottom:1px solid var(--primary-color)" >
+                    <tr style="text-align:center">
+                      <th>Re-order</th>
+                      <th>Display</th>
+                      <th>Tab Name</th>
+                    </tr>
+                  </thead>
+                  <tbody style="border-bottom:1px solid var(--primary-color);">
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button onclick="saveTabsFunc.call(this)" type="button" class="btn btn-primary">Save</button>
+          </div>
+        </div>
+      </div>
+    </div><section class='content' style='opacity: 0;'><div class='container-fluid'> <form id='form1' method='post'>{% csrf_token %}</form><ul class='nav nav-tabs nav-fill l3-desktop-tabs' fetchpriority='high' id='myTab' role='tablist' style='flex-wrap:nowrap;overflow-x: scroll;overflow-y: hidden;margin-top:1%;padding: 12px 0 0 0 !important;'></ul>
+    <div class="dropdown-container l3-mobile-tabs" style="margin: 10px 7px 2px 8px;box-shadow: 0 0 1px rgba(0,0,0,.125), 0 1px 3px rgba(0,0,0,.2);border-radius: 5px;overflow: hidden;"><div class="dropdown-header" id='' data-toggle='tab' href=''><span class="selected_text" style="margin: auto 9px;"></span><i class="fa-lg fa-solid fa-angle-down"></i></div><div class="option-container" style="display:none;"></div></div><script>
+              $(document).ready(function(){
+                var shown_items = 0
+                $(".dropdown-header .selected_text").text($(".option-container").find(".nav-link.l3items").eq(0).text())
+                $(".dropdown-header").attr("style",$(".option-container").find(".mobile-text").eq(0).attr("data-style"))
+
+                $(".option-container").css("width",$(".option-container").closest(".l3-mobile-tabs").width())
+
+                $('.option-container').find(".mobile-text").each(function(){
+                  if($(this).css("display") != "none"){
+                    shown_items++
+                  }
+                })
+
+                if(shown_items >= 2)
+                {
+                  $(".dropdown-header").click(function(){
+                    $(this).siblings(".option-container").toggle()
+                  })
+
+                  $(".option-container").find(".nav-link.l3items").eq(0).addClass("active")
+
+                  $(".option-container").find(".nav-link.l3items").click(function(){
+                    current_nav = $(this)
+                    $(".dropdown-header .selected_text").text($(this).text())
+                    custom_style=$(this).parent().attr("data-style")
+                    $(".dropdown-header").attr("style",custom_style)
+                    $(".option-container").find(".nav-link.l3items").each(function(){
+                        if($(this) != current_nav){
+                          $(this).removeClass("active")
+                        }
+                    })
+                    $(".option-container").toggle()
+                  })
+
+                  $(document).on("click", function(event){
+                    var $trigger = $(".dropdown-container");
+                    if($trigger !== event.target && !$trigger.has(event.target).length){
+                        $(".option-container").css("display","none");
+                    }
+                  });
+
+                }
+                else{
+                  $(".option-container").css("display","none")
+                  $(".dropdown-header i").css("display","none")
+                }
+
+              })
+
+              </script>
+    <style>
+      .commentboxcard {
+        height: 400px;
+        width: 500px;
+        flex-wrap:wrap;
+      }
+      strong {
+        font-weight: bold;
+      }
+      .select2-container{
+        width:auto;
+      }
+      .row {
+        flex-wrap: wrap;
+      }
+      .l3-mobile-tabs{
+        display:none;
+      }
+      .l3-desktop-tabs{
+        display:flex;
+      }
+      .dropdown-header{
+        padding: 0.7rem;
+        background: #e9ecef;
+        width:100%;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        font-size: 16px;
+      }
+      .selected_text{
+        word-break: break-word;
+        white-space: break-spaces;
+        text-align: left;
+      }
+
+      @media screen and (max-width: 426px) {
+        .tab-container{
+          width: 100% !important;
+        }
+        .vertical-tabs{
+          margin-top: 0 !important;
+        }
+        .l3-mobile-tabs{
+          display:block;
+        }
+        .vertical-mobile-tabs{
+          width: 100%;
+        }
+        .l3-desktop-tabs{
+          display:none;
+        }
+        .option-container{
+          position: absolute;
+          z-index: 2000;
+          width: 90%;
+          display: none;
+          box-shadow: 0 0.5rem 1rem rgba(0,0,0,.175);
+          border-radius: 5px;
+          overflow: auto;
+          height: auto;
+          max-height: 16rem;
+        }
+      }
+
+      @media screen and (max-width: 376px){
+        .option-container{
+          width: 89%;
+        }
+      }
+
+      @media screen and (max-width: 321px) {
+        .option-container{
+          width: 87%;
+        }
+      }
+
+      @media screen and (max-width: 281px) {
+        .option-container{
+          width: 85%;
+        }
+      }
+
+    </style>
+  
+    <style>
+      h2 {
+        font-size: medium;
+      }
+      .ebDataElementsDiv {
+        margin-bottom: 5px;
+      }
+      .popup {
+        height:80%;
+      }
+      .select2-dropdown {
+        z-index:9999
+      }
+    </style>
+
+  <div class="modal fade" id="draftModal" tabindex="-1" role="dialog" data-focus="false" aria-labelledby="draftModal"  aria-modal="true" style="z-index:1052 !important;">
+          <div class="modal-dialog modal-xl modal-lg modal-dialog-centered"  role="document">
+              <div class="modal-content">
+
+
+              <div class="modal-header border-0 pl-3 pr-3">
+                  <h6 class="modal-title">Draft Versions</h6>
+                  <i class="fa-solid fa-box-archive fa-3x"></i>
+              </div>
+
+              <div class="modal-body " >
+                  <table class="table table-striped" id="previewTable">
+
+                  </table>
+              </div>
+
+              <div class="modal-footer d-flex justify-content-end border-0">
+                  <button type="button" class="btn btn-primary buttonfooter btn-md mx-2 rounded px-2" data-dismiss="modal">Close</button>
+              </div>
+
+              </div>
+          </div>
+
+      </div>
+<div class="modal fade" id="previewCreateViewModal" tabindex="-1" role="dialog" data-focus="false" aria-labelledby="previewCreateViewModal"  aria-modal="true" style="z-index:1052 !important;">
+          <div class="modal-dialog  modal-lg modal-dialog-centered"  role="document">
+              <div class="modal-content" style="margin-right: auto;margin-left: auto;max-width:1000px;max-height: 700px;text-align: center;font-size:small">
+
+
+             <div class="modal-header" id="previewCreateviewHeader"  style="background:#565a5e;text-align: center;">
+                  <h6 class="modal-title"  style="width:100%;color:white;margin:auto;font-weight:bold;"></h6>
+                  <button type="button" class="close" data-dismiss="modal">&times;</button>
+              </div>
+
+              <div class="modal-body " style="overflow: scroll;" id="previewCreateViewBody">
+
+              </div>
+
+              <div class="modal-footer" id='previewCreateView_footer'>
+                  <button type="button" class="btn btn-primary btn-md mx-2 rounded px-2" data-dismiss="modal">Close</button>
+              </div>
+
+              </div>
+          </div>
+      </div>
+    <div class="modal fade" id="table_field_createView_dialog"  role="dialog" data-focus="false" aria-labelledby="table_field_createView_dialog" aria-hidden="true" style="z-index: 1053; padding-top: 265px;">
+            <div class="modal-dialog modal-xl" role="document">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title" id="">Details</h5>
+                </div>
+                <div class="modal-body" style="padding:50px;">
+                </div>
+                <button type="button" class="btn btn-primary" style="position:absolute; bottom: 0.5rem; right: 0.5rem; width:80px" data-dismiss="modal" onclick="$('#draftModal').modal('show')">Close</button>
+              </div>
+            </div>
+          </div>
+    <div class='tab-content' fetchpriority='high'></div></section>

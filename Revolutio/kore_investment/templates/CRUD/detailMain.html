@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+{% extends extend_template %}
+{% load static %}
+
+
+{% block body_block %}
+
+<!--Official dataTables default  CSS FILE-->
+<link rel="stylesheet" href="{% static 'css/KoreD/jquery.dataTables.css' %}">
+<link rel="stylesheet" href="{% static 'css/KoreD/buttons.dataTables.min.css' %}">
+
+<!-- DataTables -->
+<script src="{% static 'vendor/Base_theme/datatables/jquery.dataTables.js' %}"></script>
+<script src="{% static 'vendor/Base_theme/datatables-responsive/js/dataTables.responsive.min.js' %}"></script>
+<script src="{% static 'vendor/Base_theme/datatables-fixedheader/js/dataTables.fixedHeader.min.js' %}"></script>
+<script src="{%static 'vendor/Base_theme/datatables-bs4/js/dataTables.bootstrap4.js'%}"></script>
+
+<script src="{%static 'vendor/Base_theme/datatables-buttons/js/dataTables.buttons.min.js'%}"></script>
+<script src="{%static 'vendor/Base_theme/jszip/jszip.min.js'%}"></script>
+<script src="{%static 'vendor/Base_theme/pdfmake/pdfmake.min.js'%}"></script>
+<script src="{%static 'vendor/Base_theme/pdfmake/vfs_fonts.js'%}"></script>
+<script src="{%static 'vendor/Base_theme/datatables-buttons/js/buttons.html5.min.js'%}"></script>
+<script src="{%static 'vendor/Base_theme/datatables-buttons/js/buttons.print.min.js'%}"></script>
+<script src="{%static 'vendor/Base_theme/datatables-buttons/js/buttons.print.js'%}"></script>
+<script src="{%static 'vendor/Base_theme/datatables-buttons/js/buttons.flash.min.js'%}"></script>
+<script type="text/javascript" src="{%static 'vendor/PrintJS/print.min.js'%}"></script>
+<link rel="stylesheet" type="text/css" href="{% static 'vendor/PrintJS/print.min.css' %}">
+
+<!-- DataTables -->
+<style>
+
+
+  #update:active {
+    background-color: var(--primary-color);
+    border-color: black;
+  }
+
+  .table {
+    font-size: small;
+    font-weight: 400;
+  }
+
+  .card {
+    font-size: small;
+  }
+
+  table.dataTable tbody th, table.dataTable tbody td {
+    border-bottom: 0.5px solid #d3d3d3
+  }
+</style>
+<link rel="stylesheet" href="{% static 'vendor/Base_theme/datatables-bs4/css/dataTables.bootstrap4.css' %}">
+
+<div class="breadcrumb-holder" style="background-color: #e9ecef;font-size:12px;">
+  <div class="container-fluid">
+    <ul class="breadcrumb">
+      <li class="breadcrumb-item"><a {% if current_application_code != 'App0' %} {% if current_application_code == 'Dev' %} {% if current_dev_mode == 'Edit' %} {% if edit_app_code != 'Not Selected' %} href="{% url 'users:homePage' edit_app_code current_dev_mode %}" {% else %} href="{% url 'users:homePage' 'Dev' current_dev_mode %}" {% endif %} {% elif current_dev_mode == 'Build' %} {% if build_app_code != 'Not Selected' %} href="{% url 'users:homePage' build_app_code current_dev_mode %}" {% else %} href="{% url 'users:select_application' %}"  {% endif %}  {% endif %} {% else %} href="{% url 'users:homePage' current_application_code 'User' %}" {% endif %} {% else %} href="{% url 'users:select_application' %}" {% endif %}>
+        <b> Home </b></a></li>
+      <li class="breadcrumb-item active">{{title_a}} > {{title_b}} > {{title_c}}</li>
+    </ul>
+  </div>
+</div>
+
+
+<div style="overflow-x:auto;">
+  <div class="card">
+
+    <div class="card-header">
+      <h6 class="card-title" style="color:var(--primary-color);">{{title}}</h6>
+      <div class="card-tools">
+
+        <button type="button" onclick="goBack()" style="background-color:var(--primary-color);color:white;" onMouseOver="this.style.color='black'" onMouseOut="this.style.color='white'" class="btn btn-tool btn-sm">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+    </div>
+
+    <div class="card-body">
+
+      <table id="example1">
+        <thead>
+          <tr>
+            <th style="width:50%;font-size:small;font-weight:400;">Parameters</th>
+            <th style="width:50%;font-size:small;font-weight:400;">Results</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for obj1, obj2 in details %}
+          <tr style="border-bottom: 0.5px solid #b5924b;">
+            <th class="th1" style="width:50%;font-size:small;font-weight:400;">{{obj1}}</th>
+            <td style="width:50%;font-size:small;font-weight:400;text-align:center;padding-left:3em;">{{obj2}}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+
+      <br>
+
+
+    </div>
+    <!-- /.card-body -->
+  </div>
+</div>
+<script>
+  $(document).ready(function () {
+
+    var d = new Date()
+    $('#example1 thead tr').clone(true).appendTo('#example1 thead');
+    $('#example1 thead tr').eq(1).find('th').each(function (i) {
+      $(this).addClass('dt-center')
+      var title = $(this).text();
+      $(this).html('<input type="text" style="text-align:center;border-bottom:none;border:1px solid #ced4da;width:190px;font-size:12px;" placeholder="Search ' + title + '" />');
+
+      $('input', this).on('keyup change', function () {
+        if (table.column(i).search() !== this.value) {
+          table
+            .column(i)
+            .search(this.value)
+            .draw();
+        }
+      });
+    });
+    var table = $("#example1").DataTable({
+      "autoWidth": true,
+      "scrollY": "50vh",
+      "scrollCollapse": true,
+      //"scrollX": "110%",
+      orderCellsTop: true,
+      fixedHeader: true,
+      responsive: true,
+      stateSave: true,
+      "deferRender": true,
+      "paging": true,
+      "lengthMenu": [[1, 5, 50, -1], [1, 5, 50, "All"]],
+      stripeClasses: false,
+      "pageLength": 50,
+      dom: 'lfBrtip',
+
+
+      buttons: [
+        {
+          extend: 'collection',
+          text: 'Export',
+          buttons: [
+            'copy',
+            { extend: 'excel', title: '' },
+            { extend: 'csv', title: '' },
+            { extend: 'pdf', title: '' },
+            {extend: 'print', title: ''},
+          ],
+        }
+      ],
+
+
+
+
+      columnDefs: [
+        {
+          targets: "_all",
+          className: 'dt-center'
+        }
+      ]
+    });
+    //new $.fn.dataTable.FixedHeader( table );
+    console.log('AAAAAAAAAAAAAAAAAAAAAAA')
+    var t = new Date()
+    console.log(t.getTime() - d.getTime())
+    //$("#example1").show()
+
+
+
+  })
+  //$('#example1').DataTable();
+</script>
+
+<script type="text/javascript">
+        $('.th1').each(function() {
+          var x = $(this).text();
+          console.log('hhhhhhhhhhhhhhh')
+    console.log(x)
+          x = x.replace(/_/g, ' ')
+    $(this).text(x);
+        });
+   $('.th1').css('textTransform', 'capitalize');
+  function funcUpload(event) {
+    console.log(event.target)
+    var popup = document.getElementById('popup')
+    popup.style.display = 'block';
+  }
+  function funcUpload2(event) {
+    console.log(event.target)
+    var popup = document.getElementById('popup')
+    popup.style.display = 'none';
+    event.target.formAction = window.location.href;
+    event.target.type = 'submit';
+  }
+  window.onclick = function (event) {
+    console.log(event.target)
+    if (event.target.id == "popup") {
+      popup.style.display = "none";
+    }
+  };
+  window.onkeyup = function (event) {
+    if (event.keyCode == 27) {
+      popup.style.display = "none";
+    }
+  }
+</script>
+<script>
+  function goBack() {
+    window.history.back();
+  }
+</script>
+
+{% endblock %}
+
+

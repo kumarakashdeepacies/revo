@@ -1,0 +1,456 @@
+{% extends extend_template %}
+{% load crispy_forms_tags %}
+{{ form.media }}
+{% load static %}
+{% block body_block %}
+
+
+<link rel="stylesheet" href="{% static 'css/KoreD/jquery.dataTables.css' %}">
+<link rel="stylesheet" href="{% static 'vendor/Base_theme/datatables-responsive/css/responsive.bootstrap4.min.css' %}">
+<link rel="stylesheet" href="{% static 'vendor/Base_theme/datatables-colreorder/css/colReorder.bootstrap4.min.css' %}">
+<link rel="stylesheet" href="{% static 'css/KoreD/buttons.dataTables.min.css' %}">
+
+<!-- Select2 -->
+<link rel="stylesheet" href="{% static 'vendor/Base_theme/select2/css/select2.min.css' %}">
+<link rel="stylesheet" href="{% static 'vendor/Base_theme/select2-bootstrap4-theme/select2-bootstrap4.min.css' %}">
+
+<!-- Select2 -->
+<script src="{% static 'vendor/Base_theme/select2/js/select2.min.js' %}"></script>
+
+<!-- DataTables -->
+<script src="{% static 'vendor/Base_theme/datatables/jquery.dataTables.js' %}"></script>
+<script src="{% static 'vendor/Base_theme/datatables-responsive/js/dataTables.responsive.min.js' %}"></script>
+<script src="{% static 'vendor/Base_theme/datatables-fixedheader/js/dataTables.fixedHeader.min.js' %}"></script>
+<script src="{% static 'vendor/Base_theme/datatables-colreorder/js/dataTables.colReorder.min.js' %}"></script>
+<script src="{%static 'vendor/Base_theme/datatables-bs4/js/dataTables.bootstrap4.js'%}"></script>
+
+<script src="{%static 'vendor/Base_theme/datatables-buttons/js/dataTables.buttons.min.js'%}"></script>
+<script src="{%static 'vendor/Base_theme/jszip/jszip.min.js'%}"></script>
+<script src="{%static 'vendor/Base_theme/pdfmake/pdfmake.min.js'%}"></script>
+<script src="{%static 'vendor/Base_theme/pdfmake/vfs_fonts.js'%}"></script>
+<script src="{%static 'vendor/Base_theme/datatables-buttons/js/buttons.html5.min.js'%}"></script>
+<script src="{%static 'vendor/Base_theme/datatables-buttons/js/buttons.colVis.min.js'%}"></script>
+
+<!-- Bootstrap4 Duallistbox -->
+<link rel="stylesheet" href="{% static 'vendor/Base_theme/bootstrap4-duallistbox/bootstrap-duallistbox.min.css' %}">
+
+<!-- Bootstrap4 Duallistbox -->
+<script src="{% static 'vendor/Base_theme/bootstrap4-duallistbox/jquery.bootstrap-duallistbox.min.js' %}"></script>
+
+
+<!-- Pivot Table JS -->
+<!-- Pivot Table JS -->
+<script src=" {% static 'js/pivottable/dist/pivot.min.js' %}"></script>
+<script src=" {% static 'js/pivottable/dist/c3_renderers.min.js' %}"></script>
+<script src=" {% static 'js/pivottable/dist/d3_renderers.min.js' %}"></script>
+<script src=" {% static 'js/pivottable/dist/gchart_renderers.min.js' %}"></script>
+<script src=" {% static 'js/pivottable/dist/googleapis.js' %}"></script>
+<script src=" {% static 'js/pivottable/dist/plotly_renderers.min.js' %}"></script>
+
+
+<style>
+        .contentcontainer {
+        background-color: #f4f6f9;
+      }
+      .card-header.topnav {
+        box-shadow: 3px 3px 10px rgb(194, 194, 194);
+      }
+
+      .reportname,
+      .reportname:visited {
+        font-weight: 400;
+        color: black;
+      }
+
+      .reportname:hover {
+        color: var(--primary-color);
+      }
+      .reportcardbody {
+        min-height: 285px;
+        max-height: 285px;
+        overflow-y: auto;
+      }
+      .createnewreportbtn a,.newallreportsbtn a,.allreportsbtn a{
+        color: unset !important;
+      }
+      .createnewreportbtn a:hover,.newallreportsbtn a:hover,.allreportsbtn a:hover{
+        color: unset !important;
+      }
+</style>
+
+
+<!-- Breadcrumb-->
+<div class="breadcrumb-holder" style="background-color: #e9ecef; ">
+  <div class="container-fluid" id="dynamicTabs">
+    <ul class="breadcrumb" id="dynamicbreadcrumbs">
+      <li class="breadcrumb-item"><a {% if current_application_code != 'App0' %} {% if current_application_code == 'Dev' %} {% if current_dev_mode == 'Edit' %} {% if edit_app_code != 'Not Selected' %} href="{% url 'users:homePage' edit_app_code current_dev_mode %}" {% else %} href="{% url 'users:homePage' 'Dev' current_dev_mode %}" {% endif %} {% elif current_dev_mode == 'Build' %} href="{% url 'users:homePage' build_app_code current_dev_mode %}"  {% endif %} {% else %} href="{% url 'users:homePage' current_application_code 'User' %}" {% endif %} {% else %} href="{% url 'users:select_application' %}" {% endif %}>
+        <b> Home </b></a></li>
+        {% if build_app_code != 'Not Selected' %}
+        <li class="breadcrumb-item "><b><a href="{% url 'users:pivot_report_data' build_app_code current_dev_mode %}">View Pivot Reports</a></b></li>
+        {% elif edit_app_code != 'Not Selected' %}
+        <li class="breadcrumb-item "><b><a href="{% url 'users:pivot_report_data' edit_app_code current_dev_mode %}">View Pivot Reports</a></b></li>
+        {% endif %}
+      <li class="breadcrumb-item "><b>Pivot Report</b></li>
+    </ul>
+  </div>
+</div>
+
+
+<div class="container-fluid">
+
+
+
+  <div class="card mt-4">
+    <div class="card-header">
+
+        <h4 class="card-title reportheading my-2" style="color:var(--primary-color);"></h4>
+
+        <div class="d-flex nav" >
+          <div class="ml-auto">
+            <button class="btn btn-xs btn-primary allreportsbtn">
+              {% if build_app_code != 'Not Selected' %}
+              <a href="{% url 'users:pivot_report_data' build_app_code current_dev_mode %}"
+                >All Reports</a>
+              {% elif edit_app_code != 'Not Selected' %}
+              <a href="{% url 'users:pivot_report_data' edit_app_code current_dev_mode %}"
+                >All Reports</a>
+              {% endif %}
+            </button>
+            <button class="btn btn-xs btn-primary savereportbtn" role="button">
+              Save Report
+            </button>
+            <button class="btn btn-xs btn-primary deletereportbtn" role="button">
+              Delete Report
+            </button>
+          </div>
+        </div>
+
+
+
+   </div>
+    <div class="card-body" >
+
+    <div id="sideBar_pivot_report_output" style='max-height:500px;overflow:auto;background: whitesmoke;'></div>
+  </div>
+</div>
+
+</div>
+
+
+<script>
+
+  let currentreport_element_id = "{{element_id}}";
+
+  let currentreportpk = "{{pk}}";
+  let currentreport = {};
+  let latestconfig;
+  let fetcheddata = [];
+  {% if build_app_code != 'Not Selected' %}
+  let current_url =  "{% url 'users:current_pivot_report' pk=12345 app_code=build_app_code mode=current_dev_mode %}".replace(/12345/, currentreportpk.toString());
+  {% elif edit_app_code != 'Not Selected' %}
+  let current_url =  "{% url 'users:current_pivot_report' pk=12345 app_code=edit_app_code mode=current_dev_mode %}".replace(/12345/, currentreportpk.toString());
+  {% endif %}
+
+  google.load("visualization", "1", {
+        packages: ["corechart", "charteditor"],
+      });
+
+    $.ajax({
+        url: current_url,
+        data:{operation:'current_pivot_report_row',element_id:currentreport_element_id},
+        method:'POST',
+        dataType:'json',
+        success: function (data) {
+        if(data){
+        currentreport = JSON.parse(data['field_data'])
+        table_data = JSON.parse(data['table_data'])
+
+        const currentconfig = JSON.parse(currentreport[0]['reportconfig'])
+
+        $('.reportheading').text(`${currentreport[0]['reportname']}`)
+        $(function () {
+        var derivers = $.pivotUtilities.derivers;
+
+
+        var renderers ={}
+                 $.extend(
+                  renderers,
+                  $.pivotUtilities.renderers,
+                  $.pivotUtilities.plotly_renderers,
+                  $.pivotUtilities.d3_renderers,
+                  $.pivotUtilities.c3_renderers,
+                  $.pivotUtilities.gchart_renderers,
+                  $.pivotUtilities.subtotal_renderers,
+                );
+
+
+
+        $("#sideBar_pivot_report_output").pivotUI(table_data, {
+          renderers:renderers,
+          ...currentconfig,
+          rendererOptions: { gchart: { width: 1200, height: 1200 }, c3: { width: 1200, height: 1200 }, d3: { width: 1200, height: 1200 } },
+          onRefresh: function (config) {
+            var config_copy = JSON.parse(JSON.stringify(config));
+            delete config_copy["aggregators"];
+            delete config_copy["renderers"];
+
+            delete config_copy["rendererOptions"];
+            delete config_copy["localeStrings"];
+            latestconfig = JSON.stringify(config_copy, undefined, 2);
+          },
+        });
+
+      });
+        }
+
+
+      },
+      error: function () {
+        Swal.fire({icon: 'error',text: 'Error! Please try again.'});
+      },
+    });
+
+
+
+
+  // Update the Current Report
+  $(".savereportbtn").click(() => {
+    const pk = currentreportpk
+    const configstring = latestconfig
+
+    $.ajax({
+      method: "POST",
+      url: current_url,
+      dataType:"json",
+      data: {
+        "operation":"update_pivot_report",
+        "updated_config":latestconfig,
+        'element_id':currentreport_element_id,
+
+      },
+      success: function (data) {
+
+        if(data.hasOwnProperty('unqiue_report')){
+          Swal.fire({icon: 'warning',text:"Report Name must be unique." });
+        }else{
+          location.reload()
+        }
+
+      },
+      failure: function () {
+        Swal.fire({icon: 'error',text: 'Error! Please try again.'});
+      },
+    });
+
+  });
+
+
+
+// Delete current Report
+$('.deletereportbtn').click(()=>{
+  Swal.fire({
+                  icon:'question',
+                  text: "Do you want to delete this report?\n\nClick 'Yes' to confirm or click 'No' if you do not wish to delete it.",
+                  showDenyButton: true,
+                  showCancelButton: true,
+                  confirmButtonText: 'Yes',
+                  denyButtonText: "No",
+                })
+                .then((result) => {
+                  if (result.isConfirmed) {
+                    $.ajax({
+                          method: "POST",
+                          url: current_url,
+                          data: {
+                            "operation":"delete_pivot_report",
+                            'element_id':currentreport_element_id
+                          },
+                          success: function () {
+                            window.history.back();
+                          },
+                          failure: function () {
+                            Swal.fire({icon: 'error',text: 'Error! Please try again.'});
+                          },
+                        });
+                  }
+                })
+})
+
+
+</script>
+
+
+
+<script>
+
+
+
+
+
+</script>
+<!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script> -->
+
+<style>
+
+  .pvtUi {
+    color: #333;
+  }
+
+  table.pvtTable {
+    font-size: 8pt;
+    text-align: left;
+    border-collapse: collapse;
+  }
+  table.pvtTable thead tr th,
+  table.pvtTable tbody tr th {
+    background-color: #e6eeee;
+    border: 1px solid #cdcdcd;
+    font-size: 8pt;
+    padding: 5px;
+  }
+
+  table.pvtTable .pvtColLabel {
+    text-align: center;
+  }
+  table.pvtTable .pvtTotalLabel {
+    text-align: right;
+  }
+
+  table.pvtTable tbody tr td {
+    color: #3d3d3d;
+    padding: 5px;
+    background-color: #fff;
+    border: 1px solid #cdcdcd;
+    vertical-align: top;
+    text-align: right;
+  }
+
+  .pvtTotal,
+  .pvtGrandTotal {
+    font-weight: bold;
+  }
+
+  .pvtVals {
+    text-align: center;
+    white-space: nowrap;
+  }
+  .pvtRowOrder,
+  .pvtColOrder {
+    cursor: pointer;
+    width: 15px;
+    margin-left: 5px;
+    display: inline-block;
+  }
+  .pvtAggregator {
+    margin-bottom: 5px;
+  }
+
+  .pvtAxisContainer,
+  .pvtVals {
+    border: 1px solid lightgray;
+    background: white;
+    padding: 5px;
+    min-width: 20px;
+    min-height: 20px;
+
+    user-select: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -khtml-user-select: none;
+    -ms-user-select: none;
+  }
+  .pvtAxisContainer li {
+    padding: 8px 6px;
+    list-style-type: none;
+    cursor: move;
+  }
+  .pvtAxisContainer li.pvtPlaceholder {
+    -webkit-border-radius: 5px;
+    padding: 3px 15px;
+    -moz-border-radius: 5px;
+    border-radius: 5px;
+    border: 1px dashed #aaa;
+  }
+
+  .pvtAxisContainer li span.pvtAttr {
+    -webkit-text-size-adjust: 100%;
+    background: var(--primary-color);
+    color: white;
+    border: 1px solid #dedede;
+    padding: 2px 5px;
+    white-space: nowrap;
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
+    border-radius: 5px;
+  }
+
+  .pvtTriangle {
+    cursor: pointer;
+    color: white;
+  }
+
+  .pvtHorizList li {
+    display: inline;
+  }
+  .pvtVertList {
+    vertical-align: top;
+  }
+
+  .pvtFilteredAttribute {
+    font-style: italic;
+  }
+
+  .pvtFilterBox {
+    z-index: 100;
+    width: 300px;
+    border: 1px solid gray;
+    background-color: #fff;
+    position: absolute;
+    text-align: center;
+  }
+
+  .pvtFilterBox h4 {
+    margin: 15px;
+  }
+  .pvtFilterBox p {
+    margin: 10px auto;
+  }
+  .pvtFilterBox label {
+    font-weight: normal;
+  }
+  .pvtFilterBox input[type="checkbox"] {
+    margin-right: 10px;
+    margin-left: 10px;
+  }
+  .pvtFilterBox input[type="text"] {
+    width: 230px;
+  }
+  .pvtFilterBox .count {
+    color: gray;
+    font-weight: normal;
+    margin-left: 3px;
+  }
+
+  .pvtCheckContainer {
+    text-align: left;
+    font-size: 14px;
+    white-space: nowrap;
+    overflow-y: scroll;
+    width: 100%;
+    max-height: 250px;
+    border-top: 1px solid lightgrey;
+    border-bottom: 1px solid lightgrey;
+  }
+
+  .pvtCheckContainer p {
+    margin: 5px;
+  }
+
+  .pvtRendererArea {
+    padding: 5px;
+  }
+
+</style>
+
+{% endblock %}
+

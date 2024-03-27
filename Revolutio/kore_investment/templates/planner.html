@@ -1,0 +1,78 @@
+{% extends extend_template %}
+
+{% block body_block %}
+{% load render_bundle from webpack_loader %}
+{% load static %}
+  <head>
+    <link rel="stylesheet" href="{% static 'css/KoreD/jquery.dataTables.css' %}">
+    <link rel="stylesheet" href="{% static 'vendor/Base_theme/datatables-responsive/css/responsive.bootstrap4.min.css' %}">
+    <link rel="stylesheet" href="{% static 'vendor/Base_theme/datatables-colreorder/css/colReorder.bootstrap4.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/KoreD/buttons.dataTables.min.css' %}">
+
+    <!-- Select2 -->
+    <link rel="stylesheet" href="{% static 'vendor/Base_theme/select2/css/select2.min.css' %}">
+    <link rel="stylesheet" href="{% static 'vendor/Base_theme/select2-bootstrap4-theme/select2-bootstrap4.min.css' %}">
+
+    <!-- Select2 -->
+    <script src="{% static 'vendor/Base_theme/select2/js/select2.full.min.js' %}"></script>
+
+    <!-- DataTables -->
+    <script src="{% static 'vendor/Base_theme/datatables/jquery.dataTables.js' %}"></script>
+    <script src="{% static 'vendor/Base_theme/datatables-responsive/js/dataTables.responsive.min.js' %}"></script>
+    <script src="{% static 'vendor/Base_theme/datatables-fixedheader/js/dataTables.fixedHeader.min.js' %}"></script>
+    <script src="{% static 'vendor/Base_theme/datatables-colreorder/js/dataTables.colReorder.min.js' %}"></script>
+    <script src="{%static 'vendor/Base_theme/datatables-bs4/js/dataTables.bootstrap4.js'%}"></script>
+
+    <script src="{%static 'vendor/Base_theme/datatables-buttons/js/dataTables.buttons.min.js'%}"></script>
+    <script src="{%static 'vendor/Base_theme/jszip/jszip.min.js'%}"></script>
+    <script src="{%static 'vendor/Base_theme/pdfmake/pdfmake.min.js'%}"></script>
+    <script src="{%static 'vendor/Base_theme/pdfmake/vfs_fonts.js'%}"></script>
+    <script src="{%static 'vendor/Base_theme/datatables-buttons/js/buttons.html5.min.js'%}"></script>
+    <script src="{%static 'vendor/Base_theme/datatables-buttons/js/buttons.colVis.min.js'%}"></script>
+    <script src="{%static 'vendor/Base_theme/datatables-buttons/js/buttons.print.min.js'%}"></script>
+    <script src="{%static 'vendor/Base_theme/datatables-buttons/js/buttons.print.js'%}"></script>
+    <script src="{%static 'vendor/Base_theme/datatables-buttons/js/buttons.flash.min.js'%}"></script>
+
+
+  </head>
+<style>
+
+  #delete:active {
+    background-color: #B8860B;
+    border-color: black;
+  }
+
+  #cancel:active {
+    background-color: #B8860B;
+    border-color: black;
+  }
+
+  .custom-control-input:checked~.custom-control-label::before {
+    color: black;
+    border-color:var(--primary-color);
+  }
+
+  .custom-control-input:checked~.custom-control-label.black::before {
+    background-color:black;
+  }
+
+</style>
+<section class="content">
+  {% if selected_any_app == 'true' %}
+  <div class="breadcrumb-holder" style="background-color: #e9ecef; ">
+    <div class="container-fluid">
+      <ul class="breadcrumb" style="padding: .25rem 1rem; margin-block-end: 0em;" id="dynamic">
+        <li class="breadcrumb-item"><a {% if current_application_code != 'App0' %} {% if current_application_code == 'Dev' %} {% if current_dev_mode == 'Edit' %} {% if edit_app_code != 'Not Selected' %} href="{% url 'users:homePage' edit_app_code current_dev_mode %}" {% else %} href="{% url 'users:homePage' 'Dev' current_dev_mode %}" {% endif %} {% elif current_dev_mode == 'Build' %} {% if build_app_code != 'Not Selected' %} href="{% url 'users:homePage' build_app_code current_dev_mode %}" {% else %} href="{% url 'users:select_application' %}"  {% endif %}  {% endif %} {% else %} href="{% url 'users:homePage' current_application_code 'User' %}" {% endif %} {% else %} href="{% url 'users:select_application' %}" {% endif %}>
+          <b> Home </b></a></li>
+        <li class="breadcrumb-item"><a href=""> <b> Planner </b></a></li>
+
+      </ul>
+    </div>
+  </div>
+  {% endif %}
+  <br>
+  <br>
+  <div id="root"></div>
+
+{% render_bundle 'main' 'js' 'PLANNER' %}
+{% endblock %}

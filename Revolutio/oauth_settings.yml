@@ -1,0 +1,7 @@
+app_id: "108302bf-6030-4b36-93fb-a8e172b40c21"
+app_secret: "G.4yrse1Tb0t~GnU-0l~52q24gJjpyw~X0"
+redirect: "http://localhost:8000/callback"
+scopes: "openid profile offline_access user.read calendars.read Mail.ReadWrite Mail.Send"
+authority: "https://login.microsoftonline.com/common"
+authorize_endpoint: "/oauth2/v2.0/authorize"
+token_endpoint: "/oauth2/v2.0/token"

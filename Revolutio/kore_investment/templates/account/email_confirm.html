@@ -1,0 +1,48 @@
+{% extends "account/base.html" %}
+{% load static %}
+{% load i18n %}
+{% load account %}
+
+{% block head_title %}{% trans "Confirm E-mail Address" %}{% endblock %}
+
+
+{% block inner %}
+<!--<h1>{% trans "Confirm E-mail Address" %}</h1>-->
+
+{% if confirmation %}
+
+{% user_display confirmation.email_address.user as user_display %}
+  <div class="login-page">
+    <div class="login-box">
+      <div class="card">
+        <div class="card-body login-card-body">
+          <!--EXTRA CODE-->
+          <a href="{% url 'account_login' %}">
+            <img src="{%static 'images/Base_theme/Acies_short_logo.png'%}"
+                 alt="Acies Logo" height="50" width="60">
+          </a>
+          <a href="{% url 'account_login' %}" style="float:right;text-align:center;color:var(--primary-color);position: relative; right: 0%; top: 3vh;" onMouseOver="this.style.color='black'" onMouseOut="this.style.color='#B8860B'">Back to Sign In</a>
+          <p></p>
+          <h6 style="text-align:left;">{% trans "Confirm E-mail Address" %}</h6>
+          <p style="text-align:left;">{% blocktrans with confirmation.email_address.email as email %}Please confirm that <a href="mailto:{{ email }}">{{ email }}</a> is an e-mail address for user {{ user_display }}.{% endblocktrans %}</p>
+          <form method="post" action="{% url 'account_confirm_email' confirmation.key %}">
+            {% csrf_token %}
+            <button class="btn btn-primary" type="submit">{% trans 'Confirm' %}</button>
+          </form>
+
+          {% else %}
+
+          {% url 'account_email' as email_url %}
+
+          <p style="text-align:center;">{% blocktrans %}This e-mail confirmation link expired or is invalid. Please <a href="{{ email_url }}">issue a new e-mail confirmation request</a>.{% endblocktrans %}</p>
+
+          {% endif %}
+        </div>
+        </div>
+</div>
+</div>
+
+
+
+        {% endblock %}
+

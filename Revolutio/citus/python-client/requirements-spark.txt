@@ -1,0 +1,9 @@
+azure-identity
+azure-storage-blob
+kafka-python
+numpy
+pandas
+pyarrow
+pyspark
+python-dotenv
+sseclient

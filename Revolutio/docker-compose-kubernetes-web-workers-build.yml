@@ -1,0 +1,60 @@
+version: "3.8"
+
+services:
+  web:
+    image: ${REGISTRY_HOST}/revolutio_kubernetes/revolutio:latest
+    build:
+      context: "."
+      dockerfile: ./Dockerfile-updated-python
+    # command: bash -c 'python3 manage.py collectstatic --no-input; uvicorn config.asgi:application --port 5000 --host 0.0.0.0'
+    # command: bash -c 'python3 manage.py collectstatic --no-input; python3 manage.py migrate; uvicorn config.asgi:application --port 5000 --host 0.0.0.0'
+    # command: bash -c 'while !</dev/tcp/postgres/5432; do sleep 1; done; python3 manage.py collectstatic --no-input; python3 manage.py compress; python3 manage.py makemigrations; python3 manage.py migrate; python3 manage.py createsuperuser --noinput --username $DJANGO_SUPERUSER_USERNAME --email $DJANGO_SUPERUSER_EMAIL ; uvicorn config.asgi:application --port 5000 --host 0.0.0.0 '
+    command: bash -c 'uvicorn config.asgi:application --port 5000 --host 0.0.0.0'
+    env_file:
+      - ".env_prod"
+    ports:
+      - 5000:5000
+    healthcheck:
+      test: ['CMD-SHELL', '/bin/bash -c "/opt/revolutio/healthcheck.sh 5000"']
+      interval: 200s
+      timeout: 30s
+      retries: 5
+    restart: on-failure:5
+    read_only: true
+    tmpfs:
+      - /opt/temp
+      - /opt/revolutio/logs:mode=770,size=1000k,uid=70070,gid=101
+      - /tmp:mode=770,size=1000k,uid=70070,gid=101
+    stop_grace_period: 3s
+    volumes:
+      - "${DOCKER_WEB_VOLUME:-./revolutio.conf:/opt/revolutio/revolutio.conf}"
+      - static:/opt/revolutio/static
+      - ./kore_investment/media:/opt/revolutio/kore_investment/media
+      - ./:/opt/revolutio/
+
+volumes:
+  redis:
+  redis-scheduler:
+  keydb:
+  postgresql-data:
+  postgresql-backup:
+  static:
+  user_defined_template:
+  user_migration:
+  revolutioconf:
+  platform_configs:
+  media:
+  hadoop_namenode:
+  hadoop_datanode:
+  hadoop_historyserver:
+  data_store:
+  postgresql-data-new:
+  postgresql-data-update:
+  postgresql-backup-new:
+  postgresql-backup-update:
+  postgresql-data-app:
+  postgresql-backup-app:
+  citus-master-data:
+  citus-worker-1-data:
+  citus-worker-2-data:
+  pgbouncertmp:

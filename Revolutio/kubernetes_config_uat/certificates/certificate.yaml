@@ -1,0 +1,15 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: wildcard
+  namespace: uat
+spec:
+  secretName: wildcard
+  issuerRef:
+    # name: letsencrypt-staging
+    name: letsencrypt
+    kind: ClusterIssuer
+  commonName: "*.acies.cloud"
+  dnsNames:
+  - "*.acies.cloud"
+  - acies.cloud

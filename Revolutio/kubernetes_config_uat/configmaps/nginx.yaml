@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: nginx-ingress-ingress-nginx-controller
+  namespace: uat
+data:
+  use-forwarded-headers: "true" #Forwarded settings

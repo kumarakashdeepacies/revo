@@ -1,0 +1,17 @@
+FROM datamechanics/spark:3.2.1-dm17
+
+ENV PYSPARK_MAJOR_PYTHON_VERSION=3
+WORKDIR /opt/application/
+
+RUN wget  https://jdbc.postgresql.org/download/postgresql-42.2.5.jar
+RUN mv postgresql-42.2.5.jar /opt/spark/jars
+
+# Install curl and gnupg2 - needed for many other installation steps
+
+COPY requirements-spark.txt .
+COPY /scripts/*.sh /scripts/
+
+RUN pip3 install -r requirements-spark.txt
+
+COPY . /opt/application/
+

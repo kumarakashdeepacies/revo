@@ -1,0 +1,12 @@
+[Unit]
+Description=RQScheduler
+After=network.target
+
+[Service]
+ExecStart=/bin/bash -c 'rqscheduler --host redis-scheduler --port 6379 --db 0;'
+
+Restart=on-failure
+RestartSec=10s
+
+[Install]
+WantedBy=multi-user.target

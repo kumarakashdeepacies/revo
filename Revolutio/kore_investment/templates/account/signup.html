@@ -1,0 +1,43 @@
+{% extends "account/base.html" %}
+{% load staticfiles %}
+{% load i18n %}
+{% load crispy_forms_tags %}
+
+<!--{% block head_title %}{% trans "Signup" %}{% endblock %}-->
+
+{% block inner %}
+<!--<h1>{% trans "Sign Up" %}</h1>-->
+
+
+  <div class="container_lgn">
+    <!--EXTRA CODE-->
+    <a href="{% url 'account_login' %}">
+      <img src="{%static 'images/Base_theme/Acies_short_logo.png'%}"
+           alt="Acies Logo" height="50" width="60">
+    </a>
+    <p>{% blocktrans %}Already have an account? Then please <a  class="acies-text-center" href="{{ login_url }}">Sign In</a>{% endblocktrans %}</p>
+    <p></p>
+    <div class="container_inner_sgn">
+      <form class="signup" id="signup_form" method="post" action="{% url 'account_signup' %}">
+        {% csrf_token %}
+        {{ form|crispy }}
+        {% if redirect_field_value %}
+        <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" />
+        {% endif %}
+        <div class="row" style="vertical-align:middle;">
+          <div class="col-4">
+            <button class="btn btn-primary" type="submit">{% trans "Sign Up" %} &raquo;</button>
+          </div>
+        </div>
+      </form>
+    </div>
+
+  </div>
+
+{% endblock %}
+
+
+
+
+
+

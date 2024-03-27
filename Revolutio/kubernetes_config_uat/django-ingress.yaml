@@ -1,0 +1,105 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: revolutio-ingress
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    nginx.ingress.kubernetes.io/rewrite-target: /$1
+    nginx.ingress.kubernetes.io/use-regex: "true"
+    cert-manager.io/cluster-issuer: letsencrypt
+    nginx.ingress.kubernetes.io/backend-protocol: "HTTP"
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "3600"
+    nginx.ingress.kubernetes.io/proxy-send-timeout: "3600"
+    nginx.ingress.kubernetes.io/limit-connections: "20"
+    nginx.ingress.kubernetes.io/limit-rps: "500"
+spec:
+  ingressClassName: nginx
+  tls:
+  - hosts:
+    - revolutio.digital
+    - "*.revolutio.digital"
+    secretName: wildcard
+  rules:
+  - host: revolutio.digital
+    http:
+      paths:
+      - path: /(.*)
+        pathType: Prefix
+        backend:
+          service:
+            name: django
+            port:
+              number: 80
+  - host: "*.revolutio.digital"
+    http:
+      paths:
+      - path: /(.*)
+        pathType: Prefix
+        backend:
+          service:
+            name: django
+            port:
+              number: 80
+  - host: revolutio.digital
+    http:
+      paths:
+      - path: /ws/
+        pathType: Prefix
+        backend:
+          service:
+            name: django
+            port:
+              number: 80
+  - host: "*.revolutio.digital"
+    http:
+      paths:
+      - path: /ws/
+        pathType: Prefix
+        backend:
+          service:
+            name: django
+            port:
+              number: 80
+
+---
+
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: revolutio-static-ingress
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    nginx.ingress.kubernetes.io/rewrite-target: /static/$2
+    nginx.ingress.kubernetes.io/use-regex: "true"
+    cert-manager.io/cluster-issuer: letsencrypt
+    nginx.ingress.kubernetes.io/backend-protocol: "HTTP"
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "3600"
+    nginx.ingress.kubernetes.io/proxy-send-timeout: "3600"
+    nginx.ingress.kubernetes.io/limit-connections: "200"
+    nginx.ingress.kubernetes.io/limit-rps: "200"
+spec:
+  tls:
+  - hosts:
+    - revolutio.digital
+    secretName: wildcard
+  rules:
+  - host: revolutio.digital
+    http:
+      paths:
+      - path: /static(/|$)(.*)
+        pathType: Prefix
+        backend:
+          service:
+            name: django
+            port:
+              number: 80
+  - host: "*.revolutio.digital"
+    http:
+      paths:
+      - path: /static(/|$)(.*)
+        pathType: Prefix
+        backend:
+          service:
+            name: django
+            port:
+              number: 80

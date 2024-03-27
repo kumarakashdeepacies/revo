@@ -1,0 +1,1431 @@
+<!DOCTYPE html>
+{% load static %}
+
+<html>
+
+<head>
+  <!--<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">-->
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content=" ">
+  <link rel="icon" href="/static/images/favicons/favicon1.ico">
+
+
+  <title>Revolutio - Platform Admin</title>
+  <!-- Tell the browser to be responsive to screen width -->
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- jQuery -->
+  <script src="{%static 'vendor/Base_theme/jquery/jquery.min.js'%}"></script>
+
+  <!--Jquery UI-->
+  <link rel="stylesheet" href="{% static 'vendor/Base_theme/jquery-ui/jquery-ui.css' %}">
+  <script src="{%static 'vendor/Base_theme/jquery-ui/jquery-ui.js'%}"></script>
+
+  <script src="{%static 'vendor/Base_theme/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+
+  <!-- Theme style -->
+  <link rel="stylesheet" href="{%static 'css/Base_theme/CSS_min.min.css'%}">
+  <link rel="stylesheet" href="{%static 'css/Acies_theme/Stylesheet1.min.css'%}">
+
+  <!-- Font Awesome ok -->
+  <link rel="stylesheet" href="{%static 'vendor/Base_theme/fontawesome-free/css/all.min.css'%}">
+  <link rel="stylesheet" href="{%static 'vendor/Base_theme/fontawesome-free/css/allversion6.min.css'%}">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+  <!-- Select2 -->
+  <link rel="stylesheet" href="{% static 'vendor/Base_theme/select2/css/select2.min.css' %}">
+  <link rel="stylesheet" href="{% static 'vendor/Base_theme/select2-bootstrap4-theme/select2-bootstrap4.min.css' %}">
+  <!-- Select2 -->
+  <script src="{% static 'vendor/Base_theme/select2/js/select2.full.min.js' %}"></script>
+
+  <!-- Sweet Alert2 -->
+  <script src="{% static 'vendor/sweet_alert/sweetalert2.all.min.js' %}"></script>
+
+  <style>
+    input[type=text], input[type=password], input[type=email]{
+      height: 2.8em;
+      width: 100%;
+      padding: 15px;
+      border: 1px solid lightgrey;
+      border-radius: 5px;
+    }
+    .swal2-title{
+      font-size: 1em !important;
+      font-weight: unset !important;
+    }
+    .swal2-styled.swal2-confirm{
+      background-color: var(--primary-color) !important;
+      padding: .5em 0.8em;
+    }
+    .swal2-styled.swal2-confirm:focus {
+      box-shadow: 0 0 0 3px var(--primary-color) !important;
+    }
+    .swal2-actions {
+      flex-wrap: nowrap !important;
+    }
+    .content-wrapper{
+      background-color: #fff;
+    }
+    .sub-tab-wrapper{
+      background-color: #fff;
+      padding-left: 0;
+    }
+    #main-tab{
+      background-color: #fff;
+    }
+    .nav-tabs.flex-column .nav-link {
+      border-bottom-left-radius: 0.25rem;
+      border-top-right-radius: 0;
+      margin: 10px -1px 10px 0;
+    }
+    #main-tab.flex-column .nav-link.active {
+      background-color: #f7f7f7;
+    }
+    #nav-tabContent{
+      background-color: #fff;
+    }
+    .floating-navbar{
+      margin: 15px;
+      box-shadow: 1px 1px 16px #d3d3d3d6;
+      border-radius: 6px;
+    }
+    .floating-navbar-allapps{
+      margin: 15px;
+      box-shadow: 1px 1px 16px #d3d3d3d6;
+      padding: 27px 10px;
+      border-radius: 6px;
+    }
+    .floating-wrapper{
+      padding: 1px;
+      position: relative;
+      background: #fff;
+    }
+    .hideit{
+      bottom: 0;
+      position: absolute;
+      margin-left: auto;
+      margin-right: auto;
+      left: 0;
+      right: 0;
+      text-align: center;
+      cursor: pointer;
+    }
+    .pinit{
+      position: absolute;
+      right: -10px;
+      top: -10px;
+      transform: rotateZ(45deg);
+      font-size: 20px;
+      color: #959191;
+      cursor: pointer;
+    }
+    .color{
+      color: black;
+      right: -7px;
+      top: -7px;
+    }
+    .rotate{
+      transform: rotateZ(180deg);
+      transition: .2s;
+    }
+    .displaynone{
+      display: none !important;
+      transition: 1s;
+    }
+    .fixed{
+      position: sticky;
+      top: 15px;
+    }
+    .sub-tab-contents{
+      padding: 0 20px;
+    }
+    .sub-tabs{
+      border-radius: .25rem;
+      background: #f7f7f7;
+    }
+    .sub-tabs{
+      height: 500px;
+    }
+    .sub-tabs a.active{
+      background-color: var(--primary-color) !important;
+      color: var(--font-color) !important;
+    }
+    .d-flex{
+      display:flex;
+    }
+    .d-flex label{
+      margin: -4px 0px 0px 10px;
+    }
+    .btn-secondary{
+      background-color: var(--primary-color) !important;
+    }
+    .buttonSection{
+      display:flex;
+      justify-content:space-between;
+    }
+    .buttonSection .left-button-section{
+      float: left;
+    }
+
+    .buttonSection .right-button-section{
+      float: right;
+    }
+    .tab-pane-sub-section, .sub-section-buttons{
+      margin: 20px 10px;
+    }
+    .row.sub-section{
+      margin: 10px 0;
+    }
+    .file-input-division{
+      height: auto;
+      min-height: 50px;
+      border: 1px solid lightgrey;
+      border-radius: 10px;
+    }
+    .form-group{
+      margin-left: 1rem;
+      margin-top: 1rem;
+      padding: 1px 0;
+    }
+    #add-logo-screen, #add-logo-form{
+      display: none;
+    }
+    .sub-tab-column{
+      padding-right: 0;
+      padding-left: 0;
+      border-radius: .25rem;
+    }
+    .nav-tabs .nav-link:first-child{
+      margin-top: 0;
+    }
+    .sub-tabs .nav-link:first-child{
+      border-top-right-radius: .25rem;
+    }
+    .sub-tab-contents .tab-pane.active{
+      border: 1px solid lightgrey;
+      border-radius: 10px;
+    }
+    .config-tabs .tab-pane.active{
+      border: none !important;
+    }
+    .config-tabs .tab-pane{
+      /* padding-top: 10px; */
+    }
+
+    .mobile-tabs{
+        display:none;
+    }
+    .hide{
+        display:none;
+    }
+
+    .mobile-tabs ul{
+        display: block;
+    }
+    .mobile-tabs li{
+        display: block;
+    }
+    .mobile-tabs .nav{
+        display: block !important;
+        text-align: center;
+    }
+    .card-header{
+      background: #f7f7f7;
+      border-top-right-radius: 10px;
+      border-top-left-radius: 10px;
+    }
+    .switch-container {
+      width: 4em;
+      height: 2em;
+      border-radius: 10em;
+      box-shadow: 2px 0px 10px 0px #cfd8dc;
+      position: relative;
+    }
+    input.switch {
+      display: none;
+    }
+    .switch-color {
+      width: 3.8em;
+      height: 1.8em;
+      left: 0.1em;
+      top: 0.1em;
+      background: #cfd8dc;
+      border-radius: 10em;
+      z-index: 0;
+      position: absolute;
+      transition: all 500ms cubic-bezier(0.34, 1.36, 0.2, 1);
+    }
+    .switch-color .trigger-label{
+      height: 100%;
+      width: 100%;
+      margin: 0;
+      cursor: pointer;
+    }
+    .switch-container label.switch-label {
+      width: 1.6em;
+      height: 1.6em;
+      border-radius: 10em;
+      background: white;
+      position: absolute;
+      top: .5em;
+      left: -0.6em;
+      box-shadow: 2px 2px 10px 2px #cfd8dc;
+      z-index: 99;
+      cursor: pointer;
+    }
+    .switch:checked ~ label.switch-label {
+      transform: translatex(2em) rotatez(360deg);
+    }
+
+    .switch:checked ~ .switch-color {
+      background:var(--primary-color);
+    }
+
+    .switch ~ label.switch-label {
+      transition: all 1s cubic-bezier(0.34, 1.36, 0.2, 1);
+    }
+    #showMaintabs,.gobacktosettings, .gotosubtabs{
+      display: none;
+    }
+
+    .back-button-for-content{
+      display: block;
+      width: fit-content;
+      color: var(--primary-color);
+      background: none;
+      border: 0px;
+      position: absolute;
+      top: -24px;
+      left: 15px;
+    }
+    .save-buttons{
+      margin: 1%;
+      background-color: var(--primary-color);
+      border: none;
+      padding: 4px 8px;
+    }
+    .sub-setting-header{
+      text-align: left;
+      margin: 7px;
+      font-weight: bold;
+      font-size: 15px;
+    }
+    /* .settingNav .nav-tabs{
+      margin-top: 16px;
+    } */
+     /* common css */
+     .content-Body{
+        padding: 15px;
+      }
+      .content-Body .options{
+        margin-bottom: 5px;
+      }
+      .content-Header{
+        padding: 1%;
+        background-color: #d3d3d326;
+      }
+      .content-Header strong{
+        text-align: center;
+        width: 100%;
+        display: block;
+        font-size: 17px;
+      }
+      /* end common css */
+      /* Encapsulated css */
+      #password-settings .content-Body input{
+        width: 100%;
+      }
+      /* End Encapsulated css */
+
+      .MaintabNav .set{
+        color: white;
+        padding: 5px;
+        font-size: 15px;
+        border-radius: 5px;
+        margin-right: 10px;
+      }
+
+      .save-button{
+        top: 5px;
+        /* margin: 10px; */
+        position: absolute;
+        right: 34px;
+      }
+
+      .dropdown-divider{
+        margin: 0 !important;
+      }
+      .nav-tabs .nav-item {
+        margin: 0 !important;
+        padding: 15px 10px;
+      }
+
+      .spinner-control {
+        display: flex;
+        background: var(--primary-color);
+        width: fit-content;
+        border-radius: 25px;
+        opacity: 0.7;
+      }
+      .spinner-control input{
+        border: none;
+        background-color: #f7f7f7 !important;
+        color: #000;
+        text-align: center;
+        z-index: 100;
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        box-shadow: 0 2px 5px 0 rgba(0,0,0,.16), 0 2px 10px 0 rgba(0,0,0,.12);
+        cursor: text;
+        font-size: 11px;
+        padding: 5px !important;
+      }
+      .btn-decrement  {
+        border-bottom-left-radius: 24px;
+        border-top-left-radius: 24px;
+        border: none;
+        background-color: transparent;
+        padding: 7px;
+      }
+      .btn-increment{
+        border-bottom-right-radius: 24px;
+        border-top-right-radius: 24px;
+        border: none;
+        background-color: transparent;
+        padding: 7px;
+      }
+
+      @media only screen and (max-width:500px){
+        .gobacktosettings, .gotosubtabs{
+          display: block;
+          width: 100%;
+          margin-bottom: 10px;
+          margin-top: -32px;
+          color: var(--primary-color);
+          background: none;
+          border: 0px;
+          text-align: left;
+        }
+        .tabNav{
+          padding: 1%;
+        }
+        .sub-tab-wrapper{
+          padding: 0 !important;
+        }
+        .gobacktosettings{
+          padding-left: 15px;
+        }
+        .sub-tabs{
+            background-color: #fff !important;
+          }
+
+      }
+
+      @media only screen and (min-width: 500px) and (max-width: 768px){
+        .gobacktosettings{
+          display: block;
+          width: 100%;
+          margin-bottom: 10px;
+          margin-top: -32px;
+          color: var(--primary-color);
+          background: none;
+          border: 0px;
+          text-align: left;
+        }
+        /* #showMaintabs{
+            display: block;
+            margin: auto 1.5em;
+            color: #fff;
+            background: none;
+            border: 0px;
+          } */
+          .nav-item{
+            font-size: 12px;
+          }
+      }
+
+
+    @media only screen and (max-width: 768px) {
+      .content-wrapper>.content {
+        padding: 1rem 0.5rem 1rem 2rem !important;
+      }
+
+      .nav-tabs .nav-item.show .nav-link, .nav-tabs .nav-link.active {
+        color: unset;
+        background-color: unset;
+        border-color: #fff;
+      }
+
+      .nav-tabs .nav-link:focus, .nav-tabs .nav-link:hover {
+        border-color: unset;
+      }
+    }
+    @media screen and (min-width: 769px){
+      #showMaintabs{
+        display:none;
+      }
+    }
+
+    @media screen and (max-width: 991px){
+      .content-wrapper>.content {
+        padding: 2rem 0rem 2rem 1rem !important;
+      }
+    }
+    .select2-selection__rendered {
+      line-height: 31px !important;
+    }
+    .select2-container .select2-selection--single {
+        height: 2.8em !important;
+        padding-left: 15px;
+        padding-top: 10px;
+    }
+    .select2-selection__arrow {
+        height: 34px !important;
+    }
+
+
+  </style>
+
+</head>
+
+
+<body>
+  <!--Dummy Form For Ajax Call-->
+  <form id="dummyFormForAjaxCall">
+    {% csrf_token %}
+  </form>
+
+  <div class="wrapper floating-wrapper">
+
+    <nav class="allapps main-header navbar floating-navbar navbar-expand navbar-white navbar-light" style="margin: 15px !important">
+      <div class="nav-wrapper" style="display:flex; justify-content:space-between;width: 100%;transition: 2s;">
+        <!-- Left navbar links -->
+
+        <ul class="navbar-nav">
+          <li class="nav-item m-auto">
+            <div class="navbar-brand">
+              <img src="{% static 'images/Base_theme/Acies_short_logo.png' %}" alt="Acies Logo" align="left" style="float:left;height: 30px;">
+            </div>
+          </li>
+        </ul>
+
+        <ul class="navbar-nav">
+          <li class="nav-item m-auto">
+            <a class="nav-link" href="#">
+              <i class="far fa-bell" style="font-size: 24px;" data-toggle="tooltip" title="Notifications"></i>
+              <span class="alertcount badge badge-danger navbar-badge"></span>
+            </a>
+            <div class="mydropdown dropdown-menu dropdown-menu-lg dropdown-menu-right" style="height: fit-content;min-width: 28em;border-radius: 1rem;overflow-y: auto">
+              <span class="dropdown-item dropdown-header" style="text-align:left;background-color:#DCDCDC"  onclick="myFunction()">
+                <b>New notifications</b>
+                <b class="alertcount badge badge-danger" style="margin-left:19em;font-size:0.8rem;"></b>
+                <i class="fa fa-angle-down" style="float:right;padding-top:0.3em;"></i></span>
+              <div id="myDropdown" class="dropdown-content" style="display:none">
+              <div class="dropdown-divider"></div>
+              <div class="addalert"></div>
+              <div class="dropdown-divider"></div>
+            </div>
+            </div>
+          </li>
+
+          <li class="nav-item m-auto">
+            <a class="nav-link" href="/platform_admin/accounts/logout/">Sign out</a>
+          </li>
+        </ul>
+
+      </div>
+      <i class="fa fa-angle-up hideit" id="hideit"></i>
+      <i class="fa fa-thumbtack pinit" id="pinit" data-toggle="tooltip" title="Pin to screen"></i>
+    </nav>
+
+    <div class="content-wrapper" style="margin-left: 0px !important; min-height: 100vh;">
+      <button class="btn btn-secondary" id="showMaintabs" onclick="showMainTab()">Back</button>
+      <section class="content" style="padding: 5rem 5rem;">
+        <div class="row">
+          <div class="col-lg-3 col-md-3 col-sm-3 MaintabNav" style="padding-right: 0;padding-left: 0;">
+            <nav style="height: 100%;">
+              <div class="nav flex-column nav-tabs" id="main-tab" role="tablist"  style="height: 100%;">
+                <a class="nav-item nav-link d-flex justify-content-between align-items-center" id="nav-tenant-tab" data-toggle="tab" href="#nav-tenant" role="tab" aria-controls="nav-tenant" aria-selected="true" data-level="1"><div class="d-flex align-items-center"><i class="fa-solid fa-toolbox set" style="background: #226ab6;"></i>Tenant Settings </div><i class="fa fa-chevron-right" style="float: right;"></i></a>
+                <div class="dropdown-divider"></div>
+                <a class="nav-item nav-link d-flex justify-content-between align-items-center" id="nav-user-authorization-tab" data-toggle="tab" href="#nav-user-authorization" role="tab" aria-controls="nav-user-authorization" aria-selected="false" data-level="1"><div class="d-flex align-items-center"><i class="fa-solid fa-user-gear set" style="background: #e96f09;"></i>User and Authorization Settings </div><i class="fa fa-chevron-right" style="float: right;"></i></a>
+                <div class="dropdown-divider"></div>
+                <a class="nav-item nav-link d-flex justify-content-between align-items-center" id="nav-connections-tab" data-toggle="tab" href="#nav-connections" role="tab" aria-controls="nav-connections" aria-selected="false" data-level="1"><div class="d-flex align-items-center"><i class="fa-solid fa-server set" style="background: #3a9f51;"></i>Connections and System Settings </div><i class="fa fa-chevron-right" style="float: right;"></i></a>
+                <div class="dropdown-divider"></div>
+                <a class="nav-item nav-link d-flex justify-content-between align-items-center" id="nav-other-tab" data-toggle="tab" href="#nav-other" role="tab" aria-controls="nav-other" aria-selected="false" data-level="1"><div class="d-flex align-items-center"><i class="fa-solid fa-wrench set" style="background: #3a9f51;"></i>Other Settings </div><i class="fa fa-chevron-right" style="float: right;"></i></a>
+              </div>
+            </nav>
+          </div>
+          <div class="col-lg-9 col-md-9 col-sm-9 MaintabContent" style="padding-right: 0;padding-left: 0;">
+            <div class="tab-content" id="nav-tabContent">
+              <div class="tab-pane" id="nav-tenant" role="tabpanel" aria-labelledby="nav-tenant-tab">
+                <div class="row">
+                  <div class="col-md-3 col-sm-3 sub-tab-column">
+                    <button class="gobacktosettings" onclick="showMainTab('nav-tenant')" ><i class="fa fa-chevron-left"></i> Settings</button>
+                    <nav class="tabNav">
+                      <div class="nav flex-column nav-tabs sub-tabs" id="tenant-sub-tab" role="tablist">
+                        <a class="nav-item nav-link" id="sub-tenent-creation-tab" data-toggle="tab" href="#sub-tenent-creation" role="tab" aria-controls="sub-tenent-creation" aria-selected="true">Tenant Creation<i class="fa fa-chevron-right" style="float: right;"></i></a>
+                        <div class="dropdown-divider"></div>
+                        <a class="nav-item nav-link" id="sub-tenant-management-tab" data-toggle="tab" href="#sub-tenant-management" role="tab" aria-controls="sub-tenant-management" aria-selected="false">Tenant Management - Edit and Customize<i class="fa fa-chevron-right" style="float: right;"></i></a>
+                        <div class="dropdown-divider"></div>
+                        <a class="nav-item nav-link" id="sub-tenant-deactivation-tab" data-toggle="tab" href="#sub-tenant-deactivation" role="tab" aria-controls="sub-tenant-deactivation" aria-selected="false">Tenant Deactivation<i class="fa fa-chevron-right" style="float: right;"></i></a>
+                        <div class="dropdown-divider"></div>
+                        {% if deactivated_tenants|length %}
+                        <a class="nav-item nav-link" id="sub-tenant-reactivation-tab" data-toggle="tab" href="#sub-tenant-reactivation" role="tab" aria-controls="sub-tenant-reactivation" aria-selected="false">Tenant Reactivation<i class="fa fa-chevron-right" style="float: right;"></i></a>
+                        <div class="dropdown-divider"></div>
+                        {% endif %}
+                        <a class="nav-item nav-link" id="sub-tenant-deletion-tab" data-toggle="tab" href="#sub-tenant-deletion" role="tab" aria-controls="sub-tenant-deletion" aria-selected="false">Tenant Deletion<i class="fa fa-chevron-right" style="float: right;"></i></a>
+                      </div>
+                    </nav>
+                  </div>
+                  <div class="col-md-9 col-sm-9 sub-tab-wrapper">
+                     <div class="tab-content sub-tab-contents" id="tenant-tabContent">
+                      <div class="tab-pane fade" id="sub-tenent-creation" role="tabpanel" aria-labelledby="sub-tenent-creation-tab">
+                        <button class="gotosubtabs" onclick="gotosubTabs('sub-tenent-creation','nav-tenant')"><i class="fa fa-chevron-left"></i> Tenant Settings</button>
+                        <nav class="settingNav">
+                          <div class="content-Header">
+                            <h6 class="sub-setting-header">Tenant Creation</h6>
+                          </div>
+                          <div class="nav flex-column nav-tabs " id="" role="tablist">
+                            <a class="nav-item nav-link link-tab" id="tenant_creation-tab" data-toggle="tab" href="#tenant_creation-content" role="tab" aria-controls="tenant_creation" aria-selected="true">Set Tenant Name  <i class="fa fa-chevron-right" style="float: right;"></i></a>
+                          </div>
+                        </nav>
+                        <div class="tab-content config-tabs" id="tenant-settings">
+                          <div class="tab-pane fade" id="tenant_creation-content" role="tabpanel" aria-labelledby="tenant_creation-content">
+                            <button class="back-button-for-content" onclick="BackToSubTab(this,'tenant_creation-content')"><i class="fa fa-chevron-left"></i>&nbsp;Tenant Creation</button>
+                            <div class="save-button d-block float-right">
+                              <button type="button" id="tenant_creation" class="btn btn-primary rounded save-buttons" style="margin-right: 9px;margin-top:4px;">Create</button>
+                            </div>
+                            <div class="content-Header">
+                              <h6 class="sub-setting-header">Tenant Creation </h6>
+                            </div>
+                            <div class="content-Body">
+                              <div class="row options">
+                                <div class="col-md-4">
+                                  Set Tenant Name
+                                </div>
+                                <div class="col-md-8">
+                                  <input id="tenant_name" name="tenant_name" type="text" class="form-control numberinput" style="border: 1px solid lightgrey;border-radius: 5px;">
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="tab-pane fade" id="sub-tenant-management" role="tabpanel" aria-labelledby="sub-tenant-management-tab">
+                        <button class="gotosubtabs" onclick="gotosubTabs('sub-tenant-management','nav-tenant')"><i class="fa fa-chevron-left"></i> Tenant Settings</button>
+                      </div>
+                      <div class="tab-pane fade" id="sub-tenant-deactivation" role="tabpanel" aria-labelledby="sub-tenant-deactivation-tab">
+                        <button class="gotosubtabs" onclick="gotosubTabs('sub-tenant-deactivation','nav-tenant')"><i class="fa fa-chevron-left"></i> Tenant Settings</button>
+                        <div class="save-button d-block float-right">
+                          <button type="button" id="deactivate_tenant" class="btn btn-primary rounded save-buttons">Deactivate</button>
+                        </div>
+                        <nav class="settingNav">
+                          <div class="content-Header">
+                            <h6 class="sub-setting-header">Deactivate Tenant</h6>
+                          </div>
+                          <div class="nav flex-column nav-tabs " id="" role="tablist">
+                            <div class="nav-item nav-link" id="select-tenant-deactivate-content" aria-controls="select-tenant-deactivate-content" aria-selected="false">
+                              <div class="row align-items-center">
+                                <div class="col-md-4">
+                                  Tenant
+                                </div>
+                                <div class="col-md-8">
+                                  <select class="select2 form-control" name="select_tenant-deactivate" id="select_tenant-deactivate" style="border: 1px solid lightgrey; border-radius:5px;">
+                                    <option value="" selected disabled>Select tenant</option>
+                                    {% for name in active_tenants %}
+                                      <option value="{{ name }}">{{ name }}</option>
+                                    {% endfor %}
+                                  </select>
+                                </div>
+                              </div>
+                            </div>
+                            <div class="dropdown-divider"></div>
+                            <div class="nav-item nav-link" id="select-tenant-activation-content" aria-controls="select-tenant-activation-content" aria-selected="false">
+                              <div class="row align-items-center">
+                                <div class="col-md-4">
+                                Reactivate Tenant
+                                </div>
+                                <div class="col-md-8">
+                                  <select class="select2 form-control" name="activate_tenant" id="activate_tenant" style="border: 1px solid lightgrey; border-radius:5px;">
+                                    <option value="" selected disabled>Select option</option>
+                                    <option value="manually">Manually</option>
+                                    <option value="custom">Custom</option>
+                                  </select>
+                                </div>
+                              </div>
+                            </div>
+                            <div class="dropdown-divider"></div>
+                            <div id="tenant_activation_custom_content" style="display: none;">
+                              <div class="nav-item nav-link" aria-controls="tenant_activation_custom_days" aria-selected="true">
+                                <div class="row align-items-center">
+                                  <div class="col-md-4">
+                                    Days
+                                  </div>
+                                  <div class="col-md-8">
+                                    <div>
+                                      <div class="form-spinner d-flex justify-content-end">
+                                        <div class="spinner-control">
+                                          <button class="btn btn-primary btn-decrement"><i class="fas fa-minus"></i></button>
+                                          <input type="text" data-type="number" step="1" min="0" max="366" id="tenant_activate_custom_days" name="tenant_activate_custom_days" value="0" oninput="this.value = this.value.replace(/[^0-9]/g, '').replace(/(\..*)\./g, '$1');" onkeyup="if(parseInt(this.value)>366){this.value = ' ';$('#daysAlertSpan').show()}else{$('#daysAlertSpan').hide()}">
+                                          <button class="btn btn-primary btn-increment"><i class="fas fa-plus"></i></button>
+                                        </div>
+                                      </div>
+                                      <span id="daysAlertSpan" class="alertspan text-danger font-italic float-right" style="display:none">Please enter a value till 365.</span>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                              <div class="dropdown-divider"></div>
+                              <div class="nav-item nav-link" aria-controls="tenant_activation_custom_hours" aria-selected="true">
+                                <div class="row align-items-center">
+                                  <div class="col-md-4">
+                                    Hours
+                                  </div>
+                                  <div class="col-md-8">
+                                    <div>
+                                      <div class="form-spinner d-flex justify-content-end">
+                                        <div class="spinner-control">
+                                          <button class="btn btn-primary btn-decrement"><i class="fas fa-minus"></i></button>
+                                          <input type="text" data-type="number" step="1" min="0" max="23" id="tenant_activate_custom_hours" name="tenant_activate_custom_hours" value="0" oninput="this.value = this.value.replace(/[^0-9]/g, '').replace(/(\..*)\./g, '$1');" onkeyup="if(parseInt(this.value)>23){this.value = ' ';$('#hoursAlertSpan').show()}else{$('#hoursAlertSpan').hide()}">
+                                          <button class="btn btn-primary btn-increment"><i class="fas fa-plus"></i></button>
+                                        </div>
+                                      </div>
+                                      <span id="hoursAlertSpan" class="alertspan text-danger font-italic float-right" style="display:none">Please enter a value till 24.</span>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                              <div class="dropdown-divider"></div>
+                              <div class="nav-item nav-link" aria-controls="tenant_activation_custom_minutes" aria-selected="true">
+                                <div class="row align-items-center">
+                                  <div class="col-md-4">
+                                    Minutes
+                                  </div>
+                                  <div class="col-md-8">
+                                    <div>
+                                      <div class="form-spinner d-flex justify-content-end">
+                                        <div class="spinner-control">
+                                          <button class="btn btn-primary btn-decrement"><i class="fas fa-minus"></i></button>
+                                          <input type="text" data-type="number" step="1" min="0" max="59" id="tenant_activate_custom_minutes" name="tenant_activate_custom_minutes" value="0" oninput="this.value = this.value.replace(/[^0-9]/g, '').replace(/(\..*)\./g, '$1');" onkeyup="if(parseInt(this.value)>59){this.value = ' ';$('#minutesAlertSpan').show()}else{$('#minutesAlertSpan').hide()}">
+                                          <button class="btn btn-primary btn-increment"><i class="fas fa-plus"></i></button>
+                                        </div>
+                                      </div>
+                                      <span id="minutesAlertSpan" class="alertspan text-danger font-italic float-right" style="display:none">Please enter a value till 60.</span>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                            <div class="dropdown-divider"></div>
+                            <p class="p-3 font-italic text-danger">Note: Deactivating tenants make the tenants inaccessible by the users/ developers/ tenant admins.</p>
+                          </div>
+                        </nav>
+                      </div>
+
+                      <div class="tab-pane fade" id="sub-tenant-reactivation" role="tabpanel" aria-labelledby="sub-tenant-reactivation-tab">
+                        <button class="gotosubtabs" onclick="gotosubTabs('sub-tenant-reactivation','nav-tenant')"><i class="fa fa-chevron-left"></i> Tenant Settings</button>
+                        <div class="save-button d-block float-right">
+                          <button type="button" id="reactivate_tenant" class="btn btn-primary rounded save-buttons">Reactivate</button>
+                        </div>
+                        <nav class="settingNav">
+                          <div class="content-Header">
+                            <h6 class="sub-setting-header">Reactivate Tenant</h6>
+                          </div>
+                          <div class="nav flex-column nav-tabs " id="" role="tablist">
+                            <div class="nav-item nav-link" id="select-tenant-reactivate-content" aria-controls="select-tenant-reactivate-content" aria-selected="false">
+                              <div class="row align-items-center">
+                                <div class="col-md-4">
+                                  Tenant
+                                </div>
+                                <div class="col-md-8">
+                                  <select class="select2 form-control" name="select_tenant-reactivate" id="select_tenant-reactivate" style="border: 1px solid lightgrey; border-radius:5px;">
+                                    <option value="" selected disabled>Select tenant</option>
+                                    {% for name in deactivated_tenants %}
+                                      <option value="{{ name }}">{{ name }}</option>
+                                    {% endfor %}
+                                  </select>
+                                </div>
+                                <div class="col-md-12">
+                                  <div>
+                                    <p class="pt-3 font-italic text-danger reactivate-time-msg"></p>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </nav>
+                      </div>
+                      <script>
+                        $("#select_tenant-reactivate").change(function(){
+                          tenant = $("#select_tenant-reactivate").val()
+                          $(".reactivate-time-msg").text(``)
+                          tenant_reactivate_time = {{tenants_reactivate | safe}}
+                          if(tenant_reactivate_time[tenant]){
+                            $(".reactivate-time-msg").text(`Note: This tenant will get auto-reactivated on ${tenant_reactivate_time[tenant]}.`)
+                          }
+                        })
+                      </script>
+
+                      <div class="tab-pane fade" id="sub-tenant-deletion" role="tabpanel" aria-labelledby="sub-tenant-deletion-tab">
+                        <button class="gotosubtabs" onclick="gotosubTabs('sub-tenant-deletion','nav-tenant')"><i class="fa fa-chevron-left"></i> Tenant Settings</button>
+                        <div class="save-button d-block float-right">
+                          <button type="button" id="delete_tenant" class="btn btn-primary rounded save-buttons">Delete</button>
+                        </div>
+                        <nav class="settingNav">
+                          <div class="content-Header">
+                            <h6 class="sub-setting-header">Delete Tenant</h6>
+                          </div>
+                          <div class="nav flex-column nav-tabs " id="" role="tablist">
+                            <a class="nav-item nav-link nav-accordion" id="select-tenant-delete-tab" data-target="select-tenant-delete-content" aria-controls="select-tenant-delete" aria-selected="true">Select Tenant  <span><i class="fa fa-chevron-down" style="float: right;"></i></span></a>
+                            <div class="nav-item nav-link" id="select-tenant-delete-content" aria-controls="select-tenant-delete-content" aria-selected="false" style="display: none">
+                              <div class="row">
+                                <div class="col-md-4">
+                                  Tenant
+                                </div>
+                                <div class="col-md-8">
+                                  <select class="select2 form-control" name="select_tenant-delete" id="select_tenant-delete" style="border: 1px solid lightgrey; border-radius:5px;">
+                                    <option value="" selected disabled>Select tenant</option>
+                                    {% for name in tenant_names %}
+                                      <option value="{{ name }}">{{ name }}</option>
+                                    {% endfor %}
+                                  </select>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                          <div>
+                            <p class="p-3 font-italic text-danger">Note: This action cannot be reversed. All configurations, media, files, etc. related to the tenant will be forever lost.</p>
+                          </div>
+                        </nav>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="tab-pane" id="nav-user-authorization" role="tabpanel" aria-labelledby="nav-user-authorization-tab">
+                <div class="row">
+                  <div class="col-md-3 col-sm-3 sub-tab-column">
+                    <button class="gobacktosettings" onclick="showMainTab('nav-user-authorization')" ><i class="fa fa-chevron-left"></i> Settings</button>
+                    <nav class="tabNav">
+                      <div class="nav flex-column nav-tabs sub-tabs" id="user-sub-tab" role="tablist">
+                        <a class="nav-item nav-link" id="sub-user-creation-tab" data-toggle="tab" href="#sub-user-creation" role="tab" aria-controls="sub-user-creation" aria-selected="true">User Creation <i class="fa fa-chevron-right" style="float: right;"></i></a>
+                      </div>
+                    </nav>
+                  </div>
+                  <div class="col-md-9 col-sm-9 sub-tab-wrapper">
+                    <div class="tab-content sub-tab-contents" id="user-authorization-tabContent">
+                      <div class="tab-pane fade" id="sub-user-creation" role="tabpanel" aria-labelledby="sub-user-creation-tab">
+                        <button class="gotosubtabs" onclick="gotosubTabs('sub-user-creation','nav-user-authorization')"><i class="fa fa-chevron-left"></i> User and Authorization Settings</button>
+                        <div class="save-button d-block float-right">
+                          <button type="button" id="create_superuser_tenant" class="btn btn-primary rounded save-buttons">Save</button>
+                        </div>
+                        <nav class="settingNav">
+                          <div class="content-Header">
+                            <h6 class="sub-setting-header">Create Tenant Admin</h6>
+                          </div>
+                          <div class="nav flex-column nav-tabs " id="" role="tablist">
+                            <a class="nav-item nav-link nav-accordion" id="select-tenant-tab" data-target="select-tenant-content" aria-controls="select-tenant" aria-selected="true">Select Tenant  <span><i class="fa fa-chevron-down" style="float: right;"></i></span></a>
+                            <div class="nav-item nav-link" id="select-tenant-content" aria-controls="select-tenant-content" aria-selected="false" style="display: none">
+                              <div class="row">
+                                <div class="col-md-4">
+                                  Tenant
+                                </div>
+                                <div class="col-md-8">
+                                  <select class="select2 form-control" name="select_tenant" id="select_tenant" style="border: 1px solid lightgrey; border-radius:5px;">
+                                    {% for name in tenant_names %}
+                                      <option value="{{ name }}">{{ name }}</option>
+                                    {% endfor %}
+                                  </select>
+                                </div>
+                              </div>
+                            </div>
+                            <div class="dropdown-divider"></div>
+                            <a class="nav-item nav-link nav-accordion" id="set-username-tab" data-target="set-username-content" aria-controls="set-username" aria-selected="true">Set username <span><i class="fa fa-chevron-down" style="float: right;"></i></span> </a>
+                            <div class="nav-item nav-link" id="set-username-content" aria-controls="set-username-content" aria-selected="false" style="display: none">
+                              <div class="row">
+                                <div class="col-md-4">
+                                  Username
+                                </div>
+                                <div class="col-md-8">
+                                  <input id="super_username_tenant" name="super_username_tenant" type="text" style="border: 1px solid lightgrey;width:100%;border-radius: 5px;">
+                                </div>
+                              </div>
+                            </div>
+                            <div class="dropdown-divider"></div>
+                            <a class="nav-item nav-link nav-accordion" id="set-password-tab" data-target="set-password-content" aria-controls="set-password" aria-selected="true">Set password <span><i class="fa fa-chevron-down" style="float: right;"></i></span></a>
+                            <div class="nav-item nav-link" id="set-password-content" aria-controls="set-password-content" aria-selected="false" style="display: none">
+                              <div class="row">
+                                <div class="col-md-4">
+                                  Password
+                                </div>
+                                <div class="col-md-8">
+                                  <input id="super_password_tenant" name="super_password_tenant" type="password" onchange="checkPasswordPattern(this,'policypasswordAlertSpan')" onkeypress="return event.charCode != 32" onkeyup="this.style.border='1px solid lightgrey';$('#policypasswordAlertSpan').css('display','none')">
+                                  <span id="policypasswordAlertSpan" class="alertspan font-italic text-danger" style="display:none">Please make sure your password has
+                                    <br>1. At least one uppercase letter
+                                    <br>2. At least one special character (!, @, #, $, &, *)
+                                    <br>3. At least one digit
+                                    <br>4. At least one lowercase letter
+                                    <br>5. Minimum length of 4 characters</span>
+                                </div>
+                              </div>
+                            </div>
+                            <div class="dropdown-divider"></div>
+                            <a class="nav-item nav-link nav-accordion" id="set-email-tab" data-target="set-email-content" aria-controls="set-email" aria-selected="true">Set email <span><i class="fa fa-chevron-down" style="float: right;"></i></span></a>
+                            <div class="nav-item nav-link" id="set-email-content" aria-controls="set-email-content" aria-selected="false" style="display: none">
+                              <div class="row">
+                                <div class="col-md-4">
+                                  Email
+                                </div>
+                                <div class="col-md-8">
+                                  <input id="super_email_tenant" name="super_email_tenant" type="email" onchange="checkEmailPattern(this,'tenantEmailAlertSpan')" onkeyup="this.style.border='1px solid lightgrey';$('#tenantEmailAlertSpan').css('display','none')">
+                                  <span id="tenantEmailAlertSpan" style="display:none;" class="alertspan text-danger font-italic">Please enter a valid email address.</span>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </nav>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="tab-pane" id="nav-connections" role="tabpanel" aria-labelledby="nav-connections-tab">
+                <div class="row">
+                  <div class="col-md-3 col-sm-3 sub-tab-column">
+                    <button class="gobacktosettings" onclick="showMainTab('nav-connections')" ><i class="fa fa-chevron-left"></i> Settings</button>
+                    <nav class="tabNav">
+                      <div class="nav flex-column nav-tabs sub-tabs" id="connections-sub-tab" role="tablist">
+                        <a class="nav-item nav-link" id="sub-central-database-migration-tab" data-toggle="tab" href="#sub-central-database-migration" role="tab" aria-controls="sub-central-database-migration" aria-selected="false">Central Database Migration<i class="fa fa-chevron-right" style="float: right;"></i></a>
+                        <div class="dropdown-divider"></div>
+                        <a class="nav-item nav-link" id="sub-system-health-checks-tab" data-toggle="tab" href="#sub-system-health-checks" role="tab" aria-controls="sub-system-health-checks" aria-selected="false">System Health Checks<i class="fa fa-chevron-right" style="float: right;"></i></a>
+                        <div class="dropdown-divider"></div>
+                        <a class="nav-item nav-link" id="sub-system-management-tab" data-toggle="tab" href="#sub-system-management" role="tab" aria-controls="sub-system-management" aria-selected="false">System Management (pod management)<i class="fa fa-chevron-right" style="float: right;"></i></a>
+                      </div>
+                    </nav>
+                  </div>
+                  <div class="col-md-9 col-sm-9 sub-tab-wrapper">
+                    <div class="tab-content sub-tab-contents" id="connections-tabContent">
+                      <div class="tab-pane fade" id="sub-central-database-migration" role="tabpanel" aria-labelledby="sub-central-database-migration-tab">
+                        <button class="gotosubtabs" onclick="gotosubTabs('sub-central-database-migration','nav-connections')"><i class="fa fa-chevron-left"></i> Connections and System Settings</button>
+                        <nav class="settingNav">
+                          <div class="content-Header">
+                            <h6 class="sub-setting-header">Central Database Migration </h6>
+                          </div>
+                          <div class="nav flex-column nav-tabs " id="" role="tablist">
+                            <div class="nav-item nav-link d-flex justify-content-between" aria-selected="false">Update central database
+                              <div class="d-flex">
+                                <button id="migrateCentralDB" type="button" class="btn btn-primary btn-xs px-2 rounded" style="margin-left:5px;"><i class="fas fa-database"></i></button>
+                              </div>
+                            </div>
+                          </div>
+                        </nav>
+                      </div>
+                      <div class="tab-pane fade" id="sub-system-health-checks" role="tabpanel" aria-labelledby="sub-system-health-checks">
+                        <button class="gotosubtabs" onclick="gotosubTabs('sub-system-health-checks','nav-connections')"><i class="fa fa-chevron-left"></i> Connections and System Settings</button>
+                        ...
+                      </div>
+                      <div class="tab-pane fade" id="sub-system-management" role="tabpanel" aria-labelledby="sub-system-management-tab">
+                        <button class="gotosubtabs" onclick="gotosubTabs('sub-system-management','nav-connections')"><i class="fa fa-chevron-left"></i> Connections and System Settings</button>
+                        ...
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="tab-pane" id="nav-other" role="tabpanel" aria-labelledby="nav-other-tab">
+                <div class="row">
+                  <div class="col-md-3 col-sm-3 sub-tab-column">
+                    <button class="gobacktosettings" onclick="showMainTab('nav-other')" ><i class="fa fa-chevron-left"></i> Settings</button>
+                    <nav class="tabNav">
+                      <div class="nav flex-column nav-tabs sub-tabs" id="other-sub-tab" role="tablist">
+                        <a class="nav-item nav-link" id="sub-license-management-tab" data-toggle="tab" href="#sub-license-management" role="tab" aria-controls="sub-license-management" aria-selected="true">License Management<i class="fa fa-chevron-right" style="float: right;"></i></a>
+                        <div class="dropdown-divider"></div>
+                        <a class="nav-item nav-link" id="sub-third-party-management-tab" data-toggle="tab" href="#sub-third-party-management" role="tab" aria-controls="sub-third-party-management" aria-selected="true">Third Party Service Management<i class="fa fa-chevron-right" style="float: right;"></i></a>
+                      </div>
+                    </nav>
+                  </div>
+                  <div class="col-md-9 col-sm-9 sub-tab-wrapper">
+                    <div class="tab-content sub-tab-contents" id="other-tabContent">
+                      <div class="tab-pane fade" id="sub-license-management" role="tabpanel" aria-labelledby="sub-license-management-tab">
+                        <button class="gotosubtabs" onclick="gotosubTabs('sub-license-management','nav-other')"><i class="fa fa-chevron-left"></i> Other Settings</button>
+                        ...
+                      </div>
+                      <div class="tab-pane fade" id="sub-third-party-management" role="tabpanel" aria-labelledby="sub-third-party-management-tab">
+                        <button class="gotosubtabs" onclick="gotosubTabs('sub-third-party-management','nav-other')"><i class="fa fa-chevron-left"></i> Other Settings</button>
+                        ...
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+  </div>
+
+  <script>
+
+    function checkPasswordPattern(element,spanId){
+      password = element.value
+      id = element.id
+
+      var regex_pattern = /^(?=.*[A-Z])(?=.*[!@#$&*])(?=.*[0-9])(?=.*[a-z]).{4,}$/;
+      if (regex_pattern.test(password)){
+        $(`#${spanId}`).css("display","none")
+        $(`#${id}`).css("border","1px solid lightgrey")
+      }
+      else{
+        $(`#${spanId}`).css("display","block")
+        $(`#${id}`).css("border","1px solid red")
+      }
+    }
+
+    function checkEmailPattern(element,spanId){
+      email = element.value
+      id = element.id
+
+      const emailPattern = /^([\w.\-]+)@([\w\-]+)((\.(\w){2,63}){1,3})$/;
+      if (emailPattern.test(email)){
+        $(`#${spanId}`).css("display","none")
+        $(`#${id}`).css("border","1px solid lightgrey")
+      }
+      else{
+        $(`#${spanId}`).css("display","block")
+        $(`#${id}`).css("border","1px solid red")
+      }
+    }
+
+const mobileview = window.matchMedia('(max-width: 500px)')
+    const tabletview = window.matchMedia('(max-width: 768px)')
+
+    $(".MaintabNav .nav-item").click(function(){
+      if(mobileview.matches){
+        $(".MaintabNav").hide()
+      }
+    })
+
+    $(".tabNav").click(function(){
+
+      // Check if the media query is true
+      if(mobileview.matches){
+        $(".MaintabNav").hide()
+        $(".tabNav").hide()
+        $((".gobacktosettings")).hide()
+      }
+      else if (tabletview.matches) {
+        $(".MaintabNav").hide('slide', {direction: 'left'}, 400)
+        // .queue(function(){$(".MaintabNav").siblings(".MaintabContent").addClass("col-md-12")});
+
+      }
+
+    })
+
+    $(".settingNav .nav-link.link-tab").click(function(){
+      $(this).closest('.settingNav').hide();
+      $(this).closest('.settingNav').siblings(".gotosubtabs").hide()
+    })
+
+    function BackToSubTab(btn,configContent){
+      $(`#${configContent}`).removeClass("active");
+      $(btn).parent().parent().siblings('.settingNav').show()
+      $(".settingNav .nav-item").each(function(){
+          $(this).removeClass("active");
+        })
+      if(mobileview.matches){
+        $((".gotosubtabs")).show()
+      }
+    }
+
+
+    function showMainTab(navid){
+
+      if(mobileview.matches){
+        if(navid){
+          $(`#${navid}`).removeClass("active");
+        }
+        $(".MaintabNav .nav-item").each(function(){
+          $(this).removeClass("active");
+        })
+        $(".MaintabNav").show()
+
+      }
+      else if(tabletview.matches){
+          $(".MaintabNav").show('slide', {direction: 'left'}, 300)
+      }
+
+    }
+
+    function gotosubTabs(subtabId,mainTab){
+      if(subtabId){
+        $(`#${subtabId}`).removeClass("active");
+      }
+      $(`#${mainTab}`).addClass("active");
+      $(".tabNav").show()
+      $((".gobacktosettings")).show()
+      $(".tabNav .nav-item").each(function(){
+          $(this).removeClass("active");
+        })
+    }
+    $('select.select2:not(.modal select.select2)').each(function(){
+      parent = $(this).parent()
+      $(this).select2({dropdownParent:parent})
+    })
+    $('.modal select.select2').each(function(){
+        $(this).select2()
+    })
+
+
+    var ctoken = document.getElementById('dummyFormForAjaxCall').elements[0].value
+    $.ajaxSetup({
+        beforeSend: function (xhr, settings) {
+
+            xhr.setRequestHeader("X-CSRFToken", ctoken);
+        }
+    })
+
+    $("#hideit").click(function(){
+      $(".nav-wrapper").toggleClass("displaynone")
+      $(this).toggleClass("rotate")
+    })
+
+    $("#pinit").click(function(){
+      $(".main-header").toggleClass("fixed")
+      $(this).toggleClass("color")
+    })
+
+    $(".nav-accordion").click(function(){
+      var content = $(this).attr("data-target")
+      if($(`#${content}`).css("display") == "none"){
+        $(`#${content}`).slideDown();
+        $(this).children("span").html('<i class="fa fa-chevron-up" style="float: right;"></i>')
+      }else{
+        $(`#${content}`).slideUp();
+        $(this).children("span").html('<i class="fa fa-chevron-down" style="float: right;"></i>')
+      }
+    })
+
+    $("#create_superuser_tenant").off('click').on('click', () => {
+      let username = $("#super_username_tenant").val()
+      let tenant = $("#select_tenant").val()
+      let password = $("#super_password_tenant").val()
+      let email = $("#super_email_tenant").val()
+
+      if (username != "" && tenant != "" && password != "" && email != "") {
+
+          $.ajax({
+              url: window.location.pathname,
+              data: {
+                  'operation': 'create_su_user',
+                  'username': username,
+                  'tenant' : tenant,
+                  'password': password,
+                  'email': email,
+              },
+
+              type: "POST",
+              dataType: "json",
+              success: function (data) {
+                  Swal.fire({text:"User created successfully!",icon:"success"});
+              },
+              error: function () {
+                Swal.fire({text:"Error",icon:"error"});
+              }
+          });
+
+      } else {
+        Swal.fire({text:"Kindly fill all values to add a user!!",icon:"warning"})
+      }
+    })
+
+
+    $("#delete_tenant").off("click").on("click", ()=>{
+
+      let tenant_name = $("#select_tenant-delete").val()
+
+      if (tenant_name){
+
+        Swal.fire({text:"All data related to the selected tenant will be LOST. Are you sure you wish to delete this tenant?",
+          icon: "warning",
+          showDenyButton: true,
+          confirmButtonText: 'Yes',
+          denyButtonText: 'No'})
+        .then((result)=>{
+          if(result.isConfirmed){
+
+
+
+            $.ajax({
+            url: window.location.pathname,
+            data: {
+                'operation': 'delete_tenant',
+                'tenant_name': tenant_name,
+            },
+
+            type: "POST",
+            dataType: "json",
+            success: function (data) {
+                if (data.response == "success"){
+                  var jobId = data.job_id
+                  Swal.fire({text:"Tenant deletion in progress, please wait.",icon:"info"});
+                  let websocketUrlPrefix = 'ws://';
+                    if (window.location.protocol === 'https:') {
+                        websocketUrlPrefix = 'wss://';
+                    }
+                    var jobConnection = new WebSocket(
+                        websocketUrlPrefix + window.location.host +
+                        `/ws/queued_tenant_deletion/${jobId}/`);
+
+                    jobConnection.onmessage = function(event){
+                    jobConnection.close(1000);
+                    var data = JSON.parse(event.data);
+                    if (data.status == "finished") {
+                        Swal.fire({text:"Tenant Deleted Successfully!",icon:"success"})
+                        $(`#select_tenant-delete option[value="${tenant_name}"]`).remove()
+                        $(`#select_tenant option[value="${tenant_name}"]`).remove()
+
+                    } else {
+                        Swal.fire({text:"Failed to delete the tenant",icon:"error"});
+                    }
+                    }
+                    jobConnection.onerror = function() {
+                        jobConnection.close(1000);
+                    }
+                }
+                else{
+                  Swal.fire({text:"Something went wrong. Please try again.",icon:"error"});
+                }
+              }
+            })
+
+          }
+        })
+      }
+      else{
+        Swal.fire({text:"Please choose a tenant before proceeding.",icon:"warning"});
+      }
+
+
+    })
+
+    $("#tenant_creation").off('click').on('click', () => {
+      let tenant_name = $("#tenant_name").val()
+
+      if (tenant_name != ""){
+
+          $.ajax({
+          url: window.location.pathname,
+          data: {
+              'operation': 'create_tenant',
+              'tenant_name': tenant_name,
+          },
+
+          type: "POST",
+          dataType: "json",
+          success: function (data) {
+            if (data.response == "Failed"){
+              Swal.fire({text:data.message,icon:"error"})
+            }
+            else {
+              Swal.fire({text:"Tenant Created Successfully!",icon:"success"})
+            }
+          },
+          error: function () {
+            Swal.fire({text:"Error",icon:"error"});
+          }
+      });
+
+      }else{
+          Swal.fire({text:"Please fill in the details for tenant creation!!",icon:"warning"})
+      }
+    })
+
+    $('#migrateCentralDB').off('click').on('click', () => {
+      $.ajax({
+          url: window.location.pathname,
+          data: {
+              'operation': 'migrateCentralDB',
+          },
+          type: "POST",
+          dataType: "json",
+          success: function (data) {
+              Swal.fire({text:"Central database is getting updated. Please wait!",icon:"info"});
+              $('body').css('pointer-events', 'none');
+              $('body').prepend(`
+                  <div id="backgroundBlock" style="
+                      z-index: 2000;
+                      height: 100%;
+                      width: 100%;
+                      position: fixed;
+                      text-align: center;
+                      background-color: rgba(0,0,0,0.2);
+                  "><i class="fas fa-spinner fa-pulse" style="font-size: xxx-large; top: 50%; position: relative;"></i></div>
+              `)
+              var jobId = data.job_id;
+              let websocketUrlPrefix = 'ws://';
+              if (window.location.protocol === 'https:') {
+                  websocketUrlPrefix = 'wss://';
+              };
+              var jobConnection = new WebSocket(
+                  websocketUrlPrefix + window.location.host +
+                  `/ws/queued_tenant_creation/${jobId}/`);
+
+              jobConnection.onmessage = function(event){
+                  jobConnection.close(1000);
+                  $('#backgroundBlock').remove()
+                  $('body').css('pointer-events', 'all');
+                  var data = JSON.parse(event.data);
+                  if (data.status == "finished") {
+                      Swal.fire({text:"Central database updated successfully!",icon:"success"})
+                  } else {
+                      Swal.fire({text:"Failed to update central database!",icon:"error"});
+                  }
+              };
+              jobConnection.onerror = function() {
+                  $('body').css('pointer-events', 'all');
+                  $('#backgroundBlock').remove()
+                  jobConnection.close(1000);
+              };
+          },
+          error: function () {
+              Swal.fire({text:'Error updating central database!',icon:"error"})
+          }
+      });
+    });
+
+
+    $(".form-spinner .btn-increment").click(function () {
+      let $this		= $(this);
+      let input		= $this.siblings("input");
+
+      if($(input).attr('id')=="tenant_activate_custom_time"){
+        $('#hoursAlertSpan').hide()
+      }
+
+      let step		 = input.attr("step");
+      let oldValue = input.val();
+      let newValue = parseInt(oldValue) + parseInt(step || 1);
+      let maxValue = input.attr("max");
+      let minValue = input.attr("min");
+
+      if (!maxValue || newValue <= maxValue)
+      input.val(newValue);
+      else if (input.data("spinner-loop"))
+      input.val(minValue);
+      else
+      input.val(maxValue);
+  })
+
+  $(".form-spinner .btn-decrement").click(function () {
+      let $this		= $(this);
+      let input		= $this.siblings("input");
+
+      if($(input).attr('id')=="tenant_activate_custom_time"){
+        $('#hoursAlertSpan').hide()
+      }
+
+      let step		 = input.attr("step");
+      let oldValue = input.val();
+      let newValue = parseInt(oldValue) - parseInt(step || 1);
+      let maxValue = input.attr("max");
+      let minValue = input.attr("min");
+
+      if (!minValue || newValue >= minValue)
+      input.val(newValue);
+      else if (input.data("spinner-loop"))
+      input.val(maxValue);
+      else
+      input.val(minValue);
+  })
+
+  $("#activate_tenant").change(function() {
+    if(this.value == "custom"){
+      $("#tenant_activation_custom_content").show()
+    }
+    else{
+      $("#tenant_activation_custom_content").hide()
+    }
+  })
+
+  $("#deactivate_tenant").off("click").on("click", ()=>{
+    var tenant_name = $("#select_tenant-deactivate").val()
+    var reactivate_option = $("#activate_tenant").val()
+    var reactivation_days = ""
+    var reactivation_hours = ""
+    var reactivation_minutes = ""
+    if(reactivate_option == "custom"){
+      reactivation_days = $("#tenant_activate_custom_days").val()
+      reactivation_hours = $("#tenant_activate_custom_hours").val()
+      reactivation_minutes = $("#tenant_activate_custom_minutes").val()
+    }
+    if (tenant_name && reactivate_option) {
+
+      $.ajax({
+        url: window.location.pathname,
+        data: {
+            'operation': 'deactivate_tenant',
+            'tenant_name' : tenant_name,
+            'reactivate_option': reactivate_option,
+            'reactivation_days': reactivation_days,
+            'reactivation_hours': reactivation_hours,
+            'reactivation_minutes': reactivation_minutes,
+        },
+
+        type: "POST",
+        dataType: "json",
+        success: function (data) {
+            Swal.fire({text:data.response,icon:"success"}).then((result)=>{
+              if(result.isConfirmed){
+                window.location.reload()
+              }
+            })
+
+        },
+        error: function () {
+          Swal.fire({text:"Error",icon:"error"});
+        }
+      });
+
+    } else {
+      Swal.fire({text:"Kindly fill all values to deactivate a tenant !!",icon:"warning"})
+    }
+  })
+
+  $("#reactivate_tenant").off("click").on("click", ()=>{
+    var tenant_name = $("#select_tenant-reactivate").val()
+
+    if (tenant_name) {
+
+      $.ajax({
+        url: window.location.pathname,
+        data: {
+            'operation': 'reactivate_tenant',
+            'tenant_name' : tenant_name,
+        },
+
+        type: "POST",
+        dataType: "json",
+        success: function (data) {
+            Swal.fire({text:data.response,icon:"success"}).then((result)=>{
+              if(result.isConfirmed){
+                window.location.reload()
+              }
+            })
+        },
+        error: function () {
+          Swal.fire({text:"Error",icon:"error"});
+        }
+      });
+
+    } else {
+      Swal.fire({text:"Kindly fill all values to deactivate a tenant !!",icon:"warning"})
+    }
+  })
+
+  </script>
+</body>
+
+
+</html>

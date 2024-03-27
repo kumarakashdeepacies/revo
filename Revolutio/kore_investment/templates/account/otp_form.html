@@ -1,0 +1,179 @@
+{% extends "account/base.html" %}
+
+{% load static %}
+{% load i18n %}
+{% load crispy_forms_tags %}
+
+{% block head_title %}{% trans "Verify OTP" %}{% endblock %}
+
+{% block inner %}
+<!-- Sweet Alert2 -->
+<script src="{% static 'vendor/sweet_alert/sweetalert2.all.min.js' %}"></script>
+<style>
+.qrcode-image{
+    max-width: 50%;
+}
+{% if root_css|length %}
+    {{root_css |safe }}
+  {% endif %}
+
+</style>
+<!--<h1>{% trans "Change Password" %}</h1>-->
+<div class="login-page">
+  <div class="login-box">
+    <div class="card">
+      <div class="card-body login-card-body" style="border-radius: 2.5%;">
+        <!--EXTRA CODE-->
+        <div id='messages-content'>
+
+          {% include 'messages.html' %}
+
+        </div>
+        <a href="{% url 'account_login' %}">
+          {% if logo_on_form|length %}
+            <img src="/media/{{tenant}}/TenantTheme/login_screen/logo/{{logo_on_form}}" alt="Acies Logo" class="acies_logo_short" height="50" width="60">
+          {% else %}
+            <img src="{%static 'images/Base_theme/Acies_short_logo.png'%}" alt="Acies Logo" class="acies_logo_short" height="50" width="60">
+          {% endif %}
+        </a>
+        <a href="{% url 'account_login' %}" style="float:right;text-align:center;color:var(--primary-color);">Back to Sign In</a>
+        <p>
+        </p>
+        <h4 style="text-align:center;">{% trans Authenticator %}</h4>
+        <form method="POST" action="{% url 'account_login' %}" class="otp_check" style="margin: 2rem 1rem;">
+          {% csrf_token %}
+
+          <input type="hidden" name="login" value="{{ username }}" />
+          <input type="hidden" name="operation" value="OTPcheck" />
+          <div class="form-group" id="div_id_otp">
+            <div class="d-flex justify-content-between align-item-center">
+              <label for="loginotp" class=" requiredField" style="top: unset">OTP<span class="asteriskField">*</span> </label>
+              <a class="mt-1 text-primary" data-toggle="modal" data-target="#authenticator_registration">Authenticator Registration</a>
+            </div>
+            <input type="password" name="loginotp" class="textinput textInput form-control" placeholder="Authenticator OTP" />
+            <small class="form-text">Please enter your username and password to generate the QR Code</small>
+          </div>
+          <button class="btn btn-primary mt-2" type="submit" name="action">{% trans "Submit" %}</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="authenticator_registration" role="dialog" aria-labelledby="authenticator_registration" aria-hidden="true">
+    <div class="modal-dialog" role="document" >
+      <div class="modal-content p-2">
+        <div class="modal-header">
+          <h5 class="modal-title p-0">Authenticator Registration</h5>
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+        </div>
+        <div class="modal-body p-4">
+            <p>Please enter your username and password to generate the QR Code</p>
+            <form id="authenticator_form">
+                {% csrf_token %}
+                <input type="hidden" name="operation" value="authenticator_registration">
+                <div class="form-group">
+                    <label for="username" class=" requiredField">
+                        Username<span class="asteriskField">*</span>
+                    </label>
+                    <div>
+                        <input type="text" name="login" class="textinput textInput form-control" onchange="checkDisabled()" placeholder="Username"  id="auth_username" />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="loginpassword" class=" requiredField">
+                        Password<span class="asteriskField">*</span>
+                    </label>
+                    <div>
+                        <input type="password" name="password" class="textinput textInput form-control" onchange="checkDisabled()" placeholder="Password" id="auth_password" />
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="modal-footer above-qrcode justify-content-center">
+          <button type="button" class="btn buttonfooter" id="getQrCode" onclick="getQrCode()" disabled>Get QR Code</button>
+        </div>
+      </div>
+    </div>
+</div>
+
+<script>
+  if ("{{authentication_type}}" == "auth_type"){
+    $('#div_id_otp').empty()
+    $('#div_id_otp').append(`
+    <div class="d-flex justify-content-between align-item-center">
+      <label for="loginotp" class=" requiredField" style="top: unset">OTP<span class="asteriskField">*</span> </label>
+      <a class="mt-1 text-primary" data-toggle="modal" data-target="#authenticator_registration">Authenticator Registration</a>
+    </div>
+    <input type="password" name="loginotp" class="textinput textInput form-control" placeholder="Authenticator OTP" />
+    <small class="form-text">Please enter your username and password to generate the QR Code</small>`)
+  }else if ("{{authentication_type}}" == "email_type"){
+    $('#div_id_otp').empty()
+    $('#div_id_otp').append(`
+    <div class="d-flex justify-content-between align-item-center">
+      <label for="loginotp" class=" requiredField" style="top: unset">OTP<span class="asteriskField">*</span> </label>
+      <a class="mt-1 text-primary" data-toggle="modal" onclick="sendOtpLogin(this)">Send OTP</a>
+    </div>
+    <input type="password" name="loginotp" class="textinput textInput form-control" placeholder="Email OTP">
+
+    `)
+  }
+  var ctoken = $('form').find("input[name='csrfmiddlewaretoken']").attr('value')
+  $.ajaxSetup({
+      beforeSend: function (xhr, settings) {
+      xhr.setRequestHeader("X-CSRFToken", ctoken);
+
+      }
+  });
+  function sendOtpLogin(obj){
+    if ($('.otp_check').find("input[name='login']").val() != ""){
+      data = [{'name':'operation','value':'email_otp'},
+      {'name':'login','value':$('.otp_check').find("input[name='login']").val()}
+      ]
+      $.ajax({
+        url: "{% url 'account_login' %}",
+        data: data,
+        type: "POST",
+        success: function (data) {
+          Swal.fire({text:"OTP sent",icon:"success"});
+        },
+        error: function () {
+        Swal.fire({text:"Error",icon:"error"});
+        }
+      });
+    }else{
+      Swal.fire({text:"Enter username",icon:"error"});
+    }
+  }
+    function checkDisabled(){
+        if( $("#auth_username").val()!="" && $("#auth_password").val()!="" ){
+        $("#getQrCode").prop("disabled",false)
+        }
+        else{
+        $("#getQrCode").prop("disabled",true)
+        }
+    }
+    function getQrCode(){
+        data = $("#authenticator_form").serializeArray()
+        $.ajax({
+        url: "{% url 'account_login' %}",
+        data: data,
+        type: "POST",
+        success: function (data) {
+            var qrHTML = `<div class="modal-body d-flex p-0 justify-content-center">
+            <img src=${data.qrcode} class="qrcode-image" alt="">
+        </div>
+        <div class="modal-footer" style="display:flex">
+            Please scan the QR code in Authenticator app (Google authenticator / Microsoft Authenticator) to register platform login.
+        </div> `
+        $(qrHTML).insertAfter(".above-qrcode");
+        },
+        error: function () {
+        Swal.fire({text:"Error",icon:"error"});
+        }
+        });
+    }
+</script>
+
+
+{% endblock %}

@@ -1,0 +1,1344 @@
+{% extends extend_template %}
+{% load crispy_forms_tags %}
+{{ form.media }}
+{% load static %}
+{% block body_block %}
+
+
+<!-- DataTables -->
+<link rel="stylesheet" href="{% static 'css/KoreD/jquery.dataTables.css' %}">
+<link rel="stylesheet" href="{% static 'vendor/Base_theme/datatables-responsive/css/responsive.bootstrap4.min.css' %}">
+<link rel="stylesheet" href="{% static 'vendor/Base_theme/datatables-colreorder/css/colReorder.bootstrap4.min.css' %}">
+<link rel="stylesheet" href="{% static 'css/KoreD/buttons.dataTables.min.css' %}">
+
+
+<!-- DataTables -->
+<script src="{% static 'vendor/Base_theme/datatables/jquery.dataTables.js' %}"></script>
+<script src="{% static 'vendor/Base_theme/datatables-responsive/js/dataTables.responsive.min.js' %}"></script>
+<script src="{% static 'vendor/Base_theme/datatables-fixedheader/js/dataTables.fixedHeader.min.js' %}"></script>
+<script src="{% static 'vendor/Base_theme/datatables-colreorder/js/dataTables.colReorder.min.js' %}"></script>
+<script src="{%static 'vendor/Base_theme/datatables-bs4/js/dataTables.bootstrap4.js'%}"></script>
+
+<script src="{%static 'vendor/Base_theme/datatables-buttons/js/dataTables.buttons.min.js'%}"></script>
+<script src="{%static 'vendor/Base_theme/jszip/jszip.min.js'%}"></script>
+<script src="{%static 'vendor/Base_theme/pdfmake/pdfmake.min.js'%}"></script>
+<script src="{%static 'vendor/Base_theme/pdfmake/vfs_fonts.js'%}"></script>
+<script src="{%static 'vendor/Base_theme/datatables-buttons/js/buttons.html5.min.js'%}"></script>
+<script src="{%static 'vendor/Base_theme/datatables-buttons/js/buttons.colVis.min.js'%}"></script>
+
+<!-- Breadcrumb-->
+<div class="breadcrumb-holder" style="background-color: #e9ecef; ">
+  <div class="container-fluid" id="dynamicTabs">
+    <ul class="breadcrumb" id="dynamicbreadcrumbs">
+      <li class="breadcrumb-item"><a {% if current_application_code != 'App0' %} {% if current_application_code == 'Dev' %} {% if current_dev_mode == 'Edit' %} {% if edit_app_code != 'Not Selected' %} href="{% url 'users:homePage' edit_app_code current_dev_mode %}" {% else %} href="{% url 'users:homePage' 'Dev' current_dev_mode %}" {% endif %} {% elif current_dev_mode == 'Build' %} {% if build_app_code != 'Not Selected' %} href="{% url 'users:homePage' build_app_code current_dev_mode %}" {% else %} href="{% url 'users:select_application' %}"  {% endif %}  {% endif %} {% else %} href="{% url 'users:homePage' current_application_code 'User' %}" {% endif %} {% else %} href="{% url 'users:select_application' %}" {% endif %}>
+        <b> Home </b></a></li>
+      <li class="breadcrumb-item "><b>Approval Table</b></li>
+    </ul>
+  </div>
+</div>
+
+
+<section class="content">
+  <div class="container-fluid">
+    <ul class="nav nav-tabs nav-fill" id="myTab" role="tablist">
+      <li class="nav-item">
+        <a class="nav-link active l3items" id="list_view-tab" data-toggle="tab" href="#list_view_approval_content" role="tab" aria-controls="list_view" aria-selected="true">Pending Approvals</a>
+      </li>
+
+    </ul>
+    <script>
+      $(document).ready(function(){
+      const queryString = window.location.search;
+      const urlParams = new URLSearchParams(queryString);
+      const page_type = urlParams.get('value')
+
+   $('.l3items').each(function(){
+     if(page_type != null){
+
+  if($(this).text()==page_type){
+   hrefOftabs= $(this).attr("href")
+   $(`.nav-item a[href="${hrefOftabs}"]`).tab('show');
+     textbreadcrumb=$(this).text().trim()
+     $('#dynamicbreadcrumbs').append(`<li class="breadcrumb-item breadcrumbdynamiclist"><b>${textbreadcrumb}</b></li>`)
+  }
+     }
+   else{
+
+   if($(this).attr('class')=="nav-link active l3items"){
+     linkbreadcrumbs=$(this).attr('href')
+     textbreadcrumb=$(this).text().trim()
+     $('#dynamicbreadcrumbs').append(`<li class="breadcrumb-item breadcrumbdynamiclist"><b>${textbreadcrumb}</b></li>`)
+   }
+   }
+  })
+      })
+  </script>
+  <script>
+      $('.l3items').click(function(){
+
+       linkbreadcrumbs= $(this).attr('href')
+       textbreadcrumbs= $(this).text()
+       $('.breadcrumbdynamiclist').each(function(){
+         $(this).remove()
+       })
+       $('#dynamicbreadcrumbs').append(`<li class="breadcrumb-item breadcrumbdynamiclist"> <b> ${textbreadcrumbs}</b></li>`)
+      }
+      )
+    </script>
+    <div class="tab-content" id="myTabContent">
+      <div class="tab-pane fade show active approval" id="list_view_approval_content" role="tabpanel" aria-labelledby="list_view-tab">
+        <div class="card col-12">
+          <div class="card-header" style="display: flex; justify-content: flex-start;align-items: center;flex-direction: row;">
+            <h6 class="card-title">Approvals</h6>
+              <div class="mt-1" style="margin-left: 25px;">
+                <select class="selectize form-control js-example-basic-multiple" id="select2multiple"
+                  style="min-height:29px;max-height:29px;height:29px; width: 100px;">
+                  <option value="See all">See all</option>
+                  <option value="See mine">See mine</option>
+                </select>
+              </div>
+          </div>
+          <div class="card-body">
+
+            <section><br></section>
+            <table id="example121_update" class="display compact" style="width:100%;">
+              <thead>
+                <tr>
+                  <th>Table Name</th>
+                  <th>Approvals Pending</th>
+                  <th>Approval Type</th>
+                  <th>Created By</th>
+                  <th>Approval</th>
+
+                </tr>
+              </thead>
+              <tbody>
+                  {% for approve in approvals %}
+                  <tr>
+                    <td>{{approve.table_name_update}}</td>
+                    <td>{{approve.approval_count_update}}</td>
+                    <td>{{approve.edit_type_disp}}</td>
+                    <td>{{approve.created_by_update}}</td>
+                    <td><a data-toggle="tooltip" class="approval_expand disabled" data-modifyColumn="{{approve.modify_column}}" data-element-id= "{{approve.create_view_element_id}}" data-user-name="{{approve.created_by_update}}" data-recent-group="{{approve.recent_group_name}}" data-user-group="{{approve.group_name_list}}" data-user-approver="{{approve.user_name_list}}" title="Edit record" value="{{approve.edit_type}}">
+                      <i name="actions" value="{{approve.edit_type}}" class="fa fa-edit ihover javaSC thin-icon" style="font-size:15px"></i>
+                    </a></td>
+                  </tr>
+                  {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <!-- Modal -->
+        <div class="modal fade" id="drilldownmodal_update" tabindex="-1" role="dialog" aria-labelledby="drilldownmodalLabel" aria-hidden="true">
+          <div class="modal-dialog modal-xl" role="document">
+            <div class="modal-content">
+              <div class="modal-header" style='background:#565a5e; color:white;'>
+                <h5 class="modal-title" id="reportModalLabel" style="margin-left: auto;"><span id="table-name_update"></span>Approvals Pending</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              <div class="modal-body" style="overflow-y: scroll ;max-height: 40rem;">
+                <table id="drilldowntable_update" class="display compact" style="width:100%;">
+                    <label for="approve_all_update" style="float:right; right: 95px; top:4px;">Approve All </label>
+                    <button id="approve_all_update" type="button"  aria-label="Approve" class="btn btn-floating btn-lg" style="color:var(--primary-color); padding:0;float: right;">
+                      <span aria-hidden="true"><i class="fa fa-check-square"></i></span>
+                    </button><br>
+                    <label for="reject_all_update" style="float:right; right: 230px;position:absolute; top:20px">Reject All </label>
+                    <button id="reject_all_update" type="button"  aria-label="Reject All" class="btn btn-floating btn-lg" style="color:#ee0000;position: absolute; padding:0; float:right;right: 200px;top:15px;">
+                      <span aria-hidden="true"><i class="fa fa-window-close"  style="color:#000000;"></i></span>
+                    </button>
+
+                  <thead id="modalTable_update">
+                    <tr id="modal-table-header_update">
+                      <!-- <th id="approveHeader">Approve</th> -->
+                    </tr>
+                  </thead>
+                  <tbody id="modal-table-body_update">
+                      <!-- <tr>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                      </tr> -->
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="modal" id="viewDetailsModal" style="backdrop-filter: brightness(0.5);">
+          <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content">
+              <div class="modal-header" style='padding:0.5rem;border-bottom:none;'>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              <div class="modal-body" style="max-height:36.5rem;overflow:auto;">
+                <div class="col-12">
+                  <div class="card">
+                      <div class="card-header" style="padding:0.3rem;background:whitesmoke;">
+
+                      </div>
+                      <div class="card-body" style="padding:0.9rem;">
+                        <table id="viewDetailsTable"  class="display compact" style="width:100%;">
+                          <thead>
+                          </thead>
+
+                          <tbody>
+
+                          </tbody>
+
+                        </table>
+                      </div>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="modal fade" id="approvalCommentModal" tabindex="-1" role="dialog" aria-labelledby="approvalCommentModal"  aria-modal="true" style="z-index:1052 !important;">
+          <div class="modal-dialog  modal-lg modal-dialog-centered"  role="document">
+              <div class="modal-content" style="margin-right: auto;margin-left: auto;max-width:1000px;max-height: 700px;text-align: center;font-size:small">
+
+
+              <div class="modal-header"  style="background:#565a5e;text-align: center;">
+                  <h6 class="modal-title"  style="width:100%;color:white;margin:auto;font-weight:bold;">Approve/ Reject Comment</h6>
+                  <button type="button" class="close" data-dismiss="modal">&times;</button>
+              </div>
+
+              <div class="modal-body " style="overflow: scroll;overflow-x:hidden;" id="approvalCommentModalBody">
+                <textarea id='approvalCommentText' placeholder="Attach a comment…" style="border-radius: 5px;height: 200px;width: 100%;"></textarea>
+                <p  style="font-size:80%;">Note: Please leave blank if you do not wish to put in a comment.</p>
+              </div>
+
+              <div class="modal-footer" >
+                  <button type="button" id="approval_final_send" class="btn btn-primary btn-xs mx-2 rounded px-2" >Send</button>
+              </div>
+
+              </div>
+          </div>
+      </div>
+      <div class="modal fade" id="approvalAssignmentModal" aria-labelledby="approvalAssignmentModal"  aria-modal="true">
+        <div class="modal-dialog modal-md modal-dialog-centered">
+          <div class="modal-content">
+            <div class="modal-header">
+                <h6 class="modal-title">Delegate Approval Decision</h6>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+            <div class="modal-body " style="overflow: scroll;overflow-x:hidden;">
+              <div class="row">
+                <div class="form-group col-12">
+                  <label for="selectUsersToAssign">Select User(s):</label>
+                  <select name="selectUsersToAssign" id="selectUsersToAssign" class="select2 form-control" multiple>
+
+                  </select>
+                </div>
+              </div>
+              <div class="row">
+                <div class="form-group col-12">
+                  <label for="approvalAssignmentComment">Any Note for the User(s):</label>
+                  <textarea id="approvalAssignmentComment" class="form-control"></textarea>
+                  <small class="small-text">Note: Please leave blank if you do not wish to put in a comment.</small>
+                </div>
+              </div>
+            </div>
+            <div class="modal-footer" >
+                <button type="button" id="assignApprovalDescisionButton" class="btn btn-primary btn-xs mx-2 rounded px-2" >Assign</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      </div>
+    </div>
+  </div>
+
+</section>
+<script>
+  $('select.select2:not(.modal select.select2)').each(function(){
+    parent = $(this).parent()
+    $(this).select2({dropdownParent:parent})
+})
+$('.modal select.select2').each(function(){
+    $(this).select2()
+})
+
+var id_element
+$('a[data-toggle="tab"]').on('shown.bs.tab', function(e){
+    $($.fn.dataTable.tables(true)).DataTable()
+       .columns.adjust();
+ });
+
+ function viewDetailsTableCss() {
+  $('#viewDetailsTable').DataTable( {
+    "autoWidth": true,
+    "scrollY": 200,
+    "scrollX": 500,
+    "scrollCollapse": true,
+    orderCellsTop: true,
+    responsive: true,
+    colReorder: {
+      fixedColumnsLeft: 1
+    },
+    stateSave: true,
+    "deferRender": true,
+    "paging": true,
+    "lengthMenu": [[1, 5, 50, -1], [1, 5, 50, "All"]],
+    stripeClasses: false,
+    "pageLength": 50,
+    dom: 'lfBrtip',
+    buttons: [
+        {
+           extend: 'collection',
+           text: 'Export',
+           buttons: [
+             {
+               extend: 'copy', title: '', exportOptions: {
+                 columns: ':visible:not(.noVis)'
+               }
+             },
+             {
+               extend: 'excel', title: '', exportOptions: {
+                 columns: ':visible:not(.noVis)'
+               }
+             },
+             {
+               extend: 'csv', title: '', exportOptions: {
+                 columns: ':visible:not(.noVis)'
+              }
+             },
+             {
+               extend: 'pdf', title: '', exportOptions: {
+                 columns: ':visible:not(.noVis)'
+               }
+             },
+           ],
+         },
+         {
+           extend: 'colvis',
+           className: "scroller",
+        }
+        ],
+        columnDefs: [
+      {
+        targets: "_all",
+        className: 'dt-center allColumnClass all'
+      },
+      {
+        targets: 0,
+        width: "20%",
+        className: 'noVis'
+      }
+    ],
+    } );
+ } viewDetailsTableCss();
+//  For the Table display
+function table_css() {
+    $('#example121_update').DataTable( {
+    "autoWidth": true,
+    "scrollY": 200,
+    "scrollX": 500,
+    "scrollCollapse": true,
+    orderCellsTop: true,
+    responsive: true,
+    colReorder: {
+      fixedColumnsLeft: 1
+    },
+    stateSave: true,
+    "deferRender": true,
+    "paging": true,
+    "lengthMenu": [[1, 5, 50, -1], [1, 5, 50, "All"]],
+    stripeClasses: false,
+    "pageLength": 50,
+    dom: 'lfBrtip',
+    buttons: [
+        {
+           extend: 'collection',
+           text: 'Export',
+           buttons: [
+             {
+               extend: 'copy', title: '', exportOptions: {
+                 columns: ':visible:not(.noVis)'
+               }
+             },
+             {
+               extend: 'excel', title: '', exportOptions: {
+                 columns: ':visible:not(.noVis)'
+               }
+             },
+             {
+               extend: 'csv', title: '', exportOptions: {
+                 columns: ':visible:not(.noVis)'
+              }
+             },
+             {
+               extend: 'pdf', title: '', exportOptions: {
+                 columns: ':visible:not(.noVis)'
+               }
+             },
+           ],
+         },
+         {
+           extend: 'colvis',
+           className: "scroller",
+        }
+        ],
+        columnDefs: [
+      {
+        targets: "_all",
+        className: 'dt-center allColumnClass all'
+      },
+      {
+        targets: 0,
+        width: "20%",
+        className: 'noVis'
+      }
+    ],
+    } );
+}; table_css();
+</script>
+<script>
+var table_initialise
+var create_view_element_id
+var table_data
+$('#select2multiple').on('change',function() {
+  $('#example121_update_wrapper').remove();
+  $('#example121_update').remove();
+
+  var table=`
+    <table id="example121_update" class="display compact" style="width:100%;">
+      <thead>
+        <tr>
+
+        </tr>
+      </thead>
+      <tbody>
+
+      </tbody>
+    </table>
+    `;
+    $('#list_view_approval_content').find('.card-body').append(table);
+  $.ajax({
+        url: window.location.pathname,
+        data: {
+          'filter': $('#select2multiple').val(),
+          'operation': 'Applying Filter'
+        },
+        type: "POST",
+        dataType: "json",
+        success: function (data) {
+          $('#example121_update').find('thead').find('tr').append(`
+          <th>Table Name</th>
+          <th>Approvals Pending</th>
+          <th>Approval Type</th>
+          <th>Created By</th>
+          <th>Approval</th>
+          `);
+          for(let i = 0; i < data.data.approvals.length; i++) {
+            data.data.approvals[i].group_name_list = JSON.stringify(data.data.approvals[i].group_name_list);
+            $('#example121_update').find('tbody').append(`<tr>
+              <td>${data.data.approvals[i].table_name_update}</td>
+              <td>${data.data.approvals[i].approval_count_update}</td>
+              <td>${data.data.approvals[i].edit_type_disp}</td>
+              <td>${data.data.approvals[i].created_by_update}</td>
+              <td><a data-toggle="tooltip" class="approval_expand disabled" data-modifyColumn="${data.data.approvals[i].modify_column}" data-element-id="${data.data.approvals[i].create_view_element_id}" data-user-name="${data.data.approvals[i].created_by_update}" data-recent-group='${JSON.stringify(data.data.approvals[i].recent_group_name)}' data-user-group=${data.data.approvals[i].group_name_list} title="Edit record" value="${data.data.approvals[i].edit_type}">
+                <i name="actions" value=${data.data.approvals[i].edit_type} class="fa fa-edit ihover javaSC thin-icon" style="font-size:15px"></i>
+              </a>
+              </td>
+            </tr>`)
+
+          }
+          $('.approval_expand').on('click', function() {
+            edit_table($(this));
+          });
+          table_css();
+        }, error(err) {
+          Swal.fire({icon: 'error',text: 'Error! Unable to open the approval table. Please try again.'});
+        }})
+})
+
+  $('.approval_expand').on('click', function(){
+    edit_table($(this));
+  })
+  let edited_data = {}
+  function edit_table(current) {
+    var type_of_query = current.attr('value');
+    if (type_of_query == 'edit') {
+      id_element = "edit"
+    } else {
+      id_element = "update"
+    }
+    var table_name = (current.closest('tr').find('td:nth-child(1)').text())
+    create_view_element_id = current.attr("data-element-id");
+    var user_name = current.attr("data-user-name");
+    var group_name = JSON.parse(current.attr("data-user-group"));
+    var userApprovers = JSON.parse(current.attr("data-user-approver"));
+    var recent_group = JSON.parse(current.attr("data-recent-group"));
+
+      $.ajax({
+        url: window.location.pathname,
+        data: {
+          'tableName': table_name,
+          'create_view_element_id': create_view_element_id,
+          'operation': 'drilldown_table',
+          'type_of_query':type_of_query,
+          'user_name':user_name
+        },
+        type: "POST",
+        dataType: "json",
+        success: function (data) {
+          table_data = [];
+          table_data = data.data.template_view_detail;
+          cols_verbose = data.data.verbose_column_name_dict2
+          if (type_of_query == 'edit') {
+            id_element = "edit";
+          } else {
+            id_element = "update";
+          }
+          $('#drilldowntable_'+"update"+"_wrapper").remove();
+          $('#drilldowntable_'+"update").remove();
+          $('#drilldownmodal_'+"update").find('.modal-body').append(
+            `<table id="drilldowntable_update" class="display compact" style="width:100%;">
+
+
+
+                <thead id="modalTable_update">
+                  <tr id="modal-table-header_update">
+                    <!-- <th id="approveHeader">Approve</th> -->
+                  </tr>
+                </thead>
+                <tbody id="modal-table-body_update">
+                    <!-- <tr>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                    </tr> -->
+                </tbody>
+              </table>
+
+            `
+          )
+          $("#table-name_"+"update").text(`${table_name}: `)
+          for (const column_name of data.data.columns) {
+            if (column_name != 'Id') {
+              $("#modal-table-header_"+"update").append(`<th>${cols_verbose[column_name]}</th>`);
+            }
+          }
+          $("#modal-table-header_"+"update").append('<th>Approve</th>');
+
+          var counter = 0;
+          for (const ind_dict of data.data.main_data) {
+            html = "";
+            let counter_ = 0;
+            for (const column_name of data.data.columns) {
+              let html_added = 0
+              let modifyColum
+              let modifyColumnTable
+              let mappingColumn = data.data.column_mapping
+              if(data.data.modify_column != undefined){
+                if (String(data.data.modify_column[counter]) != "null"){
+
+                  modifyColum = JSON.parse(data.data.modify_column[counter])
+                  if (modifyColum.hasOwnProperty(table_name)){
+                    modifyColum = modifyColum[table_name]
+                    if(modifyColum.hasOwnProperty(mappingColumn[column_name])){
+                      modifyColum[mappingColumn[column_name]]["value"] = ind_dict[column_name]
+                    }
+                    edited_data[data.data.approval_id[counter]] = modifyColum
+                    modifyColumnTable = table_name
+                  }
+                  else {
+                    modifyColum = {}
+                    modifyColumnTable = ""
+                  }
+                } else {
+                  modifyColum = {}
+                  modifyColumnTable = ""
+                }
+              } else {
+                modifyColum = {}
+                modifyColumnTable = ""
+              }
+              if ((column_name.endsWith("For The Period") || column_name.endsWith("Deviation")) && colum_name != 'Id') {
+                html += `<td bgcolor="#f6f6f6">${ind_dict[column_name]}</td>`;
+              } else if(column_name != 'Id' && column_name != 'id' && data.data.template_view_detail.template == "Multi Select") {
+                for(let p=0;p<data.data.template_view_detail.multi_select_column.length;p++){
+                  if (column_name == data.data.template_view_detail.multi_select_column[p]) {
+                    if (Object.keys(ind_dict[column_name]).length) {
+
+                      ind_dict[column_name] = JSON.parse(ind_dict[column_name]);
+                      ind_dict[column_name] = JSON.stringify(ind_dict[column_name]);
+                    }
+                    if (ind_dict[column_name][0] == "{") {
+
+                      html += `<td><button data-val = ${ind_dict[column_name]} class="viewDetails" data-select-col = '${data.data.template_view_detail.multi_select_column[p]}' style="border:transparent;  background-color:transparent">View Details</button></td>`;
+                      html_added = 1
+                      break
+                    } else {
+                      html += `<td>No details configured</td>`;
+                      html_added = 1
+                      break
+                    }
+                    }
+                  }
+                  if (html_added == 0) {
+                    if(modifyColum.hasOwnProperty(mappingColumn[column_name])){
+                      let randomId = (Math.random() + "").replace(".","");
+                    html += `<td id="${randomId+"_"+column_name.replaceAll(" ","_")}" class="d-flex align-items-center" style="padding:10px;width:100%; justify-content: space-between;"><span>${ind_dict[column_name]}</span>
+                      <div class="process_navbar_popover" data-id="${data.data.approval_id[counter]}" data-value="${ind_dict[column_name]}" data-index="${counter}" popover="yes" data-description="" data-column="${mappingColumn[column_name]}" data-table="${modifyColumnTable}" data-data=${JSON.stringify(modifyColum[mappingColumn[column_name]])} data-PopOverSelector="baseMasters" data-PopOverTarget="#yourContentHere" style="display:inline-block;position:relative;border: 1px solid rgba(0,0,0,.06);background: rgba(0,0,0,.09);" style="z-index: 1050;">
+                        <p class="fontclass" style="margin-bottom:0px;">
+                          <i name="actions" value="" data-toggle="tooltip" title="Click to edit" class="far fa-edit ihover javaSC thin-icon" style="font-size: 17px;margin-left:2px;font-weight:800;color:black; " onclick="popoverEdit.call(this)"></i>
+                        </p>
+                      </div>
+                      </td>`;
+                    } else {
+                      html += `<td>${ind_dict[column_name]}</td>`;
+                    }
+                  }
+              } else if (column_name != 'Id' && column_name != 'id') {
+                if(modifyColum.hasOwnProperty(mappingColumn[column_name])){
+                  let randomId = (Math.random() + "").replace(".","");
+                  html += `<td id="${randomId+"_"+column_name.replaceAll(" ","_")}" class="d-flex align-items-center" style="padding:10px;width:100%; justify-content: space-between;"><span>${ind_dict[column_name]}</span>
+                    <div class="process_navbar_popover" data-id="${data.data.approval_id[counter]}" data-value="${ind_dict[column_name]}" data-index="${counter}" popover="yes" data-description="" data-column="${mappingColumn[column_name]}" data-table="${modifyColumnTable}" data-data=${JSON.stringify(modifyColum[mappingColumn[column_name]])} data-PopOverSelector="baseMasters" data-PopOverTarget="#yourContentHere" style="display:inline-block;position:relative;border: 1px solid rgba(0,0,0,.06);background: rgba(0,0,0,.09);" style="z-index: 1050;">
+                      <p class="fontclass" style="margin-bottom:0px;">
+                        <i name="actions" value="" data-toggle="tooltip" title="Click to edit" class="far fa-edit ihover javaSC thin-icon" style="font-size: 17px;margin-left:2px;font-weight:800;color:black; " onclick="popoverEdit.call(this)"></i>
+                      </p>
+                    </div>
+                    </td>`;
+                } else {
+                  html += `<td>${ind_dict[column_name]}</td>`;
+                }
+              }
+              counter_ = counter_ + 1;
+            };
+            if (data.data.user_approval == user_name) {
+              if (data.data.allow_approval_assignment[counter] == "allow") {
+                html += `<td><button data-approval_id="${data.data.approval_id[counter]}" type="button" class="approval_assignment btn btn-floating btn-lg" style="color:var(--primary-color);"><i class="fas fa-tasks" aria-hidden="true"></i></button><button id="approve_${data.data.approval_id[counter]}" type="button" class="approve_ind btn btn-floating btn-lg" style="color:var(--primary-color);" disabled><i class="fa fa-check-square" aria-hidden="true"></i></button><button id="reject_${data.data.approval_id[counter]}" type="button" class="reject_ind btn btn-floating btn-lg" style="color:#000000;" disabled><i class="fa fa-window-close" aria-hidden="true"></i></button></td>`;
+              } else {
+                html += `<td><button id="approve_${data.data.approval_id[counter]}" type="button" class="approve_ind btn btn-floating btn-lg" style="color:var(--primary-color);" disabled><i class="fa fa-check-square" aria-hidden="true"></i></button><button id="reject_${data.data.approval_id[counter]}" type="button" class="reject_ind btn btn-floating btn-lg" style="color:#000000;" disabled><i class="fa fa-window-close" aria-hidden="true"></i></button></td>`;
+              }
+            } else {
+              if (!(group_name.some(r=> recent_group.includes(r)) || userApprovers.includes('{{ user.username }}'))) {
+                html += `<td><button id="approve_${data.data.approval_id[counter]}" type="button" class="approve_ind btn btn-floating btn-lg" style="color:var(--primary-color);" disabled><i class="fa fa-check-square" aria-hidden="true"></i></button><button id="reject_${data.data.approval_id[counter]}" type="button" class="reject_ind btn btn-floating btn-lg" style="color:#000000;" disabled><i class="fa fa-window-close" aria-hidden="true"></i></button></td>`;
+              } else {
+                if (data.data.allow_approval_assignment[counter] == "allow") {
+                  html += `<td><button data-approval_id="${data.data.approval_id[counter]}" type="button" class="approval_assignment btn btn-floating btn-lg" style="color:var(--primary-color);"><i class="fas fa-tasks" aria-hidden="true"></i></button><button id="approve_${data.data.approval_id[counter]}" type="button" class="approve_ind btn btn-floating btn-lg" style="color:var(--primary-color);"><i class="fa fa-check-square" aria-hidden="true"></i></button><button id="reject_${data.data.approval_id[counter]}" type="button" class="reject_ind btn btn-floating btn-lg" style="color:#000000;"><i class="fa fa-window-close" aria-hidden="true"></i></button></td>`;
+                } else {
+                  html += `<td><button id="approve_${data.data.approval_id[counter]}" type="button" class="approve_ind btn btn-floating btn-lg" style="color:var(--primary-color);"><i class="fa fa-check-square" aria-hidden="true"></i></button><button id="reject_${data.data.approval_id[counter]}" type="button" class="reject_ind btn btn-floating btn-lg" style="color:#000000;"><i class="fa fa-window-close" aria-hidden="true"></i></button></td>`;
+                }
+              }
+            }
+
+            $("#modal-table-body_"+"update").append("<tr>" + html + "</tr>");
+            counter++;
+          }
+          if (data.data.user_approval == user_name) {
+            $("#approve_all_update").prop("disabled",true);
+            $("#reject_all_update").prop("disabled",true);
+          } else {
+            if (!(group_name.some(r=> recent_group.includes(r)) || userApprovers.includes('{{ user.username }}'))) {
+              $("#approve_all_update").prop("disabled",true);
+              $("#reject_all_update").prop("disabled",true);
+            } else {
+              $("#approve_all_update").prop("disabled",false);
+              $("#reject_all_update").prop("disabled",false);
+            }
+          }
+          $("#drilldownmodal_"+"update").modal("show");
+
+
+          $(".approve_ind").on('click', function(){
+            $("#approval_final_send").attr('data-id',$(this).attr("id"))
+            $("#approval_final_send").attr('onclick','approve_ind()')
+            $("#approvalCommentModal").modal('show')
+          })
+
+
+
+          $(".reject_ind").on('click', function(){
+          $("#approval_final_send").attr('data-id',$(this).attr("id"))
+
+          $("#approval_final_send").attr('onclick','reject_ind()')
+          $("#approvalCommentModal").modal('show')
+            })
+
+          $('.approval_assignment').off('click').on('click', function(){
+            var approvalId = $(this).attr("data-approval_id");
+            $('#assignApprovalDescisionButton').attr('data-approval_id', approvalId);
+            $.ajax({
+              url: window.location.pathname,
+              async: false,
+              data: {
+                'operation': 'fetchUsersList',
+              },
+              type: "POST",
+              dataType: "json",
+              success: function (data) {
+                $('#selectUsersToAssign').empty();
+                for (i of data['users_list']) {
+                  $("#selectUsersToAssign").append(`<option value="${i}">${i}</option>`);
+                }
+                if ($('#selectUsersToAssign').attr('data-config')) {
+                  $('#selectUsersToAssign').val($('#selectUsersToAssign').attr('data-config')).trigger('change');
+                  $('#selectUsersToAssign').removeAttr('data-config');
+                }
+              }, error: ()=>{
+                Swal.fire({icon: 'error',text: 'Error! Please try again.'});
+              }
+            });
+            $("#approvalAssignmentModal").modal('show')
+          });
+
+          $(".viewDetails").on("click", function() {
+            viewDetails($(this));
+          });
+
+
+          // If DataTable not initialized: initialize
+
+              $('#drilldowntable_update').DataTable( {
+                "autoWidth": true,
+                "scrollY": 200,
+                "scrollX": 500,
+                "scrollCollapse": true,
+                orderCellsTop: true,
+                responsive: true,
+                colReorder: {
+                  fixedColumnsLeft: 1
+                },
+                stateSave: true,
+                "deferRender": true,
+                "paging": true,
+                "lengthMenu": [[1, 5, 50, -1], [1, 5, 50, "All"]],
+                stripeClasses: false,
+                "pageLength": 50,
+                dom: 'lfBrtip',
+                buttons: [
+                    {
+                      extend: 'collection',
+                      text: 'Export',
+                      buttons: [
+                        {
+                          extend: 'copy', title: '', exportOptions: {
+                            columns: ':visible:not(.noVis)'
+                          }
+                        },
+                        {
+                          extend: 'excel', title: '', exportOptions: {
+                            columns: ':visible:not(.noVis)'
+                          }
+                        },
+                        {
+                          extend: 'csv', title: '', exportOptions: {
+                            columns: ':visible:not(.noVis)'
+                          }
+                        },
+                        {
+                          extend: 'pdf', title: '', exportOptions: {
+                            columns: ':visible:not(.noVis)'
+                          }
+                        },
+                      ],
+                    },
+                    {
+                      extend: 'colvis',
+                      className: "scroller",
+                    }
+                  ],
+                  columnDefs: [
+                    {
+                      targets: "_all",
+                      className: 'dt-center allColumnClass all'
+                    },
+                    {
+                      targets: 0,
+                      width: "20%",
+                      className: 'noVis'
+                    }
+                ],
+              });
+          setTimeout(() => {
+
+            $('#drilldowntable_update').DataTable()
+                .columns.adjust()
+                .responsive.recalc();
+          },300)
+
+        },
+        error: function () {
+          Swal.fire({icon: 'error',text: 'Error! Failure in exporting data. Please try again.'});
+        }
+      });
+  };
+  function pageReload(data) {
+    $('#flowDetailBody').find('.row').empty();
+    var color
+    var check = 0
+    for(let i = 0; i < data.data.data.length; i++) {
+      $('#flowDetailBody').find('.row').append(`${shapes[data.data.data[i].tab_type]}`);
+      if(data.data.data[i]["current_status"] != "Active" && data.data.data[i]["current_status"] != "Active/Not required") {
+        $('#flowDetailBody').find('.row').append(`${shapes["arrow"]}`);
+      }
+      if(data.data.data[i]["current_status"] == "Fail"){
+        color = "red"
+      } else if(data.data.data[i]["current_status"] == "Pass"){
+        color = "green"
+      } else if(data.data.data[i]["current_status"] == "Active" || data.data.data[i]["current_status"] == "Active/Not required"){
+        color = "#FFD700"
+        check = 1;
+      }
+      $('#flowDetailBody').find('.row').find(".col-2").eq(-1).find('path').attr('stroke',`${color}`)
+      $('#flowDetailBody').find('.row').find(".col-2").eq(-1).children().css('border-color',`${color}`)
+      $('#flowDetailBody').find('.row').find(".col-2").eq(-1).attr('title',`${data.data.data[i]["detailed_status"]}`)
+      if(data.data.data[i].tab_type != "decision_box"){
+        $('#flowDetailBody').find('.row').find(".col-2").eq(-1).find('.name').html(data.data.data[i]["element_name"])
+      }
+      if(data.data.data[i]["current_status"] == "Active" || data.data.data[i]["current_status"] == "Active/Not required") {
+        break;
+      }
+    }
+    moveToNextTab(data)
+  }
+
+
+  $("#approve_all_update").on('click', function(){
+    $("#approval_final_send").attr('onclick','approval_all_update()')
+    $("#approvalCommentModal").modal('show')
+  })
+
+
+  function approval_all_update(){
+    let table_name = ($("#table-name_update").text().replace(": ", ""));
+    let approval_comment = $("#approvalCommentText").val()
+    $("#approvalCommentModal").modal('hide')
+    let url_string = window.location.pathname
+    let f_occ = url_string.indexOf('/', url_string.indexOf('/') + 1)
+    let s_occ = url_string.indexOf('/', url_string.indexOf('/') + f_occ +1)
+    let t_occ = url_string.indexOf('/', url_string.indexOf('/') + s_occ +1)
+    let app_code2 = url_string.substring(f_occ+1,s_occ)
+    let current_dev_mode2 = url_string.substring(s_occ+1,t_occ)
+    let modes = ["Build","Edit"]
+    let url = ""
+    if(current_dev_mode2 != "Build" && current_dev_mode2 != "Edit"){
+      current_dev_mode2 = "User"
+    }
+    $.ajax({
+      url: window.location.pathname,
+      data: {
+        'tableName': table_name,
+        'operation': 'approve_all',
+        'type_of_query':id_element,
+        'element_id': create_view_element_id,
+        'edited_data':JSON.stringify(edited_data),
+        'approval_comment':approval_comment,
+      },
+      type: "POST",
+      dataType: "json",
+      success: function (data) {
+        var pr_code = data.pr_code
+        Swal.fire({icon: 'success',text: `All items for ${table_name} have been successfully approved!`});
+        if (data.pr_code_redirect != ""){
+          window.location.href = `/users/${app_code2}/${current_dev_mode2}/`+data.pr_code_redirect+"/"
+        } else{
+          location.reload();
+        }
+
+        },
+      error: function () {
+        Swal.fire({icon: 'error',text: 'Error! Failure in executing approvals. Please try again.'});
+      }
+    });
+  }
+
+
+  $("#reject_all_update").on('click', function(){
+    $("#approval_final_send").attr('onclick','reject_all_update()')
+    $("#approvalCommentModal").modal('show')
+
+  })
+
+
+  function reject_all_update(){
+    let table_name = ($("#table-name_update").text().replace(": ", ""));
+    let approval_comment = $("#approvalCommentText").val()
+    $("#approvalCommentModal").modal('hide')
+    let url_string = window.location.pathname
+    let f_occ = url_string.indexOf('/', url_string.indexOf('/') + 1)
+    let s_occ = url_string.indexOf('/', url_string.indexOf('/') + f_occ +1)
+    let t_occ = url_string.indexOf('/', url_string.indexOf('/') + s_occ +1)
+    let app_code2 = url_string.substring(f_occ+1,s_occ)
+    let current_dev_mode2 = url_string.substring(s_occ+1,t_occ)
+    let modes = ["Build","Edit"]
+    let url = ""
+    if(current_dev_mode2 != "Build" && current_dev_mode2 != "Edit"){
+      current_dev_mode2 = "User"
+    }
+    $.ajax({
+      url: window.location.pathname,
+      data: {
+        'tableName': table_name,
+        'operation': 'reject_all',
+        'type_of_query':id_element,
+        'element_id': create_view_element_id,
+        'approval_comment' : approval_comment,
+      },
+      type: "POST",
+      dataType: "json",
+      success: function (data) {
+        var pr_code = data.pr_code
+        Swal.fire({icon: 'success',text: `All items for ${table_name} have been successfully rejected!`});
+        location.reload();
+      },
+      error: function () {
+        Swal.fire({icon: 'error',text: 'Error! Failure in executing rejections. Please try again.'});
+      }
+    });
+  }
+
+
+  $(".approve_ind").on('click', function(){
+    $("#approval_final_send").attr('data-id',$(this).attr("id"))
+    $("#approval_final_send").attr('onclick','approve_ind()')
+    $("#approvalCommentModal").modal('show')
+
+  })
+
+
+  function approve_ind() {
+    let table_name = ($("#table-name_"+"update").text().replace(": ", ""));
+    let approval_table_id = Number($('#approval_final_send').attr("data-id").split("_")[1]);
+    let approval_comment = $("#approvalCommentText").val()
+    $("#approvalCommentModal").modal('hide')
+    let url_string = window.location.pathname
+    let f_occ = url_string.indexOf('/', url_string.indexOf('/') + 1)
+    let s_occ = url_string.indexOf('/', url_string.indexOf('/') + f_occ +1)
+    let t_occ = url_string.indexOf('/', url_string.indexOf('/') + s_occ +1)
+    let app_code2 = url_string.substring(f_occ+1,s_occ)
+    let current_dev_mode2 = url_string.substring(s_occ+1,t_occ)
+    let modes = ["Build","Edit"]
+    let url = ""
+    if(current_dev_mode2 != "Build" && current_dev_mode2 != "Edit"){
+      current_dev_mode2 = "User"
+    }
+    $.ajax({
+      url: window.location.pathname,
+      data: {
+        'tableName': table_name,
+        "approval_id": approval_table_id,
+        'operation': 'approve_ind',
+        'type_of_query':id_element,
+        'edited_data':JSON.stringify(edited_data),
+        'approval_comment':approval_comment,
+
+      },
+      type: "POST",
+      dataType: "json",
+      success: function (data) {
+        Swal.fire({icon: 'success',text: "Approved successfully!"});
+        if (data.pr_code_redirect != ""){
+          window.location.href = `/users/${app_code2}/${current_dev_mode2}/`+data.pr_code_redirect+"/"
+        } else{
+          location.reload();
+        }
+      },
+      error: function () {
+        Swal.fire({icon: 'error',text: 'Error! Failure in executing selected approval. Please try again.'});
+      }
+    });
+
+  }
+
+
+
+  $(".reject_ind").on('click', function(){
+  $("#approval_final_send").attr('data-id',$(this).attr("id"))
+
+  $("#approval_final_send").attr('onclick','reject_ind()')
+  $("#approvalCommentModal").modal('show')
+    })
+
+  function reject_ind() {
+    let table_name = ($("#table-name_"+"update").text().replace(": ", ""));
+    let approval_table_id = Number($('#approval_final_send').attr("data-id").split("_")[1]);
+    let approval_comment = $("#approvalCommentText").val()
+    let url_string = window.location.pathname
+    let f_occ = url_string.indexOf('/', url_string.indexOf('/') + 1)
+    let s_occ = url_string.indexOf('/', url_string.indexOf('/') + f_occ +1)
+    let t_occ = url_string.indexOf('/', url_string.indexOf('/') + s_occ +1)
+    let app_code2 = url_string.substring(f_occ+1,s_occ)
+    let current_dev_mode2 = url_string.substring(s_occ+1,t_occ)
+    let modes = ["Build","Edit"]
+    let url = ""
+    if(current_dev_mode2 != "Build" && current_dev_mode2 != "Edit"){
+      current_dev_mode2 = "User"
+    }
+    $.ajax({
+      url: window.location.pathname,
+      data: {
+        'tableName': table_name,
+        "approval_id": approval_table_id,
+        'operation': 'reject_ind',
+        'type_of_query':id_element,
+        'approval_comment':approval_comment,
+      },
+      type: "POST",
+      dataType: "json",
+      success: function (data) {
+        Swal.fire({icon: 'success',text: 'Rejected successfully!'});
+        location.reload();
+      },
+      error: function () {
+        Swal.fire({icon: 'error',text: 'Error! Failure in executing selected rejection. Please try again.'});
+      }
+    });
+
+  }
+
+  $(".viewDetials").on("click", viewDetails);
+  function viewDetails(current) {
+    val = JSON.parse(current.attr("data-val"));
+    col_selected = current.attr("data-select-col")
+    $("#viewDetailsTable"+"_wrapper").remove();
+    $("#viewDetailsTable").remove();
+    var customTable = `
+    <table id="viewDetailsTable"  class="display compact" style="width:100%;"">
+      <thead>
+      </thead>
+
+      <tbody>
+
+      </tbody>
+
+    </table>
+    `
+    $("#viewDetailsModal").find('.modal-body').find('.card-body').append(customTable);
+    $("#viewDetailsModal").find('.modal-body').find('.card-header').html(`<h5 class="mb-0" style="text-align:center;">
+      ${table_data.master_table[col_selected]}
+    </h5>`)
+    $("#drilldownmodal_"+"update").modal("hide");
+    $("#viewDetailsModal").css('display','block');
+    var customViewData = table_data.table_data;
+    var customTableHtml = "<tr>";
+    for (let i = 0; i < table_data.final_column[col_selected].length; i ++) {
+      if (table_data.final_column[col_selected][i] != "Id" && table_data.final_column[col_selected][i] != "id") {
+        customTableHtml = customTableHtml + `<th>${table_data.final_column[col_selected][i]}</th>`;
+      }
+    }
+    customTableHtml = customTableHtml + `</tr>`
+    $("#viewDetailsModal").find("#viewDetailsTable").find('thead').append(`
+    ${customTableHtml}
+    `)
+    var dummy = 0;
+    for (const [key, value] of Object.entries(table_data.table_data[col_selected])) {
+      var html = "";
+      if (dummy == 0) {
+        dummy = 1;
+      }
+      for (const [key1, value1] of Object.entries(value)) {
+        for (const [key2, value2] of Object.entries(val)) {
+          if(value["id"] == key2) {
+            if (value1 != key2) {
+              html = html + `<td>${value1}</td>`
+              dummy = 0;
+            } else if (value1 == key2) {
+              if (table_data.final_column[table_data.final_column.length - 1] == "Input") {
+                html = html + `<td>${value2}</td>`
+                dummy = 0;
+              }
+            }
+          }
+        }
+      }
+      if (dummy == 0) {
+        html1 = "<tr>"
+        html1 = html1 + html
+        html1 = html1 + `</tr>`;
+        $("#viewDetailsModal").find("#viewDetailsTable").find('tbody').append(`
+          ${html1}
+        `)
+        dummy = 0;
+      }
+    }
+    viewDetailsTableCss()
+  }
+  $("#viewDetailsModal").find(".close").on("click",function() {
+    $("#viewDetailsModal").css("display","none");
+    $("#drilldownmodal_"+"update").modal("show");
+  })
+  function popoverEdit() {
+    $(document).off('focusin.modal');
+    $(this).closest(".process_navbar_popover").popover({
+      container: 'body',
+      delay: { "show": 10, "hide": 0 },
+      //content: 'WASSUP',
+      trigger: 'click',
+      html:true,
+      placement: 'left',
+      template: '<div class="popover card" style="z-index:1050;"><div class="arrow"></div><h3 class="popover-header" style="background: #565a5e;color:white;text-align:center"></h3><div class="card-body"</div></div>',
+      html: true,
+      sanitize: false,
+      content: function () {
+        $(".popover").find(".card-body").empty()
+        var string = `<div class="row" white-space="nowrap">`
+
+
+        //  var i=0
+        var list=["fas fa-compass","fas fa-atom","fas fa-sitemap","fas fa-highlighter","fas fa-globe","fas fa-paperclip","fas fa-project-diagram","fas fa-print","fas fa-table","fas fa-i-cursor","fas fa-indent","fas fa-list-alt","fas fa-list-ul","	fas fa-outdent","	far fa-building","fas fa-compass","fas fa-globe","fas fa-paperclip","fas fa-project-diagram","fas fa-bullseye","fas fa-calendar","far fa-clipboard","far fa-compass"]
+        let config_ = JSON.parse($(this).attr("data-data"))
+        let data_value = $(this).attr("data-value");
+        let id_ = $(this).closest("td").attr("id");
+        let index = $(this).attr("data-index")
+        let column = $(this).attr("data-column")
+        let id = $(this).attr("data-id")
+        let table1 = $("#drilldowntable_update").DataTable()
+        let cellIndex = table1.cell($(this).closest("td")).index().column;
+        let columnName = $("#drilldowntable_update").find("thead").find("th").eq(cellIndex).text();
+        let url_string = window.location.pathname
+        let f_occ = url_string.indexOf('/', url_string.indexOf('/') + 1)
+        let s_occ = url_string.indexOf('/', url_string.indexOf('/') + f_occ +1)
+        let t_occ = url_string.indexOf('/', url_string.indexOf('/') + s_occ +1)
+        let app_code2 = url_string.substring(f_occ+1,s_occ)
+        let current_dev_mode2 = url_string.substring(s_occ+1,t_occ)
+        let modes = ["Build","Edit"]
+        let url = ""
+        if(current_dev_mode2 != "Build" && current_dev_mode2 != "Edit"){
+          current_dev_mode2 = "User"
+        }
+        if(config_["data-type"] == "ForeignKey"){
+          $.ajax({
+            url: `/users/${app_code2}/${current_dev_mode2}/dynamicVal/`,
+
+            data: {
+              'operation': "ForeignKeyFilter1",
+              'model_name': $(this).attr("data-table"),
+              'column_name': $(this).attr("data-column"),
+              'populate': 'yes'
+            },
+            type: "POST",
+            dataType: "json",
+            success: function (data) {
+              $(".popover").find(".card-body").empty();
+              string+=`
+              <div class="col-12">
+                <select class="selectize form-control value">`
+              for (const [key, value] of Object.entries(data)) {
+                string+=`<option value="${parseInt(value)}">${key}</option>`
+              }
+              string+=`</select>
+              </div>
+              <div class="col-12" style="margin-top:7px;">
+                <i data-index="${index}" data-id="${id}" data-column="${column}" name="actions" value="" class="far fa-save ihover javaSC " style="font-size: 14px;margin-left:5px; float:right; cursor:pointer;" onclick="changeValue.call(this,'${id_}')"></i>
+                <i name="actions" value="" class="fas fa-remove ihover javaSC " style="font-size: 14px;margin-left:5px; float:right; cursor:pointer;" onclick="closePopover.call(this,'${id_}')"></i>
+              </div>
+            </div>`
+            $(".popover").find(".card-body").append(string)
+            $(".popover").find(".card-body").find("select").select2();
+            $(".popover").find(".card-body").find(".value").val(parseInt(data_value)).trigger("change")
+            },
+            error: function () {
+              Swal.fire({icon: 'error',text: 'Error! Failure in fetching data options. Please try again.'});
+            }
+          })
+
+        } else if(config_["data-type"] == "CharField") {
+          let url_string = window.location.pathname
+          let f_occ = url_string.indexOf('/', url_string.indexOf('/') + 1)
+          let s_occ = url_string.indexOf('/', url_string.indexOf('/') + f_occ +1)
+          let t_occ = url_string.indexOf('/', url_string.indexOf('/') + s_occ +1)
+          let app_code2 = url_string.substring(f_occ+1,s_occ)
+          let current_dev_mode2 = url_string.substring(s_occ+1,t_occ)
+          let modes = ["Build","Edit"]
+          let url = ""
+          if(current_dev_mode2 != "Build" && current_dev_mode2 != "Edit"){
+            current_dev_mode2 = "User"
+          }
+          if(1){
+            $.ajax({
+              url: `/users/${app_code2}/${app_code2}/dynamicVal/`,
+
+              data: {
+                'operation': "ChoiceField",
+                'model_name': $(this).attr("data-table"),
+                'column_name': $(this).attr("data-column"),
+                'populate': 'yes'
+              },
+              type: "POST",
+              dataType: "json",
+              success: function (data) {
+                if(data["choice"] == "yes"){
+                  $(".popover").find(".card-body").empty();
+                  string+=`
+                  <div class="col-12">
+                    <select class="selectize form-control value">`
+                  for (const i in (data.data)) {
+                    string+=`<option value="${data.data[i]}">${data.data[i]}</option>`
+                  }
+                  string+=`</select>
+                  </div>
+                  <div class="col-12" style="margin-top:7px;">
+                    <i name="actions" data-id="${id}" data-index="${index}" data-column="${column}" value="" class="far fa-save ihover javaSC " style="font-size: 14px;margin-left:5px; float:right; cursor:pointer;" onclick="changeValue.call(this,'${id_}')"></i>
+                    <i name="actions" value="" class="fas fa-remove ihover javaSC " style="font-size: 14px;margin-left:5px; float:right; cursor:pointer;" onclick="closePopover.call(this,'${id_}')"></i>
+                  </div>
+                </div>`
+                } else {
+                  string+=`
+                  <div class="col-12">
+                    <input class="form-control value" value="${data_value}">
+                  </div>
+                  <div class="col-12" style="margin-top:7px;">
+                    <i name="actions" data-id="${id}" data-index="${index}" data-column="${column}" value="" class="far fa-save ihover javaSC " style="font-size: 14px;margin-left:5px; float:right; cursor:pointer;" onclick="changeValue.call(this,'${id_}')"></i>
+                    <i name="actions" value="" class="fas fa-remove ihover javaSC " style="font-size: 14px;margin-left:5px; float:right; cursor:pointer;" onclick="closePopover.call(this,'${id_}')"></i>
+                  </div>
+                </div>`
+                }
+                $(".popover").find(".card-body").empty()
+                $(".popover").find(".card-body").append(string)
+                $(".popover").find(".card-body").find("select").select2();
+                $(".popover").find(".card-body").find(".value").val(data_value).trigger("change")
+              },
+              error: function () {
+                Swal.fire({icon: 'error',text: 'Error! Failure in fetching data options. Please try again.'});
+              }
+            })
+          } else {
+            string+=`
+            <div class="col-12">
+              <input class="form-control value" value="${data_value}">
+            </div>
+            <div class="col-12" style="margin-top:7px;">
+              <i name="actions data-id="${id}"" data-index="${index}" data-column="${column}" value="" class="far fa-save ihover javaSC " style="font-size: 14px;margin-left:5px; float:right; cursor:pointer;" onclick="changeValue.call(this,'${id_}')"></i>
+              <i name="actions" value="" class="fas fa-remove ihover javaSC " style="font-size: 14px;margin-left:5px; float:right; cursor:pointer;" onclick="closePopover.call(this,'${id_}')"></i>
+            </div>
+          </div>`
+          $(".popover").find(".card-body").append(string)
+          }
+        } else if(config_["data-type"] == "FloatField") {
+          string+=`
+          <div class="col-12">
+            <input type="number" step="0.000000001" class="form-control value" value="${data_value}">
+          </div>
+          <div class="col-12" style="margin-top:7px;">
+            <i name="actions" data-id="${id}" data-index="${index}" data-column="${column}" value="" class="far fa-save ihover javaSC " style="font-size: 14px;margin-left:5px; float:right; cursor:pointer;" onclick="changeValue.call(this,'${id_}')"></i>
+            <i name="actions" value="" class="fas fa-remove ihover javaSC " style="font-size: 14px;margin-left:5px; float:right; cursor:pointer;" onclick="closePopover.call(this,'${id_}')"></i>
+          </div>
+        </div>`
+          $(".popover").find(".card-body").append(string)
+        } else if(config_["data-type"] == "TextField" || config_["data-type"] == "TextArea") {
+          string+=`
+          <div class="col-12">
+            <textarea class="form-control value" value="${data_value}"></textarea>
+          </div>
+          <div class="col-12" style="margin-top:7px;">
+            <i name="actions" data-id="${id}" data-index="${index}" data-column="${column}" value="" class="far fa-save ihover javaSC " style="font-size: 14px;margin-left:5px; float:right; cursor:pointer;" onclick="changeValue.call(this,'${id_}')"></i>
+            <i name="actions" value="" class="fas fa-remove ihover javaSC " style="font-size: 14px;margin-left:5px; float:right; cursor:pointer;" onclick="closePopover.call(this,'${id_}')"></i>
+          </div>
+        </div>`
+          $(".popover").find(".card-body").append(string)
+        } else if((config_["data-type"] == "IntegerField") || (config_["data-type"] == "BigIntegerField")) {
+          string+=`
+          <div class="col-12">
+            <input type="number" step=1 class="form-control value" value="${data_value}">
+          </div>
+          <div class="col-12" style="margin-top:7px;">
+            <i name="actions" data-id="${id}" data-index="${index}" data-column="${column}" value="" class="far fa-save ihover javaSC " style="font-size: 14px;margin-left:5px; float:right; cursor:pointer;" onclick="changeValue.call(this,'${id_}')"></i>
+            <i name="actions" value="" class="fas fa-remove ihover javaSC " style="font-size: 14px;margin-left:5px; float:right; cursor:pointer;" onclick="closePopover.call(this,'${id_}')"></i>
+          </div>
+        </div>`
+          $(".popover").find(".card-body").append(string)
+        } else if(config_["data-type"] == "DateField") {
+          string+=`
+          <div class="col-12">
+            <input type="date" class="form-control value" value="${data_value}">
+          </div>
+          <div class="col-12" style="margin-top:7px;">
+            <i name="actions" data-id="${id}" data-index="${index}" data-column="${column}" value="" class="far fa-save ihover javaSC " style="font-size: 14px;margin-left:5px; float:right; cursor:pointer;" onclick="changeValue.call(this,'${id_}')"></i>
+            <i name="actions" value="" class="fas fa-remove ihover javaSC " style="font-size: 14px;margin-left:5px; float:right; cursor:pointer;" onclick="closePopover.call(this,'${id_}')"></i>
+          </div>
+        </div>`
+          $(".popover").find(".card-body").append(string)
+        } else if(config_["data-type"] == "DateTimeField") {
+          string+=`
+          <div class="col-12">
+            <input type="date" step="1" class="form-control value" value="${data_value}">
+          </div>
+          <div class="col-12" style="margin-top:7px;">
+            <i name="actions" data-id="${id}" data-index="${index}" data-column="${column}" value="" class="far fa-save ihover javaSC " style="font-size: 14px;margin-left:5px; float:right; cursor:pointer;" onclick="changeValue.call(this,'${id_}')"></i>
+            <i name="actions" value="" class="fas fa-remove ihover javaSC " style="font-size: 14px;margin-left:5px; float:right; cursor:pointer;" onclick="closePopover.call(this,'${id_}')"></i>
+          </div>
+        </div>`
+          $(".popover").find(".card-body").append(string)
+        }
+        if(config_["data-type"] != "ForeignKey"){
+          $(".popover").find(".card-body").val(data_value).trigger("change")
+        }
+        let html_mand = ""
+        if(config_["data-null"] == 0 || config_["data-null"] == "0"){
+          html_mand = "<span style='color:red;margin-left:5px;'>*</span>"
+        }
+        $(".popover").find(".popover-header").html(columnName + html_mand)
+        return ""
+      }
+    }).on('click', function () {
+      var self = this;
+      if($(this).hasClass("show")){
+        $(this).popover("hide");
+      } else {
+        $(this).popover("show");
+      }
+    })
+  }
+  function changeValue(id){
+    let index = parseInt($(this).attr("data-index"))
+    let column = $(this).attr("data-column")
+    let id_ = $(this).attr("data-id")
+    if(edited_data[id_][`${column}`]["data-null"] == "0" || edited_data[id_][`${column}`] == 0){
+      if([undefined,null,""," "].includes($(this).closest(".row").find(".value").val())) {
+        Swal.fire({icon: 'warning',text: 'The value cannot be empty as it is a mandatory field.'});
+      } else {
+        $("#"+id).find("span").text(`${$(this).closest(".row").find(".value").val()}`);
+        $("#"+id).find(".process_navbar_popover").attr("data-value",$(this).closest(".row").find(".value").val())
+        edited_data[id_][`${column}`]["value"] = $(this).closest(".row").find(".value").val()
+        $(this).closest(".popover").popover("hide")
+      }
+    } else {
+      $("#"+id).find("span").text(`${$(this).closest(".row").find(".value").val()}`);
+      $("#"+id).find(".process_navbar_popover").attr("data-value",$(this).closest(".row").find(".value").val())
+      edited_data[id_][`${column}`]["value"] = $(this).closest(".row").find(".value").val()
+      $(this).closest(".popover").popover("hide")
+    }
+  }
+  function closePopover(id) {
+    $(this).closest(".popover").popover("hide")
+  }
+
+  $('#assignApprovalDescisionButton').on('click', function(){
+    $.ajax({
+      url: window.location.pathname,
+      async: false,
+      data: {
+        'approval_id': $(this).attr('data-approval_id'),
+        'user_list': JSON.stringify($('#selectUsersToAssign').val()),
+        'comment': $('#approvalAssignmentComment').val(),
+        'operation': 'approvalAssignment',
+      },
+      type: "POST",
+      dataType: "json",
+      success: function (data) {
+        if (data.message.startsWith('Error')) {
+          Swal.fire({icon: 'error',text: data.message});
+        } else {
+          Swal.fire({icon: 'success',text: data.message});
+          $("#approvalAssignmentModal").modal('hide');
+        }
+      }, error: ()=>{
+        Swal.fire({icon: 'error',text: 'Error! Please try again.'});
+      }
+    });
+  })
+
+</script>
+
+{% endblock %}
+

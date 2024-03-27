@@ -1,0 +1,6 @@
+[run]
+include = kore_investment/*
+omit = *migrations*, *tests*
+plugins =
+    django_coverage_plugin
+

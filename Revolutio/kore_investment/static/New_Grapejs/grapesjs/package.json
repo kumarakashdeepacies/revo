@@ -1,0 +1,150 @@
+{
+  "_from": "grapesjs",
+  "_id": "grapesjs@0.20.1",
+  "_inBundle": false,
+  "_integrity": "sha512-uUMsgu6z7uUYHQdc9YEAvktTbfUc9WmxfhJHH54Qcwb3KheYsV/HUB6VhjeCU0mvY+gahTR5boS2iX5APHh0ng==",
+  "_location": "/grapesjs",
+  "_phantomChildren": {},
+  "_requested": {
+    "type": "tag",
+    "registry": true,
+    "raw": "grapesjs",
+    "name": "grapesjs",
+    "escapedName": "grapesjs",
+    "rawSpec": "",
+    "saveSpec": null,
+    "fetchSpec": "latest"
+  },
+  "_requiredBy": [
+    "#USER",
+    "/"
+  ],
+  "_resolved": "https://registry.npmjs.org/grapesjs/-/grapesjs-0.20.1.tgz",
+  "_shasum": "1196386ca7f5517302323c2a6fcc82aa8d5f244e",
+  "_spec": "grapesjs",
+  "_where": "C:\\Users\\TejasRahate\\source\\repos\\Revolutio\\kore_investment\\static\\New_Grapejs",
+  "author": {
+    "name": "Artur Arseniev"
+  },
+  "babel": {
+    "env": {
+      "test": {
+        "presets": [
+          "@babel/preset-env",
+          "@babel/preset-typescript"
+        ]
+      }
+    }
+  },
+  "bugs": {
+    "url": "https://github.com/artf/grapesjs/issues"
+  },
+  "bundleDependencies": false,
+  "dependencies": {
+    "backbone": "1.4.1",
+    "backbone-undo": "^0.2.5",
+    "codemirror": "^5.63.0",
+    "codemirror-formatting": "^1.0.0",
+    "promise-polyfill": "^8.1.3",
+    "underscore": "^1.13.1"
+  },
+  "deprecated": false,
+  "description": "Free and Open Source Web Builder Framework",
+  "devDependencies": {
+    "@babel/cli": "^7.15.7",
+    "@babel/preset-typescript": "^7.16.7",
+    "@types/backbone": "^1.4.15",
+    "@types/jest": "^28.1.1",
+    "@typescript-eslint/parser": "^5.22.0",
+    "@vuepress/plugin-google-analytics": "^1.8.2",
+    "documentation": "^13.2.5",
+    "eslint": "^8.12.0",
+    "grapesjs-cli": "^3.0.1",
+    "html-entities": "^1.4.0",
+    "husky": "^2.7.0",
+    "jest": "^24.9.0",
+    "lint-staged": "^8.2.1",
+    "npm-run-all": "^4.1.5",
+    "prettier": "^2.4.1",
+    "sass": "^1.42.1",
+    "sinon": "^7.5.0",
+    "vuepress": "^1.8.2",
+    "whatwg-fetch": "^3.6.2"
+  },
+  "homepage": "http://grapesjs.com",
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
+  "jest": {
+    "moduleFileExtensions": [
+      "js",
+      "ts"
+    ],
+    "verbose": true,
+    "testURL": "http://localhost/",
+    "modulePaths": [
+      "<rootDir>/src"
+    ],
+    "testMatch": [
+      "<rootDir>/test/specs/**/*.(t|j)s"
+    ],
+    "setupFiles": [
+      "<rootDir>/test/setup.js"
+    ]
+  },
+  "keywords": [
+    "grapes",
+    "grapesjs",
+    "wysiwyg",
+    "web",
+    "template",
+    "editor",
+    "newsletter",
+    "site",
+    "builder"
+  ],
+  "license": "BSD-3-Clause",
+  "lint-staged": {
+    "{src,test}/**/*.(t|j)s": [
+      "eslint --ext .ts,.js --fix",
+      "prettier --single-quote --print-width 120 --arrow-parens avoid --write",
+      "git add"
+    ]
+  },
+  "main": "dist/grapes.min.js",
+  "name": "grapesjs",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/artf/grapesjs.git"
+  },
+  "resolutions": {
+    "backbone-undo/backbone": "1.3.3",
+    "backbone-undo/underscore": "^1.13.1"
+  },
+  "scripts": {
+    "build": "npm run check && run-s build:*",
+    "build:css": "sass src/styles/scss/main.scss dist/css/grapes.min.css --no-source-map --style=compressed --load-path=node_modules",
+    "build:js": "grapesjs-cli build --targets=\"> 1%, ie 11, safari 8, not dead\" --statsOutput=\"stats.json\" --localePath=\"src/i18n/locale\"",
+    "check": "npm run lint && npm run test",
+    "docs": "vuepress dev docs",
+    "docs:api": "node docs/api.js",
+    "docs:build": "npm run docs:api && npm run docs:build-vp",
+    "docs:build-vp": "vuepress build docs",
+    "docs:deploy": "docs/deploy.sh",
+    "format": "prettier --single-quote --write './{src,test}/**/*.js'",
+    "lint": "eslint . --ext .ts,.js",
+    "start": "run-p start:*",
+    "start:css": "npm run build:css -- --watch",
+    "start:js": "grapesjs-cli serve",
+    "test": "jest",
+    "test:dev": "jest --watch"
+  },
+  "sideEffects": [
+    "*.vue",
+    "*.css",
+    "*.scss"
+  ],
+  "version": "0.20.1"
+}

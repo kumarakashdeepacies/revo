@@ -1,0 +1,7 @@
+#!/bin/bash
+
+set -o errexit
+set -o pipefail
+set -o nounset
+
+rqmonitor -b 0.0.0.0 -p 8899 -u ${REDIS_URL}

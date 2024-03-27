@@ -1,0 +1,413 @@
+{% extends extend_template %}
+{% load crispy_forms_tags %}
+{{ form.media }}
+{% load static %}
+{% block body_block %}
+
+
+<!-- DataTables -->
+<!--<link rel="stylesheet" href="{% static 'vendor/Base_theme/datatables-bs4/css/dataTables.bootstrap4.css' %}">
+<link rel="stylesheet" href="{% static 'vendor/Base_theme/datatables-buttons/css/buttons.bootstrap4.min.css' %}">-->
+<!--Official dataTables default  CSS FILE-->
+
+<link rel="stylesheet" href="{% static 'css/KoreD/jquery.dataTables.css' %}">
+<link rel="stylesheet" href="{% static 'vendor/Base_theme/datatables-responsive/css/responsive.bootstrap4.min.css' %}">
+<link rel="stylesheet" href="{% static 'vendor/Base_theme/datatables-colreorder/css/colReorder.bootstrap4.min.css' %}">
+<link rel="stylesheet" href="{% static 'css/KoreD/buttons.dataTables.min.css' %}">
+
+<!-- Select2 -->
+<link rel="stylesheet" href="{% static 'vendor/Base_theme/select2/css/select2.min.css' %}">
+<link rel="stylesheet" href="{% static 'vendor/Base_theme/select2-bootstrap4-theme/select2-bootstrap4.min.css' %}">
+
+<!-- Select2 -->
+<script src="{% static 'vendor/Base_theme/select2/js/select2.min.js' %}"></script>
+
+<!-- DataTables -->
+<script src="{% static 'vendor/Base_theme/datatables/jquery.dataTables.js' %}"></script>
+<script src="{% static 'vendor/Base_theme/datatables-responsive/js/dataTables.responsive.min.js' %}"></script>
+<script src="{% static 'vendor/Base_theme/datatables-fixedheader/js/dataTables.fixedHeader.min.js' %}"></script>
+<script src="{% static 'vendor/Base_theme/datatables-colreorder/js/dataTables.colReorder.min.js' %}"></script>
+<script src="{%static 'vendor/Base_theme/datatables-bs4/js/dataTables.bootstrap4.js'%}"></script>
+
+<script src="{%static 'vendor/Base_theme/datatables-buttons/js/dataTables.buttons.min.js'%}"></script>
+<script src="{%static 'vendor/Base_theme/jszip/jszip.min.js'%}"></script>
+<script src="{%static 'vendor/Base_theme/pdfmake/pdfmake.min.js'%}"></script>
+<script src="{%static 'vendor/Base_theme/pdfmake/vfs_fonts.js'%}"></script>
+<script src="{%static 'vendor/Base_theme/datatables-buttons/js/buttons.html5.min.js'%}"></script>
+<script src="{%static 'vendor/Base_theme/datatables-buttons/js/buttons.colVis.min.js'%}"></script>
+
+<!-- Bootstrap4 Duallistbox -->
+<link rel="stylesheet" href="{% static 'vendor/Base_theme/bootstrap4-duallistbox/bootstrap-duallistbox.min.css' %}">
+
+<!-- Bootstrap4 Duallistbox -->
+<script src="{% static 'vendor/Base_theme/bootstrap4-duallistbox/jquery.bootstrap-duallistbox.min.js' %}"></script>
+
+
+<!-- Pivot Table JS -->
+<script src=" {% static 'js/pivottable/dist/pivot.min.js' %}"></script>
+<script src=" {% static 'js/pivottable/dist/c3_renderers.min.js' %}"></script>
+<script src=" {% static 'js/pivottable/dist/d3_renderers.min.js' %}"></script>
+<script src=" {% static 'js/pivottable/dist/gchart_renderers.min.js' %}"></script>
+<script src=" {% static 'js/pivottable/dist/googleapis.js' %}"></script>
+<script src=" {% static 'js/pivottable/dist/plotly_renderers.min.js' %}"></script>
+
+
+<!-- Breadcrumb-->
+<div class="breadcrumb-holder" style="background-color: #e9ecef; ">
+  <div class="container-fluid" id="dynamicTabs">
+    <ul class="breadcrumb" id="dynamicbreadcrumbs">
+      <li class="breadcrumb-item"><a {% if current_application_code != 'App0' %} {% if current_application_code == 'Dev' %} {% if current_dev_mode == 'Edit' %} {% if edit_app_code != 'Not Selected' %} href="{% url 'users:homePage' edit_app_code current_dev_mode %}" {% else %} href="{% url 'users:homePage' 'Dev' current_dev_mode %}" {% endif %} {% elif current_dev_mode == 'Build' %} href="{% url 'users:homePage' build_app_code current_dev_mode %}"  {% endif %} {% else %} href="{% url 'users:homePage' current_application_code 'User' %}" {% endif %} {% else %} href="{% url 'users:select_application' %}" {% endif %}>
+        <b> Home </b></a></li>
+        {% if build_app_code != 'Not Selected' %}
+        <li class="breadcrumb-item "><b><a href="{% url 'users:pivot_report_data' build_app_code current_dev_mode %}">View Pivot Reports</a></b></li>
+        {% elif edit_app_code != 'Not Selected' %}
+        <li class="breadcrumb-item "><b><a href="{% url 'users:pivot_report_data' edit_app_code current_dev_mode %}">View Pivot Reports</a></b></li>
+        {% endif %}
+      <li class="breadcrumb-item "><b>Create Pivot Report</b></li>
+    </ul>
+  </div>
+</div>
+
+<div class="card">
+    <div class="card-body">
+      <div class="d-flex justify-content-between align-items-center nav mb-3">
+        <div class='d-flex justify-content-between align-items-center'>
+          <label class="ml-3 m-0 p-0">Select Table Name: </label>&nbsp;&nbsp;
+          <select class="dbselect select2 form-control">
+            <option value="" selected disabled>Select Table Name</option>
+          {% for i in tableList%}
+          <option value="{{i}}">{{i}}</option>
+          {%endfor%}
+        </select>
+        </div>
+        <div>
+          <button class="btn btn-xs rounded btn-primary newallreportsbtn">
+            {% if build_app_code != 'Not Selected' %}
+            <a href="{% url 'users:pivot_report_data' build_app_code current_dev_mode %}">All Reports</a>
+            {% elif edit_app_code != 'Not Selected' %}
+            <a href="{% url 'users:pivot_report_data' edit_app_code current_dev_mode %}">All Reports</a>
+            {% endif %}
+          </button>
+          <button class="btn btn-xs rounded btn-primary savereportcollapsebtn"   data-toggle="collapse" href="#saveForm" role="button">
+            Save Report
+          </button>
+        </div>
+      </div>
+      <div class="collapse ml-3 mb-3" id="saveForm">
+        <form class="savereportform">
+          <input
+            type="text"
+            class="reportname"
+            placeholder="Report Name"
+            required
+          />
+          <input
+            type="text"
+            class="categoryname"
+            placeholder="Category Name"
+            required
+          />
+          <button class="btn btn-xs rounded btn-primary savereportbtn" type="submit">
+            Save
+          </button>
+          <button
+            class="btn btn-xs btn-primary rounded"
+            data-toggle="collapse"
+            href="#saveForm"
+            type="button"
+            role="button"
+          >
+            Cancel
+          </button>
+        </form>
+      </div>
+      <div class="card">
+        <div class="card-body">
+          <div id="output" style='max-height:500px;overflow:auto;'></div>
+        </div>
+      </div>
+
+    </div>
+</div>
+
+
+
+    <script>
+      google.load("visualization", "1", {
+        packages: ["corechart", "charteditor"],
+      });
+      $(".dbselect").on("change",function(){
+
+        let dbname = $(this).val()
+        $.ajax({
+        url: window.location.pathname,
+        data:{'operation':'fetch_model_details',model_name: dbname},
+        type: "POST",
+        async: false,
+       dataType: "json",
+        success: function (data) {
+          let pivot_json_data = data['field_data']
+          pivot_json_data = JSON.parse(pivot_json_data)
+          $("#output").pivotUI(pivot_json_data,
+              $(function () {
+                var derivers = $.pivotUtilities.derivers;
+                var renderers ={}
+                 $.extend(
+                  renderers,
+                  $.pivotUtilities.renderers,
+                  $.pivotUtilities.plotly_renderers,
+                  $.pivotUtilities.c3_renderers,
+                  $.pivotUtilities.d3_renderers,
+                  $.pivotUtilities.gchart_renderers,
+                  $.pivotUtilities.subtotal_renderers,
+                );
+                $("#output").pivotUI(pivot_json_data, {
+
+                  renderers:renderers,
+                  rendererName: "Heatmap",
+                  rows: [],
+                  cols: [],
+                  onRefresh: function (config) {
+                    var config_copy = JSON.parse(JSON.stringify(config));
+                    delete config_copy["rendererOptions"];
+                    delete config_copy["localeStrings"];
+                    latestconfig = JSON.stringify(config_copy, undefined, 2);
+                  },
+                }
+
+                );
+              }))
+
+        },
+        error: function () {
+          Swal.fire({icon: 'error',text: 'Error! Please try again.'});
+        },
+      });
+      });
+
+
+      $(".savereportform").submit((e) => {
+        e.preventDefault();
+        const reportname = $(".reportname").val().trim();
+        const categoryname = $(".categoryname").val().trim();
+        var config = $("#output").data("pivotUIOptions");
+        var config_copy = JSON.parse(JSON.stringify(config));
+        var element_id = ("reportProcess"+Math.random()).replace('.',"").replace("=","")
+
+
+        // Remove parameter if empty
+        if(Object.keys(config_copy).includes("aggregators")){
+          delete config_copy["aggregators"]
+        }
+        if(Object.keys(config_copy).includes("renderers")){
+          delete config_copy["renderers"]
+        }
+        delete config_copy["rendererOptions"];
+        delete config_copy["localeStrings"];
+        latestconfig = JSON.stringify(config_copy, undefined, 2);
+
+
+        if (reportname && categoryname) {
+          $.ajax({
+            method: "POST",
+            dataType:'json',
+            url: window.location.pathname,
+            data: {
+              operation: 'save_pivot_report',
+              reportname: reportname,
+              element_id:element_id,
+              categoryname: categoryname,
+              report_data : latestconfig,
+              dbname: $(".dbselect").val(),
+            },
+            success: function (data) {
+              if(data.hasOwnProperty('unique_report')){
+                Swal.fire({icon: 'warning',text:"Report with the same name already exists!" });
+              }else{
+                location.reload()
+              }
+
+            },
+            error: function () {
+
+              Swal.fire({icon: 'error',text: 'Error! Failure in saving report. Please try again.'});
+
+
+            },
+          });
+        }
+      });
+    </script>
+
+
+    <style>
+
+      .pvtUi {
+        color: #333;
+      }
+
+      table.pvtTable {
+        font-size: 8pt;
+        text-align: left;
+        border-collapse: collapse;
+      }
+      table.pvtTable thead tr th,
+      table.pvtTable tbody tr th {
+        background-color: #e6eeee;
+        border: 1px solid #cdcdcd;
+        font-size: 8pt;
+        padding: 5px;
+      }
+
+      table.pvtTable .pvtColLabel {
+        text-align: center;
+      }
+      table.pvtTable .pvtTotalLabel {
+        text-align: right;
+      }
+
+      table.pvtTable tbody tr td {
+        color: #3d3d3d;
+        padding: 5px;
+        background-color: #fff;
+        border: 1px solid #cdcdcd;
+        vertical-align: top;
+        text-align: right;
+      }
+
+      .pvtTotal,
+      .pvtGrandTotal {
+        font-weight: bold;
+      }
+
+      .pvtVals {
+        text-align: center;
+        white-space: nowrap;
+      }
+      .pvtRowOrder,
+      .pvtColOrder {
+        cursor: pointer;
+        width: 15px;
+        margin-left: 5px;
+        display: inline-block;
+      }
+      .pvtAggregator {
+        margin-bottom: 5px;
+      }
+
+      .pvtAxisContainer,
+      .pvtVals {
+        border: 1px solid lightgray;
+        background: white;
+        padding: 5px;
+        min-width: 20px;
+        min-height: 20px;
+
+        user-select: none;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -khtml-user-select: none;
+        -ms-user-select: none;
+      }
+      .pvtAxisContainer li {
+        padding: 8px 6px;
+        list-style-type: none;
+        cursor: move;
+      }
+      .pvtAxisContainer li.pvtPlaceholder {
+        -webkit-border-radius: 5px;
+        padding: 3px 15px;
+        -moz-border-radius: 5px;
+        border-radius: 5px;
+        border: 1px dashed #aaa;
+      }
+
+      .pvtAxisContainer li span.pvtAttr {
+        -webkit-text-size-adjust: 100%;
+        background:var(--primary-color);
+        color: white;
+        border: 1px solid #dedede;
+        padding: 2px 5px;
+        white-space: nowrap;
+        -webkit-border-radius: 5px;
+        -moz-border-radius: 5px;
+        border-radius: 5px;
+      }
+
+      .pvtTriangle {
+        cursor: pointer;
+        color: white;
+      }
+
+      .pvtHorizList li {
+        display: inline;
+      }
+      .pvtVertList {
+        vertical-align: top;
+      }
+
+      .pvtFilteredAttribute {
+        font-style: italic;
+      }
+
+      .pvtFilterBox {
+        z-index: 100;
+        width: 300px;
+        border: 1px solid gray;
+        background-color: #fff;
+        position: absolute;
+        text-align: center;
+      }
+
+      .pvtFilterBox h4 {
+        margin: 15px;
+      }
+      .pvtFilterBox p {
+        margin: 10px auto;
+      }
+      .pvtFilterBox label {
+        font-weight: normal;
+      }
+      .pvtFilterBox input[type="checkbox"] {
+        margin-right: 10px;
+        margin-left: 10px;
+      }
+      .pvtFilterBox input[type="text"] {
+        width: 230px;
+      }
+      .pvtFilterBox .count {
+        color: gray;
+        font-weight: normal;
+        margin-left: 3px;
+      }
+
+      .pvtCheckContainer {
+        text-align: left;
+        font-size: 14px;
+        white-space: nowrap;
+        overflow-y: scroll;
+        width: 100%;
+        max-height: 250px;
+        border-top: 1px solid lightgrey;
+        border-bottom: 1px solid lightgrey;
+      }
+
+      .pvtCheckContainer p {
+        margin: 5px;
+      }
+
+      .pvtRendererArea {
+        padding: 5px;
+      }
+      /* {
+        "mode":"full","isactive": false;
+      } */
+      .createnewreportbtn a,.newallreportsbtn a,.allreportsbtn a{
+        color: unset !important;
+      }
+      .createnewreportbtn a:hover,.newallreportsbtn a:hover,.allreportsbtn a:hover{
+        color: unset !important;
+      }
+    </style>
+
+{% endblock %}

@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: nginx-ingress-ingress-nginx-controller
+  namespace: production
+data:
+  use-forwarded-headers: "true" #Forwarded settings
+  allow-snippet-annotations: "true"
+  enable-brotli: "true"
+  keep-alive-requests: "100"
+  large-client-header-buffers: 4 8k
+  use-gzip: "true"
+  use-http2: "true"

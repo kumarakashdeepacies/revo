@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    service: keydb
+  namespace: uat
+  name: keydb
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      service: keydb
+  strategy: {}
+  template:
+    metadata:
+      labels:
+        service: keydb
+    spec:
+      containers:
+      - image: revolutiodev.azurecr.io/revolutio_kubernetes/keydb:3878
+        name: keydb
+      restartPolicy: Always
+      volumes: null
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    service: keydb
+  namespace: uat
+  name: keydb
+spec:
+  ports:
+  - name: "6378"
+    protocol: TCP
+    port: 6379
+  selector:
+    service: keydb

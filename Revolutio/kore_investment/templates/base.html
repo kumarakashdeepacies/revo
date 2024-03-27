@@ -1,0 +1,614 @@
+{% load static i18n compress%}
+{% load static %}
+{% load i18n %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+   <meta charset="utf-8">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  <title>{% block title %}Revolutio{% endblock title %}</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="">
+  <meta name="author" content="">
+
+  {% if set_favicon_login == "True" and login_favicon_file|length %}
+  <link rel="icon" id="login_favicon" href="/media/{{tenant}}/TenantTheme/login_screen/favicon/{{login_favicon_file}}">
+
+  {% elif add_favicon_error500 and add_favicon_error500 == 'True' and 500favicon|length %}
+  <link rel="icon" id="login_favicon" href="/media/{{tenant}}/TenantTheme/custom_error_pages/favicon/{{500favicon}}" >
+
+  {% elif add_favicon_error500 and add_favicon_error500 == 'True_App' and 500favicon|length %}
+  <link rel="icon" id="login_favicon" href="/media/{{tenant}}/{{app_code}}/ErrorConfigfiles/favicon/{{error_code2}}/{{500favicon}}" >
+
+  {% elif add_favicon_error502 and add_favicon_error502 == 'True' and 502favicon|length %}
+  <link rel="icon" id="login_favicon" type="image/x-icon" href="/media/{{tenant}}/TenantTheme/custom_error_pages/favicon/{{502favicon}}" >
+
+  {% elif add_favicon_error_subprocess and add_favicon_error_subprocess == 'True' and subprocess_favicon|length %}
+  <link rel="icon" id="login_favicon" href="/media/{{tenant}}/TenantTheme/custom_error_pages/favicon/{{subprocess_favicon}}" >
+
+  {% elif add_favicon_error_subprocess and  add_favicon_error_subprocess == 'True_App' and subprocess_favicon|length %}
+  <link rel="icon" id="login_favicon" href="/media/{{tenant}}/{{app_code}}/ErrorConfigfiles/favicon/{{error_code2}}/{{subprocess_favicon}}" >
+
+  {% elif add_favicon_error_permission and add_favicon_error_permission == 'True' and permission_favicon|length %}
+  <link rel="icon" id="login_favicon" href="/media/{{tenant}}/TenantTheme/custom_error_pages/favicon/{{permission_favicon}}" >
+
+  {% elif add_favicon_error_permission and add_favicon_error_permission == 'True_App' and permission_favicon|length %}
+  <link rel="icon" id="login_favicon" href="/media/{{tenant}}/{{app_code}}/ErrorConfigfiles/favicon/{{error_code2}}/{{permission_favicon}}" >
+
+  {% elif add_favicon_error404 and add_favicon_error404 == 'True' and 404favicon|length %}
+  <link rel="icon" id="login_favicon" href="/media/{{tenant}}/TenantTheme/custom_error_pages/favicon/{{404favicon}}" >
+
+  {% elif add_favicon_error404 and add_favicon_error404 == 'True_App' and 404favicon|length %}
+  <link rel="icon" id="login_favicon" href="/media/{{tenant}}/{{app_code}}/ErrorConfigfiles/favicon/{{error_code2}}/{{404favicon}}" >
+
+  {% elif add_favicon_error403 and add_favicon_error403 == 'True' and 403favicon|length %}
+  <link rel="icon" id="login_favicon" href="/media/{{tenant}}/TenantTheme/custom_error_pages/favicon/{{403favicon}}" >
+
+  {% elif add_favicon_error403 and add_favicon_error403 == 'True_App' and 403favicon|length %}
+  <link rel="icon" id="login_favicon" href="/media/{{tenant}}/{{app_code}}/ErrorConfigfiles/favicon/{{error_code2}}/{{403favicon}}" >
+
+  {% elif add_favicon_error503 and add_favicon_error503 == 'True' and 503favicon|length %}
+  <link rel="icon" id="login_favicon" href="/media/{{tenant}}/TenantTheme/custom_error_pages/favicon/{{503favicon}}" >
+
+  {% else %}
+  <link rel="icon" id="login_favicon" href="{% static 'images/favicons/favicon1.ico' %}">
+  {% endif %}
+
+  {% block css %}
+  <link rel="stylesheet" href="{%static 'vendor/Base_theme/fontawesome-free/css/all.min.css'%}">
+
+  <!-- Theme style -->
+  <link rel="stylesheet" href="{%static 'css/Base_theme/CSS_min.min.css'%}">
+
+  <link rel="stylesheet" href="{%static 'css/Acies_theme/Stylesheet1.min.css'%}">
+  {% endblock %}
+<!-- jQuery -->
+<script src="{%static 'vendor/Base_theme/jquery/jquery.min.js'%}"></script>
+
+<script src="{%static 'vendor/Base_theme/bootstrap/js/bootstrap.bundle.min.js'%}"></script>
+
+<script src="{%static 'vendor/sweet_alert/sweetalert2.all.min.js'%}"></script>
+
+{% if video_on_loop == "True" %}
+    <script type="text/javascript" src="{% static 'vendor/Base_theme/background/jquery.youtube-background.min.js' %}"></script>
+  {% endif %}
+{% block slidercss %}
+
+  <style>
+  :root {
+  --primary-color:#d4af37;
+  --secondary-color:black;
+  --font-color: #000000;
+  --font-hover-color: #ffffff;
+  }
+
+    {% if root_css|length %}
+      {{root_css }}
+    {% endif %}
+
+    {% if static_image == "True" and static_image_file|length %}
+    .body-background{
+      padding: 1px;
+      position: relative;
+      background: url('/media/{{tenant}}/TenantTheme/login_screen/background_images/{{static_image_file}}');
+      background-attachment: fixed;
+      background-position: center;
+      background-repeat: no-repeat;
+      background-size: cover;
+      overflow: hidden;
+      object-fit: contain;
+      max-height: 100%;
+    }
+
+  {% elif video_on_loop == "True" %}
+    .body-background video{
+      min-width: 100%;
+      max-width: 100%;
+      max-height: 100%;
+      object-fit: fill;
+    }
+    .body-background iframe{
+      min-width: 100%;
+      max-width: 100%;
+      object-fit: fill;
+    }
+  {% endif %}
+
+    .login-page-container{
+      padding: 0 !important;
+    }
+    .textInput{
+      border-radius: 5px !important;
+      padding: 5px !important;
+    }
+    .acies_head_logo{
+      width: 15%;
+    }
+    .acies_head_logo img{
+      top: 0;
+      left: 0;
+      object-fit: contain;
+      width: 100%;
+    }
+
+    .cb-slideshow{
+      position: fixed;
+      width: 100%;
+      height: 100%;
+      top: 0px;
+      left: 0px;
+      z-index: -2;
+      list-style-type: none;
+    }
+    .cb-slideshow li span {
+        width: 100%;
+        height: 100%;
+        position: absolute;
+        top: 0px;
+        left: 0px;
+        color: transparent;
+        background-size: cover;
+        background-position: 50% 50%;
+        background-repeat: no-repeat;
+        opacity: 0;
+        z-index: 0;
+    }
+    .cb-slideshow li span img{
+      display:block;
+      width:100%;
+      height:100%;
+      object-fit: cover;
+    }
+    .fade-scale {
+      transform: scale(0);
+      opacity: 0;
+      -webkit-transition: all .3s linear;
+      -o-transition: all .3s linear;
+      transition: all .3s linear;
+    }
+
+    .fade-scale.in {
+      opacity: 1;
+      transform: scale(1);
+    }
+    .terms-header{
+      text-align: center;
+      width: fit-content;
+      margin: auto;
+      padding-bottom: 10px;
+      letter-spacing: 2px;
+      font-weight: bold;
+      padding-top: 30px;
+    }
+    .hr{
+      width: 126px;
+      color: var(--primary-color);
+      height: 0.5px;
+    }
+    .terms-conditions{
+      margin-top: 30px;
+    }
+    .acies-text-left{
+      text-align: justify;
+    }
+    .terms-close{
+      display: flex;
+      justify-content: flex-end;
+    }
+    .terms-conditions .container{
+      width: 90%;
+      margin-top: 1rem;
+    }
+    .terms-conditions ul li{
+      font-size: 16px;
+    }
+    .Modal-content {
+      background-color: #f7f7f7;
+      margin: auto;
+      padding: 12px;
+      border-radius: 15px;
+      max-width: 80%;
+      height: 96%;
+      overflow: hidden;
+    }
+    .Modal-content .wrapper {
+      position: relative;
+      overflow: auto;
+      height: 92%;
+      padding: 0 10px;
+      min-height: unset;
+    }
+    .content-header{
+      margin-top: 1rem;
+    }
+    .alert{
+    padding: .15rem 0.15rem 0.15rem .5rem !important;
+    border: none;
+    }
+    .alert-danger{
+      background: #f54545e8 !important;
+    }
+    .alert-success{
+      background: #008000a1 !important;
+    }
+
+    .alert .close{
+      padding: 0.1rem 0.5rem !important;
+      color: #e7e3e3;
+      top: 0px !important;
+      opacity: 1;
+      right: 0;
+      font-size: 1.2rem;
+      font-weight: 100;
+    }
+
+    .login-page .login-card-body{
+      border-radius: 10px;
+    }
+    #backtoSignin{
+      float: right;
+      text-align: center;
+      color:var(--font-hover-color) !important;
+      position: relative;
+      right: 0%;
+      top: 1vh;
+      background: var(--primary-color);
+      padding: 0.4rem;
+      border-radius: 4px;
+    }
+
+    #backtoSignin:hover {
+      color:var(--font-hover-color) !important;
+      background: var(--secondary-color);
+    }
+
+    @keyframes imageAnimationSlow {
+      0% { opacity: 0;
+          animation-timing-function: ease-out;
+        }
+      8% { opacity: 1; animation-timing-function: ease-in; }
+      17% { opacity: 1;}
+      50% { opacity: 0 }
+      100% { opacity: 0 }
+  }
+
+    @keyframes imageAnimationFast {
+      0% { opacity: 0;
+          animation-timing-function: ease-out;
+        }
+      8% { opacity: 1; animation-timing-function: ease-in; }
+      17% { opacity: 1;}
+      50% { opacity: 0 }
+      100% { opacity: 0 }
+  }
+
+    @keyframes imageAnimationNoLoop {
+      0% { opacity: 0;
+          animation-timing-function: ease-out;
+        }
+      8% { opacity: 1; animation-timing-function: ease-in; }
+      17% { opacity: 1;}
+      50% { opacity: 1 }
+      100% { opacity: 1 }
+    }
+
+    @keyframes imageAnimation {
+        0% { opacity: 0;
+            animation-timing-function: ease-out;
+          }
+        8% { opacity: 1; animation-timing-function: ease-in; }
+        17% { opacity: 1;}
+        25% { opacity: 0 }
+        100% { opacity: 0 }
+    }
+
+    .acies_logo_short{
+      margin-bottom: 15px;
+    }
+    .login-container{
+      position: relative;
+      width: 800px;
+      height: 500px;
+      margin: 20px;
+    }
+    .bluebg{
+      position: absolute;
+      top: 40px;
+      width: 100%;
+      height: 420px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background-color: var(--primary-color);
+      box-shadow: 0 5px 45px rgba(0,0,0,0.15);
+      border-radius: 10px;
+    }
+    .intro{
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+    }
+    .bluebg .box{
+      position: relative;
+      width: 50%;
+      height: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+    }
+    .bluebg .box h2{
+      color:var(--font-hover-color);
+      font-size: 2.8em;
+      font-weight: 500;
+      margin-bottom: 10px;
+    }
+    .bluebg .box p{
+      color: var(--font-hover-color);;
+    }
+    .bluebg .box button{
+      cursor: pointer;
+      padding: 8px 20px;
+      background-color: transparent;
+      color: #333;
+      font-size: 16px;
+      font-weight: 500;
+      border: 2px solid white;
+      border-radius: 30px;
+      color: var(--font-hover-color);
+      transition: .3s;
+    }
+    .bluebg .box button:hover{
+      background: white;
+      color: black;
+    }
+
+    .bluebg .box button:active {
+    transform: scale(0.95);
+    cursor: pointer;
+  }
+
+  .bluebg .box button:focus {
+    outline: none;
+    cursor: pointer;
+  }
+    .formBx{
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 50%;
+      height: 100%;
+      background-color: #fff;
+      z-index: 1000;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      box-shadow: 0 5px 45px rgba(0,0,0,0.15);
+      transform-style: preserve-3d;
+      transition: 0.5s ease-in-out;
+      transition-delay: 0.2s;
+      overflow: hidden;
+      border-radius: 10px;
+    }
+    .formBx.active{
+      left: 50%;
+    }
+    .formBx .form{
+      position: absolute;
+      left: 0;
+      width: 100%;
+      padding: 30px;
+      transition: 0.5s;
+    }
+    .bg-overlay{
+      position: absolute;
+      width: 100%;
+      height: 100vh;
+      z-index: -1;
+      background: rgba(0,0,0,0.1);
+    }
+    .copyright-footer{
+      position: fixed;
+      bottom: 0;
+      margin: 0 4%;
+      font-size: 15px;
+      z-index: 0;
+      text-align: left;
+      width: 92%;
+    }
+    @media (max-height: 568px), (max-width: 395px)
+    {
+      .copyright-footer {
+        display: none;
+      }
+    }
+    @media screen and (max-width: 768px){
+      .login-page-container{
+        width: 100% !important;
+      }
+      .formBx .form, .signinForm, .signupForm{
+        padding: 30px 25px;
+      }
+    }
+    @media (max-width: 991px){
+      .copyright-footer {
+        display: none;
+      }
+      .login-container{
+        max-width: 400px;
+        height: 650px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+      .acies_head_logo {
+        width: 22%;
+      }
+      .login-container .bluebg{
+        top: 25px;
+        height: 93%;
+      }
+
+      .bluebg .box{
+        position: absolute;
+        width: 100%;
+        height: 150px;
+        border: 0;
+      }
+      .bluebg .box h2{
+        font-size: 2em;
+        text-align: center;
+        margin-top: 5px;
+        margin-bottom: 0 !important;
+      }
+      .bluebg .box p{
+        padding: 5px 30px;
+        text-align: center;
+      }
+      .bluebg .box button {
+        padding: 4px 20px;
+        font-size: 14px;
+      }
+      .copyright-footer{
+        font-size: 12px;
+      }
+      .copyright-footer p{
+        margin-bottom: 0.5rem;
+      }
+    }
+    {% if loginFooterSize %}
+    .copyright-footer{
+      {% if loginFooterSize %}
+        font-size: {{loginFooterSize | safe}}px;
+      {% endif %}
+      {% if footer_placement %}
+        text-align: {{footer_placement | safe}};
+      {% endif %}
+      {% if login_footer_bgcolor %}
+        color:{{login_footer_bgcolor | safe}};
+      {% endif %}
+    }
+    {% endif %}
+
+    {% if add_footer_error == "True_App" and error_footer_size %}
+    .copyright-footer{
+      {% if error_footer_size %}
+        font-size: {{error_footer_size | safe}}px;
+      {% endif %}
+      {% if error_footer_placement %}
+        text-align: {{error_footer_placement | safe}};
+      {% endif %}
+      {% if error_footer_bgcolor %}
+        color:{{error_footer_bgcolor | safe}};
+      {% endif %}
+    }
+    {% elif add_footer_error == "True" and error_footer_size %}
+    .copyright-footer{
+      {% if error_footer_size %}
+        font-size: {{error_footer_size | safe}}px;
+      {% endif %}
+      {% if error_footer_placement %}
+        text-align: {{error_footer_placement | safe}};
+      {% endif %}
+      {% if error_footer_bgcolor %}
+        color:{{error_footer_bgcolor | safe}};
+      {% endif %}
+    }
+    {% endif %}
+
+  </style>
+{% endblock %}
+
+</head>
+
+<body>
+  <script src="{%static 'vendor/lazyload/lazyload.min.js'%}"></script>
+  <!--EXTRA CODE-->
+  <div class="body-background">
+
+    {% if video_on_loop == "True" and video_URL == "True" and video_url_bg|length %}
+      <div id="ytbg" data-ytbg-fade-in="true" data-youtube="{{video_url_bg}}"></div>
+    {% elif video_on_loop == "True" and video_File == "True" and video_file_bg|length  %}
+      <div id="ytbg" data-ytbg-fade-in="true" data-youtube="/media/{{tenant}}/TenantTheme/login_screen/background_video/{{video_file_bg}}"></div>
+    {% elif image_slider == "True" and login_slider_style|length %}
+      {{login_slider_style | safe}}
+      <script>lazyload();</script>
+    {% elif static_image == "True" and static_image_file|length %}
+    {% else %}
+      <ul class="cb-slideshow"  id="cb-slideshow">
+        <li>
+            <span style="animation: imageAnimation 30s linear infinite 0s;animation-delay: 0s;"><img class="lazyload" data-src="{%static 'images/login_slider/Screen-1.jpg'%}" /></span>
+        </li>
+        <li>
+          <span style="animation: imageAnimation 30s linear infinite 0s;animation-delay: 6s;"><img class="lazyload" data-src="{%static 'images/login_slider/Screen-2.jpg'%}" /></span>
+        </li>
+        <li>
+          <span style="animation: imageAnimation 30s linear infinite 0s;animation-delay: 12s;"><img class="lazyload" data-src="{%static 'images/login_slider/Screen-3.jpg'%}" /></span>
+        </li>
+        <li>
+          <span style="animation: imageAnimation 30s linear infinite 0s;animation-delay: 18s;"><img class="lazyload" data-src="{%static 'images/login_slider/Screen-4.jpg'%}" /></span>
+        </li>
+        <li>
+          <span style="animation: imageAnimation 30s linear infinite 0s;animation-delay: 24s;"><img class="lazyload" data-src="{%static 'images/login_slider/Screen-5.jpg'%}" /></span>
+        </li>
+      </ul>
+      <script>lazyload();</script>
+    {% endif %}
+    <div class="bg-overlay"></div>
+
+    <script>
+      lazyload();
+    </script>
+
+    <div class="mb-1">
+      <div class="acies_head_logo">
+        <a href="{% url 'account_login' %}">
+          {% if add_logo_screen == "True" and logo_on_screen|length %}
+            <img src="/media/{{tenant}}/TenantTheme/login_screen/logo/{{logo_on_screen|safe}}" alt="Acies Logo">
+          {% elif add_logo_screen == "False"%}
+          {% else %}
+            <img src="{%static 'images/Base_theme/Acies_Transparent_Black.jpeg'%}" alt="Acies Logo">
+          {% endif %}
+        </a>
+      </div>
+
+      <div class="login-page-container">
+        {% block content %}
+        <p>Use this document as a way to quick start any new project.</p>
+        {% endblock content %}
+
+        <div class="copyright-footer">
+          {% if customize_footer == "True" %}
+          {{footer_text|safe}}
+          {% elif add_footer_error == "True_App" %}
+          {{error_footer_text|safe}}
+          {% elif add_footer_error == "True" %}
+          {{error_footer_text|safe}}
+          {% else  %}
+          <p class="copyright-text">Copyright © 2024 Acies</p>
+          {% endif %}
+        </div>
+
+      </div> <!-- /container -->
+    </div> <!--EXTRA CODE-->
+
+  </div> <!--Background Image-->
+    {% block modal %}{% endblock modal %}
+  {% block javascript %}
+
+  {% if video_on_loop == "True" %}
+    <script type="text/javascript">
+      $(document).ready(function() {
+        $('[data-youtube], [data-vbg]').youtube_background();
+      });
+    </script>
+  {% endif %}
+
+  <!-- Bootstrap JS and its dependencies-->
+  <script src="{%static 'vendor/Base_theme/popper/umd/popper.min.js'%}"></script>
+    {% endblock javascript %}
+</body>
+</html>
+

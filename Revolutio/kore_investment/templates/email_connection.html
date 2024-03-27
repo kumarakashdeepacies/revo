@@ -1,0 +1,25 @@
+{% extends extend_template %}
+{% load static %}
+
+{% block body_block %}
+
+<br>
+<br>
+<div class="col-12">
+    <div class="info-box">
+      <span class="info-box-icon bg-info"><i class="far fa-envelope"></i></span>
+
+      <div class="info-box-content">
+        <span class="info-box-text" style="font-size:1.5rem;">MICROSOFT O365</span>
+        <span class="info-box-text" style="font-size:0.9rem;color:green;font-weight: bolder;" >Logged in</span>
+      </div>
+      <div class="info-box-content" style="margin-left:60rem">
+        <button type="button" id="connect" class="btn btn-primary" style="height:1.7rem;padding-top: 0.1rem;margin-top:1rem">Connect</button> &nbsp;&nbsp;
+        <button type="button" id="disconnectconnect" disabled class="btn btn-primary" style="height:1.7rem;padding-top: 0.1rem;margin-top:1rem" >Disconnect</button>
+      </div>
+
+      <!-- /.info-box-content -->
+    </div>
+    <!-- /.info-box -->
+  </div>
+{% endblock %}

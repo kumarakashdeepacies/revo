@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+{% load static %}
+
+<html>
+
+<head>
+  <!--<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">-->
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content=" ">
+  <link rel="icon" href="/static/images/favicons/favicon1.ico">
+
+
+  <title>{% block title %}{% endblock %}</title>
+  <!-- Tell the browser to be responsive to screen width -->
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- jQuery -->
+  <script src="{%static 'vendor/Base_theme/jquery/jquery.min.js'%}"></script>
+
+  <!--Jquery UI-->
+  <link rel="stylesheet" href="{% static 'vendor/Base_theme/jquery-ui/jquery-ui.css' %}">
+  <script src="{%static 'vendor/Base_theme/jquery-ui/jquery-ui.js'%}"></script>
+
+  <!-- Bootstrap -->
+  <script src="{%static 'vendor/Base_theme/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+
+  <!-- Theme style -->
+  <link rel="stylesheet" href="{%static 'css/Base_theme/CSS_min.min.css'%}">
+  <link rel="stylesheet" href="{%static 'css/Acies_theme/Stylesheet1.min.css'%}">
+
+  <!-- Font Awesome ok -->
+  <link rel="stylesheet" href="{%static 'vendor/Base_theme/fontawesome-free/css/all.min.css'%}">
+  <link rel="stylesheet" href="{%static 'vendor/Base_theme/fontawesome-free/css/allversion6.min.css'%}">
+
+  <!-- Select2 -->
+  <link rel="stylesheet" href="{% static 'vendor/Base_theme/select2/css/select2.min.css' %}">
+  <link rel="stylesheet" href="{% static 'vendor/Base_theme/select2-bootstrap4-theme/select2-bootstrap4.min.css' %}">
+  <!-- Select2 -->
+  <script src="{% static 'vendor/Base_theme/select2/js/select2.full.min.js' %}"></script>
+  <!-- Ckeditor -->
+  <script src="{% static 'js/ckeditor/ckeditor.js' %}"></script>
+
+  <!-- Sweet Alert2 -->
+  <script src="{% static 'vendor/sweet_alert/sweetalert2.all.min.js' %}"></script>
+
+  {% block links %}{% endblock links %}
+
+  {% if add_bg_tenant_admin == "True" and tenant_video_on_loop == "True" %}
+    <script type="text/javascript" src="{% static 'vendor/Base_theme/background/jquery.youtube-background.min.js' %}"></script>
+  {% endif %}
+
+  {% if add_bg_tenant_admin == "True" and tenant_image_slider == "True" and tenant_slider_style|length %}
+    <script src="{%static 'vendor/lazyload/lazyload.min.js'%}"></script>
+  {% endif %}
+
+
+  <style>
+  :root {
+  --primary-color:#d4af37;
+  --secondary-color:black;
+  --font-color: #000000;
+  --font-hover-color: #ffffff;
+  }
+
+    {% if set_tenant_admin_theme|length and set_tenant_admin_theme == "True" %}
+    :root {
+      --primary-color: {{tenant_primary_bgcolor}};
+      --secondary-color: {{tenant_secondary_bgcolor}};
+      --font-color: {{tenant_font_bgcolor}};
+      --font-family: {{font_family_tenant}};
+      --font-hover-color: {{tenant_hover_bgcolor}}
+    }
+    {% else %}
+    :root {
+      --font-hover-color: white;
+    }
+    {% endif %}
+
+    {% if set_tenantbg_bgcolor|length and set_tenantbg_bgcolor == "True" %}
+    :root {
+      --background: {{tenantbg_bgcolor}};
+    }
+    {% else %}
+    :root {
+      --background: white;
+    }
+
+    {% endif %}
+
+    body{
+      font-family: var(--font-family);
+      color: var(--font-color)
+    }
+
+    {% if add_bg_tenant_admin == "True" and tenant_static_image == "True" and tenant_static_image_file|length %}
+      .floating-wrapper{
+        padding: 1px;
+        position: relative;
+        background: url('/media/{{tenant}}/TenantTheme/tenant_admin/background_images/{{tenant_static_image_file}}');
+        background-attachment: fixed;
+        background-position: center;
+        background-repeat: no-repeat;
+        background-size: cover;
+      }
+    {% elif add_bg_tenant_admin == "True" and tenant_image_slider == "True" and tenant_slider_style|length %}
+      .floating-wrapper{
+        padding: 1px;
+        position: relative;
+        background: none;
+      }
+      .cb-slideshow{
+        position: fixed;
+        width: 100%;
+        height: 100%;
+        top: 0px;
+        left: 0px;
+        z-index: -2;
+        list-style-type: none;
+      }
+      .cb-slideshow li span {
+          width: 100%;
+          height: 100%;
+          position: absolute;
+          top: 0px;
+          left: 0px;
+          color: transparent;
+          background-size: cover;
+          background-position: 50% 50%;
+          background-repeat: none;
+          opacity: 0;
+          z-index: 0;
+      }
+      .cb-slideshow li span img{
+        display:block;
+        width:100%;
+        height:100%;
+        object-fit: cover;
+      }
+
+      @keyframes imageAnimationSlow {
+          0% { opacity: 0;
+              animation-timing-function: ease-out;
+            }
+          8% { opacity: 1; animation-timing-function: ease-in; }
+          17% { opacity: 1;}
+          50% { opacity: 0 }
+          100% { opacity: 0 }
+      }
+
+      @keyframes imageAnimationFast {
+        0% { opacity: 0;
+            animation-timing-function: ease-out;
+          }
+        8% { opacity: 1; animation-timing-function: ease-in; }
+        17% { opacity: 1;}
+        50% { opacity: 0 }
+        100% { opacity: 0 }
+      }
+
+      @keyframes imageAnimationNoLoop {
+        0% { opacity: 0;
+            animation-timing-function: ease-out;
+          }
+        8% { opacity: 1; animation-timing-function: ease-in; }
+        17% { opacity: 1;}
+        50% { opacity: 1 }
+        100% { opacity: 1 }
+    }
+
+    {% else %}
+      .floating-wrapper{
+        padding: 1px;
+        position: relative;
+        background: var(--background);
+    }
+
+    {% endif %}
+
+    .content{
+        margin-left: unset !important;
+    }
+
+    .content .main-row, .content .theme-row, .content .user-management-row{
+      background: rgba(233, 233, 233, 35%);
+      border-radius: 10px;
+      box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+      backdrop-filter: blur(5px);
+      -webkit-backdrop-filter: blur(5px);
+      border: 1px solid rgba(233, 233, 233, 0.43);
+    }
+
+    input[type=text], input[type=password], input[type=email], input[type=number]{
+      height: 2.8em;
+      width: 100%;
+      padding: 15px;
+      border: 1px solid lightgrey;
+      border-radius: 5px;
+      background: #ffffff47 !important;
+      box-shadow: 0px 3px 7px 0px rgb(0 0 0 / 35%) !important;
+    }
+    .select2-selection.select2-selection--single, .select2-container--default .select2-selection--multiple{
+      background: #ffffff47;
+      box-shadow: 0px 3px 7px 0px rgb(0 0 0 / 35%);
+    }
+
+    .select2-container--default .select2-results__option--highlighted {
+      background-color: var(--secondary-color);
+      color: var(--font-hover-color)
+    }
+
+    .select2-container--default .select2-results__option--highlighted[aria-selected], .select2-container--default .select2-results__option--highlighted[aria-selected]:hover {
+      background-color: var(--primary-color) !important;
+      color: var(--font-hover-color)
+    }
+
+    .select2-results__option:hover{
+      background-color: var(--primary-color);
+      color: var(--font-hover-color)
+    }
+
+    .floating-navbar{
+        margin: 15px;
+        box-shadow: 1px 1px 16px #d3d3d3d6;
+        border-radius: 6px;
+      }
+      .floating-navbar-allapps{
+        margin: 15px;
+        box-shadow: 1px 1px 16px #d3d3d3d6;
+        padding: 27px 10px;
+        border-radius: 6px;
+      }
+      .hideit{
+        bottom: 0;
+        position: absolute;
+        margin-left: auto;
+        margin-right: auto;
+        left: 0;
+        right: 0;
+        text-align: center;
+        cursor: pointer;
+      }
+      .pinit{
+        position: absolute;
+        right: -10px;
+        top: -10px;
+        transform: rotateZ(45deg);
+        font-size: 20px;
+        color: #959191;
+        cursor: pointer;
+      }
+      .color{
+        color: black;
+        right: -7px;
+        top: -7px;
+      }
+      .rotate{
+        transform: rotateZ(180deg);
+        transition: .2s;
+      }
+      .displaynone{
+        display: none !important;
+        transition: 1s;
+      }
+      .fixed{
+        position: sticky;
+        top: 15px;
+      }
+      .admin-options-dropdown{
+        height: fit-content;
+        min-width: 15em;
+        border-radius: 1rem;
+        overflow-y: auto;
+        padding:0;
+        overflow: hidden;
+        padding-top: 10%;
+      }
+      .admin-options-dropdown{
+        padding-top: 0;
+      }
+      .admin-options-dropdown .dropdown-divider{
+        margin: 0;
+      }
+      .admin-options-dropdown.show{
+        overflow-y: unset;
+      }
+      .admin-options-dropdown a.dropdown-item:hover{
+        background-color: var(--primary-color);
+        color: var(--font-hover-color);
+      }
+      .admin-options-dropdown  a.dropdown-item{
+        font-size: 85%;
+        padding: 8% 6%;
+      }
+      .content-wrapper{
+        background: unset;
+      }
+
+    {% block css %} {% endblock %}
+
+  </style>
+
+  </head>
+
+
+  <body>
+    <!--Dummy Form For Ajax Call-->
+    <form id="dummyFormForAjaxCall">
+      {% csrf_token %}
+    </form>
+
+    <div class="wrapper floating-wrapper">
+      {% if add_bg_tenant_admin == "True" and tenant_video_on_loop == "True" and video_URL_tenant == "True" and video_url_bg_tenant|length %}
+      <div id="ytbg" data-ytbg-fade-in="true" data-youtube="{{video_url_bg_tenant}}"></div>
+      {% elif add_bg_tenant_admin == "True" and tenant_video_on_loop == "True" and video_File_tenant == "True" and video_file_bg_tenant|length  %}
+      <div id="ytbg" data-ytbg-fade-in="true" data-youtube="/media/{{tenant}}/TenantTheme/tenant_admin/background_video/{{video_file_bg_tenant}}"></div>
+      {% elif add_bg_tenant_admin == "True" and tenant_image_slider == "True" and tenant_slider_style|length %}
+      {{tenant_slider_style | safe}}
+      <script>lazyload();</script>
+      {% endif %}
+      <nav class="allapps main-header navbar floating-navbar navbar-expand navbar-white navbar-light" style="margin: 15px !important">
+        <div class="nav-wrapper" style="display:flex; justify-content:space-between;width: 100%;transition: 2s;">
+          <!-- Left navbar links -->
+
+          <ul class="navbar-nav">
+            <li class="nav-item m-auto">
+              <div class="navbar-brand">
+                {% if add_logo_tenant == "True" %}
+                <img src="/media/{{tenant}}/TenantTheme/tenant_admin/logo/{{logo_on_tenant}}" alt="Acies Logo" align="left" style="float:left;height: 30px;">
+                {% else %}
+                <img src="{% static 'images/Base_theme/Acies_short_logo.png' %}" alt="Acies Logo" align="left" style="float:left;height: 30px;">
+                {% endif %}
+              </div>
+            </li>
+          </ul>
+
+          <ul class="navbar-nav">
+
+            {% if request.path != '/tenant_admin/' %}
+                <li class="nav-item dropdown m-auto">
+                    <a class="nav-link" data-toggle="dropdown">
+                    <i class="fa-solid fa-gear" style="font-size: 24px;" data-toggle="tooltip" title="Tenant Settings"></i>
+                    </a>
+                    <div class="dropdown-menu dropdown-menu-sm dropdown-menu-right admin-options-dropdown">
+                        <a href="#" class="dropdown-item" id="refreshTenantDBConnections">
+                            <i class="fas fa-refresh mr-2" aria-hidden="true"></i> Refresh database connectivity
+                        </a>
+                        <div class="dropdown-divider"></div>
+                        <a href="/tenant_admin/" class="dropdown-item " id="adminPanel">
+                            <i class="fa-solid fa-gears mr-2"></i> Tenant Settings
+                        </a>
+                    </div>
+                </li>
+            {% endif %}
+
+            <li class="nav-item m-auto">
+              <a class="nav-link" href="#">
+                <i class="far fa-bell" style="font-size: 24px;" data-toggle="tooltip" title="Notifications"></i>
+                <span class="alertcount badge badge-danger navbar-badge"></span>
+              </a>
+              <div class="mydropdown dropdown-menu dropdown-menu-lg dropdown-menu-right" style="height: fit-content;min-width: 28em;border-radius: 1rem;overflow-y: auto">
+                <span class="dropdown-item dropdown-header" style="text-align:left;background-color:#DCDCDC"  onclick="myFunction()">
+                  <b>New notifications</b>
+                  <b class="alertcount badge badge-danger" style="margin-left:19em;font-size:0.8rem;"></b>
+                  <i class="fa fa-angle-down" style="float:right;padding-top:0.3em;"></i></span>
+                <div id="myDropdown" class="dropdown-content" style="display:none">
+                <div class="dropdown-divider"></div>
+                <div class="addalert"></div>
+                <div class="dropdown-divider"></div>
+              </div>
+              </div>
+            </li>
+
+            <li class="nav-item m-auto">
+              <a class="nav-link" href="/tenant_admin/accounts/logout/">Sign out</a>
+            </li>
+          </ul>
+
+        </div>
+        <i class="fa fa-angle-up hideit" id="hideit"></i>
+        <i class="fa fa-thumbtack pinit" id="pinit" data-toggle="tooltip" title="Pin to screen"></i>
+      </nav>
+
+      {% block content %}
+      {% endblock %}
+
+    </div>
+
+    <script>
+
+
+
+        {% if add_bg_tenant_admin == "True" and tenant_video_on_loop == "True" %}
+        jQuery(document).ready(function() {
+            jQuery('[data-youtube], [data-vbg]').youtube_background();
+        });
+        {% endif %}
+
+        $("#hideit").click(function(){
+            $(".nav-wrapper").toggleClass("displaynone")
+            $(this).toggleClass("rotate")
+        })
+
+        $("#pinit").click(function(){
+            $(".main-header").toggleClass("fixed")
+            $(this).toggleClass("color")
+        })
+
+        $('#refreshTenantDBConnections').off('click').on('click', () => {
+            $.ajax({
+              url: '/tenant_admin/',
+              data: {
+                  'operation': 'refreshTenantDBConnections',
+              },
+              type: "POST",
+              dataType: "json",
+              success: function (data) {
+                  if (data.failed_list.length > 0) {
+                      let string = 'Following database connections could not be refreshed! Please make sure the connected db servers are reachable.';
+                      string += `\n ${JSON.stringify(data.failed_list)}`;
+                      Swal.fire(string);
+                  } else {
+                      Swal.fire({text:"Connected database connections refreshed successfuly!",icon:"success"});
+                  }
+              },
+              error: function () {
+                  Swal.fire({text:'Error refreshing database connections!',icon:"error"})
+              }
+            });
+          });
+    </script>
+
+    {% block scripts %}
+    {% endblock %}
+
+  </body>
+
+
+</html>

@@ -1,0 +1,20 @@
+{% extends "account/base.html" %}
+{% load static %}
+{% load i18n %}
+<!-- chajndefhu-->
+{% block head_title %}{% trans "Sign Up Closed" %}{% endblock %}
+  <div class="container_lgn">
+    <!--EXTRA CODE-->
+    <a href="{% url 'account_login' %}">
+      <img src="{%static 'images/Base_theme/Acies_short_logo.png'%}"
+           alt="Acies Logo" height="50" width="60">
+    </a>
+    <h1>{% trans "Sign Up Closed" %}</h1>
+    <p>{% trans "We are sorry, but the sign up is currently closed." %}</p>
+    {% endblock %}
+  </div>
+{% block inner %}
+
+
+
+

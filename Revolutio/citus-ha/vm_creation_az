@@ -1,0 +1,47 @@
+#Create resource group
+
+az group create --name ha-demo --location centralindia
+
+#Create vnet
+
+az network vnet create --resource-group ha-demo --name ha-demo-net --address-prefix 10.0.0.0/16
+
+#Create nsg
+
+az network nsg create --resource-group ha-demo --name ha-demo-nsg
+
+#Create nsg rule at subnet level
+
+az network nsg rule create --resource-group ha-demo --nsg-name ha-demo-nsg --name ha-demo-ssh-and-pg --access allow --protocol Tcp --direction Inbound --priority 100 --source-address-prefixes `curl ifconfig.me` 10.0.1.0/24 --source-port-range "*" --destination-address-prefix "*" --destination-port-ranges 22 5432
+
+az network vnet subnet create --resource-group ha-demo --vnet-name ha-demo-net --name ha-demo-subnet --address-prefixes 10.0.1.0/24 --network-security-group ha-demo-nsg
+
+#Create monitor VM
+
+az vm create --resource-group ha-demo --name ha-demo-monitor --vnet-name ha-demo-net --subnet ha-demo-subnet --nsg ha-demo-nsg --public-ip-address ha-demo-monitor-ip --image UbuntuLTS --admin-username ha-admin --generate-ssh-keys
+
+#Create instance A VM
+
+az vm create --resource-group ha-demo --name ha-demo-A --vnet-name ha-demo-net --subnet ha-demo-subnet --nsg ha-demo-nsg --public-ip-address ha-demo-A-ip --image UbuntuLTS --admin-username ha-admin --generate-ssh-keys
+
+#Create instance B VM
+
+az vm create --resource-group ha-demo --name ha-demo-B --vnet-name ha-demo-net --subnet ha-demo-subnet --nsg ha-demo-nsg --public-ip-address ha-demo-B-ip --image UbuntuLTS --admin-username ha-admin --generate-ssh-keys
+
+#Install docker in VMs
+
+az vm run-command invoke \
+--resource-group ha-demo \
+--name ha-demo-monitor \
+--command-id RunShellScript \
+--scripts \
+"sudo apt-get update" \
+"sudo apt-get install -y ca-certificates curl gnupg" \
+"sudo install -m 0755 -d /etc/apt/keyrings" \
+"curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg" \
+"sudo chmod a+r /etc/apt/keyrings/docker.gpg" \
+"echo "deb [arch="$(dpkg --print-architecture)" signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu \
+"$(. /etc/os-release && echo "$VERSION_CODENAME")" stable" | \
+sudo tee /etc/apt/sources.list.d/docker.list > /dev/null" \
+"sudo apt-get update" \
+"sudo apt-get install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin"

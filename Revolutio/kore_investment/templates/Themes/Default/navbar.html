@@ -1,0 +1,1188 @@
+{% load static %}
+<style>
+    .icon-container {
+      display: none;
+    }
+    #customdropdown li.dropdown-item {
+      padding:0 !important;
+    }
+
+    .customdropdown {
+      display: none;
+      position: absolute;
+      height: fit-content;
+      min-width: 10em;
+      border-radius: 1rem !important;
+      overflow-y: auto;
+      padding:0 !important;
+      overflow: hidden;
+      padding-top: 0% !important;
+    }
+
+    .customdropdown a {
+      display: block;
+      margin-bottom: 0px;
+      color: #333;
+      text-decoration: none;
+      padding: 12% 2% !important;
+    }
+
+    .customdropdown i {
+      margin-right: 5px;
+      display: flex;
+      justify-content: start;
+      align-items: center;
+    }
+    .customdropdownUL {
+      padding: 0 !important;
+      margin-bottom: 0%;
+    }
+
+    ul.customdropdownUL li {
+      list-style:none !important
+    }
+    .customdropdown .dropdown-item:hover{
+      background-color: var(--primary-color);
+      color: var(--font-hover-color);
+    }
+    .customdropdownUL .dropdown-divider {
+      margin: 0 !important;
+    }
+
+    .downsize {
+      font-size: 0.7rem;
+      padding:0.5rem !important;
+      margin-left:0.7rem !important;
+    }
+    .expand_collapse_notifications{
+      margin-bottom: 0 !important;
+    }
+
+    @media screen and (max-width: 450px) {
+      #customicon,.profile i:hover{
+        font-size: 18px !important;
+        text-shadow: unset;
+      }
+      .icon-container {
+        display: flex;
+        justify-content:center;
+        align-items:center
+      }
+      .customtoggle {
+        display: none !important;
+      }
+      .notification-container {
+        right: -3.6em !important;
+        width: 23em !important;
+      }
+      .notification-container .dropdown-item p, .clear-all{
+        margin-bottom: 0 !important;
+      }
+    }
+</style>
+<nav id="main-header"
+  {% if request.path == '/users/selectDashboard/' or request.path == '/users/dashboard/'%}
+    class="main-header navbar floating-navbar navbar-expand navbar-bg"
+  {% elif request.path == '/users/planner/' %}
+   class="main-header navbar floating-navbar navbar-expand navbar-bg" style="margin-left: 0px !important"
+  {% else %}
+    {% if request.path == '/users/selectApplication/' or request.path == '/users/adminPanel/' or request.path == '/users/alertsSetup/' or request.path == '/users/customizeTheme/' or selected_any_app == 'false' %}
+      class="allapps main-header navbar floating-navbar navbar-expand navbar-white navbar-light" style="margin-left: 15px !important"
+    {% else %}
+      class="main-header navbar floating-navbar navbar-expand navbar-bg"
+    {% endif %}
+  {% endif %}
+  >
+
+  <div class="nav-wrapper" style="display:flex; justify-content:space-between;width: 100%;transition: 2s; align-items: center;">
+    <!-- Left navbar links -->
+
+    <ul class="navbar-nav">
+        {% if request.path != '/users/selectDashboard/' %}
+      {% if request.path == '/users/selectApplication/' or request.path == '/users/adminPanel/' or request.path == '/users/alertsSetup/' or request.path == '/users/customizeTheme/' or selected_any_app == 'false' %}
+      {% if request.path not in '/users/dashboard/' %}
+        <li class="nav-item m-auto">
+          <div class="navbar-brand">
+            <a href="/users/selectApplication/">
+              {% if logo_file_topnavbar|length %}
+              <img src="/media/{{tenant}}/TenantTheme/appdrawer/logo/{{logo_file_topnavbar}}" alt="Acies Logo" align="left" style="float:left;height: 30px;">
+              {% else %}
+              <img src="{% static 'images/Base_theme/Acies_short_logo.png' %}" alt="Acies Logo" align="left" style="float:left;height: 30px;">
+              {% endif %}
+            </a>
+          </div>
+
+        </li>
+      {% endif %}
+      {% endif %}
+      {% endif %}
+
+
+      {% if request.path == '/users/selectDashboard/' or request.path == '/users/dashboard/' %}
+        <li class="nav-item m-auto">
+          <a id="toggleButton" class="nav-link pt-1" data-widget="pushmenu" href="#" style="pointer-events: none;">
+            <i class="fas fa-bars" style="font-size: 20px;"></i>
+          </a>
+        </li>
+      {% else %}
+        {% if request.path != '/users/selectApplication/'  and request.path != '/users/alertsSetup/' and request.path != '/users/adminPanel/' and request.path != '/users/customizeTheme/' and selected_any_app != 'false' %}
+        <li class="nav-item m-auto">
+          <a id="toggleButton" class="nav-link pt-1" data-widget="pushmenu" href="#" style="pointer-events: none;">
+            <i class="fas fa-bars" style="font-size: 20px;"></i>
+          </a>
+        </li>
+        {% endif %}
+      {% endif %}
+
+      <li class="nav-item m-auto dropdown">
+        <a data-toggle="dropdown" class="nav-link your-apps" style="display: flex;align-items: center;font-weight: 600;">Your Apps</a>
+        <div class="dropdown-menu dropdown-menu-lg dropdown-menu-left your-apps-menu">
+          <div class="yourapps-dropdown">
+            <span>switch to</span>
+            <a class="btn btn-primary" href="/users/selectApplication/">back to app drawer</a>
+          </div>
+          <div style="display: flex;align-items: center;justify-content: center;padding: 5px 10px;">
+            <input class="dropdown-search" id="dropdown-search" placeholder="Search Application">
+          </div>
+          <div class="apps-dropdownItems" id="apps-dropdownItems">
+            {% if applications|length < 1 %}
+                <div style="margin-left: 12px;margin-bottom: 5px;">No Apps</div>
+            {% else %}
+              {% for i in applications %}
+                <div class="yourapps-items" id="single_app" name="{{i.application_name}}" onclick="mode_option({{is_user_superuser}},{{is_user_dev}},'{{system_dev_mode}}','{{i.application_name}}','{{i.application_code}}')" >
+                  <div class="appList">
+                    <span style="font-size: 23px;background: rgb(211 211 211 / 16%);border-radius: 50%;height: 45px;width: 45px;display: flex;justify-content: center;align-items: center;">
+                      <i class="{{i.app_icon}}"></i>
+                    </span>
+                    <span style="font-size: 12px;margin-top: 10px;text-align: center;">{{i.application_name}}</span>
+                  </div>
+                </div>
+              {% endfor %}
+            {% endif %}
+          </div>
+        </div>
+      </li>
+    </ul>
+
+    <div class="d-flex">
+      <ul class="navbar-nav">
+        {% if selected_any_app != 'false' %}
+          {% if current_access_mode == 'Edit' or current_access_mode == 'Build' %}
+            <li id="devToolsNavigator" class="nav-item m-auto customtoggle">
+              <a class="nav-link" href="{% url 'users:developer_tools' current_app_code current_access_mode %}"><i class="fa-solid fa-layer-group" style="font-size: 24px;" aria-hidden="true"></i></a>
+              <div class="dropdown-menu dropdown-menu-sm dropdown-menu-center devtools-dropdown">
+                <div class="links-icons" style="overflow-y: scroll; overflow-x:hidden;border-radius: 0.8rem;    padding: 1rem; ">
+                  <div class="devtoolsDDGridContainer" style="display: grid;grid-template-columns: auto auto auto auto;">
+                    <div class="categoriesDiv" style="width: 95%;box-shadow: 1px 0px 0px 0px #d1d1d1;">
+                      <h5 class="devToolsHeaders" style="font-weight: 600;margin-left: 1rem;margin-bottom: 2rem;">ACCESS CONTROLS</h5>
+                        <a href="{% url 'users:user_management' current_app_code current_access_mode %}" class="dropdown-item dropdown-item-box shadow-none devToolsHeadersLink"  style="display: grid;grid-template-columns: 2rem 11rem;align-items: center;width: 80%;">
+                          <i class="fa-solid fa-universal-access  seticon" style="color: #e6576e;"></i>
+                          <h5 style="line-height: unset;margin-bottom: unset;display: flex;justify-content: start;align-items: center;margin-left: 1rem;font-weight: unset;">User Management</h5>
+                        </a>
+                        <a href="{% url 'users:audit_trail' current_app_code current_access_mode %}" class="dropdown-item dropdown-item-box shadow-none" style="display: grid;grid-template-columns: 2rem 11rem;align-items: center;width: 80%;">
+                          <i class="fa-solid fa-server seticon" style="color: #f34e69;"></i>
+                          <h5 style="line-height: unset;margin-bottom: unset;display: flex;justify-content: start;align-items: center;margin-left: 1rem;font-weight: unset;">User Insights</h5>
+                        </a>
+                        <a href="{% url 'users:jobexecution' current_app_code current_access_mode %}" class="dropdown-item dropdown-item-box shadow-none" style="display: grid;grid-template-columns: 2rem 11rem;align-items: center;width: 80%;">
+                          <i class="fa-solid fa-calendar-check seticon" style="color: #f34e69;"></i>
+                          <h5 style="line-height: unset;margin-bottom: unset;display: flex;justify-content: start;align-items: center;margin-left: 1rem;font-weight: unset;">Scheduler</h5>
+                        </a>
+                    </div>
+                    <div class="categoriesDiv" style="width: 95%;box-shadow: 1px 0px 0px 0px #d1d1d1;">
+                      <h5 class="devToolsHeaders" style="font-weight: 600;margin-left: 1rem;margin-bottom: 2rem;">DATA AND LOGICS</h5>
+                      <a href="{% url 'users:datamanagement' current_app_code current_access_mode %}" class="dropdown-item dropdown-item-box shadow-none" style="display: grid;grid-template-columns: 2rem 11rem;align-items: center;width: 80%;">
+                        <i class="fa-solid fa-sitemap seticon" style="color: #C0DDB1;"></i>
+                        <h5 style="line-height: unset;margin-bottom: unset;display: flex;justify-content: start;align-items: center;margin-left: 1rem;font-weight: unset;">Data Management Studio</h5>
+                      </a>
+                      <a href="{% url 'users:computation_module' current_app_code current_access_mode %}" class="dropdown-item dropdown-item-box shadow-none" style="display: grid;grid-template-columns: 2rem 11rem;align-items: center;width: 80%;">
+                        <i class="fa-solid fa-toolbox seticon" style="color: #C0DDB1;"></i>
+                        <h5 style="line-height: unset;margin-bottom: unset;display: flex;justify-content: start;align-items: center;margin-left: 1rem;font-weight: unset;">Computation Studio</h5>
+                      </a>
+                    </div>
+                    <div class="categoriesDiv" style="width: 95%;box-shadow: 1px 0px 0px 0px #d1d1d1;">
+                      <h5 class="devToolsHeaders" style="font-weight: 600;margin-left: 1rem;margin-bottom: 2rem;">WORKFLOWS</h5>
+                      <a href="{% url 'users:LevelCreation' current_app_code current_access_mode %}" class="dropdown-item dropdown-item-box shadow-none" style="display: grid;grid-template-columns: 2rem 11rem;align-items: center;width: 80%;">
+                        <i class="fa-solid fa-microchip seticon" style="color: #decc73;"></i>
+                        <h5 style="line-height: unset;margin-bottom: unset;display: flex;justify-content: start;align-items: center;margin-left: 1rem;font-weight: unset;">Process Manager</h5>
+                      </a>
+                      <a href="{% url 'users:processGraphModule' current_app_code current_access_mode %}" class="dropdown-item dropdown-item-box shadow-none" style="display: grid;grid-template-columns: 2rem 11rem;align-items: center;width: 80%;">
+                        <i class="fa-solid fa-pen-ruler seticon" style="color: #decc73;"></i>
+                        <h5 style="line-height: unset;margin-bottom: unset;display: flex;justify-content: start;align-items: center;margin-left: 1rem;font-weight: unset;">Process Canvas</h5>
+                      </a>
+                      <a href="{% url 'users:FlowMonitor' current_app_code current_access_mode %}" class="dropdown-item dropdown-item-box shadow-none" style="display: grid;grid-template-columns: 2rem 11rem;align-items: center;width: 80%;">
+                        <i class="fa-solid fa-bars-staggered seticon" style="color: #decc73;"></i>
+                        <h5 style="line-height: unset;margin-bottom: unset;display: flex;justify-content: start;align-items: center;margin-left: 1rem;font-weight: unset;">Process Flow Monitor</h5>
+                      </a>
+                    </div>
+                    <div class="categoriesDiv" style="width: 95%;">
+                      <h5 class="devToolsHeaders" style="font-weight: 600;margin-left: 1rem;margin-bottom: 2rem;">APPLICATION SETTINGS</h5>
+                      <a href="{% url 'users:application' current_app_code current_access_mode %}" class="dropdown-item dropdown-item-box shadow-none" style="display: grid;grid-template-columns: 2rem 11rem;align-items: center;width: 80%;">
+                        <i class="fa-solid fa-gears seticon" style="color: #87b4ff;"></i>
+                        <h5 style="line-height: unset;margin-bottom: unset;display: flex;justify-content: start;align-items: center;margin-left: 1rem;font-weight: unset;">Application Configuration</h5>
+                      </a>
+                      <a href="{% url 'users:alert_management' current_app_code current_access_mode %}" class="dropdown-item dropdown-item-box shadow-none" style="display: grid;grid-template-columns: 2rem 11rem;align-items: center;width: 80%;">
+                        <i class="fa-solid fa-business-time seticon" style="color: #87b4ff;"></i>
+                        <h5 style="line-height: unset;margin-bottom: unset;display: flex;justify-content: start;align-items: center;margin-left: 1rem;font-weight: unset;">Alert Management</h5>
+                      </a>
+                      <a href="{% url 'users:business_model' current_app_code current_access_mode %}" class="dropdown-item dropdown-item-box shadow-none" style="display: grid;grid-template-columns: 2rem 11rem;align-items: center;width: 80%;">
+                        <i class="fa-solid fa-file-invoice-dollar seticon" style="color: #87b4ff;"></i>
+                        <h5 style="line-height: unset;margin-bottom: unset;display: flex;justify-content: start;align-items: center;margin-left: 1rem;font-weight: unset;">Business Models</h5>
+                      </a>
+                      <a data-toggle="modal" data-target="#AppThemeModal" class="dropdown-item dropdown-item-box shadow-none" style="display: grid;grid-template-columns: 2rem 11rem;align-items: center;width: 80%;">
+                        <i class="fa-solid fa-wand-magic-sparkles seticon" style="color: #87b4ff;"></i>
+                        <h5 style="line-height: unset;margin-bottom: unset;display: flex;justify-content: start;align-items: center;margin-left: 1rem;font-weight: unset;">Application Theme</h5>
+                      </a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </li>
+          {% endif %}
+        {% endif %}
+
+        {% if allow_users_to_config_smtp and request.path != '/users/selectApplication/' and request.path != '/users/adminPanel/' and request.path != '/users/alertsSetup/' and request.path != '/users/customizeTheme/' and selected_any_app != 'false' %}
+          {% if build_app_code != 'Not Selected' %}
+            <li class="nav-item m-auto customtoggle">
+              <a id="open_user_smtp_config" class="nav-link" href="{% url 'users:smtp_management' build_app_code current_dev_mode %}">
+                <i class="fas fa-envelope"  style="font-size: 24px;" data-toggle="tooltip" title="SMTP Management"></i>
+              </a>
+            </li>
+          {% elif edit_app_code != 'Not Selected' %}
+            <li class="nav-item m-auto customtoggle">
+              <a id="open_user_smtp_config" class="nav-link" href="{% url 'users:smtp_management' edit_app_code current_dev_mode %}">
+                <i class="fas fa-envelope"  style="font-size: 24px;" data-toggle="tooltip" title="SMTP Management"></i>
+              </a>
+            </li>
+          {% elif build_app_code == 'Not Selected' and edit_app_code == 'Not Selected' %}
+            {% if allow_user_mode_smtp %}
+              <li class="nav-item m-auto customtoggle">
+                <a id="open_user_smtp_config" class="nav-link" href="{% url 'users:smtp_management' current_application_code 'User' %}">
+                  <i class="fas fa-envelope"  style="font-size: 24px;" data-toggle="tooltip" title="SMTP Management"></i>
+                </a>
+              </li>
+            {% endif %}
+          {% endif %}
+        {% endif %}
+
+        <li id="dbHealthStatus" class="nav-item m-auto customtoggle">
+          <a class="nav-link"><i class="fa fa-heartbeat" style="font-size: 24px;" aria-hidden="true"></i></a>
+        </li>
+
+        {% if is_user_dev == 'true' or is_user_superuser == 'true' %}
+          {% if current_application_code == 'Dev' %}
+            {% if current_dev_mode == 'Edit' %}
+            <li id="userMode" style="display: none;cursor: pointer;" class=" customtoggle nav-item m-auto">
+              <i class="fas fa-sign-out-alt"></i> User Mode
+            </li>
+            {% endif %}
+          {% endif %}
+        {% endif %}
+
+        {% if is_user_dev == 'true' or is_user_superuser == 'true' %}
+          {% if current_application_code == 'Dev' %}
+            {% if current_dev_mode == 'Build' %}
+              <li id="ExitpreviewProcess" style="display: none;list-style: none;cursor: pointer;margin-left:10%;" class=" customtoggle nav-item m-auto">
+                <i class="fas fa-sign-out-alt"></i>Return To Dev
+              </li>
+            {% endif %}
+          {% endif %}
+        {% endif %}
+
+
+        <!-- <li class="nav-item m-auto">
+          <form class="form-inline ml-2">
+            <div class="input-group input-group-sm">
+              <input class="form-control form-control-navbar" id="globalsearchidbase" type="search" placeholder="Search" aria-label="Search" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
+
+              <div class="input-group-append" id="search" >
+
+                <button class="btn btn-navbar" id="searchbarbase" type="submit" style="top:-1px;">
+                  <i class="fas fa-search"></i>
+                </button>
+              </div>
+            </div>
+          </form>
+        </li> -->
+
+        {% if request.path != '/users/selectApplication/' and request.path != '/users/alertsSetup/' and request.path != '/users/adminPanel/' and request.path != '/users/customizeTheme/' and selected_any_app != 'false' %}
+          <li class="nav-item m-auto customtoggle">
+            <a {% if current_application_code != 'App0' %} {% if current_application_code == 'Dev' %}
+            {% if current_dev_mode == 'Edit' %} {% if edit_app_code != 'Not Selected' %}
+            href="{% url 'users:homePage' edit_app_code current_dev_mode %}"
+            {% else %}
+            href="{% url 'users:homePage' 'Dev' current_dev_mode %}"
+            {% endif %} {% elif current_dev_mode == 'Build' %} {% if build_app_code != 'Not Selected' %}
+            href="{% url 'users:homePage' build_app_code current_dev_mode %}"
+            {% else %}
+            href="{% url 'users:select_application' %}"
+            {% endif %}  {% endif %}
+            {% else %}
+            href="{% url 'users:homePage' current_application_code 'User' %}"
+            {% endif %}
+            {% else %}
+            href="{% url 'users:select_application' %}"
+            {% endif %}
+            class="nav-link"><i class="fa-solid fa-house" style="font-size: 24px;" data-toggle="tooltip" title="App Homepage"></i></a>
+          </li>
+        {% endif %}
+
+        {% if not remove_bell_icon %}
+          <li class="nav-item dropdown m-auto" id="notificationButton">
+            <a class="nav-link" href="#" data-toggle="dropdown" >
+              <i class="far fa-bell"   style="font-size: 24px;" data-toggle="tooltip" title="Notifications"></i>
+              <span class="alertcount badge badge-danger navbar-badge"></span>
+            </a>
+            <div class="mydropdown dropdown-menu dropdown-menu-lg dropdown-menu-right notification-container" id="notification-container">
+              <span class="dropdown-header" style="text-align:left;background-color:#DCDCDC;border-top-right-radius: 1rem;border-top-left-radius: 1rem;">
+                <div class="d-flex justify-content-between">
+                  <b>Notifications</b>
+                </div>
+              </span>
+              <div id="myDropdown" class="dropdown-content notification-dropdown">
+                <div class="clearallnotifications" style="display:none">
+                  <p class="clear-all" onclick="UpdateNotifications('all')">Clear All <i class="fa-solid fa-times"></i></p>
+                </div>
+                <div class="dropdown-divider"></div>
+                <div class="addalert"></div>
+                <div class="dropdown-divider"></div>
+                <div class="allnotifications"></div>
+                <div class="seeallnotifications p-1">
+                  <p class="expand_collapse_notifications">Expand <i class="fa-solid fa-chevron-down notification-arrow"></i></p>
+                </div>
+              </div>
+            </div>
+          </li>
+        {% endif %}
+
+        {% if is_user_dev == 'true' or is_user_superuser == 'true'%}
+          {% if system_dev_mode == 'Edit + Build'%}
+          <li class="nav-item dropdown m-auto customtoggle">
+            <a class="nav-link" data-toggle="dropdown">
+              <i class="fa-solid fa-gear" style="font-size: 24px;" data-toggle="tooltip" title="App Settings"></i>
+            </a>
+            <div class="dropdown-menu dropdown-menu-sm dropdown-menu-right admin-options-dropdown">
+              <a href="#" class="dropdown-item" id="refreshTenantDBConnections">
+                <i class="fas fa-refresh" style="margin-right: 0.6rem" aria-hidden="true"></i> <span class="dropdown-text">Refresh database connectivity </span>
+              </a>
+              <div class="dropdown-divider"></div>
+              <a href="#" class="dropdown-item " id="alertsSetup">
+                <i class="fa-solid fa-gears " style="margin-right: 0.6rem"></i><span class="dropdown-text">Manage Alerts </span>
+              </a>
+
+              {% if is_user_dev == 'true' or is_user_superuser == 'true' %}
+              {% if developer_mode and developer_mode == "True" %}
+                {% if selected_any_app == 'false' %}
+                    <div class="dropdown-divider"></div>
+                    <a href="#" class="update_all_apps dropdown-item">
+                      <i class="fa-solid fa-retweet" style="margin-right: 0.6rem"></i><span class="dropdown-text">Update Apps </span>
+                    </a>
+                {% else %}
+                  {% if current_access_mode == 'Edit' or current_access_mode == 'Build' %}
+                    <div class="dropdown-divider"></div>
+                    <a href="#" class="update_all_apps dropdown-item">
+                        <i class="fa-solid fa-retweet" style="margin-right: 0.6rem"></i><span class="dropdown-text">Update Apps </span>
+                      </a>
+                  {% endif %}
+                {% endif %}
+              {% endif %}
+            {% endif %}
+            </div>
+          </li>
+          {% endif %}
+        {% endif %}
+
+        {% if block_custom_homepage == "False" %}
+          {% if request.path != '/users/selectApplication/' and request.path != '/users/alertsSetup/' and request.path != '/users/adminPanel/' and request.path != '/users/customizeTheme/' and selected_any_app != 'false' %}
+            {% if build_app_code != 'Not Selected' %}
+            <li class="nav-item dropdown m-auto customtoggle">
+              <a class="nav-link" href="/users/{{build_app_code}}/{{current_dev_mode}}/homePage/Grapejs" style="margin-top:-0.1em;">
+                <i class='fas fa-pen-fancy' style="font-size: 24px;" data-toggle="tooltip" title="Design custom homepage"></i>
+              </a>
+            </li>
+            {% elif edit_app_code != 'Not Selected' %}
+            <li class="nav-item dropdown m-auto customtoggle">
+              <a class="nav-link" href="/users/{{edit_app_code}}/{{current_dev_mode}}/homePage/Grapejs" style="margin-top:-0.1em;">
+                <i class='fas fa-pen-fancy' style="font-size: 24px;" data-toggle="tooltip" title="Design custom homepage"></i>
+              </a>
+            </li>
+            {% elif build_app_code == 'Not Selected' and edit_app_code == 'Not Selected' %}
+            <li class="nav-item dropdown m-auto customtoggle">
+              <a class="nav-link" href="/users/{{current_application_code}}/User/homePage/Grapejs" style="margin-top:-0.1em;">
+                <i class='fas fa-pen-fancy' style="font-size: 20px;" data-toggle="tooltip" title="Design custom homepage"></i>
+              </a>
+            </li>
+            {% endif %}
+          {% endif %}
+        {% endif %}
+
+        <li class="nav-item dropdown m-auto customtoggle">
+          <a class="profile" data-toggle="dropdown">
+            {% if user.profile.profile_pic %}
+              <img src="{{ user.profile.profile_pic.url }}" class="img-circle elevation-2 mx-auto user-profile-photo"
+                alt="User profile picture" >
+                <div class="user-online"></div>
+            {% elif user.profile.first_name.0 %}
+              <div class="img-circle elevation-2 navlink-img ">
+                <div>
+                  <b class="profile-initials">{{user.profile.first_name.0}}{{user.profile.last_name.0}}</b>
+                </div>
+              </div>
+              <div class="user-online"></div>
+            {% else %}
+              <i class="fa fa-user nav-link" style="font-size:24px; margin-top:-0.2em" aria-hidden="true"></i>
+            {% endif %}
+          </a>
+          <div class="dropdown-menu dropdown-menu-sm dropdown-menu-right user-profile-dropdown">
+            <div style="display: flex; flex-direction: column; align-items: center; justify-content: space-around;">
+              <div class="text-center pb-1" id="id_user_profile_image_or_letter">
+                {% if user.profile.profile_pic %}
+                <img src="{{ user.profile.profile_pic.url }}" class="img-circle elevation-2 mx-auto"
+                  alt="User profile picture" style="height: 60px; width: 60px;">
+                {% elif user.profile.first_name.0 %}
+                  <div class="img-circle elevation-2 navlink-img "  style="font-size: 130%;height: 55px; width: 55px;">
+                    <div>
+                        <b class="profile-initials">{{user.profile.first_name.0}}{{user.profile.last_name.0}}</b>
+                    </div>
+                  </div>
+                {% else %}
+                  <i class="fa fa-user" style="font-size:24px;" aria-hidden="true"></i>
+                {% endif %}
+              </div>
+              <div class="info">
+                {% if user.profile.first_name %}
+                {% if user.profile.last_name %}
+                <a href="#" class="d-block" style="text-align:center;padding: 0.25rem;"><b class="firstname-lastname">{{ user.profile.first_name }} {{ user.profile.last_name }}</b></a>
+                {% endif %}
+                {% else %}
+                <a href="#" class="d-block" style="text-align:center;padding: 0.25rem;" class="user-fullname">{{ user.get_full_name }}</a>
+                {% endif %}
+                <a href="#" class="d-block" style="text-align:center;font-size: 12px;padding: 0.25rem;">username: {{ user.get_username }}</a>
+              </div>
+            </div>
+            {% if allow_user_profile and allow_user_profile == "True" %}
+              <div class="dropdown-divider"></div>
+              <a {% if selected_any_app == 'false' %} href="{% url 'users:userprofile'%}" {% else %} href="{% url 'users:userprofileApp' current_app_code current_access_mode %}" {% endif %} class="dropdown-item">
+                <i class="fas fa-users mr-2"></i> User profile
+              </a>
+            {% endif %}
+            {% if allow_user_forum and allow_user_forum == "True" %}
+              <div class="dropdown-divider"></div>
+              <a href="#" class="dropdown-item">
+                <i class="far fa-comment-alt mr-2"></i> User forum
+              </a>
+            {% endif %}
+            {% if allow_user_planner and allow_user_planner == "True" %}
+              {% if planner_display_config.show_planner == 'true' and planner_display_config.display_position == "planner_link" %}
+                <div class="dropdown-divider"></div>
+                <a {% if selected_any_app == 'false' %} href="{% url 'users:planner'%}" {% else %} href="{% url 'users:plannerApp' current_app_code current_access_mode %}" {% endif %} class="dropdown-item">
+                  <i class="fas fa-calendar-alt mr-2"></i> Planner
+                </a>
+              {% endif %}
+            {% endif %}
+
+            {% if dashboard_display_config.show_dashboard == 'true' and dashboard_display_config.display_position == "dashboard_link" %}
+              <div class="dropdown-divider"></div>
+              <a href="/users/selectDashboard/" class="dropdown-item">
+                <i class="fas fa-chart-bar mr-2"></i> Dashboard
+              </a>
+            {% endif %}
+
+            <div class="dropdown-divider"></div>
+            <a class="dropdown-item" onclick="ClearCachealert()">
+              <i class="fas fa-sign-out-alt mr-2"></i> Sign out
+            </a>
+          </div>
+        </li>
+      </ul>
+
+      <div class="icon-container">
+        <div class="icon-container-item" style="display: inline-block; text-align: center; list-style:none;">
+          <li class="nav-item dropdown m-auto">
+            <a class="profile" data-toggle="dropdown" onclick="customtoggleDropdown()">
+              {% if user.profile.profile_pic %}
+                <img src="{{ user.profile.profile_pic.url }}" class="img-circle elevation-2 mx-auto user-profile-photo"
+                  alt="User profile picture" >
+                  <div class="user-online"></div>
+              {% elif user.profile.first_name.0 %}
+                <div class="img-circle elevation-2 navlink-img ">
+                  <div>
+                    <b class="profile-initials">{{user.profile.first_name.0}}{{user.profile.last_name.0}}</b>
+                  </div>
+                </div>
+                <div class="user-online"></div>
+              {% else %}
+                <i class="fa fa-user nav-link" style="font-size:18px; margin-top:-0.3em" aria-hidden="true"></i>
+              {% endif %}
+            </a>
+            <div class="dropdown-menu dropdown-menu-sm dropdown-menu-right user-profile-dropdown">
+              <div style="display: flex; flex-direction: column; align-items: center; justify-content: space-around;">
+                <div class="text-center pb-1" id="id_user_profile_image_or_letter">
+                  {% if user.profile.profile_pic %}
+                  <img src="{{ user.profile.profile_pic.url }}" class="img-circle elevation-2 mx-auto"
+                    alt="User profile picture" style="height: 60px; width: 60px;">
+                  {% elif user.profile.first_name.0 %}
+                    <div class="img-circle elevation-2 navlink-img "  style="font-size: 130%;height: 55px; width: 55px;">
+                      <div>
+                          <b class="profile-initials">{{user.profile.first_name.0}}{{user.profile.last_name.0}}</b>
+                      </div>
+                    </div>
+                  {% else %}
+                    <i class="fa fa-user" style="font-size:24px;" aria-hidden="true"></i>
+                  {% endif %}
+                </div>
+                <div class="info">
+                  {% if user.profile.first_name %}
+                  {% if user.profile.last_name %}
+                  <a href="#" class="d-block" style="text-align:center;padding: 0.25rem;"><b class="firstname-lastname">{{ user.profile.first_name }} {{ user.profile.last_name }}</b></a>
+                  {% endif %}
+                  {% else %}
+                  <a href="#" class="d-block" style="text-align:center;padding: 0.25rem;" class="user-fullname">{{ user.get_full_name }}</a>
+                  {% endif %}
+                  <a href="#" class="d-block" style="text-align:center;font-size: 12px;padding: 0.25rem;">username: {{ user.get_username }}</a>
+                </div>
+              </div>
+              {% if allow_user_profile and allow_user_profile == "True" %}
+                <div class="dropdown-divider"></div>
+                <a {% if selected_any_app == 'false' %} href="{% url 'users:userprofile'%}" {% else %} href="{% url 'users:userprofileApp' current_app_code current_access_mode %}" {% endif %} class="dropdown-item">
+                  <i class="fas fa-users mr-2"></i> User profile
+                </a>
+              {% endif %}
+              {% if allow_user_forum and allow_user_forum == "True" %}
+                <div class="dropdown-divider"></div>
+                <a href="#" class="dropdown-item">
+                  <i class="far fa-comment-alt mr-2"></i> User forum
+                </a>
+              {% endif %}
+              {% if allow_user_planner and allow_user_planner == "True" %}
+                <div class="dropdown-divider"></div>
+                <a {% if selected_any_app == 'false' %} href="{% url 'users:planner'%}" {% else %} href="{% url 'users:plannerApp' current_app_code current_access_mode %}" {% endif %} class="dropdown-item">
+                  <i class="fas fa-calendar-alt mr-2"></i> Planner
+                </a>
+              {% endif %}
+
+              <div class="dropdown-divider"></div>
+              <a class="dropdown-item" onclick="ClearCachealert()">
+                <i class="fas fa-sign-out-alt mr-2"></i> Sign out
+              </a>
+            </div>
+          </li>
+        </div>
+        <div class="icon-container-item" onclick="toggleDropdown()" style="display: inline-block; text-align: center;margin: 0 5px;">
+          <i id="customicon" class="fa-solid fa-bars mt-1" style="color: var(--navbar-font)!important;"></i>
+        </div>
+        <div id="customdropdown" class="customdropdown dropdown-menu dropdown-menu-sm dropdown-menu-right">
+          <ul class="customdropdownUL">
+            {% if selected_any_app != 'false' %}
+              {% if current_access_mode == 'Edit' or current_access_mode == 'Build' %}
+                <li id="devToolsNavigator" class="nav-item m-auto dropdown-item">
+                  <a class="nav-link" href="{% url 'users:developer_tools' current_app_code current_access_mode %}" style="margin-top:-0.1em;padding: 0;display: flex;justify-content: start;align-items: center; height: 1.3rem;"><i class="fa-solid fa-layer-group" style="font-size: 24px; margin-left: 10%;" aria-hidden="true"></i><span class="downsize">Developer tools</span></a>
+                  <div class="dropdown-menu dropdown-menu-sm dropdown-menu-center devtools-dropdown">
+                    <div class="links-icons" style="overflow-y: scroll; overflow-x:hidden;border-radius: 0.8rem;    padding: 1rem; ">
+                      <div class="devtoolsDDGridContainer" style="display: grid;grid-template-columns: auto auto auto auto;">
+                        <div class="categoriesDiv" style="width: 95%;box-shadow: 1px 0px 0px 0px #d1d1d1;">
+                          <h5 class="devToolsHeaders" style="font-weight: 600;margin-left: 1rem;margin-bottom: 2rem;">ACCESS CONTROLS</h5>
+                            <a href="{% url 'users:user_management' current_app_code current_access_mode %}" class="dropdown-item dropdown-item-box shadow-none devToolsHeadersLink"  style="display: grid;grid-template-columns: 2rem 11rem;align-items: center;width: 80%;">
+                              <i class="fa-solid fa-universal-access  seticon" style="color: #e6576e;"></i>
+                              <h5 style="line-height: unset;margin-bottom: unset;display: flex;justify-content: start;align-items: center;margin-left: 1rem;font-weight: unset;">User Management</h5>
+                            </a>
+                            <a href="{% url 'users:audit_trail' current_app_code current_access_mode %}" class="dropdown-item dropdown-item-box shadow-none" style="display: grid;grid-template-columns: 2rem 11rem;align-items: center;width: 80%;">
+                              <i class="fa-solid fa-server seticon" style="color: #f34e69;"></i>
+                              <h5 style="line-height: unset;margin-bottom: unset;display: flex;justify-content: start;align-items: center;margin-left: 1rem;font-weight: unset;">User Insights</h5>
+                            </a>
+                            <a href="{% url 'users:jobexecution' current_app_code current_access_mode %}" class="dropdown-item dropdown-item-box shadow-none" style="display: grid;grid-template-columns: 2rem 11rem;align-items: center;width: 80%;">
+                              <i class="fa-solid fa-calendar-check seticon" style="color: #f34e69;"></i>
+                              <h5 style="line-height: unset;margin-bottom: unset;display: flex;justify-content: start;align-items: center;margin-left: 1rem;font-weight: unset;">Scheduler</h5>
+                            </a>
+                        </div>
+                        <div class="categoriesDiv" style="width: 95%;box-shadow: 1px 0px 0px 0px #d1d1d1;">
+                          <h5 class="devToolsHeaders" style="font-weight: 600;margin-left: 1rem;margin-bottom: 2rem;">DATA AND LOGICS</h5>
+                          <a href="{% url 'users:datamanagement' current_app_code current_access_mode %}" class="dropdown-item dropdown-item-box shadow-none" style="display: grid;grid-template-columns: 2rem 11rem;align-items: center;width: 80%;">
+                            <i class="fa-solid fa-sitemap seticon" style="color: #C0DDB1;"></i>
+                            <h5 style="line-height: unset;margin-bottom: unset;display: flex;justify-content: start;align-items: center;margin-left: 1rem;font-weight: unset;">Data Management Studio</h5>
+                          </a>
+                          <a href="{% url 'users:computation_module' current_app_code current_access_mode %}" class="dropdown-item dropdown-item-box shadow-none" style="display: grid;grid-template-columns: 2rem 11rem;align-items: center;width: 80%;">
+                            <i class="fa-solid fa-toolbox seticon" style="color: #C0DDB1;"></i>
+                            <h5 style="line-height: unset;margin-bottom: unset;display: flex;justify-content: start;align-items: center;margin-left: 1rem;font-weight: unset;">Computation Studio</h5>
+                          </a>
+                        </div>
+                        <div class="categoriesDiv" style="width: 95%;box-shadow: 1px 0px 0px 0px #d1d1d1;">
+                          <h5 class="devToolsHeaders" style="font-weight: 600;margin-left: 1rem;margin-bottom: 2rem;">WORKFLOWS</h5>
+                          <a href="{% url 'users:LevelCreation' current_app_code current_access_mode %}" class="dropdown-item dropdown-item-box shadow-none" style="display: grid;grid-template-columns: 2rem 11rem;align-items: center;width: 80%;">
+                            <i class="fa-solid fa-microchip seticon" style="color: #decc73;"></i>
+                            <h5 style="line-height: unset;margin-bottom: unset;display: flex;justify-content: start;align-items: center;margin-left: 1rem;font-weight: unset;">Process Manager</h5>
+                          </a>
+                          <a href="{% url 'users:processGraphModule' current_app_code current_access_mode %}" class="dropdown-item dropdown-item-box shadow-none" style="display: grid;grid-template-columns: 2rem 11rem;align-items: center;width: 80%;">
+                            <i class="fa-solid fa-pen-ruler seticon" style="color: #decc73;"></i>
+                            <h5 style="line-height: unset;margin-bottom: unset;display: flex;justify-content: start;align-items: center;margin-left: 1rem;font-weight: unset;">Process Canvas</h5>
+                          </a>
+                          <a href="{% url 'users:FlowMonitor' current_app_code current_access_mode %}" class="dropdown-item dropdown-item-box shadow-none" style="display: grid;grid-template-columns: 2rem 11rem;align-items: center;width: 80%;">
+                            <i class="fa-solid fa-bars-staggered seticon" style="color: #decc73;"></i>
+                            <h5 style="line-height: unset;margin-bottom: unset;display: flex;justify-content: start;align-items: center;margin-left: 1rem;font-weight: unset;">Process Flow Monitor</h5>
+                          </a>
+                        </div>
+                        <div class="categoriesDiv" style="width: 95%;">
+                          <h5 class="devToolsHeaders" style="font-weight: 600;margin-left: 1rem;margin-bottom: 2rem;">APPLICATION SETTINGS</h5>
+                          <a href="{% url 'users:application' current_app_code current_access_mode %}" class="dropdown-item dropdown-item-box shadow-none" style="display: grid;grid-template-columns: 2rem 11rem;align-items: center;width: 80%;">
+                            <i class="fa-solid fa-gears seticon" style="color: #87b4ff;"></i>
+                            <h5 style="line-height: unset;margin-bottom: unset;display: flex;justify-content: start;align-items: center;margin-left: 1rem;font-weight: unset;">Application Configuration</h5>
+                          </a>
+                          <a href="{% url 'users:alert_management' current_app_code current_access_mode %}" class="dropdown-item dropdown-item-box shadow-none" style="display: grid;grid-template-columns: 2rem 11rem;align-items: center;width: 80%;">
+                            <i class="fa-solid fa-business-time seticon" style="color: #87b4ff;"></i>
+                            <h5 style="line-height: unset;margin-bottom: unset;display: flex;justify-content: start;align-items: center;margin-left: 1rem;font-weight: unset;">Alert Management</h5>
+                          </a>
+                          <a href="{% url 'users:business_model' current_app_code current_access_mode %}" class="dropdown-item dropdown-item-box shadow-none" style="display: grid;grid-template-columns: 2rem 11rem;align-items: center;width: 80%;">
+                            <i class="fa-solid fa-file-invoice-dollar seticon" style="color: #87b4ff;"></i>
+                            <h5 style="line-height: unset;margin-bottom: unset;display: flex;justify-content: start;align-items: center;margin-left: 1rem;font-weight: unset;">Business Models</h5>
+                          </a>
+                          <a data-toggle="modal" data-target="#AppThemeModal" class="dropdown-item dropdown-item-box shadow-none" style="display: grid;grid-template-columns: 2rem 11rem;align-items: center;width: 80%;">
+                            <i class="fa-solid fa-wand-magic-sparkles seticon" style="color: #87b4ff;"></i>
+                            <h5 style="line-height: unset;margin-bottom: unset;display: flex;justify-content: start;align-items: center;margin-left: 1rem;font-weight: unset;">Application Theme</h5>
+                          </a>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </li><div class="dropdown-divider"></div>
+              {% endif %}
+            {% endif %}
+
+            {% if allow_users_to_config_smtp and request.path != '/users/selectApplication/' and request.path != '/users/adminPanel/' and request.path != '/users/alertsSetup/' and request.path != '/users/customizeTheme/' and selected_any_app != 'false' %}
+              {% if build_app_code != 'Not Selected' %}
+                <li class="nav-item m-auto dropdown-item">
+                  <a id="open_user_smtp_config" class="nav-link" href="{% url 'users:smtp_management' build_app_code current_dev_mode %}" style="margin-top:-0.1em;padding: 0;display: flex;justify-content: start;align-items: center; height: 1.3rem;">
+                    <i class="fas fa-envelope"  style="font-size: 24px; margin-left: 10%;" data-toggle="tooltip" title="SMTP Management"></i>
+                    <span class="downsize">SMTP Management</span>
+                  </a>
+                </li><div class="dropdown-divider"></div>
+              {% elif edit_app_code != 'Not Selected' %}
+                <li class="nav-item m-auto dropdown-item">
+                  <a id="open_user_smtp_config" class="nav-link" href="{% url 'users:smtp_management' edit_app_code current_dev_mode %}" style="margin-top:-0.1em;padding: 0;display: flex;justify-content: start;align-items: center; height: 1.3rem;">
+                    <i class="fas fa-envelope"  style="font-size: 24px; margin-left: 10%;" data-toggle="tooltip" title="SMTP Management"></i>
+                    <span class="downsize">SMTP Management</span>
+                  </a>
+                </li><div class="dropdown-divider"></div>
+              {% elif build_app_code == 'Not Selected' and edit_app_code == 'Not Selected' %}
+              {% if allow_user_mode_smtp %}
+                <li class="nav-item m-auto dropdown-item">
+                  <a id="open_user_smtp_config" class="nav-link" href="{% url 'users:smtp_management' current_application_code 'User' %}" style="margin-top:-0.1em;padding: 0;display: flex;justify-content: start;align-items: center; height: 1.3rem;">
+                    <i class="fas fa-envelope"  style="font-size: 24px; margin-left: 10%;" data-toggle="tooltip" title="SMTP Management"></i>
+                    <span class="downsize">SMTP Management</span>
+                  </a>
+                </li><div class="dropdown-divider"></div>
+              {% endif %}
+              {% endif %}
+            {% endif %}
+
+            {% if is_user_dev == 'true' or is_user_superuser == 'true' %}
+              {% if developer_mode and developer_mode == "True" %}
+                {% if selected_any_app == 'false' %}
+                  <li class="nav-item m-auto dropdown-item">
+                    <a href="#" class="update_all_apps nav-link" style="margin-top:-0.1em;padding: 0;display: flex;justify-content: start;align-items: center; height: 1.3rem;">
+                      <i class="fa-solid fa-retweet" data-toggle="tooltip" title="Update Apps" style="font-size: 24px; margin-left: 10%;" aria-hidden="true"></i>
+                      <span class="downsize">Update Apps</span>
+                    </a>
+                  </li><div class="dropdown-divider"></div>
+                {% else %}
+                  {% if current_access_mode == 'Edit' or current_access_mode == 'Build' %}
+                    <li class="nav-item m-auto dropdown-item">
+                      <a href="#" class="update_all_apps nav-link" style="margin-top:-0.1em;padding: 0;display: flex;justify-content: start;align-items: center; height: 1.3rem;">
+                        <i class="fa-solid fa-retweet" data-toggle="tooltip" title="Update Apps" style="font-size: 24px; margin-left: 10%;" aria-hidden="true"></i>
+                        <span class="downsize">Update Apps</span>
+                      </a>
+                    </li><div class="dropdown-divider"></div>
+                  {% endif %}
+                {% endif %}
+              {% endif %}
+            {% endif %}
+
+            <li id="dbHealthStatus" class="nav-item m-auto dropdown-item">
+              <a class="nav-link" style="margin-top:-0.1em; padding: 0; display: flex; justify-content: start; align-items: center; height: 1.3rem;">
+                <i class="fa fa-heartbeat" style="font-size: 24px; margin-left: 10%;" aria-hidden="true"></i>
+                <span class="downsize">DB Health</span>
+              </a>
+            </li><div class="dropdown-divider"></div>
+
+            {% if is_user_dev == 'true' or is_user_superuser == 'true' %}
+              {% if current_application_code == 'Dev' %}
+                {% if current_dev_mode == 'Edit' %}
+                <li id="userMode" style="display: none;cursor: pointer;" class="nav-item m-auto">
+                  <i class="fas fa-sign-out-alt"></i> User Mode
+                </li>
+                {% endif %}
+              {% endif %}
+            {% endif %}
+
+            {% if is_user_dev == 'true' or is_user_superuser == 'true' %}
+              {% if current_application_code == 'Dev' %}
+                {% if current_dev_mode == 'Build' %}
+                <li id="ExitpreviewProcess" style="display: none;list-style: none;cursor: pointer;margin-left:10%;" class="nav-item m-auto">
+                  <i class="fas fa-sign-out-alt"></i>Return To Dev
+                </li>
+                {% endif %}
+              {% endif %}
+            {% endif %}
+
+            {% if request.path != '/users/selectApplication/' and request.path != '/users/alertsSetup/' and request.path != '/users/adminPanel/' and request.path != '/users/customizeTheme/' and selected_any_app != 'false' %}
+              <li class="nav-item m-auto dropdown-item">
+                <a {% if current_application_code != 'App0' %} {% if current_application_code == 'Dev' %}
+                {% if current_dev_mode == 'Edit' %} {% if edit_app_code != 'Not Selected' %}
+                href="{% url 'users:homePage' edit_app_code current_dev_mode %}"
+                {% else %}
+                href="{% url 'users:homePage' 'Dev' current_dev_mode %}"
+                {% endif %} {% elif current_dev_mode == 'Build' %} {% if build_app_code != 'Not Selected' %}
+                href="{% url 'users:homePage' build_app_code current_dev_mode %}"
+                {% else %}
+                href="{% url 'users:select_application' %}"
+                {% endif %}  {% endif %}
+                {% else %}
+                href="{% url 'users:homePage' current_application_code 'User' %}"
+                {% endif %}
+                {% else %}
+                href="{% url 'users:select_application' %}"
+                {% endif %}
+                class="nav-link" style="margin-top:-0.1em;padding: 0;display: flex;justify-content: start;align-items: center; height: 1.3rem;"><i class="fa-solid fa-house" style="font-size: 24px; margin-left: 10%;" data-toggle="tooltip" title="App Homepage"></i><span class="downsize">App Homepage</span></a>
+              </li><div class="dropdown-divider"></div>
+            {% endif %}
+
+            {% if is_user_dev == 'true' or is_user_superuser == 'true'%}
+              {% if system_dev_mode == 'Edit + Build'%}
+              <li class="nav-item dropdown-item dropdown m-auto">
+                <a href="#" class="nav-link" style="padding: 0;margin-top:-0.1em;display: flex;justify-content: start;align-items: center; height: 1.3rem;" id="alertsSetup1">
+                  <i class="fa-solid fa-gears mr-2" style="font-size: 24px; margin-left: 10%;"></i>
+                  <span class="downsize">Manage Alerts</span>
+                </a>
+              </li><div class="dropdown-divider"></div>
+              {% endif %}
+            {% endif %}
+
+            {% if is_user_dev == 'true' or is_user_superuser == 'true'%}
+              {% if system_dev_mode == 'Edit + Build'%}
+              <li class="nav-item dropdown-item dropdown m-auto">
+                <a href="#" class="nav-link" style="padding: 0;margin-top:-0.1em;display: flex;justify-content: start;align-items: center; height: 1.3rem;" id="refreshTenantDBConnections1">
+                  <i class="fas fa-refresh mr-2" style="font-size: 24px; margin-left: 10%;"></i>
+                  <span class="downsize" style="white-space: break-spaces;">Refresh database connectivity</span>
+                </a>
+              </li><div class="dropdown-divider"></div>
+              {% endif %}
+            {% endif %}
+
+            {% if block_custom_homepage == "False" %}
+              {% if request.path != '/users/selectApplication/' and request.path != '/users/alertsSetup/' and request.path != '/users/adminPanel/' and request.path != '/users/customizeTheme/' and selected_any_app != 'false' %}
+                {% if build_app_code != 'Not Selected' %}
+                <li class="nav-item dropdown m-auto dropdown-item">
+                  <a class="nav-link" href="/users/{{build_app_code}}/{{current_dev_mode}}/homePage/Grapejs" style="margin-top:-0.1em; padding: 0;display: flex;justify-content: start;align-items: center; height: 1.3rem;">
+                    <i class='fas fa-pen-fancy' style="font-size: 24px; margin-left: 10%;" data-toggle="tooltip" title="Design custom homepage"></i>
+                    <span class="downsize" style=" white-space: break-spaces;">Design custom homepage</span>
+                  </a>
+                </li>
+                {% elif edit_app_code != 'Not Selected' %}
+                <li class="nav-item dropdown m-auto dropdown-item">
+                  <a class="nav-link" href="/users/{{edit_app_code}}/{{current_dev_mode}}/homePage/Grapejs" style="margin-top:-0.1em; padding: 0;display: flex;justify-content: start;align-items: center; height: 1.3rem;">
+                    <i class='fas fa-pen-fancy' style="font-size: 24px; margin-left: 10%;" data-toggle="tooltip" title="Design custom homepage"></i>
+                    <span class="downsize" style=" white-space: break-spaces;">Design custom homepage</span>
+                  </a>
+                </li>
+                {% elif build_app_code == 'Not Selected' and edit_app_code == 'Not Selected' %}
+                <li class="nav-item dropdown m-auto dropdown-item">
+                  <a class="nav-link" href="/users/{{current_application_code}}/User/homePage/Grapejs" style="margin-top:-0.1em; padding: 0;display: flex;justify-content: start;align-items: center; height: 1.3rem;">
+                    <i class='fas fa-pen-fancy' style="font-size: 20px;" data-toggle="tooltip" title="Design custom homepage"></i>
+                    <span class="downsize" style=" white-space: break-spaces;">Design custom homepage</span>
+                  </a>
+                </li>
+                {% endif %}
+              {% endif %}
+            {% endif %}
+
+          </ul>
+        </div>
+      </div>
+    </div>
+
+  </div>
+  <i class="fa-solid fa-angle-up hideit" id="hideit"></i>
+  <i class="fa-solid fa-thumbtack pinit" id="pinit" data-toggle="tooltip" title="Pin to screen"></i>
+
+</nav>
+  <script>
+      document.addEventListener('click', function(event){
+        var dropdownButton = $('#notificationButton');
+        var dropdownContent = $('#notification-container')
+
+        if(dropdownContent.has(event.target).length === 0 && !dropdownContent.is(event.target) ){
+          ;
+        }
+        else{
+          dropdownButton.addClass("show")
+          dropdownContent.addClass("show")
+        }
+      })
+
+    function toggleDropdown() {
+      var dropdown = document.getElementById("customdropdown");
+      dropdown.style.display = (dropdown.style.display === "block") ? "" : "block";
+      var customicon = document.getElementById("customicon");
+      if (customicon.style.transform === "rotate(90deg)") {
+        customicon.style.transform = "rotate(0deg)";
+      } else {
+        customicon.style.transform = "rotate(90deg)";
+      }
+    }
+    function customtoggleDropdown() {
+      var dropdown = document.getElementById("customdropdown");
+      if(dropdown.style.display === "block"){
+        dropdown.style.display = "none";
+      }
+    }
+
+    $("#hideit").click(function(){
+      $(".nav-wrapper").toggleClass("displaynone")
+      $(this).toggleClass("rotate")
+    })
+
+    $("#pinit").click(function(){
+      $(".main-header").toggleClass("fixed")
+      $(this).toggleClass("color")
+    })
+
+    $('#dropdown-search').on('keyup change', function (){
+      var value = $(this).val().toLowerCase();
+
+      $("div#single_app","#apps-dropdownItems").filter(function() {
+        $(this).toggle($(this).attr("name").toLowerCase().indexOf(value) > -1)
+      });
+    })
+
+    function ClearCachealert() {
+      Swal.fire({
+        title: 'Are you sure you want to sign out?',
+        icon: 'question',
+        html : `<form method="post" action="{% url 'logout' %}">
+            {% csrf_token %}
+            {% if redirect_field_value %}
+            <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" />
+            {% endif %}
+            <div class="d-flex justify-content-center">
+              <div class="logout switch-container">
+                <input type="checkbox" class="clear_cache switch" name="clear_cache" id="clear_cache">
+                <div class="switch-color"><label class="trigger-label" for="clear_cache"></label></div>
+                <label class="sign switch-label" for="clear_cache"></label>
+              </div>
+              <label style="font-weight:normal;font-size:0.9em;margin-left: 7px;" for="clear_cache"> Clear Cache? </label>
+            </div>
+            <button class="swal2-styled swal2-confirm" id="add" type="submit">Sign Out</button>
+            <button type="button" class="swal2-cancel swal2-styled" onclick="swal.close()" aria-label="" style="display: inline-block;">Cancel</button>
+          </form>`,
+          showCloseButton: false,
+          showCancelButton: false,
+          showConfirmButton: false,
+      })
+    }
+
+    function gotoApp(appCode, mode){
+      $.ajax({
+        url: '/users/selectApplication/',
+        data: {
+            'app_code' : appCode,
+            'operation': "application_selected",
+        },
+        type: "POST",
+        dataType: "json",
+        success: function(data) {
+            let loc = `/users/${appCode}/${mode}/homePage/`;
+            window.location.href = loc;
+        },
+        error: function () {
+        Swal.fire({text:'Error',icon:"error"});
+        }
+      });
+    }
+
+    function mode_option(is_user_superuser,is_user_dev,system_dev_mode,name, code){
+      var dev_applications = {{dev_applications | safe}};
+      var app_mode =""
+      if (is_user_dev || is_user_superuser){
+        if (system_dev_mode == 'Edit + Build'){
+          var flag = false
+          for(var j =0; j<dev_applications.length; j++){
+            if(code == dev_applications[j]["application_code"]){
+              flag = true
+              break
+            }
+          }
+          if(flag){
+            app_mode = "Build"
+          }else{
+            app_mode = "User"
+          }
+        }
+      }
+      else{
+        app_mode = "User"
+      }
+      if(app_mode == "Build"){
+        $("#mode-options").modal("show")
+        $("#chose-user, #chose-developer").click(function(){
+          var mode = $(this).attr("data-mode")
+          gotoApp(code, mode)
+        })
+      }else{
+        gotoApp(code, app_mode)
+      }
+    }
+
+    $('#alertsSetup').on('click', () => {
+      let loc = '/users/alertsSetup/'
+      if (window.location.href.indexOf("selectApplication") > -1){
+        window.location.href = loc;
+      }
+      else{
+        window.open(loc,'_blank');
+      }
+    });
+    $('#alertsSetup1').on('click', () => {
+      let loc = '/users/alertsSetup/'
+      if (window.location.href.indexOf("selectApplication") > -1){
+        window.location.href = loc;
+      }
+      else{
+        window.open(loc,'_blank');
+      }
+    });
+
+    $('#refreshTenantDBConnections').off('click').on('click', () => {
+      $.ajax({
+          url: '/users/adminPanel/',
+          data: {
+              'operation': 'refreshTenantDBConnections',
+          },
+          type: "POST",
+          dataType: "json",
+          success: function (data) {
+              if (data.failed_list.length > 0) {
+                  let string = 'Following database connections could not be refreshed! Please make sure the connected db servers are reachable.';
+                  string += `\n ${JSON.stringify(data.failed_list)}`;
+                  Swal.fire({text:string,icon:"error"});
+              } else {
+                  Swal.fire({text:"Connected database connections refreshed successfuly!",icon:"success"});
+              }
+          },
+          error: function () {
+              Swal.fire({text:'Error refreshing database connections!',icon:"error"})
+          }
+      });
+    });
+
+    $('#refreshTenantDBConnections1').off('click').on('click', () => {
+      $.ajax({
+          url: '/users/adminPanel/',
+          data: {
+              'operation': 'refreshTenantDBConnections',
+          },
+          type: "POST",
+          dataType: "json",
+          success: function (data) {
+              if (data.failed_list.length > 0) {
+                  let string = 'Following database connections could not be refreshed! Please make sure the connected db servers are reachable.';
+                  string += `\n ${JSON.stringify(data.failed_list)}`;
+                  Swal.fire({text:string,icon:"error"});
+              } else {
+                  Swal.fire({text:"Connected database connections refreshed successfuly!",icon:"success"});
+              }
+          },
+          error: function () {
+              Swal.fire({text:'Error refreshing database connections!',icon:"error"})
+          }
+      });
+    });
+
+    function myFunction(){
+    $('.mydropdown').css("display","block")
+    var dis = $('#myDropdown').css("display")
+    $('#myDropdown').css("display","block")
+    if(dis == "none")
+    {
+      $("#myDropdown").css("display","block")
+    }
+    else{
+      $('#myDropdown').css("display","none")
+    }
+  }
+  function diis(){
+    var disply = $('.mydropdown').css("display")
+    $('.mydropdown').css("display","block")
+    if(disply == "none")
+    {
+      $(".mydropdown").css("display","block")
+    }
+    else{
+      $('.mydropdown').css("display","none")
+    }
+
+  }
+
+  function UpdateNotifications(id){
+    var read_ids = []
+
+    if(id == "all"){
+      $("#myDropdown").find("a[data-status=unread]").each(function(){
+        read_ids.push($(this).attr("data-id"))
+      })
+    }
+    else{
+      read_ids.push(id)
+    }
+
+
+    if(read_ids.length > 0){
+      $.ajax({
+      url: '/users/selectApplication/',
+      data: {
+        'operation': "update_notifications",
+        'read_ids': JSON.stringify(read_ids)
+      },
+      type: "POST",
+      dataType: "json",
+      success: function (data) {
+        if(id == "all"){
+          $(".clearallnotifications").css("display","none")
+          $(".alertcount").empty()
+          $("#myDropdown").find("a[data-status=unread],.dropdown-divider").each(function(){
+            $(this).fadeOut(500, function(){ $(this).remove()})
+          })
+          $(".seeallnotifications").css("display","none")
+          $(".addalert").append(`<a class="dropdown-item d-flex justify-content-between align-items-center no-notifications" >
+            <p>No New Notifications</p>
+          </a>`)
+        }
+        else{
+          $("#myDropdown").find(`a[data-id=${id}]`).fadeOut(500, function(){
+            $(this).prev('.dropdown-divider').remove()
+            $(this).remove()
+
+            if($("#myDropdown").find("a").length < 1){
+              $(".clearallnotifications").css("display","none")
+            }
+            if($(".allnotifications").find("a").length < 1){
+              $(".seeallnotifications").css("display","none")
+            }
+            else{
+              $(".addalert").append($(".allnotifications").find(".dropdown-divider").eq(0))
+              $(".addalert").append($(".allnotifications").find("a").eq(0))
+              if($(".allnotifications").find("a").length < 1){
+                $(".seeallnotifications").css("display","none")
+              }
+            }
+          })
+          alertcount = $(".navbar-badge").text()
+          if(alertcount){
+            if((parseInt(alertcount)-1)>0){
+              $(".alertcount").text(parseInt(alertcount)-1)
+            }
+            else{
+              $(".clearallnotifications").css("display","none")
+              $(".alertcount").empty()
+              $(".addalert").append(`<a class="dropdown-item d-flex justify-content-between align-items-center no-notifications" >
+                <p>No New Notifications</p>
+              </a>`)
+            }
+
+          }
+        }
+      },
+      error: function () {
+        Swal.fire({text:"Error",icon:"error"});
+      }
+    })
+
+    }
+  }
+
+    $('.process_navbar_popover[popover="yes"]').popover({
+      container: 'body',
+      delay: { "show": 10, "hide": 0 },
+      //content: 'WASSUP',
+      trigger: 'manual',
+      placement: 'left',
+      template: '<div class="popover" role="tooltip"><div class="arrow"></div><h3 class="popover-header"></h3><div class="popover-body"></div></div>',
+      html: true,
+      content: function () {
+        var targetId = $(this).attr('data-PopOverTarget')
+        var targetParentAnchorTagHrefValue = $(this).parent().parent().attr('href')
+        var titleName = $(this).text()
+        var clonePopOverContainer = $(targetId).clone()
+        clonePopOverContainer.removeAttr('id')
+        var cardHeader = clonePopOverContainer.find('.card-header')
+        var cardBody = clonePopOverContainer.find('.card-body')
+
+        $(`<div class="popoverCardheader">${titleName}</div>`).appendTo(cardHeader)
+        var string = `<div class="row" white-space="nowrap">`
+
+
+        //  var i=0
+        var list=["fas fa-compass","fas fa-atom","fas fa-sitemap","fas fa-highlighter","fas fa-globe","fas fa-paperclip","fas fa-project-diagram","fas fa-print","fas fa-table","fas fa-i-cursor","fas fa-indent","fas fa-list-alt","fas fa-list-ul","	fas fa-outdent","	far fa-building","fas fa-compass","fas fa-globe","fas fa-paperclip","fas fa-project-diagram","fas fa-bullseye","fas fa-calendar","far fa-clipboard","far fa-compass"]
+
+        $.each(this.attributes, function(i, attrib){
+        var name = attrib.name
+        var value =attrib.value
+
+          if (name.includes("data-button")){
+
+          var values= JSON.parse(value)
+
+          string+=`<a href="${targetParentAnchorTagHrefValue}?value=${values.tab_header}" title="${values.tab_header}"<span><p>&nbsp&nbsp&nbsp&nbsp&nbsp<i class="${values.tab_icon}" style="font-size:48px"></i></p></span></a>`
+
+        }
+  })
+
+        string+=` </div><br>
+        <div class="row"><p><i>${$(this).attr('data-description')}</i></p></div>`
+        cardBody.append(string)
+
+        return clonePopOverContainer.html();
+      }
+    }).on('mouseenter', function () {
+      var self = this;
+      $(this).popover("show");
+      $('body').attr("class", "sidebar-mini layout-fixed");
+      $(".popover").on('mouseleave', function () {
+        $(self).popover('hide');
+        $('body').attr("class", "sidebar-mini layout-fixed sidebar-collapse");
+        setTimeout(function(){
+          $(".select2-dropdown").css("width",$(".select2.select2-container.select2-container--default.select2-container--open").css("width"))
+          $(".select2-dropdown").css("min-width",$(".select2.select2-container.select2-container--default.select2-container--open").css("width"))
+        }, 300)
+        $(".fontclass").css("font-size", "14px");
+        $('#imageAciesLogo').attr("src", "<<sidebaricon>>")
+          $(".fontclass").css("font-size", "8.7px");
+
+          $(".mainicon").css("margin-left", "1.75em");
+          $('.fontclass2').css("display","none")
+          $('.fontclass1').css("display","block")
+          $('.fontclass3').css("display","inline-block")
+          $(".mainicon1").css("margin-left", "1.2em");
+          $(".mainicon2").css("margin-left", "1.5em");
+          $(".mainicon3").css("margin-left", "1.4em");
+          $(".mainicon4").css("padding-left", "1.2em");
+          $(".mainicon5").css("margin-left", "0em");
+          $(".outerAnchorTag").css("text-align", "center");
+          $(".display1").css("display", "none");
+          $(".dropdown-content").css("display","none")
+
+          //  $(".menu-open > .ui-sortable").css("display", "none");
+          $(".menu-open > .nav-treeview").css("display", "none");
+          $(".right").removeClass("fa-angle-left");
+      });
+    }).on('mouseleave', function () {
+      var self = this;
+      setTimeout(function () {
+        if (!$('.popover:hover').length) {
+          $(self).popover('hide');
+          $(".fontclass").css("font-size", "14px");
+        $(".menu-open > .nav-treeview").css("display", "block");
+        $(".right").addClass("fa-angle-left");
+        $(".fa-angle-left").css("display", "block");
+        }
+      }, 1);
+    })
+
+  </script>

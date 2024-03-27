@@ -1,0 +1,20 @@
+version: "3.9"  # optional since v1.27.0
+services:
+  worker:
+    image: revolutiodev.azurecr.io/revolutio_kubernetes/pg_auto_failover:cituse_worker
+    build:
+      context: ./pg_auto_failover
+    environment:
+      PGDATA: /tmp/pgaf
+      PGUSER: ad
+      PGDATABASE: analytics
+      PGPORT: 5432
+      PG_AUTOCTL_MONITOR: "postgres://autoctl_node@ha-demo-monitor.centralindia.cloudapp.azure.com/pg_auto_failover?sslmode=require"
+      WORKER_HOST: ha-demo-instanceb-worker.centralindia.cloudapp.azure.com
+    command:  worker
+    entrypoint: /var/lib/postgres/entrypoint_worker
+    hostname: ha-demo-instanceb-worker.centralindia.cloudapp.azure.com
+    expose:
+      - 5432
+    ports:
+      - 5432:5432

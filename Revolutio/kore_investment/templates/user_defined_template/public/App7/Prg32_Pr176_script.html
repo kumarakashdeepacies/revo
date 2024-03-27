@@ -1,0 +1,813 @@
+
+      <style>
+        .buttonstyling{
+          margin-bottom:10px;
+        }
+      </style>
+     <script>
+      var dashboardSave_ = true;
+      function editNameIndex(){
+        let id_ = $(this).attr("id").replace("tabHeader","indextab");
+        $(`#${id_}`).find("a").html($(this).text());
+      }
+      const gotoTab = (parent, index) => {
+          let id = '#analysis' + index;
+          $(id).trigger('click');
+        }</script>
+    <script>
+        let activeElement = "no";        var None = 'None';        var listViewTableDict={};        var listViewEditTemplate = {};        var createViewIdList = [];        var elementIDList=[];        var chartConfigDict={};        var crossFilterDict={};        var element_table_IDList = [];        var computationElementIdsArray = [];        var previousRunComputeElementIdArray = [];        var element_page = [];        var names = {};
+        var app_code_home = '';        var user_home = '';        var item_code_list = [];        var grapejs = 1;        var m_col_basefilter = {};        var globalFuncList_scenario = [];        var variableList_scenario = [];        var analysiselementIDList=[];        var mColBasefilter = {};        var chartSaveEleIdList = [];        var chartSaveEleId = "";        var slicerTabConfigDict = {};        var sharedConfig = {"element_id":"", "config":[]};        var editType = "Enable";        var button_ids = ["savebutton_","saveDraftbutton_","customValidationList","calculateComp","viewHistory_","button-id-back","resetDraft_","previewDraft_","rejectedRecords","viewTransactions"];        function enableSaveButton () {        
+ $(this).find('button[value=Save]').prop('disabled',false);      
+};
+
+      function bta_apply() {
+            let lba_data = {{lba_data | safe}};
+            for (var key of Object.keys(lba_data)) {
+              if(Object.keys(lba_data[key]).length != 0) {
+              e_id = key;
+              if (e_id.startsWith("whiteSpacewrap")) {
+                if (!lba_data[key].includes("CreateView - Save")) {
+                  $(`#savebutton_${e_id}`).attr("disabled", "true");
+                  $(`#compare_existing_${e_id}`).attr("disabled", "true");
+                }
+
+                if (!lba_data[key].includes("CreateView - Save as Draft")) {
+                  $(`#saveDraftbutton_${e_id}`).attr("disabled", "true");
+                  $(`#resetDraft_${e_id}`).attr("disabled", "true");
+                  $(`#previewDraft_${e_id}`).attr("disabled", "true");
+                }
+
+                if (!lba_data[key].includes("CreateView - Custom Validation")) {
+                  $(`#customValidationList${e_id}`).attr("disabled", "true");
+                  $(`#customValidation${e_id}`).attr("disabled", "true");
+                }
+
+                if (!lba_data[key].includes("CreateView - Refresh Computation")) {
+                  $(`#calCompVal_${e_id}`).attr("disabled", "true");
+                }
+
+                if (!lba_data[key].includes("CreateView - Back")) {
+                  $(`#button-id-back${e_id}`).attr("disabled", "true");
+                }
+
+                if (!lba_data[key].includes("CreateView - View History")) {
+                  $(`#viewHistory_${e_id}`).attr("disabled", "true");
+                }
+                if (!lba_data[key].includes("CreateView - View Rejected Records")) {
+                  $(`#rejectedRecords${e_id}`).attr("disabled", "true");
+                }
+
+                if (!lba_data[key].includes("CreateView - View Transaction Status")) {
+                  $(`#showTransactions${e_id}`).attr("disabled", "true");
+                  $(`#viewTransactions${e_id}`).attr("disabled", "true");
+                }
+              }
+              if (e_id.startsWith("ellipse")) {
+                if (!lba_data[key].includes("Analysis - Previous Versions")) {
+                  $(`#previousVersion${e_id}`).attr("disabled", "true");
+                }
+                if (!lba_data[key].includes("Analysis - Save and Share")) {
+                  $(`#saveShare${e_id}`).attr("disabled", "true");
+                }
+                if (!lba_data[key].includes("Analysis - Plot charts")) {
+                  $(`#plotCharts${e_id}`).attr("disabled", "true");
+                }
+                if (!lba_data[key].includes("Analysis - PDF")) {
+                  $(`#analysisPDF${e_id}`).attr("disabled", "true");
+                }
+                if (!lba_data[key].includes("Analysis - Save")) {
+                  $(`#saveChartConfigButton${e_id}`).attr("disabled", "true");
+                }
+                if (!lba_data[key].includes("Analysis - Global Settings")) {
+                  $(`#globalButton${e_id}`).attr("disabled", "true");
+                }
+                if (!lba_data[key].includes("Analysis - Add tab")) {
+                  $(`#analysisAddTab${e_id}`).attr("disabled", "true");
+                }
+                if (!lba_data[key].includes("Analysis - Tab config")) {
+                  $(`#TabSettings${e_id}`).attr("disabled", "true");
+                }
+                if (!lba_data[key].includes("Analysis - Import dashboard")) {
+                  $(`#importDashboard${e_id}`).attr("disabled", "true");
+                }
+                if (!lba_data[key].includes("Analysis - Publish")) {
+                  $(`#publishDashboard${e_id}`).attr("disabled", "true");
+                }
+              }
+
+              if (e_id.startsWith("parallelogram")) {
+                if (!lba_data[key].includes("Computation - Run Model")) {
+                  $(`#runModel_${e_id}`).attr("disabled", "true");
+                }
+
+                if (!lba_data[key].includes("Computation - Configure Scenario")) {
+                  $(`#scenarios_${e_id}`).attr("disabled", "true");
+                }
+
+                if (!lba_data[key].includes("Computation - Filter")) {
+                  $(`#filter_button_prev_run_computation${e_id}`).attr(
+                    "disabled",
+                    "true"
+                  );
+                  $(`#freezepane_button_prev_run_computation${e_id}`).attr(
+                    "disabled",
+                    "true"
+                  );
+                }
+              }
+              if (e_id.startsWith("document")) {
+                if (!lba_data[key].includes("UploadView - Upload")) {
+                  $(`#uploadFile${e_id}`).attr("disabled", "true");
+                  $(`#downloadButton${e_id}`).attr("disabled", "true");
+                }
+
+                if (!lba_data[key].includes("UploadView - Map Columns")) {
+                  $(`#columnMapperButton${e_id}`).attr("disabled", "true");
+                }
+                if (!lba_data[key].includes("UploadView - Custom Validation")) {
+                  $(`#customValidationButton${e_id}`).attr("disabled", "true");
+                }
+                if (!lba_data[key].includes("UploadView - Add computation logic")) {
+                  $(`#computedFieldMapperButton${e_id}`).attr("disabled", "true");
+                }
+                if (!lba_data[key].includes("UploadView - Download data")) {
+                  $(`#downloadData${e_id}`).attr("disabled", "true");
+                }
+                if (!lba_data[key].includes("UploadView - Upload history")) {
+                  $(`#downloadHistory${e_id}`).attr("disabled", "true");
+                }
+                if (!lba_data[key].includes("UploadView - Last upload errors")) {
+                  $(`#downloadLastUploadErrors${e_id}`).attr("disabled", "true");
+                }
+                if (!lba_data[key].includes("UploadView - Detailed error log")) {
+                  $(`#downloadErrorLog${e_id}`).attr("disabled", "true");
+                }
+                if (!lba_data[key].includes("UploadView - Transaction status")) {
+                  $(`#showTransactions${e_id}`).attr("disabled", "true");
+                }
+                if (!lba_data[key].includes("UploadView - SFTP connectors")) {
+                  $(`#sftpUploadButton${e_id}`).attr("disabled", "true");
+                }
+              }
+              if (e_id.startsWith("process")) {
+                if (!lba_data[key].includes("ListView - Upload")) {
+                  $(`#uploadButton${e_id}`).attr("disabled", "true");
+                }
+                if (!lba_data[key].includes("ListView - Save template")) {
+                  $(`#saveTemplateButton${e_id}`).attr("disabled", "true");
+                }
+                if (!lba_data[key].includes("ListView - Set Alerts")) {
+                  $(`#displayalert${e_id}`).attr("disabled", "true");
+                }
+                if (!lba_data[key].includes("ListView - Paste Tabular Data")) {
+                  $(`#tablegenerator_${e_id}`).attr("disabled", "true");
+                }
+                if (!lba_data[key].includes("ListView - Edit Mode")) {
+                  $(`#editListView${e_id}`).attr("disabled", "true");
+                }
+                if (!lba_data[key].includes("ListView - Delete all data")) {
+                  $(`#listview_clearall_${e_id}`).attr("disabled", "true");
+                }
+                if (!lba_data[key].includes("ListView - Find and replace")) {
+                  $(`#find_replace_${e_id}`).attr("disabled", "true");
+                }
+                if (!lba_data[key].includes("ListView - Freeze Panes")) {
+                  $(`#freeze_pane_${e_id}`).attr("disabled", "true");
+                }
+                if (!lba_data[key].includes("ListView - Formatters")) {
+                  $(`#formatter_${e_id}`).attr("disabled", "true");
+                }
+                if (!lba_data[key].includes("ListView - Transactions Status")) {
+                  $(`#showTransactions${e_id}`).attr("disabled", "true");
+                }
+                if (!lba_data[key].includes("ListView - Plot Charts")) {
+                  $(`#plotCharts${e_id}`).attr("disabled", "true");
+                }
+                if (!lba_data[key].includes("ListView - Filter")) {
+                  $(`#filter_button_list_view${e_id}`).attr("disabled", "true");
+                }
+                if (!lba_data[key].includes("ListView - Add Computed Fields")) {
+                  $(`#addComp_field_${e_id}`).attr("disabled", "true");
+                }
+                if (!lba_data[key].includes("ListView - Expand")) {
+                  $(`#example1_expand${e_id}`).attr("disabled", "true");
+                }
+                if (!lba_data[key].includes("ListView - Extract Data")) {
+                  $(`#extract_data_${e_id}`).attr("disabled", "true");
+                }
+                if (!lba_data[key].includes("ListView - Bulk Update")) {
+                  $(`#bulk_update_${e_id}`).attr("disabled", "true");
+                }
+                if (!lba_data[key].includes("ListView - Conditional Delete")) {
+                  $(`#conditional_delete_${e_id}`).attr("disabled", "true");
+                }
+                if (!lba_data[key].includes("ListView - Approve all")) {
+                  $(`#approve_all_ApprovalTemplate_${e_id}`).attr("disabled", "true");
+                }
+                if (!lba_data[key].includes("ListView - Reject all")) {
+                  $(`#reject_all_ApprovalTemplate_${e_id}`).attr("disabled", "true");
+                }
+                if (!lba_data[key].includes("ListView - Approve Multiple")) {
+                  $(`#approve_multiple_ApprovalTemplate_${e_id}`).attr("disabled", "true");
+                }
+                if (!lba_data[key].includes("ListView - Reject Multiple")) {
+                  $(`#reject_multiple_ApprovalTemplate_${e_id}`).attr("disabled", "true");
+                }
+              }
+              $("section").addClass('visible-section')
+          }else{
+            $("section").addClass('visible-section')
+          }
+        }
+      }
+      $(document).ready(bta_apply);
+    </script>
+  
+
+        <script>
+          computationElementIdsArray.push("parallelogram06033395466860743");
+        
+          previousRunComputeElementIdArray.push("parallelogram06033395466860743")
+          
+        $(".custom-file-input").on("change", function() {
+          var fileName = $(this).val().split("\\").pop();
+          $(this).siblings(".custom-file-label").addClass("selected").html(fileName);
+        });
+        if ($('form').find("input[name='csrfmiddlewaretoken']").attr('value') != undefined) {
+            var ctoken = $('form').find("input[name='csrfmiddlewaretoken']").attr('value')
+            $.ajaxSetup({
+                beforeSend: function (xhr, settings) {
+                    xhr.setRequestHeader("X-CSRFToken", ctoken);
+                }
+            });
+        }
+        function flowUICreator(elementsArray,container,element_id,data,configs) {
+          var count = 0
+          for (let k in elementsArray){
+            if (elementsArray[k]['group'] =='nodes'){
+              if (elementsArray[k]['data']['id'] in configs){
+                elementsArray[k]['data']['text'] = configs[elementsArray[k]['data']['id']]
+              }
+              count ++
+            }
+          }
+          if (count >= 5){
+            container.css('height','20rem');
+          }
+          if (configs['shapes_options_text'] =='inside'){
+            var styles = {
+              'shape': configs['shapes_options'],
+              'label': 'data(text)',
+              'text-valign': 'center',
+              'font-size': configs['font-size'],
+              'color':configs['font-color'],
+              'width': configs['shape_width'],
+              'height': configs['shape_height'],
+              'text-wrap': 'wrap',
+              'text-max-width': `${String(configs['shape_width'])}px`,
+            }
+          }else{
+            var styles = {
+              'shape': configs['shapes_options'],
+              'label': 'data(text)',
+              'font-size': configs['font-size'],
+              'color':configs['font-color'],
+              'width': configs['shape_width'],
+              'height': configs['shape_height'],
+              'text-wrap': 'wrap',
+              'text-max-width': `${String(configs['shape_width'])}px`,
+            }
+          }
+          var cy = cytoscape({
+            container: container,
+            zoomingEnabled: false,
+            userZoomingEnabled: false,
+            elements: elementsArray,
+            style: [
+              {
+                selector: 'node',
+                style: styles,
+              },
+              {
+                selector: 'edge',
+                style: {
+                  width: 1
+                }
+              }
+            ],
+            layout: {
+              name: "dagre",
+              rankDir: "LR",
+              padding: 10,
+              spacingFactor: 1.25,
+              fit: true,
+              nodeDimensionsIncludeLabels: true,
+              avoidOverlap: true,
+              pan: { x: 200, y: 100 }
+            }
+          });
+          if (data != undefined){
+            cy.nodes().forEach(function(ele, i, eles){
+              for (let k in data){
+                if (data[k]['element_id'] == ele.id()){
+                  if (data[k]['current_status'] == 'Pass'){
+                    ele.css('background-color','#4bb543')
+                  }
+                }
+              }
+            });
+          }else{
+            flag = true
+            cy.nodes().forEach(function(ele, i, eles){
+              if(flag){
+                ele.css('background-color','#4bb543')
+              }
+              if (element_id == ele.id()){
+                flag = false
+              }
+            });
+          }
+        }
+        function processDesignDiv_compute(obj){
+          var eleId = $(obj).attr('data-id')
+          $(obj).parent().parent().find('.processflowdiv').toggleClass("displaynone")
+
+          if ($(obj).parent().parent().find('.processflowdiv').hasClass("displaynone") == false){
+            $(obj).prev().find('.stepper-wrapper').empty()
+            if ($(obj).attr('data-trans')!= undefined){
+              if ($(obj).attr('data-trans')!=''){
+                var trans_code = $(obj).attr('data-trans')
+                var flag = true
+                if (trans_code.startsWith("[")){
+                  trans_code = JSON.parse(trans_code)
+                  trans_code = trans_code[0]
+                  flag = true
+                }else if (trans_code == "NULL") {
+                  trans_code = ''
+                  flag = false
+                }
+                if (flag){
+                  $.ajax({
+                    url:`/users/${urlPath}/dynamicVal/`,
+                    data: {
+                    "operation":"fetch_process_flow_model_trans",
+                    'trans_code':trans_code,
+                    },
+                    type: "POST",
+                    dataType: "json",
+                    success: function (data) {
+                    flowUICreator(data.data,$(obj).closest('.modal-body').find('.processflowdiv'),eleId,data.flow,JSON.parse($(obj).attr('data-list')))
+                    },
+                    failure: function () {
+                      Swal.fire({icon: 'error',text: 'Error! Please try again.'});
+                    },
+                  })
+                }
+
+              }
+            }else{
+              $.ajax({
+                url:`/users/${urlPath}/dynamicVal/`,
+                data: {
+                "operation":"fetch_process_flow_model_xml",
+                'sub_pr_code':$(obj).attr('data-sub-process'),
+                'pr_code':$(obj).attr('data-process'),
+                },
+                type: "POST",
+                dataType: "json",
+                success: function (data) {
+                  flowUICreator(data.elements_list,$(obj).closest('.card-body').find('.processflowdiv'),eleId,undefined,JSON.parse($(obj).attr('data-list')))
+                },
+                failure: function () {
+                  Swal.fire({icon: 'error',text: 'Error! Please try again.'});
+                },
+              })
+            }
+
+          }
+
+          $(obj).toggleClass("rotate")
+        }$("#scenarios_parallelogram06033395466860743").css("display","none");
+            </script>
+            
+
+        <script>
+          computationElementIdsArray.push("parallelogram0725346945179064");
+        
+          previousRunComputeElementIdArray.push("parallelogram0725346945179064")
+          
+        $(".custom-file-input").on("change", function() {
+          var fileName = $(this).val().split("\\").pop();
+          $(this).siblings(".custom-file-label").addClass("selected").html(fileName);
+        });
+        if ($('form').find("input[name='csrfmiddlewaretoken']").attr('value') != undefined) {
+            var ctoken = $('form').find("input[name='csrfmiddlewaretoken']").attr('value')
+            $.ajaxSetup({
+                beforeSend: function (xhr, settings) {
+                    xhr.setRequestHeader("X-CSRFToken", ctoken);
+                }
+            });
+        }
+        function flowUICreator(elementsArray,container,element_id,data,configs) {
+          var count = 0
+          for (let k in elementsArray){
+            if (elementsArray[k]['group'] =='nodes'){
+              if (elementsArray[k]['data']['id'] in configs){
+                elementsArray[k]['data']['text'] = configs[elementsArray[k]['data']['id']]
+              }
+              count ++
+            }
+          }
+          if (count >= 5){
+            container.css('height','20rem');
+          }
+          if (configs['shapes_options_text'] =='inside'){
+            var styles = {
+              'shape': configs['shapes_options'],
+              'label': 'data(text)',
+              'text-valign': 'center',
+              'font-size': configs['font-size'],
+              'color':configs['font-color'],
+              'width': configs['shape_width'],
+              'height': configs['shape_height'],
+              'text-wrap': 'wrap',
+              'text-max-width': `${String(configs['shape_width'])}px`,
+            }
+          }else{
+            var styles = {
+              'shape': configs['shapes_options'],
+              'label': 'data(text)',
+              'font-size': configs['font-size'],
+              'color':configs['font-color'],
+              'width': configs['shape_width'],
+              'height': configs['shape_height'],
+              'text-wrap': 'wrap',
+              'text-max-width': `${String(configs['shape_width'])}px`,
+            }
+          }
+          var cy = cytoscape({
+            container: container,
+            zoomingEnabled: false,
+            userZoomingEnabled: false,
+            elements: elementsArray,
+            style: [
+              {
+                selector: 'node',
+                style: styles,
+              },
+              {
+                selector: 'edge',
+                style: {
+                  width: 1
+                }
+              }
+            ],
+            layout: {
+              name: "dagre",
+              rankDir: "LR",
+              padding: 10,
+              spacingFactor: 1.25,
+              fit: true,
+              nodeDimensionsIncludeLabels: true,
+              avoidOverlap: true,
+              pan: { x: 200, y: 100 }
+            }
+          });
+          if (data != undefined){
+            cy.nodes().forEach(function(ele, i, eles){
+              for (let k in data){
+                if (data[k]['element_id'] == ele.id()){
+                  if (data[k]['current_status'] == 'Pass'){
+                    ele.css('background-color','#4bb543')
+                  }
+                }
+              }
+            });
+          }else{
+            flag = true
+            cy.nodes().forEach(function(ele, i, eles){
+              if(flag){
+                ele.css('background-color','#4bb543')
+              }
+              if (element_id == ele.id()){
+                flag = false
+              }
+            });
+          }
+        }
+        function processDesignDiv_compute(obj){
+          var eleId = $(obj).attr('data-id')
+          $(obj).parent().parent().find('.processflowdiv').toggleClass("displaynone")
+
+          if ($(obj).parent().parent().find('.processflowdiv').hasClass("displaynone") == false){
+            $(obj).prev().find('.stepper-wrapper').empty()
+            if ($(obj).attr('data-trans')!= undefined){
+              if ($(obj).attr('data-trans')!=''){
+                var trans_code = $(obj).attr('data-trans')
+                var flag = true
+                if (trans_code.startsWith("[")){
+                  trans_code = JSON.parse(trans_code)
+                  trans_code = trans_code[0]
+                  flag = true
+                }else if (trans_code == "NULL") {
+                  trans_code = ''
+                  flag = false
+                }
+                if (flag){
+                  $.ajax({
+                    url:`/users/${urlPath}/dynamicVal/`,
+                    data: {
+                    "operation":"fetch_process_flow_model_trans",
+                    'trans_code':trans_code,
+                    },
+                    type: "POST",
+                    dataType: "json",
+                    success: function (data) {
+                    flowUICreator(data.data,$(obj).closest('.modal-body').find('.processflowdiv'),eleId,data.flow,JSON.parse($(obj).attr('data-list')))
+                    },
+                    failure: function () {
+                      Swal.fire({icon: 'error',text: 'Error! Please try again.'});
+                    },
+                  })
+                }
+
+              }
+            }else{
+              $.ajax({
+                url:`/users/${urlPath}/dynamicVal/`,
+                data: {
+                "operation":"fetch_process_flow_model_xml",
+                'sub_pr_code':$(obj).attr('data-sub-process'),
+                'pr_code':$(obj).attr('data-process'),
+                },
+                type: "POST",
+                dataType: "json",
+                success: function (data) {
+                  flowUICreator(data.elements_list,$(obj).closest('.card-body').find('.processflowdiv'),eleId,undefined,JSON.parse($(obj).attr('data-list')))
+                },
+                failure: function () {
+                  Swal.fire({icon: 'error',text: 'Error! Please try again.'});
+                },
+              })
+            }
+
+          }
+
+          $(obj).toggleClass("rotate")
+        }$("#scenarios_parallelogram0725346945179064").css("display","none");
+            </script>
+            
+          <script>
+          $('.span_content_editable').each(function () {
+          $(this).on('click', function () {
+            $(this).attr('data-currentName', $(this).text());
+          $(this).attr("contenteditable", "true")
+          $(this).focus()
+          })
+          $(this).focusout(function () {
+          var tab_header = this.innerText
+          tab_header = tab_header.trim()
+          if (tab_header.length == 0){
+              this.innerText = "Set Name"
+              $(this).removeAttr("contenteditable");
+              $(this).addClass("bg-danger")
+              $(this).trigger("click")
+
+          }
+          else{
+          $(this).removeAttr("contenteditable");
+          $(this).removeClass("bg-danger")
+          if (tab_header != $(this).attr('data-currentName')) {
+            $(this).removeAttr("data-currentName");
+            $.ajax({
+                url: `/users/${urlPath}/ajax/tabConfig/`,
+
+                data: {
+                'operation': "update_tab_header_name_populate",
+                'id': $(this).parent().parent().attr('data-tab_pk'),
+                'user_name':'{{ user.get_username }}',
+                'tab_header_name': tab_header,
+
+                },
+                type: "POST",
+                dataType: "json",
+                success: function (data) {
+
+
+                },
+                error: function () {
+                Swal.fire({icon: 'error',text: 'Error! Please try again.'});
+                }
+            });
+          }
+          }
+
+          })
+      })
+      var populateTabFuctionalities = function() {
+      var tab_data = JSON.parse($(this).attr('data-data_list'));
+      var tab_data_ordered = {};
+      var count = 0;
+      for(let [key,value] of Object.entries(tab_data)) {
+        count++;
+        for(let [key1,value1] of Object.entries(tab_data)) {
+          if(count == parseInt(value1["order"])) {
+            tab_data_ordered[key1] = {}
+            tab_data_ordered[key1]["order"] = count
+            tab_data_ordered[key1]["show"] = value1["show"]
+          }
+        }
+      };
+      $('#tabsMultiFuncBodyTable').find('tbody').empty();
+
+      html_tab = ''
+      id_gen = 0
+      for(let [key,value] of Object.entries(tab_data_ordered)) {
+        id_gen++
+        html_tab = html_tab + `<tr style="text-align:center;background:#f3f3f3;cursor: move;" data-element_id='${key}'>`
+        html_tab = html_tab +`<td minimum=1 maximum='${count}' data-value="${value["order"]}"><span class="ui-icon ui-icon-arrowthick-2-n-s mt-1" data-toggle="tooltip" title="Drag Up/ Down to reorder"></span></td>`
+        if(value["show"] == "1") {
+          html_tab = html_tab + `
+          <td>
+            <div class="d-flex">
+              <div class="switch-container">
+                <input class="float-right switch" type="checkbox" id="input${id_gen}" style="margin-right: 20rem;" name="input${id_gen}" value="input${id_gen}" checked>
+                <div class="switch-color"><label class="trigger-label" for="input${id_gen}"></label></div>
+                <label class="switch-label" for="input${id_gen}"></label>
+              </div>
+            </div>
+          </td>`
+        } else {
+          html_tab = html_tab + `
+          <td>
+            <div class="d-flex">
+              <div class="switch-container">
+                <input class="float-right switch" type="checkbox" id="input${id_gen}" style="margin-right: 20rem;" name="input${id_gen}" value="input${id_gen}">
+                <div class="switch-color"><label class="trigger-label" for="input${id_gen}"></label></div>
+                <label class="switch-label" for="input${id_gen}"></label>
+              </div>
+            </div>
+          </td>`
+        }
+        html_tab = html_tab + `<td><span class="tab_name_config" style="word-break:break-word;white-space:break-spaces;text-align:left;display:block;margin-left:10px;">${$('#'+key+'-tab').text()}</span></td></tr>`
+
+
+      }
+      $('#tabsMultiFuncBodyTable').find('tbody').append(html_tab)
+
+      $("#tabsMultiFuncBodyTable tbody").disableSelection();
+
+      $("#tabsMultiFuncBodyTable tbody").sortable({
+        axis: "y",
+        containment: "parent",
+        cursor: "grabbing",
+        handle: "td",
+        helper: "original",
+        opacity: 0.6,
+        update: function(event, ui) {
+          var sortedItems = $(this).find("tr");
+          sortedItems.each(function(index) {
+            $(this).find('td').eq(0).attr("data-value",index + 1);
+          });
+        },
+      });
+
+      $("#tabsMultiFuncBodyTable tbody tr").draggable({
+        connectToSortable: "#tabsMultiFuncBodyTable tbody",
+        helper: "original",
+        revert: "invalid"
+      }).draggable("enable");
+
+    }
+    var validation = function() {
+      if(parseInt($(this).val()) < 1) {
+        $(this).val(1).trigger('change')
+      }
+      if(parseInt($(this).val()) > parseInt($(this).attr('maximum'))) {
+        $(this).val(parseInt($(this).attr('maximum'))).trigger('change')
+      }
+    }
+    var saveTabsFunc = function() {
+      $('#tabsMultiFunc').find('.modal-footer').find('button').html(`<i class="fa fa-circle-notch fa-spin"></i>`)
+      var order_data = {}
+      var validation = 0
+      var len = $('#tabsMultiFuncBodyTable').find('tbody').find('tr').length;
+      for(let j = 0; j < len; j++) {
+        validation = 0
+        var dummy = parseInt($('#tabsMultiFuncBodyTable').find('tbody').find('tr').eq(j).find('td').eq(0).attr('data-value'));
+        for(let i = 0; i < len; i++) {
+          var dummy1 = parseInt($('#tabsMultiFuncBodyTable').find('tbody').find('tr').eq(i).find('td').eq(0).attr('data-value'))
+          if (dummy == dummy1) {
+            validation = validation + 1;
+            if(validation > 1) {
+              break;
+            }
+          }
+        }
+        if(validation > 1) {
+          break;
+        }
+        if(!dummy){
+          validation = 2;
+          break;
+        }
+      }
+      if(validation < 2) {
+        $('#tabsMultiFuncBodyTable').find('tbody').find('tr').each(function() {
+          var ele_ids = $(this).attr('data-element_id')
+          var show
+          if ($(this).find('td').eq(1).find('input').prop('checked')){
+            show = "1"
+          } else {
+            show = "0"
+          }
+          order_data[ele_ids] = {'tab_name':$(this).find('td').eq(2).text(),
+              'data': {
+                'order': String($(this).find('td').eq(0).attr('data-value')),
+                'show': show
+              }
+          }
+        });
+        $.ajax({
+        url: `/users/${urlPath}/processGraphModule/`,
+        data: {
+            'operation': 'saveTabOrder',
+            'order_data': JSON.stringify(order_data),
+            'pr_code':windowLocation.split('/')[4],
+          },
+          type: "POST",
+          dataType:"json",
+          success:function(data){
+            $('#tabsMultiFunc').find('.modal-footer').html(`<button onclick="saveTabsFunc.call(this)" type="button" class="btn btn-primary">Save</button>`)
+            window.location.reload();
+          },
+          error: function () {
+            $('#tabsMultiFunc').find('.modal-footer').html(`<button onclick="saveTabsFunc.call(this)" type="button" class="btn btn-primary">Save</button>`)
+            Swal.fire({icon: 'error',text: 'Error! Please try again.'});
+          }
+        })
+      } else {
+        $('#tabsMultiFunc').find('.modal-footer').html(`<button onclick="saveTabsFunc.call(this)" type="button" class="btn btn-primary">Save</button>`)
+        Swal.fire({icon: 'warning',text: 'Order cannot be left blank or cannot be the same.'});
+      }
+
+    }
+      </script>
+          
+        <script type="text/javascript" src="{% static 'js/Kore_TI_js/computation/computation.min.js' %}"></script>
+        <script>
+          var globalVariableID = []
+          var process_level_filter_checks = {}
+          var dependencies_check = {}
+          $('.gVarDropDown').each(function() {
+            var id = $(this).closest('.form-row').attr('data-parent_element_id');
+            globalVariableID.push(id);
+            let dropdown_var = $(this).parent().find('label').text().trim()
+            if($(this).attr('has_process_level_filters')){
+              process_level_filter_checks[dropdown_var] = $(this).attr('has_process_level_filters')
+            }else{
+              process_level_filter_checks[dropdown_var] = "no"
+            }
+            let dependencies = $(this).attr("dependencies")
+            if(dependencies){
+              if(JSON.parse(dependencies).length>0){
+                dependencies_check[dropdown_var] = true
+              }else{
+                dependencies_check[dropdown_var] = false
+              }
+            }
+          })
+          if (globalVariableID.length) {
+            var tab_element_id = $('.gVarDropDown:first').parent().parent().parent().attr('id').slice(16)
+            $.ajax({
+              url:`/users/${urlPath}/dynamicVal/`,
+              data: {
+                'operation':'popuplateGlobalVariable',
+                'element_id_list': JSON.stringify(globalVariableID),
+                'process_level_filter_checks': JSON.stringify(process_level_filter_checks),
+                'tab_element_id': tab_element_id,
+                'dependencies_check':JSON.stringify(dependencies_check)
+              },
+              type: 'POST',
+              dataType: "json",
+              success: function (data) {
+                $('.gVarDropDown').each(function() {
+                  var idGV = $(this).attr('name').split('gVar_')[1];
+                  var listGV = data[idGV]
+                  $(this).find('select').empty();
+                  $(this).find('select').append('<option value="">---------</option>');
+                  for(let i = 0; i < listGV.length; i++) {
+                    $(this).find('select').append(`<option value="${listGV[i]}">${listGV[i]}</option>`);
+                  }
+                })
+              },
+              error: ()=>{
+                Swal.fire({icon: 'error',text: 'Error! Please try again.'});
+              }
+            });
+          }
+        </script>
+        <script>masterComputeExecutionHandler(computationElementIdsArray)</script>
+        <script>masterComputePreviousRunDisplayHandler(previousRunComputeElementIdArray)</script>
+        <script fetchpriority="low" type="text/javascript" src="{%static 'js/ebjavascript.min.js'%}" defer></script>
+        

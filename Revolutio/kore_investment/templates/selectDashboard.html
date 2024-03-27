@@ -1,0 +1,872 @@
+
+    <!DOCTYPE html>
+
+    {% extends extend_template %}
+    {% load crispy_forms_tags %}
+    {{ form.media }}
+    {% load static %}
+    {% block body_block %}
+    <!-- DataTables -->
+    <script>
+      var id1 = []
+    </script>
+    <script src="{%static 'vendor/Base_theme/domJSON/domJSON.min.js'%}"></script>
+
+
+  <section class='content' style='opacity: 1;'><div class='container-fluid'> <form id='form1' method='post'>{% csrf_token %}</form>
+
+    <style>
+
+      .commentboxcard {
+        height: 400px;
+        width: 500px;
+        flex-wrap:wrap;
+      }
+      strong {
+        font-weight: bold;
+      }
+      .select2-container{
+        width:auto;
+      }
+      .row {
+        flex-wrap: wrap;
+      }
+    </style>
+
+    <style>
+      h2 {
+        font-size: medium;
+      }
+      .ebDataElementsDiv {
+        margin-bottom: 5px;
+      }
+      .popup {
+        height:80%;
+      }
+      .select2-dropdown {
+        z-index:9999
+      }
+    </style>
+
+    <div class='tab-content'>
+
+       <style>
+
+       .analysisWraptext td{
+         white-space: break-spaces;
+       }
+
+      .linkCard {
+        background-color: var(--primary-color);
+        width: 90%;
+        height: 4rem;
+        border-radius: 1.2rem;
+        margin: 1rem 1rem 1rem 0rem;
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        align-items: center;
+        transition: all 0.2s cubic-bezier(0.165, 0.84, 0.44, 1);
+        cursor: pointer;
+      }
+      .linkCard a{
+        color:white;
+        }
+      .linkCard:hover {
+        transform: scale(1.05);
+      }
+      .linkCard:active {
+        transform: scale(1.0);
+      }
+      .scroll-link {
+        min-width : 17rem;
+      }
+      .scroll-nav {
+        flex-wrap: nowrap !important;
+        overflow-x: scroll !important;
+        overflow-y: hidden !important;
+      }
+      #tabLinks{
+        overflow-x:hidden;
+      }
+
+      .nav-sidebar .nav-link>.right, .nav-sidebar .nav-link>p>.right {
+        position: relative !important;
+      }
+
+    </style>
+
+
+    <div class="tab-pane1 fade"  id="ellipse06740877683828901_tab_content" data-header_name="Dahsboard" role="tabpanel" aria-labelledby="ellipse06740877683828901-tab">
+
+    </div>
+
+    <script>
+
+      </script>
+
+            </div>
+        <style>
+            /* Dropdown Button */
+
+
+            /* .modal-dialog {
+                max-width: 1300px;
+                margin: 0.75rem auto;
+            } */
+
+            .analysisDashboardmove {
+                background-color: white;
+            }
+
+            .tabulator .tabulator-header .tabulator-col {
+                background-color: var(--primary-color);
+                color: white;
+                text-align: center;
+
+            }
+
+
+            .dropbtn {
+                background-color: white;
+                color: black;
+                padding: 1px;
+                font-size: 30px;
+                border: none;
+            }
+
+            .xaxislayer-above {
+                /* cursor: pointer; */
+                pointer-events: all;
+            }
+
+            .yaxislayer-above {
+                /* cursor: pointer; */
+                pointer-events: all;
+            }
+
+            /* The container <div> - needed to position the dropdown content */
+            .dropdown {
+                position: relative;
+                display: inline-block;
+            }
+
+            /* Dropdown Content (Hidden by Default) */
+            .dropdown-content {
+                display: none;
+                position: absolute;
+                background-color: white;
+                min-width: 110px;
+                box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+                z-index: 1000;
+            }
+
+            .dropdown2-tab {
+                position: relative;
+                display: inline-block;
+            }
+
+            /* Dropdown Content (Hidden by Default) */
+            .dropdown2-content-tab {
+                display: none;
+                position: absolute;
+                background-color: white;
+                min-width: 110px;
+                box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+                z-index: 1000;
+            }
+
+            /* Links inside the dropdown */
+            .dropdown-content div {
+                color: black;
+                padding: 2px 1px;
+                text-decoration: none;
+                display: block;
+            }
+
+            /* Change color of dropdown links on hover */
+            .dropdown-content a:hover {
+                background-color: #ddd;
+            }
+
+            /* Show the dropdown menu on hover */
+            .dropdown:hover .dropdown-content {
+                display: block;
+            }
+
+            .dropdown2-content-tab div {
+                color: black;
+                padding: 2px 1px;
+                text-decoration: none;
+                display: block;
+            }
+
+            /* Change color of dropdown links on hover */
+            .dropdown2-content-tab a:hover {
+                background-color: #ddd;
+            }
+            /* Give grid like background to chart parent container */
+
+
+        </style>
+
+<!-- /.navbar -->
+<!-- Main Sidebar Container -->
+  <aside class="main-sidebar sidebar-dark-primary sidebar-bg elevation-4" style="pointer-events: none;">
+    <div class=" d-flex">
+      {% if dashboard_sidebar_icon  %}
+        <a href="/users/selectApplication/" class="brand-link">
+          <img id="imageAciesLogo" src="/media/{{tenant}}/dashboard/{{dashboard_sidebar_icon}}" alt="Brand Logo"
+            class="brand-image img-responsive" align="left" style="float:left">
+        </a>
+      {% else %}
+      <a href="/users/selectDashboard/" class="brand-link">
+        <img id="imageAciesLogo" src="{% static 'images/Base_theme/A.png' %}" alt="Acies Logo"
+          class="brand-image img-responsive" align="left" style="float:left">
+      </a>
+      {% endif %}
+    </div>
+    <!-- Sidebar -->
+    <div class="sidebar" style="padding:0px 4px;">
+
+      <!-- Sidebar Menu -->
+      <nav class="mt-2" style="height: 82%;width: 105%;" id="mainSideNavBar" data-app_id="{{current_application_code}}">
+        <!--style="margin-right:8px;"-->
+        <script>
+          $("#mainSideNavBar").attr("data-app_id", currentAppCode);
+        </script>
+
+        <!-- Hide navbar elements in selectAppliation screen -->
+
+        <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false" >
+
+
+
+
+          <li class="nav-item">
+            <a class="nav-link outerAnchorTag" href="/users/selectDashboard/">
+              <i class="fas fa-home static mainicon1" style="font-size: 1.5rem;"></i>
+              <p class="fontclass textCollapsed collapse-left" style="text-align:center; margin: auto;">Home</p>
+            </a>
+          </li>
+
+          <!-- <li class="nav-item">
+            <a class="nav-link outerAnchorTag" onclick="changeDisplay.call(this)">
+              <i class="fas fa-chart-bar static mainicon1"></i>
+              <p class="fontclass textCollapsed" style="text-align:center; margin: auto;">Dashboard</p>
+              <i class="rightelement display1 sortableHandleWithinNavBar fa fa-ellipsis-v" id="itag"></i>
+            </a>
+          </li> -->
+
+          <li class="nav-item has-treeview">
+            <a href="#" class="nav-link outerAnchorTag" data-navsidebarouteranchortaggroupcode="Prg1MfE0Z4WOPuxkh79" data-code="Prg1MfE0Z4WOPuxkh79" style="text-align: center; width: 100%;">
+              <i class="sortableHandleWithinNavBar mainicon fa fa-edit nav-icon ui-sortable-handle" style=""></i>
+              <p class="fontclass2 fontclass">
+                Recently viewed
+
+                </p><div class="dropdown1">
+                  <!-- <i class="fa fa-gear gearClass display1" onclick="openDropdown.call(this)"></i> -->
+                  <div class="dropdown-content1" style="margin-left: auto; display: none;">
+
+                    <i class="fas fa-remove" onclick="removeNavbar.call(this,'process')" style="float: right; margin-left: 7px;" data-toggle="tooltip" title="Remove navpoint"></i>
+
+                <i class="fas fa-plus iconClass" onclick="addNavbar.call(this,'process','Prg1MfE0Z4WOPuxkh79')" style="float: right;" data-toggle="tooltip" title="Add navpoint"></i>
+                  </div>
+                </div>
+
+              <p></p>
+               <p class="fontclass1" check="Comp" style="margin-left: auto; margin-right: auto; font-family: Arial, Helvetica, sans-serif; font-size: 10px; position: relative; text-align: center; display: none;">Recent</p>
+               <i class="right fas fa-angle-left" style="display: block; margin-right: 18px;"></i>
+
+            </a>
+
+            <ul class="nav nav-treeview ui-sortable" style="display: none;padding-left: 1rem;">
+              {% for i in list %}
+                <li class="nav-item">
+                  <a class="nav-link outerAnchorTag" href='/users/dashboard/?app_code={{i.app_code}}&pr_code={{i.pr_code}}&type={{i.dashboard_type}}&tab_id={{i.tab_id}}&share_type={{i.shared_type}}&element_id={{i.element_id}}&dashboard_config_id={{i.dashboard_config_id}}'>
+                    <i class="fas fa-chart-bar static mainicon1"></i>
+                    <p class="fontclass textCollapsed collapse-left" style="text-align:center; margin: auto;">{{i.name}}</p>
+                  </a>
+                </li>
+              {% endfor %}
+            </ul>
+          </li>
+
+          <li class="nav-item has-treeview">
+            <a href="#" class="nav-link outerAnchorTag" data-navsidebarouteranchortaggroupcode="Prg1MfE0Z4WOPuxkh79" data-code="Prg1MfE0Z4WOPuxkh79" style="text-align: center; width: 100%;">
+              <i class="sortableHandleWithinNavBar mainicon fa fa-edit nav-icon ui-sortable-handle" style=""></i>
+              <p class="fontclass2 fontclass">
+                Shared with me
+                </p><div class="dropdown1">
+                  <!-- <i class="fa fa-gear gearClass display1" onclick="openDropdown.call(this)"></i> -->
+                  <div class="dropdown-content1" style="margin-left: auto; display: none;">
+
+                    <i class="fas fa-remove" onclick="removeNavbar.call(this,'process')" style="float: right; margin-left: 7px;" data-toggle="tooltip" title="Remove navpoint"></i>
+
+                <i class="fas fa-plus iconClass" onclick="addNavbar.call(this,'process','Prg1MfE0Z4WOPuxkh79')" style="float: right;" data-toggle="tooltip" title="Add navpoint"></i>
+                  </div>
+                </div>
+
+              <p></p>
+               <p class="fontclass1" check="Comp" style="margin-left: auto; margin-right: auto; font-family: Arial, Helvetica, sans-serif; font-size: 10px; position: relative; text-align: center; display: none;">Shared with me</p>
+               <i class="right fas fa-angle-left" style="display: block; margin-right: 18px;"></i>
+
+            </a>
+
+            <ul class="nav nav-treeview ui-sortable shared_with_me" style="display: none;padding-left: 1rem;">
+            </ul>
+          </li>
+          <li class="nav-item has-treeview">
+            <a href="#" class="nav-link outerAnchorTag" data-navsidebarouteranchortaggroupcode="Prg1MfE0Z4WOPuxkh79" data-code="Prg1MfE0Z4WOPuxkh79" style="text-align: center; width: 100%;">
+              <i class="sortableHandleWithinNavBar mainicon fa fa-edit nav-icon ui-sortable-handle" style=""></i>
+              <p class="fontclass2 fontclass">
+                Shared by me
+                </p><div class="dropdown1">
+                  <!-- <i class="fa fa-gear gearClass display1" onclick="openDropdown.call(this)"></i> -->
+                  <div class="dropdown-content1" style="margin-left: auto; display: none;">
+
+                    <i class="fas fa-remove" onclick="removeNavbar.call(this,'process')" style="float: right; margin-left: 7px;" data-toggle="tooltip" title="Remove navpoint"></i>
+
+                <i class="fas fa-plus iconClass" onclick="addNavbar.call(this,'process','Prg1MfE0Z4WOPuxkh79')" style="float: right;" data-toggle="tooltip" title="Add navpoint"></i>
+                  </div>
+                </div>
+
+              <p></p>
+               <p class="fontclass1" check="Comp" style="margin-left: auto; margin-right: auto; font-family: Arial, Helvetica, sans-serif; font-size: 10px; position: relative; text-align: center; display: none;">Shared by me</p>
+               <i class="right fas fa-angle-left" style="display: block; margin-right: 18px;"></i>
+
+            </a>
+
+            <ul class="nav nav-treeview ui-sortable shared_by_me" style="display: none;padding-left: 1rem;">
+            </ul>
+          </li>
+          </span>
+        </ul>
+
+      </nav>
+      <br>
+
+    </div>
+    <!-- /.sidebar -->
+  </aside>
+  <style>
+    .info-box {
+      border-top-right-radius: 1rem;
+      border-top-left-radius: 1rem;
+      border-bottom-right-radius: 0 !important;
+      border-bottom-left-radius: 0 !important;
+      background-color: var(--primary-color);
+      cursor: pointer;
+      margin-bottom:0;
+      color: var(--font-hover-color);
+    }
+    .info-box .info-box-text{
+      overflow: unset;
+      text-overflow: unset;
+      white-space: unset;
+    }
+
+    .app_wrapper {
+      background-color: white;
+      margin: 20px;
+      border-radius: 1rem;
+      height: 204px;
+    }
+    .app_wrapper1 {
+      background-color: white;
+      margin: 20px;
+      border-radius: 1rem;
+      height: 204px;
+      width: 100%;
+      height: 210px;
+    }
+
+    .app_wrapper:hover,
+    .app_preview {
+      box-shadow: 3px 4px 6px #c5c5c0;
+      transition: 0.3s;
+    }
+
+    .app_wrapper,
+      .create_new_application_wrapper {
+        width: 85%;
+        height: 210px;
+        margin: 10px auto !important;
+      }
+    .tile{
+        height: 40px;
+        width: 100%;
+        display: flex;
+        justify-content:flex-start;
+        align-items: center;
+        padding: 15px;
+        padding-left: 25px;
+        border-radius: 10px;
+    }
+    .tile:hover{
+        background-color: var(--primary-color);
+    }
+
+    {% if appdrawer_bg_image_name|length %}
+
+  body {
+    background: url('/media/{{tenant}}/TenantTheme/appdrawer/background_images/{{appdrawer_bg_image_name}}');
+    background-attachment: fixed;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+  }
+    .content-wrapper {
+      background: none;
+    }
+    .main-footer.fixed-bottom{
+      background:none;
+    }
+    .floating-wrapper{
+      background-color: transparent !important;
+    }
+  {% endif %}
+
+  {% if appdrawer_bgColorCode|length %}
+  .floating-wrapper {
+    background:{{appdrawer_bgColorCode}} !important;
+    }
+    .content-wrapper {
+    background: {{appdrawer_bgColorCode}};
+    }
+    .main-footer.fixed-bottom{
+    background:{{appdrawer_bgColorCode}};
+    }
+  {% endif %}
+
+  {% if customize_app_footer == "True" %}
+    .main-footer.fixed-bottom{
+      font-size: {{app_footer_size}};
+      text-align: {{app_footer_placement}};
+      color: {{app_footer_bgcolor}} !important
+    }
+  {% endif %}
+
+  </style>
+
+<div class="conatiner-fluid ps-5 recommend" style="padding: 20px;">
+    <div class="header-cont">
+        <h1 style="font-size: 29px;"><b>Have a nice day, {{request.user}}</b></h1>
+        <p style="font-size: 20px;">Select a tile to get started</p>
+    </div>
+    <div class="main-body mt-18" style="margin-top:75px;">
+        <p style="font-size: 20px;">Recently viewed</p>
+        <div class="card-cont" style="display:flex; flex-direction:row; flex-wrap: wrap; align-items: flex-start;justify-content: flex-start;">
+          {% for i in list %}
+            <div class="col-lg-3 col-md-4 col-sm-6 col-xs-12 applicationList
+            " name="Revolutio 2" id="apps">
+            <div class="app_wrapper">
+              <a  href='/users/dashboard/?app_code={{i.app_code}}&pr_code={{i.pr_code}}&type={{i.dashboard_type}}&tab_id={{i.tab_id}}&share_type={{i.shared_type}}&element_id={{i.element_id}}&dashboard_config_id={{i.dashboard_config_id}}'  >
+                <div class="info-box" onclick="user_mode('Revolutio 2','App2')">
+                  <span class="info-box-icon recently_used_apps" style="padding-left:10px;"><i class="fas fa-chart-pie mr-2"></i> </span>
+                  <div class="recently_used_apps" style="display:flex;min-width:80%;justify-content:space-between;align-items:center;font-size: 14px;" data-app_name="App2" data-app_code="App2">
+                    <span class="info-box-text" id="info-app-name" style="font-weight: bold;padding-right:10%;" data-app_code="App2">{{i.name}}</span>
+
+                  </div>
+                </div>
+                <div class="app_description" style="padding: 20px;">
+                  {{i.name}}
+                </div>
+              </a>
+            </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+<div class="conatiner-fluid ps-5 list" style="margin-left:5.2rem;padding: 0px; padding-left: 10px; padding-right: 10px; display: none;">
+    <div class="row" style="height: 85vh !important">
+        <div class="col-3 card" style="border-right: 1px solid black; padding: 0px;">
+            <div class="tile mt-2">
+                <h1 style="font-size: 25px;"><b>Browse</b></h1>
+            </div>
+            <div class="tile mt-3" onclick="changeBg.call(this)" style="background-color: whitesmoke;">
+                <span>Myself</span>
+            </div>
+            <div class="tile" onclick="changeBg.call(this)">
+                <span>Shared with me</span>
+            </div>
+        </div>
+        <div class="col-9 card dashboardList" style="height:85vh; overflow-y:scroll">
+            <div class="tile mt-2">
+                <h1 style="font-size: 25px;"><b>Dashboards list</b></h1>
+            </div>
+             <div class="main-con"></div>
+        </div>
+    </div>
+</div>
+
+  <style>
+  </style>
+
+<script>
+  $(".tile").eq(1).trigger("click");
+    $.ajax({
+    url: `/users/${urlPath}/dynamicVal/`,
+    data: {
+        'operation': 'importDasboard',
+        'shared': 'Shared with me'
+      },
+      type: "POST",
+      dataType:"json",
+      success:function(data){
+          data = data["data"];
+          let text_ = 'Shared with me';
+          $(".dashboardList").find("div").eq(1).empty();
+          for(let i in data){
+              if(data[i]["dashboard_type"] == "Tabs"){
+                $(".shared_with_me").append(`
+                  <li class="nav-item">
+                    <a class="nav-link outerAnchorTag" href='/users/dashboard/?app_code=${data[i]["app_code"]}&pr_code=${data[i]["subprocess_code"]}&type=Tabs&tab_id=${data[i]["tab_id"]}&share_type=${text_}&element_id=${data[i]["element_id"]}&name=${data[i]["tab_name"]}&dashboard_config_id=${data[i]['dashboard_config_id']}'>
+                      <i class="fas fa-chart-bar static mainicon1"></i>
+                      <p class="fontclass collapse-left textCollapsed" style="text-align:center; margin: auto;">${data[i]["tab_name"]}</p>
+                    </a>
+                  </li>
+                `)
+              }
+              if(data[i]["dashboard_type"] == "Entire dashboard"){
+                $(".shared_with_me").append(`
+                  <li class="nav-item">
+                    <a class="nav-link outerAnchorTag" href='/users/dashboard/?app_code=${data[i]["app_code"]}&pr_code=${data[i]["subprocess_code"]}&type=Entire_dashboard&tab_id=${data[i]["tab_id"]}&share_type=${text_}&element_id=${data[i]["element_id"]}&name=${data[i]["subprocess_name"]}&dashboard_config_id=${data[i]['dashboard_config_id']}'>
+                      <i class="fas fa-chart-bar static mainicon1"></i>
+                      <p class="fontclass collapse-left textCollapsed" style="text-align:center; margin: auto;">${data[i]["subprocess_name"]}</p>
+                    </a>
+                  </li>
+                `)
+
+              }
+          }
+        },
+        error: function () {
+        Swal.fire({icon: 'error',text: 'Error! Please try again.'});
+      }
+    })
+
+    $.ajax({
+    url: `/users/${urlPath}/dynamicVal/`,
+    data: {
+        'operation': 'importDasboard',
+        'shared': 'Shared by me'
+      },
+      type: "POST",
+      dataType:"json",
+      success:function(data){
+          data = data["data"];
+          let text_ = 'Shared by me';
+          $(".dashboardList").find("div").eq(1).empty();
+          for(let i in data){
+              if(data[i]["dashboard_type"] == "Tabs"){
+                $(".shared_by_me").append(`
+                  <li class="nav-item">
+                    <a class="nav-link outerAnchorTag" href='/users/dashboard/?app_code=${data[i]["app_code"]}&pr_code=${data[i]["subprocess_code"]}&type=Tabs&tab_id=${data[i]["tab_id"]}&share_type=${text_}&element_id=${data[i]["element_id"]}&name=${data[i]["tab_name"]}&dashboard_config_id=${data[i]['dashboard_config_id']}'>
+                      <i class="fas fa-chart-bar static mainicon1"></i>
+                      <p class="fontclass collapse-left textCollapsed" style="text-align:center; margin: auto;">${data[i]["tab_name"]}</p>
+                    </a>
+                  </li>
+                `)
+              }
+              if(data[i]["dashboard_type"] == "Entire dashboard"){
+                $(".shared_by_me").append(`
+                  <li class="nav-item">
+                    <a class="nav-link outerAnchorTag" href='/users/dashboard/?app_code=${data[i]["app_code"]}&pr_code=${data[i]["subprocess_code"]}&type=Entire_dashboard&tab_id=${data[i]["tab_id"]}&share_type=${text_}&element_id=${data[i]["element_id"]}&name=${data[i]["subprocess_name"]}&dashboard_config_id=${data[i]['dashboard_config_id']}'>
+                      <i class="fas fa-chart-bar static mainicon1"></i>
+                      <p class="fontclass collapse-left textCollapsed" style="text-align:center; margin: auto;">${data[i]["subprocess_name"]}</p>
+                    </a>
+                  </li>
+                `)
+
+              }
+          }
+        },
+        error: function () {
+        Swal.fire({icon: 'error',text: 'Error! Please try again.'});
+      }
+    })
+  function changeBg(){
+      $(".tile").css("background-color","transparent");
+      $(this).css("background-color","whitesmoke");
+      let text_ = $(this).find("span").text().trim();
+      $.ajax({
+        url: `/users/${urlPath}/dynamicVal/`,
+        data: {
+            'operation': 'importDasboard',
+            'shared': $(this).find("span").text().trim()
+          },
+          type: "POST",
+          dataType:"json",
+          success:function(data){
+              $(".dashboardList").find("div").eq(1).empty();
+
+              data = data["data"]
+              for(let i in data){
+                  if(data[i]["dashboard_type"] == "Tabs"){
+                      $(".dashboardList").find(".main-con").append(`
+                      <div class="" style="flex: 0 0 81%;max-width: 82%;display: flex;justify-content: center;"
+                        app_code="${data[i]["app_code"]}" pr_code="${data[i]["subprocess_code"]}"
+                        type="Tabs" id="${data[i]["tab_id"]}" share_type="${text_}"
+
+                      >
+                          <div id="" class="linkCard">
+                          <a href='/users/dashboard/?app_code=${data[i]["app_code"]}&pr_code=${data[i]["subprocess_code"]}&type=Tabs&tab_id=${data[i]["tab_id"]}&share_type=${text_}&element_id=${data[i]["element_id"]}&name=${data[i]["tab_name"]}&dashboard_config_id=${data[i]['dashboard_config_id']}' style="font-size: 1.2rem;color: white">${data[i]["tab_name"]}</a>
+                          </div>
+                      </div>
+                      `)
+                  }
+                  if(data[i]["dashboard_type"] == "Entire dashboard"){
+                      $(".dashboardList").find(".main-con").append(`
+                      <div class="" style="flex: 0 0 81%;max-width: 82%;display: flex;justify-content: center;"
+                      app_code="${data[i]["app_code"]}" pr_code="${data[i]["subprocess_code"]}"
+                        type="Entire_dashboard" id="${data[i]["element_id"]}" share_type="${text_}"
+
+                      >
+                          <div id="" class="linkCard">
+                          <a href='/users/dashboard/?app_code=${data[i]["app_code"]}&pr_code=${data[i]["subprocess_code"]}&type=Entire_dashboard&tab_id=${data[i]["tab_id"]}&share_type=${text_}&element_id=${data[i]["element_id"]}&name=${data[i]["subprocess_name"]}&dashboard_config_id=${data[i]['dashboard_config_id']}'
+                          style="font-size: 1.2rem;color: white"> ${data[i]["subprocess_name"]}</a>
+                          </div>
+                      </div>
+                      `)
+                  }
+              }
+              if($(".dashboardList").find(".main-con").length == 0){
+                  $(".dashboardList").find(".main-con").append(`
+                  <div class="tile mt-4">
+                      <h1 style="font-size: 20px;"><b>No data available</b></h1>
+                  </div>
+                  `)
+              }
+
+          },
+          error: function () {
+            Swal.fire({icon: 'error',text: 'Error! Please try again.'});
+          }
+        });
+  }
+  function openDashboard(){
+    window.location.href = `/users/dashboard/?app_code=${$(this).attr("app_code")}&pr_code=${$(this).attr("pr_code")}&type=${$(this).attr("type")}&id=""${$(this).attr("id")}&share_type="${$(this).attr("share_type")}"`
+  }
+  function changeDisplay() {
+      $(".recommend").css("display","none");
+      $(".list").css("display","block");
+  }
+  document.onreadystatechange = function(){
+  if(document.readyState.trim() === "complete" && !$("#mainSideNavBar").is(':hover')){
+      setTimeout(function(){
+        $('.main-sidebar').prop('style','pointer-events:auto')
+        $('#toggleButton').prop('style','pointer-events:auto')
+      },50)
+
+    }
+  }
+
+    //StandardList
+    $('#standardList').on('click', function (e) {
+      var url;
+      var masterName = $(this).attr('data-master_name')
+      url = window.location.href + masterName;
+      $(this).attr('href', url)
+
+    })
+
+
+
+
+    $("#mainSideNavBar > ul").sortable({
+      handle: ".sortableHandleWithinNavBar"
+    }).disableSelection();
+
+    $("#mainSideNavBar ul.nav-treeview").sortable({
+      handle: ".sortableHandleWithinNavBar",
+      connectWith:"ul.nav-treeview"
+    }).disableSelection();
+    // $("#mainSideNavBar ul").disableSelection();
+
+    setTimeout(function(){
+      $("#messages-content").fadeOut('slow')
+    },15000)
+
+
+    var toggleB = document.getElementById('toggleButton');
+    if (toggleB != null) {
+      toggleB.addEventListener('click', expandCollapse)
+    }
+    function expandCollapse() {
+      var img = document.getElementById('imageAciesLogo');
+      var body = document.getElementsByTagName('BODY')
+      var bodyClasses = body[0].className;
+      if (bodyClasses == "sidebar-mini layout-fixed") {
+        img.src = {% if dashboard_sidebar_icon  %} "/media/{{tenant}}/dashboard/{{dashboard_sidebar_icon}}" {%else%} "{% static 'images/Base_theme/A.png' %}" {% endif %}
+
+      }
+      if (bodyClasses == "sidebar-mini layout-fixed sidebar-collapse") {
+
+        img.src = {% if dashboard_sidebar_icon  %} "/media/{{tenant}}/dashboard/{{dashboard_sidebar_icon}}" {%else%} "{% static 'images/Base_theme/A.png' %}" {% endif %}
+      }
+
+    }
+    $('.main-sidebar').hover(function () {
+      $('body').removeClass("sidebar-collapse");
+      $('#imageAciesLogo').attr("src", {% if dashboard_sidebar_icon  %} "/media/{{tenant}}/dashboard/{{dashboard_sidebar_icon}}" {%else%} "{% static 'images/Base_theme/Acies Techworks_Transparent_White.png' %}" {% endif %})
+      $(".collapse-left").css("margin-left","16px")
+
+      $(".display1").css("display", "block");
+      $(".dropdown-content1").css("display","none");
+      $(".menu-open > .nav-treeview").css("display", "block");
+      $(".outerAnchorTag").css("width", "100%");
+      $(".fa-angle-left").css("display", "block");
+      $(".right").addClass("fa-angle-left");
+
+    },
+      function () {
+        $('body').addClass("sidebar-collapse");
+        if ($('body').attr("class") == "sidebar-mini layout-fixed sidebar-collapse") {
+          $('#imageAciesLogo').attr("src", {% if dashboard_sidebar_icon  %} "/media/{{tenant}}/dashboard/{{dashboard_sidebar_icon}}" {%else%} "{% static 'images/Base_theme/A.png' %}" {% endif %} )
+
+          $(".outerAnchorTag").css("text-align", "center");
+          $(".display1").css("display", "none");
+          $(".dropdown-content1").css("display","none");
+          $(".dropdown-content").css("display","none")
+          $(".menu-open > .nav-treeview").css("display", "none");
+          $(".right").removeClass("fa-angle-left")
+          $(".collapse-left").css("margin-left","auto")
+        }
+        else {
+          $('#imageAciesLogo').attr("src",{% if dashboard_sidebar_icon  %} "/media/{{tenant}}/dashboard/{{dashboard_sidebar_icon}}" {%else%} "{% static 'images/Base_theme/Acies Techworks_Transparent_White.png' %}" {% endif %})
+        }
+      })
+
+    $('#toggleButton').click(function () {
+      if ($('body').attr("class") == "sidebar-mini layout-fixed sidebar-collapse") {
+        var media = window.matchMedia("(max-width: 991px)")
+        if (media.matches){
+          $("#toggleButton .fa-chevron-left").css("display","none");
+          $("#toggleButton .fa-chevron-right").css("display","none");
+        }
+        else{
+          $('#imageAciesLogo').attr("src",  {% if dashboard_sidebar_icon  %} "/media/{{tenant}}/dashboard/{{dashboard_sidebar_icon}}" {%else%} "{% static 'images/Base_theme/Acies Techworks_Transparent_White.png' %}" {% endif %})
+          $("#toggleButton .fa-chevron-left").css("display","block");
+          $("#toggleButton .fa-chevron-right").css("display","none");
+          $(".brand-link").css("width","100%");
+
+          $(".outerAnchorTag").css("width", "100%");
+          $(".display1").css("display", "block");
+          $(".dropdown-content1").css("display","none")
+          $(".menu-open > .nav-treeview").css("display", "block");
+          $(".right").addClass("fa-angle-left");
+          $(".fa-angle-left").css("display", "block");
+        }
+      }
+      else {
+        var media = window.matchMedia("(max-width: 991px)")
+        if (media.matches){
+          $("#toggleButton .fa-chevron-left").css("display","none");
+          $("#toggleButton .fa-chevron-right").css("display","none");
+        }
+        else{
+          $('#imageAciesLogo').attr("src", {% if dashboard_sidebar_icon  %} "/media/{{tenant}}/dashboard/{{dashboard_sidebar_icon}}" {%else%} "{% static 'images/Base_theme/A.png' %}" {% endif %} )
+          $("#toggleButton .fa-chevron-left").css("display","none");
+          $("#toggleButton .fa-chevron-right").css("display","block");
+
+          $(".outerAnchorTag").css("text-align", "center");
+          $(".display1").css("display", "none");
+          $(".dropdown-content1").css("display","none")
+          $(".dropdown-content").css("display","none")
+          $(".menu-open > .nav-treeview").css("display", "none");
+          $(".right").removeClass("fa-angle-left")
+        }
+      }
+    });
+
+
+      var mainUlTagClassNavSideBar = $('#mainSideNavBar > ul')
+      var navSideBarJson = []
+
+      navSideBarArray = []
+
+      for (var i = 0; i < navSideBarArray.length; i++) {
+        var checkIfLevel0AlreadyExistsAnchorTag = mainUlTagClassNavSideBar.find(`a[data-navsidebarouteranchortaggroupcode='${navSideBarArray[i].level0Code}']`)
+
+        if (checkIfLevel0AlreadyExistsAnchorTag.length > 0) {
+
+          var checkIfLevel0AlreadyExistsOuterLiTag = checkIfLevel0AlreadyExistsAnchorTag.parent()
+          var outerUlTag = checkIfLevel0AlreadyExistsOuterLiTag.find('> ul')
+          for (var j = 0; j < navSideBarArray[i].childrenOfLevel0.length; j++) {
+            var liTagJson = JSON.parse(navSideBarArray[i].childrenOfLevel0[j].htmlDOMElement)
+            var liTagDOM = domJSON.toDOM(liTagJson)
+
+          }
+          $('.fontclass').css("font-size","8.7px")
+          $(self).popover('hide');
+          $('body').attr("class", "sidebar-mini layout-fixed sidebar-collapse");
+          $('#imageAciesLogo').attr("src", {% if dashboard_sidebar_icon  %} "/media/{{tenant}}/dashboard/{{dashboard_sidebar_icon}}" {%else%} "{% static 'images/Base_theme/A.png' %}" {% endif %} )
+
+          $(".outerAnchorTag").css("text-align", "center");
+          $(".display1").css("display", "none");
+          $(".dropdown-content1").css("display","none");
+
+          //  $(".menu-open > .ui-sortable").css("display", "none");
+          $(".menu-open > .nav-treeview").css("display", "none");
+          $(".right").removeClass("fa-angle-left");
+        }
+        else {
+
+          var outerLiTag = $('<li class="nav-item has-treeview">')
+          var anchorTagJson = JSON.parse(navSideBarArray[i].htmlDOMElement)
+          var anchorTagDOM = domJSON.toDOM(anchorTagJson)
+          outerLiTag.append(anchorTagDOM)
+          var outerUlTag = $('<ul class="nav nav-treeview">')
+          for (var j = 0; j < navSideBarArray[i].childrenOfLevel0.length; j++) {
+            var liTagJson = JSON.parse(navSideBarArray[i].childrenOfLevel0[j].htmlDOMElement)
+            var liTagDOM = domJSON.toDOM(liTagJson)
+            outerUlTag.append(liTagDOM)
+          }
+          outerLiTag.append(outerUlTag)
+          mainUlTagClassNavSideBar.append(outerLiTag)
+          $('.fontclass').css("font-size","8.7px")
+          $(self).popover('hide');
+        $('body').attr("class", "sidebar-mini layout-fixed sidebar-collapse");
+        $('#imageAciesLogo').attr("src", {% if dashboard_sidebar_icon  %} "/media/{{tenant}}/dashboard/{{dashboard_sidebar_icon}}" {%else%} "{% static 'images/Base_theme/A.png' %}" {% endif %} )
+
+          $(".outerAnchorTag").css("text-align", "center");
+          $(".display1").css("display", "none");
+          $(".dropdown-content1").css("display","none");
+
+          $(".menu-open > .nav-treeview").css("display", "none");
+          $(".right").removeClass("fa-angle-left");
+        }
+
+      }
+      $(document).ready(function () {
+        $(self).popover('hide');
+        $('body').attr("class", "sidebar-mini layout-fixed sidebar-collapse");
+        $('#imageAciesLogo').attr("src", {% if dashboard_sidebar_icon  %} "/media/{{tenant}}/dashboard/{{dashboard_sidebar_icon}}" {%else%} "{% static 'images/Base_theme/A.png' %}" {% endif %} )
+
+          $(".outerAnchorTag").css("text-align", "center");
+          $(".display1").css("display", "none");
+          $(".dropdown-content1").css("display","none");
+          $(".dropdown-content").css("display","none")
+
+          //  $(".menu-open > .ui-sortable").css("display", "none");
+          $(".menu-open > .nav-treeview").css("display", "none");
+          $(".right").removeClass("fa-angle-left");
+
+    })
+
+</script>
+        </section>
+      <style>
+        .buttonstyling{
+          margin-bottom:10px;
+        }
+      </style>
+
+      <!-- Date Range Picker -->
+      <script type="text/javascript" src="{%static 'moment/moment.min.js'%}"></script>
+      <script type="text/javascript" src="{%static 'daterangepicker/js/daterangepicker.min.js'%}"></script>
+      <link rel="stylesheet" href="{%static 'daterangepicker/css/daterangepicker.css'%}">
+      <script type="text/javascript" src="{% static 'js/Kore_TI_js/htmlGeneratorScript.js' %}"></script> {%endblock%}

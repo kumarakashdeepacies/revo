@@ -1,0 +1,7 @@
+aiohttp
+faker
+fsspec
+pandas
+pyarrow
+pyyaml
+requests

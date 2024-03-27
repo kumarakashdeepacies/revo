@@ -1,0 +1,42 @@
+{% extends "account/base.html" %}
+{% load static %}
+{% load i18n %}
+
+{% block head_title %}{% trans "Sign Out" %}{% endblock %}
+{% block inner %}
+
+<style>
+  #add:active {
+    background-color: var(--primary-color);
+    border-color: black;
+  }
+</style>
+  <div class="login-page">
+    <div class="login-box">
+      <div class="card">
+        <div class="card-body login-card-body">
+          <!--EXTRA CODE-->
+
+          <a href="{% url 'account_login' %}">
+            <img src="{%static 'images/Base_theme/Acies_short_logo.png'%}"
+                 alt="Acies Logo" height="50" width="60">
+          </a>
+          <a href="{% url 'account_login' %}" id="backtoSignin">Back to App Drawer <i class="fa fa-arrow-right"></i></a>
+
+          <p></p>
+          <p>{% trans 'Are you sure you want to sign out?' %}</p>
+          <form method="post" action="{% url 'tenant_logout' %}">
+            {% csrf_token %}
+            {% if redirect_field_value %}
+            <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" />
+            {% endif %}
+            <button class="btn btn-primary" id="add" type="submit">{% trans 'Sign Out' %}</button>
+          </form>
+        </div>
+        </div>
+        </div>
+
+      </div>
+
+{% endblock %}
+

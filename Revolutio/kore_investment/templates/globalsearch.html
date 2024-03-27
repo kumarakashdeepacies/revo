@@ -1,0 +1,183 @@
+{% extends extend_template %}
+{% load crispy_forms_tags %}
+{{ form.media }}
+{% load static %}
+{% block body_block %}
+
+
+<!-- DataTables -->
+<!--<link rel="stylesheet" href="{% static 'vendor/Base_theme/datatables-bs4/css/dataTables.bootstrap4.css' %}">
+<link rel="stylesheet" href="{% static 'vendor/Base_theme/datatables-buttons/css/buttons.bootstrap4.min.css' %}">-->
+<!--Official dataTables default  CSS FILE-->
+
+<link rel="stylesheet" href="{% static 'css/KoreD/jquery.dataTables.css' %}">
+<link rel="stylesheet" href="{% static 'vendor/Base_theme/datatables-responsive/css/responsive.bootstrap4.min.css' %}">
+<link rel="stylesheet" href="{% static 'vendor/Base_theme/datatables-colreorder/css/colReorder.bootstrap4.min.css' %}">
+<link rel="stylesheet" href="{% static 'css/KoreD/buttons.dataTables.min.css' %}">
+
+<!-- Select2 -->
+<link rel="stylesheet" href="{% static 'vendor/Base_theme/select2/css/select2.min.css' %}">
+<link rel="stylesheet" href="{% static 'vendor/Base_theme/select2-bootstrap4-theme/select2-bootstrap4.min.css' %}">
+
+<!-- Select2 -->
+<script src="{% static 'vendor/Base_theme/select2/js/select2.min.js' %}"></script>
+
+<!-- DataTables -->
+<script src="{% static 'vendor/Base_theme/datatables/jquery.dataTables.js' %}"></script>
+<script src="{% static 'vendor/Base_theme/datatables-responsive/js/dataTables.responsive.min.js' %}"></script>
+<script src="{% static 'vendor/Base_theme/datatables-fixedheader/js/dataTables.fixedHeader.min.js' %}"></script>
+<script src="{% static 'vendor/Base_theme/datatables-colreorder/js/dataTables.colReorder.min.js' %}"></script>
+<script src="{%static 'vendor/Base_theme/datatables-bs4/js/dataTables.bootstrap4.js'%}"></script>
+
+<script src="{%static 'vendor/Base_theme/datatables-buttons/js/dataTables.buttons.min.js'%}"></script>
+<script src="{%static 'vendor/Base_theme/jszip/jszip.min.js'%}"></script>
+<script src="{%static 'vendor/Base_theme/pdfmake/pdfmake.min.js'%}"></script>
+<script src="{%static 'vendor/Base_theme/pdfmake/vfs_fonts.js'%}"></script>
+<script src="{%static 'vendor/Base_theme/datatables-buttons/js/buttons.html5.min.js'%}"></script>
+<script src="{%static 'vendor/Base_theme/datatables-buttons/js/buttons.colVis.min.js'%}"></script>
+<!-- Breadcrumb-->
+<div class="breadcrumb-holder" style="background-color: #e9ecef; ">
+  <div class="container-fluid" id="dynamicTabs">
+    <ul class="breadcrumb" id="dynamicbreadcrumbs">
+      <li class="breadcrumb-item"><a {% if current_application_code != 'App0' %} {% if current_application_code == 'Dev' %} {% if current_dev_mode == 'Edit' %} {% if edit_app_code != 'Not Selected' %} href="{% url 'users:homePage' edit_app_code current_dev_mode %}" {% else %} href="{% url 'users:homePage' 'Dev' current_dev_mode %}" {% endif %} {% elif current_dev_mode == 'Build' %} {% if build_app_code != 'Not Selected' %} href="{% url 'users:homePage' build_app_code current_dev_mode %}" {% else %} href="{% url 'users:select_application' %}"  {% endif %} {% endif %} {% else %} href="{% url 'users:homePage' current_application_code 'User' %}" {% endif %} {% else %} href="{% url 'users:select_application' %}" {% endif %}>
+        <b> Home </b></a></li>
+      <li class="breadcrumb-item "><b>Search</b></li>
+    </ul>
+  </div>
+</div>
+<section class="content">
+    <div id="card0" class="card card-default collapsed-card">
+      <div class="card-header cardheader0" style="border-bottom:1px solid rgba(0,0,0,.125)">
+        <h6 class="card-title">Table Count:<span class="ml-1" id="countdisplay"></span></h6>
+          <div class="card-tools">
+            <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-plus"></i></button>
+          </div>
+      </div>
+      <div class="card-body cardbody0" style="display:none;">
+        <div style="margin-top:2em;">
+          <table id="examplesearch" class="display compact" style="width:100%;">
+              <thead>
+                  <tr>
+                  <th id="thid">Results for Search</th>
+                  </tr>
+              </thead>
+              <tbody id="tbodyid">
+              </tbody>
+            </table>
+      </div>
+      </div>
+    </div>
+    <div id="card1" class="card card-default collapsed-card">
+      <div class="card-header cardheader1" style="border-bottom:1px solid rgba(0,0,0,.125)">
+        <h6 class="card-title">Screen Count:<span class="ml-1" id="screendisplay"></span></h6>
+          <div class="card-tools">
+            <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-plus"></i></button>
+          </div>
+      </div>
+      <div class="card-body cardbody1" style="display:none;">
+      </div>
+    </div>
+</section>
+
+<script>
+$(document).ready(function(){
+$(".select2").select2({
+    tags: true
+  });
+  jsarray = JSON.parse(sessionStorage.getItem("jsArray"));
+  document.getElementById('countdisplay').innerHTML = "(" + (jsarray.data).length + ")"
+  $("#tbodyid").empty();
+  $("#examplesearch thead tr").empty()
+  $("#inpid").closest("th").css("display","none")
+  $("#thid").css("display","none")
+  for(let [key,value] of Object.entries(jsarray.data[0]) ){
+    $(`#examplesearch`).find('thead tr').eq(0).append(`<th style="text-align:center;border-bottom:1px solid var(--primary-color);">${key}</th>`)
+    $(`#examplesearch`).find('thead tr').eq(1).append(`<th style="text-align:center;border-bottom:1px solid var(--primary-color);"><input type="text" value="" data-input_value="" style="text-align:center;border-bottom:none;border:1px solid #ced4da;width:190px;"placeholder="Search  ${key} " /></th>`)
+    }
+
+  for (var i = 0; i < jsarray.data.length; i++) {
+        string=`<tr>`
+        for(let [key,value] of Object.entries(jsarray.data[i]) ){
+            string+=`<td style="text-align:center;">${value}</td>`
+        }
+        string+=`</tr>`
+        $(`#examplesearch`).find('tbody').append(string)
+    }
+});
+
+
+
+  $('#examplesearch thead tr').eq(0).clone(true).appendTo('#examplesearch thead');
+  $('#examplesearch thead tr').eq(0).clone().prop('id', 'klon');
+  $('#examplesearch thead tr').eq(0).find('th').eq(0).css('cursor', 'default');
+  $('#examplesearch thead tr').eq(0).find('th').eq(0).css('background-image', 'none');
+  $('#examplesearch thead tr').eq(1).find('th').css('padding', '5px');
+   $('#examplesearch thead tr').eq(1).find('th').each(function (i) {
+    $(this).addClass('dt-center')
+     var title = $(this).text();
+     $(this).html('<input type="text" id="inpid" value="" data-input_value="" style="text-align:center;border-bottom:none;border:1px solid #ced4da;width:190px;"placeholder="Search ' + title + '" />');
+   });
+    var searchtable = $('#examplesearch').DataTable( {
+    "autoWidth": false,
+    "scrollY": 200,
+    "scrollX": 500,
+    "orderable": false,
+    "scrollCollapse": true,
+    "sScrollXInner": "100%",
+    fixedHeader: true,
+    orderCellsTop: true,
+    responsive: true,
+    colReorder: {
+      fixedColumnsLeft: 1
+    },
+    stateSave: true,
+    "deferRender": true,
+    "paging": true,
+    "lengthMenu": [[1, 5, 50, -1], [1, 5, 50, "All"]],
+    stripeClasses: false,
+    "pageLength": 50,
+    dom: 'lfBrtip',
+    buttons: [
+        {
+           extend: 'collection',
+           text: 'Export',
+           buttons: [
+             {
+               extend: 'copy', title: '', exportOptions: {
+                 columns: ':visible:not(.noVis)'
+               }
+             },
+             {
+               extend: 'excel', title: '', exportOptions: {
+                 columns: ':visible:not(.noVis)'
+               }
+             },
+             {
+               extend: 'csv', title: '', exportOptions: {
+                 columns: ':visible:not(.noVis)'
+              }
+             },
+             {
+               extend: 'pdf', title: '', exportOptions: {
+                 columns: ':visible:not(.noVis)'
+               }
+             },
+           ],
+         },
+         {
+           extend: 'colvis',
+           className: "scroller",
+        }
+        ],
+        columnDefs: [
+      {
+        targets: "_all",
+        className: 'dt-center allColumnClass all'
+      },
+      //{ 'visible': false, 'targets': [1,3] }
+    ],
+    } );
+
+</script>
+
+{% endblock %}

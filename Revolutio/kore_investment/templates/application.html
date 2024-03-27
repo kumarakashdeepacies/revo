@@ -1,0 +1,867 @@
+{% extends extend_template %}
+{% load crispy_forms_tags %}
+{% load static %}
+
+{% block body_block %}
+<!-- Bootstrap4 Duallistbox -->
+<link rel="stylesheet" href="{% static 'vendor/Base_theme/bootstrap4-duallistbox/bootstrap-duallistbox.min.css' %}">
+
+<link rel="stylesheet" href="{% static 'css/KoreD/jquery.dataTables.css' %}">
+<link rel="stylesheet" href="{% static 'vendor/Base_theme/datatables-responsive/css/responsive.bootstrap4.min.css' %}">
+<link rel="stylesheet" href="{% static 'vendor/Base_theme/datatables-colreorder/css/colReorder.bootstrap4.min.css' %}">
+<link rel="stylesheet" href="{% static 'css/KoreD/buttons.dataTables.min.css' %}">
+
+<!-- Bootstrap4 Duallistbox -->
+<script src="{% static 'vendor/Base_theme/bootstrap4-duallistbox/jquery.bootstrap-duallistbox.min.js' %}"></script>
+
+<script src="{% static 'vendor/Base_theme/datatables/jquery.dataTables.js' %}"></script>
+<script src="{% static 'vendor/Base_theme/datatables-responsive/js/dataTables.responsive.min.js' %}"></script>
+<script src="{% static 'vendor/Base_theme/datatables-fixedheader/js/dataTables.fixedHeader.min.js' %}"></script>
+<script src="{% static 'vendor/Base_theme/datatables-colreorder/js/dataTables.colReorder.min.js' %}"></script>
+<script src="{%static 'vendor/Base_theme/datatables-bs4/js/dataTables.bootstrap4.js'%}"></script>
+<script src="{%static 'vendor/Base_theme/datatables-buttons/js/buttons.colVis.min.js'%}"></script>
+<script src="{%static 'vendor/Base_theme/datatables-buttons/js/dataTables.buttons.min.js'%}"></script>
+
+<section class="content-header">
+  {% if selected_any_app == 'true' %}
+    <div class="container-fluid">
+      <div class="row mb-2">
+        <div class="col-sm-6">
+          <ol class="breadcrumb float-sm-left">
+            <li class="breadcrumb-item"><a {% if current_application_code != 'App0' %} {% if current_application_code == 'Dev' %} {% if current_dev_mode == 'Edit' %} {% if edit_app_code != 'Not Selected' %} href="{% url 'users:homePage' edit_app_code current_dev_mode %}" {% else %} href="{% url 'users:homePage' 'Dev' current_dev_mode %}" {% endif %} {% elif current_dev_mode == 'Build' %} {% if build_app_code != 'Not Selected' %} href="{% url 'users:homePage' build_app_code current_dev_mode %}" {% else %} href="{% url 'users:select_application' %}"  {% endif %}  {% endif %} {% else %} href="{% url 'users:homePage' current_application_code 'User'%}" {% endif %} {% else %} href="{% url 'users:select_application' %}" {% endif %}>
+              <b> Home </b></a></li>
+            <li class="breadcrumb-item "><b>Application</b></li>
+          </ol>
+        </div>
+        <div class="col-sm-6">
+        </div>
+      </div>
+    </div>
+  {% endif %}
+  <br>
+</section>
+
+
+<section class="content">
+  <div class="container-fluid">
+    <div class="card card-default">
+      <div class="card-header">
+        <h6 class="card-title">Application Management</h6>
+      </div>
+      <div class="card-body">
+        <div class="table-wrap" style="overflow-x:auto;">
+          <table id="Impact2" class="display" style="width:100%;overflow-x: scroll;overflow-y:scroll;">
+            <thead style="border-bottom:1px solid var(--primary-color)">
+              <tr>
+                <th>Application</th>
+                <th>Business Model</th>
+                <th>Status</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="myTable1">
+              {% if current_application_code == 'Dev' %}
+                {% for app in application_bm_data %}
+                  {% if app.application_code == edit_app_code or app.application_code == build_app_code %}
+                  <tr>
+                    <td data-app_code="{{app.application_code}}">{{app.application_name}}</td>
+                    <td data-bm_code="{{app.business_model_codes}}">{{app.business_model_names}}</td>
+                    <td>Existing</td>
+                    <td><i class="far fa-trash-alt ihover javaSC thin-icontrash button_validateAppBM" data-toggle="tooltip" title="Remove Business Model" style="color:var(--primary-color);font-size:15px;padding-left:12px;"></i></td>
+                  </tr>
+                  {% endif %}
+                {% endfor %}
+              {% endif %}
+            </tbody>
+          </table>
+        </div>
+        <br /><br />
+          <div class="row">
+            <div class="col form-group col-md-4">
+              <div id="div_id_app_name" class="form-group">
+                <label for="selectApplicationBM" class=" requiredField">
+                  Application<span class="asteriskField">*</span>
+                </label>
+                <div class="">
+                  {% if system_dev_mode == 'Edit + Build' %}
+                  <input class="form-control" name="applicationList" id='selectApplicationBM' required data-app_code="{{ build_app_code }}" value="" disabled>
+                  {%endif%}
+                  {% if system_dev_mode == 'Edit' %}
+                  <input class="form-control" name="applicationList" id='selectApplicationBM' required data-app_code="{{ edit_app_code }}" value="" disabled>
+                  {%endif%}
+                </div>
+              </div>
+            </div>
+
+            <div class="col form-group col-md-4">
+              <div id="div_id_business_model_name" class="form-group">
+                <label for="selectBusinessModel" class=" requiredField">
+                  Business Model<span class="asteriskField">*</span>
+                </label>
+                <div>
+                  <select class="select2 form-control" name="businessModelList" id='selectBusinessModel' required>
+                    <option value="" disabled selected>Select business model</option>
+                    {% for bm in current_bm_data %}
+                      <option value="{{bm.business_model_code}}">{{bm.business_model_name}}</option>
+                    {% endfor %}
+                  </select>
+                </div>
+              </div>
+              <div><span id ="alertSpanBM" style="display:none;color:red;">Business Model already exists in the application! Please add a new one.</span></div>
+            </div>
+          </div>
+          <div>
+            <button type="button" id="saveBusinessModel" class="btn btn-primary standard_button_click mx-1 px-1" style="float: right;">
+              Save
+            </button>
+            <button type="button" id="backupButton" data-toggle="modal" data-target="#BackupAppOptions" class="btn btn-primary mx-1 px-1" style="float: right;">
+              Backup App
+            </button>
+            <button type="button" id="backupAppLoad" class="btn btn-primary mx-1 px-1 buttonload" style="float: right; display: none;">
+              <i class="fa fa-circle-notch fa-spin"></i>&nbsp;&nbsp;Backing up App...
+            </button>
+            <form method="post" id="downloadBackup" enctype="multipart/form-data" style="display:none; float:right;">
+              {%csrf_token%}
+              <input type="text" id="backupAppCode" hidden name="app_code" value="">
+              <input type="text" hidden name="operation" value="downloadBackup">
+              <button type="submit" class="btn btn-primary mx-1 px-1">
+                Download
+              </button>
+            </form>
+            <form method="post" id="downloadBackupData" enctype="multipart/form-data" style="display:none; float:right;">
+              {%csrf_token%}
+              <input type="text" id="backupAppDataCode" hidden name="app_code" value="">
+              <input type="text" hidden name="operation" value="downloadBackupData">
+              <button type="submit" class="btn btn-primary mx-1 px-1">
+                Download Data
+              </button>
+            </form>
+            <form method="post" id="downloadCustomizedData" enctype="multipart/form-data" style="display:none; float:right;">
+              {%csrf_token%}
+              <input type="text" id="downloadCustomizedDataCode" hidden name="app_code" value="">
+              <input type="text" hidden name="operation" value="downloadCustomizedData">
+              <button type="submit" class="btn btn-primary mx-1 px-1">
+                Download Custom HTMLs
+              </button>
+            </form>
+            <button type="button" id="cloneApp" class="btn btn-primary mx-1 px-1" data-toggle="modal" data-target="#cloneAppModal1" aria-expanded="false" aria-controls="cloneAppModal1" style="float: right;">
+              Move/ Clone App
+            </button>
+            <button type="button" id="updateApp" class="btn btn-primary mx-1 px-1" data-toggle="modal" data-target="#updateAppModal1" aria-expanded="false" aria-controls="updateAppModal1" style="float: right;">
+              Update App
+            </button>
+          </div>
+      </div>
+    </div>
+
+    <div class="modal" id="BackupAppOptions">
+      <div class="modal-dialog modal-md modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h6 class="modal-title">Backup App</h6>
+            <button type="button" class="close" data-dismiss="modal">&times;</button>
+          </div>
+          <div class="modal-body">
+            <div class="row">
+              <div class="col-10">
+                <label for="app_config_backup">App Config</label>
+              </div>
+              <div class="col-2">
+                <div class="d-flex">
+                  <div class="switch-container">
+                    <input class="float-right switch" type="checkbox" id="app_config_backup" style="margin-right: 20rem;"
+                        name="app_config_backup" value="app_config_backup" required checked disabled>
+                    <div class="switch-color"><label class="trigger-label" for="app_config_backup"></label></div>
+                    <label class="switch-label" for="app_config_backup"></label>
+                  </div>
+                </div>
+              </div>
+              <div class="col-10">
+                <label for="app_permission_backup">User-groups and Permissions Config</label>
+              </div>
+              <div class="col-2">
+                <div class="d-flex">
+                  <div class="switch-container">
+                    <input class="float-right switch" type="checkbox" id="app_permission_backup" style="margin-right: 20rem;"
+                        name="app_permission_backup" value="app_permission_backup" required>
+                    <div class="switch-color"><label class="trigger-label" for="app_permission_backup"></label></div>
+                    <label class="switch-label" for="app_permission_backup"></label>
+                  </div>
+                </div>
+              </div>
+              <div class="col-12 row" id="additionalInfoPermissionBackupCont" style="display: none;">
+                <div class="col-10">
+                  <label for="additionalInfoPermissionBackup">Replace permissions in the destination? (Default: Append)</label>
+                </div>
+                <div class="col-2">
+                  <div class="d-flex">
+                    <div class="switch-container">
+                      <input class="float-right switch" type="checkbox" id="additionalInfoPermissionBackup" style="margin-right: 20rem;"
+                          name="additionalInfoPermissionBackup" value="additionalInfoPermissionBackup" required>
+                      <div class="switch-color"><label class="trigger-label" for="additionalInfoPermissionBackup"></label></div>
+                      <label class="switch-label" for="additionalInfoPermissionBackup"></label>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-10">
+                <label for="dataBackup">App Data</label>
+              </div>
+              <div class="col-2">
+                <div class="d-flex">
+                  <div class="switch-container">
+                    <input class="float-right switch" type="checkbox" id="dataBackup" style="margin-right: 20rem;"
+                        name="dataBackup" value="dataBackup" required>
+                    <div class="switch-color"><label class="trigger-label" for="dataBackup"></label></div>
+                    <label class="switch-label" for="dataBackup"></label>
+                  </div>
+                </div>
+              </div>
+              <div class="col-10">
+                <label for="homepageBackup">Custom HTMLs</label>
+              </div>
+              <div class="col-2">
+                <div class="d-flex">
+                  <div class="switch-container">
+                    <input class="float-right switch" type="checkbox" id="homepageBackup" style="margin-right: 20rem;"
+                        name="homepageBackup" value="homepageBackup" required>
+                    <div class="switch-color"><label class="trigger-label" for="homepageBackup"></label></div>
+                    <label class="switch-label" for="homepageBackup"></label>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-primary mx-2 rounded px-2" data-dismiss="modal">Close</button>
+            <button type="button" class="btn btn-primary mx-2 rounded px-2" id="backupApp">Backup App</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal" id="cloneAppModal1">
+      <div class="modal-dialog modal-md modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h6 class="modal-title">Move/ Clone Application</h6>
+            <button type="button" class="close" data-dismiss="modal">&times;</button>
+          </div>
+          <div class="modal-body">
+            <div class="row">
+              <div class="col-7 form-group">
+                <label for="selectUpdateCloneOption" class="requiredField">
+                  Move/ Clone application <span class="asteriskField">*</span>
+                </label>
+                <select class="select2 form-control" name="selectUpdateCloneOption" id='selectUpdateCloneOption' required>
+                  <option value="updateDatabase">Move app to another database</option>
+                  <option value="cloneApp">Clone app in another database</option>
+                </select>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-6 form-group">
+                <label for="selectCloneOption" class="requiredField">
+                  Select config option<span class="asteriskField">*</span>
+                </label>
+                <select class="select2 form-control" name="selectCloneOption" id='selectCloneOption' required>
+                  <option value="appConfigOnly" selected>App config</option>
+                  <option value="appConfigWithData">App config + Data</option>
+                </select>
+              </div>
+              <div class="col-6 form-group">
+                <label for="selectCloneDB" class="requiredField">
+                  Select database<span class="asteriskField">*</span>
+                </label>
+                <select class="select2 form-control" name="selectCloneDB" id='selectCloneDB' required>
+                  <option value="" disabled selected>Select database</option>
+                    {% for j in db_connection_list %}
+                      <option value="{{j}}">{{j}}</option>
+                    {% endfor %}
+                </select>
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-primary mx-2 rounded px-2" id="cloneApplication">Save</button>
+            <button class="btn btn-primary mx-2 rounded px-2" id="loadcloneApplication" style="display:none">
+              <i class="fa fa-circle-notch fa-spin"></i>&nbsp;&nbsp;Loading...
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal" id="updateAppModal1">
+      <div class="modal-dialog modal-md modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h6 class="modal-title">Update Application</h6>
+            <button type="button" class="close" data-dismiss="modal">&times;</button>
+          </div>
+          <div class="modal-body">
+            <form id="updateAppConfigForm">
+              <div class="row">
+                <div class="custom-file form-group">
+                  <input type="file" class="custom-file-input" id="updateBackupFile" accept=".json" name="updateBackupFile">
+                  <label id="updateBackupFile" class="custom-file-label" for="updateBackupFile">Select app backup file</label>
+                </div>
+              </div>
+              <br>
+              <div class="row">
+                <div class="custom-file form-group">
+                  <input type="file" class="custom-file-input" id="updateBackupCustomHTMLFile" accept=".zip" name="updateBackupCustomHTMLFile">
+                  <label id="updateBackupCustomHTMLFileLabel" class="custom-file-label" for="updateBackupCustomHTMLFile">Select app customized screen's package</label>
+                </div>
+              </div>
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-primary mx-2 rounded px-2" id="updateApplicationDependency">Save</button>
+            <button class="btn btn-primary mx-2 rounded px-2" id="loadUpdateApplicationDependency" style="display:none">
+              <i class="fa fa-circle-notch fa-spin"></i>&nbsp;&nbsp;Loading...
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal" id="updateAppDependencyModal">
+      <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h6 class="modal-title">Update Application Dependency</h6>
+            <button type="button" class="close" data-dismiss="modal">&times;</button>
+          </div>
+          <div class="modal-body">
+            <p id="updateApplicationMessage"></p>
+            <table id="updateAppDependencyTable">
+              <thead>
+                <tr>
+
+                </tr>
+              </thead>
+              <tbody>
+
+              </tbody>
+            </table>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-primary mx-2 rounded px-2" id="confirmUpdateApplicationDependency">Confirm</button>
+            <button class="btn btn-primary mx-2 rounded px-2" id="loadConfirmUpdateApplicationDependency" style="display:none">
+              <i class="fa fa-circle-notch fa-spin"></i>&nbsp;&nbsp;Loading...
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- bm description modal -->
+    <div class="modal" id="bmDescModal">
+      <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h6 class="modal-title" id="modalTitle"></h6>
+            <button type="button" class="close" data-dismiss="modal">&times;</button>
+          </div>
+          <div class="modal-body">
+              <div class="row">
+                <div class="col-12">
+                  <div class="card" >
+                    <div class="card-header">
+                      <h6 class="card-title" style="color:var(--primary-color)">Business Model Description</h6>
+                    </div>
+                    <div class="card-body" id="bmDescCard"></div>
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-4">
+                  <div class="card">
+                    <div class="card-header">
+                      <h6 class="card-title" style="color:var(--primary-color)">Process</h6>
+                    </div>
+                    <div class="card-body" id="bmProcessCard"></div>
+                  </div>
+                </div>
+                <div class="col-4">
+                  <div class="card">
+                    <div class="card-header">
+                      <h6 class="card-title" style="color:var(--primary-color)">Computation Models</h6>
+                    </div>
+                    <div class="card-body" id="bmComputationCard"></div>
+                  </div>
+                </div>
+                <div class="col-4">
+                  <div class="card">
+                    <div class="card-header">
+                      <h6 class="card-title" style="color:var(--primary-color)">Data Tables</h6>
+                    </div>
+                    <div class="card-body" id="bmDataCard"></div>
+                  </div>
+                </div>
+              </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-primary mx-2 rounded px-2" data-dismiss="modal">Close</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  $(document).ready(function(){
+    $(this).find("select").each(function(){
+      parent = $(this).parent()
+      $(this).select2({dropdownParent:parent})
+    });
+    $('#selectBusinessModel').select2({dropdownParent:$('#selectBusinessModel').parent()})
+  });
+
+  var appList = {{applications | safe}};
+  var current_build_app_code = "{{build_app_code}}";
+  var current_edit_app_code = "{{edit_app_code}}"
+  for (const i of appList) {
+    if (i.application_code === current_build_app_code){
+      $("#selectApplicationBM").val(i.application_name).trigger('change');
+    }else if(i.application_code === current_edit_app_code){
+      $("#selectApplicationBM").val(i.application_name).trigger('change');
+    }
+  }
+
+  $('.button_validateApp').each(function () {
+    $(this).on('click', deleteApp);
+  });
+
+  function deleteApp() {
+    let appRow = $(this).closest("tr");
+    let status = $(this).closest("tr").find("td").eq(1).text();
+    if (status === "New") {
+      appRow.remove();
+    } else {
+      let appName = $(this).closest("tr").find("td").eq(0).text();
+      let appCode = $(this).closest("tr").find("td").eq(0).attr("data-app_code");
+      $.ajax({
+        url: `/users/Create_new/Dev/application/`,
+        data: {
+          'applicationName': appName,
+          'applicationCode': appCode,
+          'operation': 'deleteApplication',
+        },
+        type: "POST",
+        dataType: "json",
+        success: function (data) {
+          appRow.remove();
+          Swal.fire({text:"Application deleted successfully!",icon:"success"});
+          location.reload();
+        },
+        error: function () {
+          Swal.fire({text:'Error! Failure in deleting the selected application. Please try again.',icon:"error"})
+        }
+      });
+    };
+  };
+
+  $('.button_validateAppBM').each(function () {
+    $(this).on('click', deleteAppBM);
+  });
+
+  function deleteAppBM() {
+    let appRow = $(this).closest("tr");
+    let status = $(this).closest("tr").find("td").eq(2).text();
+    if (status === "New") {
+      appRow.remove();
+    } else {
+      let appName = $(this).closest("tr").find("td").eq(0).text();
+      let appCode = $(this).closest("tr").find("td").eq(0).attr("data-app_code");
+      let businessMName = $(this).closest("tr").find("td").eq(1).text();
+      let businessMCode = $(this).closest("tr").find("td").eq(1).attr("data-bm_code");
+      $.ajax({
+        url: window.location.pathname,
+        data: {
+          'applicationName': appName,
+          'applicationCode': appCode,
+          'businessMName': businessMName,
+          'businessMCode': businessMCode,
+          'operation': 'deleteAppBM',
+        },
+        type: "POST",
+        dataType: "json",
+        success: function (data) {
+          appRow.remove();
+          Swal.fire({text:"Business model successfully removed!",icon:"success"});
+          location.reload();
+        },
+        error: function () {
+          Swal.fire({text:'Error! Failure in removing selected Business model. Please try again.',icon:"error"})
+        }
+      });
+    };
+  };
+
+
+
+// Add Applications
+$('#applicationName').on('change', function(){
+    var applicationName = ($("#applicationName").val());
+    var applicationDesc = ($("#applicationDesc").val());
+    var newRow, i;
+    var newvar = applicationName;
+    var check = [];
+    var bool = false;
+    $("#selectApplicationBM").val("").trigger('change');
+  // if(applicationName != "" && applicationDesc != "") {
+    var appList = {{applications | safe}};
+    for (const i of appList) {
+      check.push(i.application_name);
+    }
+
+    for (i = 0; i < check.length; i++) {
+      if((newvar) == check[i]) {
+        $('#alertSpanApp').css("display","block");
+        $('#alertSpanApp').css("margin-bottom","1em");
+        $('#div_id_application_name').css("margin-bottom","0em");
+        $('#saveNewApplication').attr("disabled","");
+        bool = true;
+        $('#applicationName').on('keydown', function(event) {
+          const key = event.key;
+          if (key === "Backspace" || key === "Delete") {
+            $('#alertSpanApp').css("display","none");
+            $('#div_id_application_name').css("margin-bottom","1em");
+            $('#saveNewApplication').prop('disabled',false);
+          };
+        });
+        $('#applicationName').keypress(function(){
+          $('#alertSpanApp').css("display","none");
+          $('#div_id_application_name').css("margin-bottom","1em");
+          $('#saveNewApplication').prop('disabled',false);
+        });
+      };
+    };
+    if(bool == false){
+      $("#selectApplicationBM").val(applicationName);
+    }
+    $('#saveNewApplication').prop('disabled',false);
+
+  });
+
+  // Save business model in the Application table
+  $('#saveBusinessModel').on('click', function(){
+    var application_name = $('#selectApplicationBM').val();
+    var application_code = $('#selectApplicationBM').attr('data-app_code');
+    var business_model_name = $('#selectBusinessModel option:selected').html();
+    var business_model_code = $('#selectBusinessModel option:selected').val();
+
+    $.ajax({
+      url: window.location.pathname,
+      data: {
+        'application_name': application_name,
+        'application_code': application_code,
+        'business_model_name': business_model_name,
+        'business_model_code': business_model_code,
+        'operation': 'addAppBM',
+      },
+      type: "POST",
+      dataType: "json",
+      success: function (data) {
+        Swal.fire({text:"Business model added to the application successfully!",icon:"success"});
+        location.reload();
+      },
+      error: function () {
+        Swal.fire({text:'Error! Failure in adding business model to the application. Please try again.',icon:"error"})
+      }
+    });
+  });
+
+  $('#selectBusinessModel').on('select2:select', function(){
+    var business_model_name = $('#selectBusinessModel option:selected').html()
+    var business_model_code = $(this).val();
+    $.ajax({
+      url: window.location.pathname,
+      data: {
+        'business_model_name': business_model_name,
+        'business_model_code': business_model_code,
+        'operation': 'fetchBMDetails',
+      },
+      type: "POST",
+      dataType: "json",
+      success: function (data) {
+        let desc = data.desc;
+        let process = data.process;
+        let computation = data.computation;
+        let table = data.table;
+        $('#modalTitle').text(business_model_name);
+
+        $('#bmDescCard').text(desc);
+        for (let i = 0; i < process.length; i++) {
+          const element = process[i];
+          $('#bmProcessCard').append(`<button type="button" class="btn btn-primary mx-1 my-1 rounded">${element}</button>`)
+        }
+        for (let i = 0; i < computation.length; i++) {
+          const element = computation[i];
+          $('#bmComputationCard').append(`<button type="button" class="btn btn-primary mx-1 my-1 rounded">${element}</button>`)
+        }
+        for (let i = 0; i < table.length; i++) {
+          const element = table[i];
+          $('#bmDataCard').append(`<button type="button" class="btn btn-primary mx-1 my-1 rounded">${element}</button>`)
+        }
+        $('#bmDescModal').modal("show");
+      },
+      error: function () {
+        Swal.fire({text:'Error fetching details of the business model.',icon:"error"})
+      }
+    });
+  });
+
+  $("#app_permission_backup").on('change', function(){
+    if ($(this).prop('checked')) {
+      $("#additionalInfoPermissionBackupCont").css('display', '');
+    } else {
+      $("#additionalInfoPermissionBackupCont").css('display', 'none');
+      $("#additionalInfoPermissionBackup").prop('checked', false)
+    }
+  })
+
+
+  $("#backupApp").on('click', function() {
+    var dataBackup, homepageBackup = null
+
+    $("#BackupAppOptions").modal('hide');
+
+    dataBackup = $("#dataBackup").prop("checked")
+    homepageBackup = $("#homepageBackup").prop("checked")
+    let permissionsBackup = $("#app_permission_backup").prop("checked");
+    let permissionMigrationOption = "append";
+    if (permissionsBackup && $("#additionalInfoPermissionBackup").prop("checked")) {
+      permissionMigrationOption = "replace";
+    }
+
+    $("#downloadBackup").css("display", "none");
+    $("#downloadBackupData").css("display", "none");
+    $("#downloadCustomizedData").css("display", "none");
+    $("#backupButton").css("display", "none");
+    $("#backupAppLoad").css("display", "inline-block");
+    $.ajax({
+      url: window.location.pathname,
+      data: {
+          'operation': 'backupApp',
+          'dataBackup': dataBackup,
+          'homepageBackup' : homepageBackup,
+          'permissionsBackup' : permissionsBackup,
+          'permissionMigrationOption': permissionMigrationOption,
+          'app_code': $("#selectApplicationBM").attr("data-app_code"),
+      },
+      type: "POST",
+      dataType: "json",
+      success: function (context) {
+        $("#backupAppCode").val($("#selectApplicationBM").attr("data-app_code"));
+        $("#backupAppDataCode").val($("#selectApplicationBM").attr("data-app_code"));
+        $("#downloadCustomizedDataCode").val($("#selectApplicationBM").attr("data-app_code"));
+        $("#backupButton").css("display", "inline-block");
+        $("#backupAppLoad").css("display", "none");
+        if (dataBackup) {
+          if (Object.keys(context).includes("foreign_key_tables")) {
+            if (context.foreign_key_tables.length > 0) {
+              var foreign_key_tables = context.foreign_key_tables;
+              var fKArray = JSON.stringify(foreign_key_tables);
+              Swal.fire({text:`${fKArray} tables have foreign key relationships defined. Please take the backup of these tables in an excel file.`,icon:"info"});
+            }
+          }
+        };
+        Swal.fire({text:"Backup of the application successfully created! Please click on the Download button to download the backup.",icon:"success"})
+        $("#downloadBackup").css("display", "inline-block");
+        if (dataBackup) {
+          $("#downloadBackupData").css("display", "inline-block");
+        }
+        if(homepageBackup){
+          $("#downloadCustomizedData").css("display", "inline-block");
+        }
+      },
+      error: function () {
+        $("#backupButton").css("display", "inline-block");
+        $("#backupAppLoad").css("display", "none");
+        $("#downloadBackup").css("display", "none");
+        $("#downloadBackupData").css("display", "none");
+        Swal.fire({text:"Error! Failure while backing up the application. Please try again.",icon:"error"});
+      }
+    });
+  });
+
+  // Save business model in the Application table
+  $('#cloneApplication').on('click', function(){
+    $(this).css("display", "none");
+    $("#loadcloneApplication").css("display", "inline-block");
+    var application_code = $('#selectApplicationBM').attr('data-app_code');
+    var appCloneOption = $('#selectCloneOption').val();
+    var cloneDBConnectionName = $('#selectCloneDB').val();
+    var updateCloneOption = $('#selectUpdateCloneOption').val();
+    $.ajax({
+      url: window.location.pathname,
+      data: {
+        'application_code': application_code,
+        'appCloneOption': appCloneOption,
+        'cloneDBConnectionName': cloneDBConnectionName,
+        'updateCloneOption': updateCloneOption,
+        'operation': 'cloneApplication',
+      },
+      type: "POST",
+      dataType: "json",
+      success: function (data) {
+        $(this).css("display", "inline-block");
+        $("#loadcloneApplication").css("display", "none");
+        if (dataBackup) {
+          if (Object.keys(context).includes("foreign_key_tables")) {
+            if (context.foreign_key_tables.length > 0) {
+              var foreign_key_tables = context.foreign_key_tables;
+              var fKArray = JSON.stringify(foreign_key_tables);
+              Swal.fire({text:`${fKArray} tables have foreign key relationships defined. Please take the backup of these tables in an excel file.`,icon:"info"});
+            }
+          }
+        };
+        Swal.fire({text:data.response,icon:"success"})
+        location.reload();
+      },
+      error: function () {
+        $(this).css("display", "inline-block");
+        $("#loadcloneApplication").css("display", "none");
+        Swal.fire({text:"Error! Failure while updating/ cloning the applciation. Please try again.",icon:"error"})
+      }
+    });
+  });
+
+  // Save business model in the Application table
+  $('#updateApplicationDependency').on('click', function(){
+    let formData = new FormData($("#updateAppConfigForm")[0]);
+    $('#updateApplicationDependency').css("display", "none");
+    $("#loadUpdateApplicationDependency").css("display", "inline-block");
+    formData.append("operation", "updateApplicationConfigChecker");
+    $.ajax({
+      url: window.location.pathname,
+      data: formData,
+      type: 'POST',
+      cache: false,
+      contentType: false,
+      processData: false,
+      success: function (data) {
+        $('#updateApplicationDependency').css("display", "inline-block");
+        $("#loadUpdateApplicationDependency").css("display", "none");
+
+        $('#updateAppDependencyTable').find('tbody').empty();
+        $('#updateAppDependencyTable').find('thead tr').eq(0).empty();
+        if (data.response != 'Incorrect backup file selected!') {
+          if (data.app_change && (data.app_change.length > 0)) {
+            $('#updateAppDependencyTable').css('display', 'block');
+            $('#updateApplicationMessage').css('display', 'none');
+            for (var i = 0; i < data.app_change.length; i++) {
+              string=`<tr>`
+              for(let [key,value] of Object.entries(data.app_change[i]) ){
+                string+=`<td>${value}</td>`
+              }
+              string+=`</tr>`
+              $('#updateAppDependencyTable').find('tbody').append(string)
+            }
+            for(let [key,value] of Object.entries(data.app_change[0]) ){
+              $(`#updateAppDependencyTable`).find('thead tr').eq(0).append(`<th>${key}</th>`)
+            }
+            if (data.authenticate == false) {
+              $('#confirmUpdateApplicationDependency').prop('disabled', true);
+              Swal.fire({text:"Updating this application will impact other applications! You do not have the administrator access of impacted applications.",icon:"warning"})
+            }
+          } else {
+            $('#updateAppDependencyTable').css('display', 'none');
+            $('#updateApplicationMessage').text('No dependency on other applications detected for the components removed in this version.')
+          }
+          $('#updateAppDependencyModal').modal('show');
+          let depTable = $('#updateAppDependencyTable').DataTable( {
+            "autoWidth": true,
+            "scrollY": "25vh",
+            "scrollCollapse": true,
+            orderCellsTop: true,
+            responsive: true,
+            "deferRender": true,
+            "paging": true,
+            "searching": true,
+            "info": true,
+            "lengthMenu": [[1, 5, 50, -1], [1, 5, 50, "All"]],
+            "stripeClasses": false,
+            "pageLength": 50,
+            dom: 'lfBrtip',
+            buttons: [
+                  {
+                      extend: 'collection',
+                      text: 'Export',
+                      buttons: [
+                      {
+                          extend: 'copy', title: '', exportOptions: {
+                          }
+                      },
+                      {
+                          extend: 'excel', title: '', exportOptions: {
+                          }
+                      },
+                      {
+                          extend: 'csv', title: '', exportOptions: {
+                          }
+                      },
+                      {
+                          extend: 'pdf', title: '', exportOptions: {
+                          }
+                      },
+                      ],
+                  },
+                ],
+                columnDefs: [
+                {
+                    targets: "_all",
+                    className: 'dt-center allColumnClass all'
+                },
+                {
+                    targets: 0,
+                    width: "20%",
+                    className: 'noVis'
+                }
+            ],
+          });
+        } else {
+          Swal.fire({text:data.response,icon:"success"});
+        }
+      },
+      error: function () {
+        $('#updateApplicationDependency').css("display", "inline-block");
+        $("#loadUpdateApplicationDependency").css("display", "none");
+        Swal.fire({text:"Error in checking dependencies in other applications. Please try again",icon:"error"});
+      }
+    });
+  });
+
+  $('#confirmUpdateApplicationDependency').on('click', function(){
+    $('#confirmUpdateApplicationDependency').css("display", "none");
+    $("#loadConfirmUpdateApplicationDependency").css("display", "inline-block");
+    let formData = new FormData($("#updateAppConfigForm")[0]);
+    formData.append("operation", "updateApplicationBackup");
+    $.ajax({
+      url: window.location.pathname,
+      data: formData,
+      type: 'POST',
+      cache: false,
+      contentType: false,
+      processData: false,
+      success: function (data) {
+        $('#confirmUpdateApplicationDependency').css("display", "inline-block");
+        $("#loadConfirmUpdateApplicationDependency").css("display", "none");
+        Swal.fire({text:data.response,icon:"success"})
+        location.reload();
+      },
+      error: function () {
+        $('#confirmUpdateApplicationDependency').css("display", "inline-block");
+        $("#loadConfirmUpdateApplicationDependency").css("display", "none");
+        Swal.fire({text:"Error updating the application. Please try again.",icon:"error"})
+      }
+    });
+  });
+</script>
+
+
+{% endblock %}

@@ -1,0 +1,42 @@
+trigger:
+- development
+resources:
+- repo: self
+variables:
+  tag: 'revolutio:$(Build.BuildId)'
+  COMPOSE_DOCKER_CLI_BUILD: 1
+  DOCKER_BUILDKIT: 1
+  azureSubscriptionEndpoint: revolutio-acr-connection
+stages:
+- stage: Build
+  displayName: Build and Push image
+  jobs:
+   - job: Build
+     displayName: Build and Push
+     pool:
+        vmImage: 'ubuntu-latest'
+
+     steps:
+
+     - task: DockerCompose@0
+       displayName: Build services
+       inputs:
+         action: Build services
+         azureSubscriptionEndpoint: $(azureSubscriptionEndpoint)
+         azureContainerRegistry: revolutiodev.azurecr.io
+         dockerComposeFile: docker-compose-kubernetes-local.yml
+         projectName: $(Build.Repository.Name)
+         qualifyImageNames: true
+         additionalImageTags: $(Build.BuildId)
+
+     - task: DockerCompose@0
+       displayName: Push services
+       inputs:
+         action: Push services
+         containerregistrytype: Azure Container Registry
+         azureSubscriptionEndpoint: $(azureSubscriptionEndpoint)
+         azureContainerRegistry: revolutiodev.azurecr.io
+         dockerComposeFile: docker-compose-kubernetes-local.yml
+         projectName: $(Build.Repository.Name)
+         qualifyImageNames: true
+         additionalImageTags: $(Build.BuildId)

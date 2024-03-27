@@ -1,0 +1,988 @@
+{% extends extend_template %}
+{% load crispy_forms_tags %}
+{% load static %}
+
+{% block body_block %}
+<link rel="stylesheet" href="{% static 'css/KoreD/jquery.dataTables.css' %}">
+<link rel="stylesheet" href="{% static 'vendor/Base_theme/datatables-responsive/css/responsive.bootstrap4.min.css' %}">
+<link rel="stylesheet" href="{% static 'vendor/Base_theme/datatables-colreorder/css/colReorder.bootstrap4.min.css' %}">
+<link rel="stylesheet" href="{% static 'css/KoreD/buttons.dataTables.min.css' %}">
+
+<!-- DataTables -->
+<script src="{% static 'vendor/Base_theme/datatables/jquery.dataTables.js' %}"></script>
+<script src="{% static 'vendor/Base_theme/datatables-responsive/js/dataTables.responsive.min.js' %}"></script>
+<script src="{% static 'vendor/Base_theme/datatables-fixedheader/js/dataTables.fixedHeader.min.js' %}"></script>
+<script src="{% static 'vendor/Base_theme/datatables-colreorder/js/dataTables.colReorder.min.js' %}"></script>
+<script src="{%static 'vendor/Base_theme/datatables-bs4/js/dataTables.bootstrap4.js'%}"></script>
+
+<script src="{%static 'vendor/Base_theme/datatables-buttons/js/dataTables.buttons.min.js'%}"></script>
+<script src="{%static 'vendor/Base_theme/jszip/jszip.min.js'%}"></script>
+<script src="{%static 'vendor/Base_theme/pdfmake/pdfmake.min.js'%}"></script>
+<script src="{%static 'vendor/Base_theme/pdfmake/vfs_fonts.js'%}"></script>
+<script src="{%static 'vendor/Base_theme/datatables-buttons/js/buttons.html5.min.js'%}"></script>
+<script src="{%static 'vendor/Base_theme/datatables-buttons/js/buttons.colVis.min.js'%}"></script>
+<script src="{%static 'vendor/Base_theme/datatables-buttons/js/buttons.print.min.js'%}"></script>
+<script src="{%static 'vendor/Base_theme/datatables-buttons/js/buttons.print.js'%}"></script>
+<script src="{%static 'vendor/Base_theme/datatables-buttons/js/buttons.flash.min.js'%}"></script>
+<script src="https://cdn.datatables.net/1.10.22/js/jquery.dataTables.min.js"></script>
+<link href="https://cdn.datatables.net/1.10.22/css/jquery.dataTables.min.css" rel="stylesheet">
+
+<style>
+
+
+  .tab-content{
+    width: 100%;
+    height: 100%;
+    background-color: #fff;
+    border-color: #dee2e6 #dee2e6 #fff
+  }
+  .header-level {
+  cursor: pointer;
+  padding: 18px;
+  width: 100%;
+  border: none;
+  text-align: left;
+  outline: none;
+  transition: 0.4s;
+}
+
+.header-level:hover {
+  background-color: rgb(213, 213, 213);
+}
+
+
+
+ ._table {
+    display:none;
+  }
+
+   .accordion {
+    background-color: #eee;
+    color: rgb(0, 0, 0);
+    cursor: pointer;
+    padding-top: 18px;
+    font-weight:bold;
+    padding-bottom:18px;
+    border: none;
+    text-align: left;
+    outline: none;
+    font-size: 15px;
+    transition: 0.4s;
+  }
+
+  .active{
+    background-color: white;
+  }
+  .active1, .accordion:hover {
+   background-color: rgb(229, 227, 227);
+    cursor: pointer;
+  }
+
+  .panel {
+    padding: 0 18px;
+    background-color: white;
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.2s ease-out;
+  }
+  .dot {
+    height: 10px;
+    width: 10px;
+    background-color: red;
+    border-radius: 100%;
+    display: inline-block;
+  }
+
+  #icon{
+    display:flex;
+    flex-direction: row;
+    justify-content: space-between;
+  }
+
+ .modal {
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+  .fade{
+    transition: opacity .15s linear;
+    transition-property: opacity;
+    transition-duration: 0.15s;
+    transition-timing-function: linear;
+    transition-delay: 0s;
+  }
+  .panel1 {
+    padding: 0 18px;
+    background-color: white;
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.2s ease-out;
+  }
+   .accordion2:hover {
+    background-color: rgb(229, 227, 227);
+    cursor: pointer;
+  }
+
+  /* The actual popup */
+.popup .popuptext {
+  visibility: hidden;
+  width: 90%;
+  background-color: #898888;
+  color: #fff;
+  text-align: center;
+  border-radius: 6px;
+  padding: 8px 0;
+  position: absolute;
+  z-index: 1;
+  bottom: -46%;
+  left: 82%;
+  margin-left: -80px;
+}
+
+/* Popup arrow */
+.popup .popuptext::after {
+  content: "";
+  rotate: 90deg;
+  position: absolute;
+  top: 39%;
+  left: -2%;
+  margin-left: -5px;
+  border-width: 5px;
+  border-style: solid;
+  border-color: #898888 transparent transparent transparent;
+}
+
+/* Toggle this class - hide and show the popup */
+.popup .show {
+  visibility: visible;
+  -webkit-animation: fadeIn 1s;
+  animation: fadeIn 1s;
+}
+
+/* Add animation (fade in the popup) */
+@-webkit-keyframes fadeIn {
+  from {opacity: 0;}
+  to {opacity: 1;}
+}
+
+@keyframes fadeIn {
+  from {opacity: 0;}
+  to {opacity:1 ;}
+}
+
+</style>
+
+<section class="content-header">
+  <div class="container-fluid">
+    <div class="row mb-2">
+      <div class="col-sm-6">
+        <ol class="breadcrumb float-sm-left">
+          <li class="breadcrumb-item"><a {% if current_application_code != 'App0' %} {% if current_application_code == 'Dev' %} {% if current_dev_mode == 'Edit' %} {% if edit_app_code != 'Not Selected' %} href="{% url 'users:homePage' edit_app_code current_dev_mode %}" {% else %} href="{% url 'users:homePage' 'Dev' current_dev_mode %}" {% endif %} {% elif current_dev_mode == 'Build' %} {% if build_process_type != 'Not Selected' %} href="{% url 'users:homePage' build_process_type current_dev_mode %}" {% else %} href="{% url 'users:homePage' 'Dev' current_dev_mode %}" {% endif %} {% endif %} {% else %} href="{% url 'users:homePage' current_application_code 'User' %}" {% endif %} {% else %} href="{% url 'users:select_application' %}" {% endif %}>
+            <b> Home </b></a></li>
+          <li class="breadcrumb-item "><b>Scheduler</b></li>
+          <li class="breadcrumb-item "><b>Job Execution</b></li>
+        </ol>
+      </div>
+      <div class="col-sm-6">
+      </div>
+    </div>
+  </div>
+</section>
+<ul class="nav nav-tabs nav-fill" id="myTab" role="tablist">
+
+  <li class="nav-item">
+    <a class="nav-link active l3items" id="create_view-tab" data-toggle="tab" href="#create_view_tab_content" role="tab" aria-controls="create_view" aria-selected="true">View Scheduled Job</a>
+  </li>
+
+
+</ul>
+<section class="content">
+  <form>{% csrf_token %}</form>
+    <div class="container-fluid">
+      <div class="tab-content" id="myTabContent">
+
+        <div class="tab-pane fade show active table-responsive container_main" id="create_view_tab_content" role="tabpanel" aria-labelledby="list_view-tab" style="padding: 5px;height: 80vh;">
+          <!-- Modal -->
+          <div class="modal fade" id="edit_model" tabindex="-1" role="dialog" aria-labelledby="edit_modal_view"
+            aria-hidden="true">
+            <div class="modal-dialog modal-xl modal-dialog-centered" role="document" id="modal_content_edit">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title" id="exampleModalLongTitle">config scheduler</h5>
+                  <button type="button" class="close" data-dismiss="modal" aria-label="Close" id="edit_close">
+                    <span aria-hidden="true">&times;</span>
+                  </button>
+                </div>
+                <div class="modal-body">
+                  <div class="row" id="intervalExecutionDetailsContainer" style="display:none;">
+                    <div class="form-group col-3">
+                      <label for="schedulerIntervalStartDate">Start Date:</label>
+                      <div class="input-group date">
+                        <input type="date" class="form-control" name="schedulerIntervalStartDate" id="schedulerIntervalStartDate"
+                          placeholder="DD-MM-YYYY">
+                      </div>
+                    </div>
+                    <div class="form-group col-3">
+                      <label for="schedulerIntervalEndDate">End Date:</label>
+                      <div class="input-group date">
+                        <input type="date" class="form-control" name="schedulerIntervalEndDate" id="schedulerIntervalEndDate"
+                          placeholder="DD-MM-YYYY">
+                      </div>
+                    </div>
+                    <div class="form-group col-6">
+                      <label for="selectSchedulerIntervalPeriodicity">Period of Execution:</label>
+                      <select class="select2 form-control" name="selectSchedulerIntervalPeriodicity"
+                        id="selectSchedulerIntervalPeriodicity" >
+                        <option value="" selected>Select Period</option>
+                        <option value="Daily">Daily</option>
+                        <option value="Weekly">Weekly</option>
+                        <option value="Monthly">Monthly</option>
+                        <option value="Monthly/5th day">Monthly/5th day</option>
+                        <option value="Quarterly">Quarterly</option>
+                        <option value="Pre-Quarterly">Pre-Quarterly</option>
+                        <option value="Yearly">Yearly</option>
+                      </select>
+                    </div>
+                    <div class="form-group col-3">
+                      <label for="selectFlowSchedulerIntervalTime">Time of Execution:</label>
+                      <div class="input-group date">
+                        <input type="time" class="form-control" name="selectFlowSchedulerIntervalTime" id="selectFlowSchedulerIntervalTime"
+                          placeholder="HH:MM">
+                      </div>
+                    </div>
+
+                  </div>
+                  </div>
+                  <div class="modal-footer">
+                    <button id="editProcessSchedulerConfig" class="btn btn-primary float-right">Schedule</button>
+                  </div>
+                </div>
+
+            </div>
+          </div>
+          <div class="modal fade" id="expandFlowData" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
+            aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title" id="exampleModalLongTitle">Process Flow Block Detail</h5>
+                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                  </button>
+                </div>
+                <div class="modal-body">
+                  <table class="table table-striped text-center display" style="width:100%;">
+                    <thead style="border-bottom:1px solid var(--primary-color)">
+                      <tr class="row">
+                        <th class="col">Element Name</th>
+                        <th class="col">Status</th>
+                        <th class="col">Log</th>
+                        <th class="col">Date Executed</th>
+                        <th class="col">Link</th>
+                      </tr>
+                    </thead>
+                    <tbody style="border-bottom:1px solid var(--primary-color);" id="expandFlowDataTbody"
+                      class="expandFlow">
+                    </tbody>
+                  </table>
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+              <div class= "table" id="unique_table" >
+                <div class="row mb-1" >
+                <div class="col text-center"><label for="process_name_select" style="font-size:0.95rem;">Process Name</label>
+
+                  <select class="select2 form-control" id="process_name_select" name="process_name_select" onchange="accSelectChange(this)">
+                    <option value="" style="font-size: 0.65rem;">Process Name</option>
+                  </select>
+
+                </div>
+                <div class="col text-center"><label for="sub_process_name_select" style="font-size:0.95rem;">Sub Process Name</label>
+
+                  <select class="select2 form-control" id="sub_process_name_select" name="sub_process_name_select" onchange="accSelectChange(this)">
+                    <option value="" style="font-size: 0.65rem; ">Sub Process Name</option>
+                  </select>
+
+                </div>
+                <div class="col text-center"><label for="types_of_job_select" style="font-size:0.95rem;">Types Of Job</label>
+
+                  <select class="select2 form-control" id="types_of_job_select" name="types_of_job_select"
+                    onchange="accSelectChange(this)">
+                    <option value="" style="font-size: 0.65rem;">Types Of Job</option>
+                  </select>
+
+                </div>
+                <div class="col text-center"><label for="element_name_select" style="font-size:0.95rem;">Element Name</label>
+
+                  <select class="select2 form-control" id="element_name_select" name="element_name_select" onchange="accSelectChange(this)">
+                    <option value="" style="font-size: 0.65rem;">Element Name</option>
+                  </select>
+
+                </div>
+                <div class="col  text-center"><label for="trigger_action_select" style="font-size:0.95rem;">Trigger Action</label>
+
+                  <select class="select2 form-control" id="trigger_action_select" name="trigger_action_select"
+                    onchange="accSelectChange(this)">
+                    <option value="" style="font-size: 0.65rem;">Trigger Action</option>
+                  </select>
+                </div>
+                <div class="col  text-center"><label for="dependent_block_select" style="font-size:0.95rem;">Dependent Block</label>
+                  <select class="select2 form-control" id="dependent_block_select" name="dependent_block_select"
+                    onchange="accSelectChange(this)">
+                    <option value="" style="font-size: 0.65rem;">Dependent Block</option>
+                  </select>
+                </div>
+                <div class="col text-center"><label for="interval_of_execution_select" style="font-size:0.95rem;">Execution Interval</label>
+
+                  <select class="select2 form-control" id="interval_of_execution_select" name="interval_of_execution_select"
+                    onchange="accSelectChange(this)">
+                    <option value="" style="font-size: 0.65rem;">Execution Interval</option>
+                  </select>
+
+                </div>
+                <div class="col text-center " style="font-size:0.95rem; font-weight: 700;vertical-align: middle;">Action</label>
+                </div>
+              </div>
+              <hr style="border-bottom:2px solid var(--primary-color);">
+              <div class="main-div-container" style="width: 100%; height: 100; overflow-y: scroll;">
+
+              </div>
+
+        </div>
+      </div>
+      </div>
+      </div>
+</section>
+<script>
+
+  var ctoken = $('form').find(`input[name='csrfmiddlewaretoken']`).attr('value')
+    $.ajaxSetup({
+      beforeSend: function (xhr, settings) {
+        {
+          xhr.setRequestHeader("X-CSRFToken", ctoken);
+        }
+      }
+    });
+
+  $.ajax({
+      url: window.location.href,
+      data: {
+        "operation": "fetchSchedulerdata",
+      },
+      type: "POST",
+      dataType: "json",
+      success: function (data) {
+        var html = ""
+        var elementnameselect = []
+        var triggeractionselect = []
+        var dependentblockselect = []
+        var processSelect = []
+        var subprocessSelect = []
+        var intervalperiod=[]
+        var intervaltime=[]
+        var typesofjobselect=[]
+        var dropDown = []
+        for (let i = 0; i < data.data.length; i++) {
+          var dropDown2 = []
+          dropDown2.push(data.data[i])
+
+          dropDown = []
+          for (let l = 0; l < data.data1.length; l++) {
+            if (data.data[i]["block_element_id"] && data.data1[l]["block_element_id"]) {
+              if (data.data[i]["block_element_id"] == data.data1[l]["block_element_id"] && data.data[i]["subprocess_code"] == data.data1[l]["subprocess_code"]) dropDown.push(data.data1[l])
+            }
+            else if (data.data[i]["process_code"] && data.data1[l]["process_code"]) {
+              if (data.data[i]["process_code"] == data.data1[l]["process_code"] && data.data[i]["subprocess_code"] == data.data1[l]["subprocess_code"]) dropDown.push(data.data1[l])
+            }
+          }
+          dropDown.reverse();
+          var dropDown1 = JSON.stringify(dropDown).replace(/[']+/g, '')
+          var dropDown3 = JSON.stringify(dropDown2).replace(/[']+/g, '').replace(/ /g, "$")
+          processSelect.push(data.data[i]["item_group_name"])
+          subprocessSelect.push(data.data[i]["item_name"])
+          typesofjobselect.push(data.data[i]["scheduler_type"])
+          elementnameselect.push(data.data[i]["tab_header_name"])
+          triggeractionselect.push(data.data[i]["trigger_option"])
+          dependentblockselect.push(data.data[i]["dependent_block"])
+          intervalperiod.push(data.data[i]["intervalPeriod"])
+          intervaltime.push(data.data[i]["intervalTime"])
+          html = html + `
+                          <div class="container-fluid " id="main_container">
+                            <div class="row text-center accordion " data-list='${dropDown1}' >
+                              <div class="col" data-list="${data.data[i]["item_group_name"]}">
+                                ${data.data[i]["item_group_name"]}
+                              </div>
+                              <div class="col" data-list="${data.data[i]["item_name"]}">
+                                ${data.data[i]["item_name"]}
+                              </div>
+                              <div class="col" data-list="${data.data[i]["scheduler_type"]}">
+                                ${data.data[i]["scheduler_type"]}
+                              </div>
+                              <div class="col" data-list="${data.data[i]["tab_header_name"]}">
+                              ${data.data[i]["tab_header_name"]}
+                              </div>
+                              <div class="col" data-list="${data.data[i]["trigger_option"]}">
+                                ${data.data[i]["trigger_option"]}
+                              </div>
+                              <div class="col del" data-list="${data.data[i]["dependent_block"]}" >
+                                ${data.data[i]["dependent_block"]}
+                              </div>
+                              <div class="col" data-list="${data.data[i]["intervalPeriod"]}">
+                                ${data.data[i]["intervalTime"]} ${data.data[i]["intervalPeriod"]}
+                              </div>
+                              <div class="col" style="display: flex;flex-direction: row;justify-content: space-evenly;"><i class="fa-solid fa-rotate-right" style="color: var(--secondary-color);font-size:1.5rem;border-radius: 5px;" data-list=${dropDown3} onclick="actionAdd(this)"></i>
+                                </i><i class="fa fa-trash" aria-hidden="true" style="color: var(--secondary-color);font-size:1.5rem" data-list=${dropDown3} onclick="actionDelete(this)"></i><i class="fa-solid fa-pen-to-square" style="color: var(--secondary-color);font-size:1.5rem" data-list=${dropDown3} onclick="actionEdit(this)" id="edit_modal_view"></i>
+                                </div>
+                            </div>
+                            <div class="panel unik"  style="">
+                              <div class="table display text-center" style="width:90%;">
+
+                                <div style="border-bottom:1px solid var(--primary-color)">
+                                <div class="row" style="font-weight:700;">
+                                    <div class="col">Execution Date</div>
+                                    <div class="col">Status</div>
+                                    <div class="col">Execution Time</div>
+                                    <div class="col">Execution Information</div>
+                                </div>
+                                </div>
+                                <div style="" id="process_data">
+
+                          `
+          html = html + `
+                        </div>
+                      </div>
+                    </div>
+                    </div>`
+
+                  }
+
+          var elementnameselect1 = [...new Set(elementnameselect)]
+          var triggeractionselect1 = [...new Set(triggeractionselect)]
+          var dependentblockselect1 = [...new Set(dependentblockselect)]
+          var processSelect1 = [...new Set(processSelect)]
+          var subprocessSelect1 = [...new Set(subprocessSelect)]
+          var intervalperiod1 = [...new Set(intervalperiod)]
+          var intervaltime1 = [...new Set(intervaltime)]
+          var typesofjobselect1 = [...new Set(typesofjobselect)]
+          $('#process_name_select').empty()
+          $('#process_name_select').append(`<option  selected value="">Process Name</option>`)
+          for (let u in processSelect1) {
+            $('#process_name_select').append(`<option value="${processSelect1[u]}">${processSelect1[u]}</option>`)
+          }
+          $('#sub_process_name_select').empty()
+          $('#sub_process_name_select').append(`<option  selected value="">Sub Process Name</option>`)
+          for (let u in subprocessSelect1) {
+            $('#sub_process_name_select').append(`<option value="${subprocessSelect1[u]}">${subprocessSelect1[u]}</option>`)
+          }
+          $('#types_of_job_select').empty()
+          $('#types_of_job_select').append(`<option  selected value="">Types Of Job</option>`)
+          for (let u in typesofjobselect1) {
+            $('#types_of_job_select').append(`<option value="${typesofjobselect1[u]}">${typesofjobselect1[u]}</option>`)
+          }
+          $('#element_name_select').empty()
+          $('#element_name_select').append(`<option  selected value="">Element Name</option>`)
+          for (let u in elementnameselect1) {
+            $('#element_name_select').append(`<option value="${elementnameselect1[u]}">${elementnameselect1[u]}</option>`)
+          }
+          $('#trigger_action_select').empty()
+          $('#trigger_action_select').append(`<option  selected value="">Trigger Action</option>`)
+          for (let u in triggeractionselect1) {
+            $('#trigger_action_select').append(`<option value="${triggeractionselect1[u]}">${triggeractionselect1[u]}</option>`)
+          }
+          $('#dependent_block_select').empty()
+          $('#dependent_block_select').append(`<option  selected value="">Dependent Block</option>`)
+          for (let u in dependentblockselect1) {
+            $('#dependent_block_select').append(`<option value="${dependentblockselect1[u]}">${dependentblockselect1[u]}</option>`)
+          }
+          $('#interval_of_execution_select').empty()
+          $('#interval_of_execution_select').append(`<option  selected value="">Execution Interval</option>`)
+          for (let u in intervalperiod1) {
+            $('#interval_of_execution_select').append(`<option value="${intervalperiod1[u]}">${intervalperiod1[u]}</option>`)
+          }
+
+
+        $('#create_view_tab_content').find('.main-div-container').empty()
+        $('#create_view_tab_content').find('.main-div-container').append(html)
+        var acc = document.getElementsByClassName("accordion");
+        var i;
+
+        for (i = 0; i < acc.length; i++) {
+          acc[i].addEventListener("click", function () {
+
+            var tBody = $(this).parent().find('#process_data')
+            $(tBody).empty()
+
+
+            if ($(this).attr('data-list')) {
+              var parsedAttr = JSON.parse($(this).attr('data-list'))
+
+              for (let o in parsedAttr) {
+                var dropDown4=JSON.stringify(parsedAttr[o]).replace(/ +/g, '')
+
+                var dot = ""
+
+
+                if (parsedAttr[o]['status'] == "pass") {
+                  dot = `<span class="text-center dot" style="background-color:green;"></span>`
+                } else if (parsedAttr[o]['status'] == "fail") {
+                  dot = `<span class="text-center dot" style="background-color:red;"></span>`
+
+                } else {
+                  dot = `<span class="text-center dot" style="background-color:#FFD700;"></span>`
+
+                }
+
+
+                 $(tBody).append(`
+                    <div class="row accordion2" >
+                    <div style="white-space:normal;" class="col accordion1" data-block=${dropDown4}>${parsedAttr[o]['execution_date']}</div>
+                    <div style="white-space:normal;" class="col accordion1" data-block=${dropDown4}>${dot}</div>
+                    <div style="white-space:normal;" class="col accordion1" data-block=${dropDown4}>${parsedAttr[o]['execution_time']}s</div>
+                     <div style="white-space:normal;" class="col" ><button type="button" class="btn btn-link fa fa-eye popoverclass text-center" data-container="body" data-toggle="popover" data-placement="top" data-content=${parsedAttr[o]['execution_information'].replace(/ +/g, '_') } ></button></div>
+                    </div>
+                    `)
+              }
+
+              $('.popoverclass').popover({
+                trigger: 'focus'
+              })
+             $(tBody).css('height', '100%')
+
+
+            }
+            this.classList.toggle("active1");
+            var panel = this.nextElementSibling;
+            if (panel.style.maxHeight) {
+              panel.style.maxHeight = null;
+            } else {
+              panel.style.maxHeight = "100%";
+            }
+
+            var acc1 = document.getElementsByClassName("accordion1");
+            var executed_block = data.data2
+            for (j = 0; j < acc1.length; j++) {
+              acc1[j].addEventListener("click", function () {
+                $("#expandFlowDataTbody").empty()
+                $("#expandFlowData").modal("show")
+                count+=1
+                var dropDown5 = []
+
+                if ($(this).attr('data-block')) {
+                  var block_data = JSON.parse($(this).attr('data-block'))
+
+                }
+
+                for (k = 0; k < executed_block.length; k++) {
+                  if (block_data["process_code"] == executed_block[k]["process_code"] && block_data["subprocess_code"] == executed_block[k]["subprocess_code"] && block_data["execution_date"] == executed_block[k]["execution_date"]) {
+                    dropDown5.push(executed_block[k])
+                  }
+
+                }
+
+
+
+                  for (let o in dropDown5) {
+                    tBody2 = $(this).parent().find("#"+dropDown5[o]['execution_date'])
+                    var html_4="---"
+                    var dot = ""
+
+                    if (dropDown5[o]['status'] != "pass") {
+                      html_4 = `<a data-toggle="tooltip" title="Go to subprocess" href="/users/${urlPath}/${dropDown5[o]['subprocess_code']}/" style="color:var(--secondary-color)">Sub-process</a>`
+                    }
+                    if (dropDown5[o]['status'] == "pass") {
+                      dot = `<span class="text-center dot" style="background-color:green;"></span>`
+                    } else if (dropDown5[o]['status'] == "fail") {
+                      dot = `<span class="text-center dot" style="background-color:red;"></span>`
+
+                    } else {
+                      dot = `<span class="text-center dot" style="background-color:#FFD700;"></span>`
+
+                    }
+                    $("#expandFlowDataTbody").append(`
+                    <tr class="row" >
+                    <td style="white-space:normal;" class="col">${dropDown5[o]['block_element_id']}</td>
+                    <td style="white-space:normal;" class="col">${dot}</td>
+                    <td style="white-space:normal;" class="col">${dropDown5[o]['execution_information']}</td>
+                    <td style="white-space:normal;" class="col"  >${dropDown5[o]['execution_date']}</td>
+                    <td style="white-space:normal;" class="col"  >${html_4}</td>
+                    </tr>
+                    `)
+
+                  }
+
+
+
+
+
+
+
+
+              })
+            }
+          })
+        }
+
+      },
+      failure: function () {
+      Swal.fire({ icon: 'error', text: 'Error! Please try again.' });
+      },
+
+    })
+
+
+
+
+
+    function actionAdd(ele){
+
+      if ($(ele).attr('data-list')) {
+        var scheduler_data = JSON.parse($(ele).attr('data-list'))
+      let a= document.getElementsByClassName("unik")
+      for(let i=0;i<a.length;i++){
+        a[i].style.maxHeight = "0px"
+      }
+
+
+      $.ajax({
+        url: window.location.href,
+        data: {
+          "process_code": scheduler_data[0]["process_code"],
+          "subprocess_code": scheduler_data[0]["subprocess_code"],
+          "block_element_id": scheduler_data[0]["block_element_id"],
+          "operation": "rescheduleJob",
+        },
+        type: "POST",
+        dataType: "json",
+        success: function (data) {
+          Swal.fire({ icon: 'success', text: 'Process scheduler added successfuly.' });
+
+        },
+        failure: function (err) {
+          Swal.fire({ icon: 'error', text: 'Error! Please try again.' });
+        }
+      })
+      }
+
+    }
+
+    function actionDelete(ele) {
+
+      if ($(ele).attr('data-list')) {
+        var scheduler_data = JSON.parse($(ele).attr('data-list'))
+
+        let a = document.getElementsByClassName("unik")
+        for (let i = 0; i < a.length; i++) {
+        a[i].style.maxHeight = "0px"
+        }
+        $.ajax({
+          url:window.location.href,
+          data:{
+            "process_code":scheduler_data[0]["process_code"],
+            "subprocess_code":scheduler_data[0]["subprocess_code"],
+            "block_element_id": scheduler_data[0]["block_element_id"],
+            "operation":"deleteScheduledJob",
+          },
+          type:"POST",
+          dataType:"json",
+          success:function(data){
+            Swal.fire({ icon: 'success', text: 'Process scheduler deleted successfuly.' });
+            location.reload()
+          },
+          failure:function(err){
+            Swal.fire({ icon: 'error', text: 'Error! Please try again.' });
+          }
+        })
+      }
+
+    }
+
+    function actionEdit(ele){
+      if ($(ele).attr('data-list')) {
+        var edit_data = JSON.parse($(ele).attr('data-list'))
+        let a = ele.getElementsByClassName("unik")
+        for (let i = 0; i < a.length; i++) {
+          a[i].style.maxHeight = "0px"
+        }
+        edit_flow_html=""
+        edit_block_html=""
+        if(edit_data[0]['intervalTime']!='--' && edit_data[0]["intervalPeriod"]!='--'){
+          $("#edit_model").addClass("show")
+          $("#intervalExecutionDetailsContainer").css("display", "block")
+          $("#edit_model").css("display", "block")
+          $("#edit_close").click(function () {
+            $("#edit_model").css("display", "none")
+          })
+        }
+
+        $("#editProcessSchedulerConfig").click(function(){
+          start_date=$("#schedulerIntervalStartDate").val()
+          end_date=$("#schedulerIntervalEndDate").val()
+          intervalTime=$("#selectFlowSchedulerIntervalTime").val()
+          intervalPeriod=$("#selectSchedulerIntervalPeriodicity").val()
+
+          $.ajax({
+            url: window.location.href,
+            data: {
+              "process_code": edit_data[0]["process_code"],
+              "subprocess_code": edit_data[0]["subprocess_code"],
+              "block_element_id": edit_data[0]["block_element_id"],
+              "start_date":start_date,
+              "end_date":end_date,
+              "intervalTime":intervalTime,
+              "intervalPeriod":intervalPeriod,
+              "operation": "editScheduledJob",
+            },
+            type: "POST",
+            dataType: "json",
+            success: function (data) {
+              Swal.fire({ icon: 'success', text: 'Process scheduler edited successfuly.' });
+              location.reload()
+            },
+            failure: function (err) {
+              Swal.fire({ icon: 'error', text: 'Error! Please try again.' });
+            }
+          })
+
+
+
+        })
+
+
+
+
+
+      }
+
+
+    }
+
+
+  function accSelectChange(obj) {
+    var dict_a = {'scheduler_type': $('#types_of_job_select').val(), "trigger_option": $("#trigger_action_select").val(), "intervalTime": "" , "intervalPeriod": $("#interval_of_execution_select").val(), 'item_name': $('#sub_process_name_select').val(), 'item_group_name': $('#process_name_select').val(),  'tab_header_name': $('#element_name_select').val(),  "dependent_block":$("#dependent_block_select").val(),}
+    $.ajax({
+      url: window.location.href,
+      data: {
+        "dict_a": JSON.stringify(dict_a),
+        "operation": "selectChangeSchedulerData",
+      },
+      type: "POST",
+      dataType: "json",
+      success: function (data) {
+        html = ""
+         var elementnameselect = []
+        var triggeractionselect = []
+        var dependentblockselect = []
+        var processSelect = []
+        var subprocessSelect = []
+        var intervalperiod = []
+        var intervaltime = []
+        var typesofjobselect = []
+
+        for (let i = 0; i < data.data.length; i++) {
+
+          var dropDown2 = []
+          dropDown2.push(data.data[i])
+          var dropDown = []
+          dropDown = []
+          for (let l = 0; l < data.data1.length; l++) {
+            if (data.data[i]["block_element_id"] && data.data1[l]["block_element_id"]) {
+              if (data.data[i]["block_element_id"] == data.data1[l]["block_element_id"] && data.data[i]["subprocess_code"] == data.data1[l]["subprocess_code"]) dropDown.push(data.data1[l])
+            }
+            else if (data.data[i]["process_code"] && data.data1[l]["process_code"]) {
+              if (data.data[i]["process_code"] == data.data1[l]["process_code"] && data.data[i]["subprocess_code"] == data.data1[l]["subprocess_code"]) dropDown.push(data.data1[l])
+            }
+          }
+          dropDown.reverse();
+          var dropDown1 = JSON.stringify(dropDown).replace(/[']+/g, '')
+          var dropDown3 = JSON.stringify(dropDown2).replace(/[']+/g, '').replace(/ /g, "$")
+          processSelect.push(data.data[i]["item_group_name"])
+          subprocessSelect.push(data.data[i]["item_name"])
+          typesofjobselect.push(data.data[i]["scheduler_type"])
+          elementnameselect.push(data.data[i]["tab_header_name"])
+          triggeractionselect.push(data.data[i]["trigger_option"])
+          dependentblockselect.push(data.data[i]["dependent_block"])
+          intervalperiod.push(data.data[i]["intervalPeriod"])
+          intervaltime.push(data.data[i]["intervalTime"])
+          html = html + `
+                        <div class="container-fluid " id="main_container">
+                          <div class="row text-center accordion " data-list='${dropDown1}' >
+                            <div class="col" data-list="${data.data[i]["item_group_name"]}">
+                              ${data.data[i]["item_group_name"]}
+                            </div>
+                            <div class="col" data-list="${data.data[i]["item_name"]}">
+                              ${data.data[i]["item_name"]}
+                            </div>
+                            <div class="col" data-list="${data.data[i]["scheduler_type"]}">
+                              ${data.data[i]["scheduler_type"]}
+                            </div>
+                            <div class="col" data-list="${data.data[i]["tab_header_name"]}">
+                            ${data.data[i]["tab_header_name"]}
+                            </div>
+                            <div class="col" data-list="${data.data[i]["trigger_option"]}">
+                              ${data.data[i]["trigger_option"]}
+                            </div>
+                            <div class="col del" data-list="${data.data[i]["dependent_block"]}" >
+                              ${data.data[i]["dependent_block"]}
+                            </div>
+                            <div class="col" data-list="${data.data[i]["intervalPeriod"]}">
+                              ${data.data[i]["intervalTime"]} ${data.data[i]["intervalPeriod"]}
+                            </div>
+                            <div class="col" style="display: flex;flex-direction: row;justify-content: space-evenly;"><i class="fa-solid fa-rotate-right" style="color:var(--secondary-color); font-size: 1.5rem;border-radius: 5px;" data-list=${dropDown3} onclick="actionAdd(this)"></i>
+                              </i><i class="fa fa-trash" aria-hidden="true" style="color:var(--secondary-color) ; font-size:1.5rem" data-list=${dropDown3} onclick="actionDelete(this)"></i><i class="fa-solid fa-pen-to-square" style="color:var(--secondary-color) ; font-size:1.5rem" data-list=${dropDown3} onclick="actionEdit(this)" id="edit_modal_view"></i>
+                              </div>
+                          </div>
+                          <div class="panel unik"  style="">
+                            <div class="display text-center table" style="width:90%;">
+
+                              <div style="border-bottom:1px solid var(--primary-color)">
+                              <div class="row">
+                                  <div class="col">Execution Date</div>
+                                  <div class="col">Status</div>
+                                  <div class="col">Execution Time</div>
+                                  <div class="col">Execution Information</div>
+                              </div>
+                              </div>
+                              <div style="" id="process_data">
+
+                        `
+          html = html + `
+                      </div>
+                    </div>
+                  </div>
+                  </div>`
+
+        }
+
+
+        $('#create_view_tab_content').find('.main-div-container').empty()
+        a = $('#create_view_tab_content').find('.main-div-container').append(html)
+        var acc = document.getElementsByClassName("accordion");
+        var i;
+
+        for (i = 0; i < acc.length; i++) {
+          acc[i].addEventListener("click", function () {
+
+            var tBody = $(this).parent().find('#process_data')
+            $(tBody).empty()
+
+            if ($(this).attr('data-list')) {
+              var parsedAttr = JSON.parse($(this).attr('data-list'))
+
+              for (let o in parsedAttr) {
+                var dropDown4 = JSON.stringify(parsedAttr[o]).replace(/ +/g, '')
+                var dot = ""
+
+
+                if (parsedAttr[o]['status'] == "pass") {
+                  dot = `<span class="text-center dot" style="background-color:green;"></span>`
+                } else if (parsedAttr[o]['status'] == "fail") {
+                  dot = `<span class="text-center dot" style="background-color:red;"></span>`
+
+                } else {
+                  dot = `<span class="text-center dot" style="background-color:#FFD700;"></span>`
+
+                }
+
+                $(tBody).append(`
+                    <div class="row accordion2">
+                    <div style="white-space:normal;" class="col accordion1" data-block=${dropDown4}>${parsedAttr[o]['execution_date']}</div>
+                    <div style="white-space:normal;" class="col accordion1" data-block=${dropDown4}>${dot}</div>
+                    <div style="white-space:normal;" class="col accordion1" data-block=${dropDown4}>${parsedAttr[o]['execution_time']}s</div>
+                    <div style="white-space:normal;" class="col" ><button type="button" class="btn btn-link fa fa-eye popoverclass text-center" data-container="body" data-toggle="popover" data-placement="top" data-content=${parsedAttr[o]['execution_information'].replace(/ +/g, '_') } </button></div>
+                    </div>
+                    `)
+              }
+
+              $('.popoverclass').popover({
+                trigger: 'focus'
+              })
+              $(tBody).css('height', '100%')
+
+            }
+            this.classList.toggle("active");
+            var panel = this.nextElementSibling;
+            if (panel.style.maxHeight) {
+              panel.style.maxHeight = null;
+            } else {
+              panel.style.maxHeight = panel.scrollHeight + "px";
+            }
+
+            var acc1 = document.getElementsByClassName("accordion1");
+            for (j = 0; j < acc1.length; j++) {
+              acc1[j].addEventListener("click", function () {
+                $("#expandFlowDataTbody").empty()
+                $("#expandFlowData").modal("show")
+                count+=1
+                var dropDown5 = []
+
+                if ($(this).attr('data-block')) {
+                  var block_data = JSON.parse($(this).attr('data-block'))
+                  executed_block = data.data2
+
+                  for (k = 0; k < executed_block.length; k++) {
+                    if (block_data["process_code"] == executed_block[k]["process_code"] && block_data["subprocess_code"] == executed_block[k]["subprocess_code"] && block_data["execution_date"] == executed_block[k]["execution_date"]) {
+                      dropDown5.push(executed_block[k])
+                    }
+
+                  }
+
+                  for (let o in dropDown5) {
+                    tBody2 = $(this).parent().find("#"+dropDown5[o]['execution_date'])
+                    var html_4="---"
+                    var dot = ""
+
+                    if (dropDown5[o]['status'] != "pass") {
+                      html_4 = `<a data-toggle="tooltip" title="Go to subprocess" href="/users/${urlPath}/${dropDown5[o]['subprocess_code']}/" style="color:var(--secondary-color)">Sub-process</a>`
+                    }
+                    if (dropDown5[o]['status'] == "pass") {
+                      dot = `<span class="text-center dot" style="background-color:green;"></span>`
+                    } else if (dropDown5[o]['status'] == "fail") {
+                      dot = `<span class="text-center dot" style="background-color:red;"></span>`
+
+                    } else {
+                      dot = `<span class="text-center dot" style="background-color:#FFD700;"></span>`
+
+                    }
+
+                    $("#expandFlowDataTbody").append(`
+                    <tr class="row" >
+                    <td style="white-space:normal;" class="col">${dropDown5[o]['block_element_id']}</td>
+                    <td style="white-space:normal;" class="col">${dot}</td>
+                    <td style="white-space:normal;" class="col">${dropDown5[o]['execution_information']}</td>
+                    <td style="white-space:normal;" class="col"  >${dropDown5[o]['execution_date']}</td>
+                    <td style="white-space:normal;" class="col"  >${html_4}</td>
+                    </tr>
+
+                    `)
+                  }
+
+                }
+
+              })
+            }
+          })
+        }
+      },
+      failure: function () {
+        Swal.fire({ icon: 'error', text: 'Error! Please try again.' });
+      },
+
+    })
+  }
+
+  $(document).ready(function(){
+    $('select.select2:not(.modal select.select2)').each(function(){
+      parent = $(this).parent()
+      $(this).select2({dropdownParent:parent})
+  })
+  $('.modal select.select2').each(function(){
+      $(this).select2()
+  })
+  })
+
+</script>
+{% endblock %}

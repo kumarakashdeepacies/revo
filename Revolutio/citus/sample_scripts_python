@@ -1,0 +1,125 @@
+import docker
+#Turn on / off archive mode
+
+client = docker.DockerClient(base_url='unix://var/run/docker.sock')
+container = client.containers.get('citus_master')
+container.exec_run('psql -U revolutio -d postgres -c "ALTER SYSTEM SET archive_mode to ON;"')
+container.restart()
+
+#Backup push master
+client = docker.DockerClient(base_url='unix://var/run/docker.sock')
+container = client.containers.get('citus_master')
+container.exec_run('/wal-g backup-push /var/lib/postgresql/data')
+
+#Backup push worker 1
+client = docker.DockerClient(base_url='unix://var/run/docker.sock')
+container = client.containers.get('citus_worker_1')
+container.exec_run('/wal-g backup-push /var/lib/postgresql/data')
+
+#Backup push worker 2
+client = docker.DockerClient(base_url='unix://var/run/docker.sock')
+container = client.containers.get('citus_worker_2')
+container.exec_run('/wal-g backup-push /var/lib/postgresql/data')
+
+#Backup fetch master
+client = docker.DockerClient(base_url='unix://var/run/docker.sock')
+container = client.containers.get('citus_master')
+container.exec_run('/wal-g backup-fetch /pgbackupdata LATEST')
+
+#Backup fetch worker 1
+client = docker.DockerClient(base_url='unix://var/run/docker.sock')
+container = client.containers.get('citus_worker_1')
+container.exec_run('/wal-g backup-fetch /pgbackupdata LATEST')
+
+#Backup fetch worker 2
+client = docker.DockerClient(base_url='unix://var/run/docker.sock')
+container = client.containers.get('citus_worker_2')
+container.exec_run('/wal-g backup-fetch /pgbackupdata LATEST')
+
+#Recovery signal
+client = docker.DockerClient(base_url='unix://var/run/docker.sock')
+container = client.containers.get('citus_master')
+container.exec_run('touch /pgbackupdata/recovery.signal')
+
+#Recovery signal worker 1
+client = docker.DockerClient(base_url='unix://var/run/docker.sock')
+container = client.containers.get('citus_worker_1')
+container.exec_run('touch /pgbackupdata/recovery.signal')
+
+#Recovery signal worker 2
+client = docker.DockerClient(base_url='unix://var/run/docker.sock')
+container = client.containers.get('citus_worker_2')
+container.exec_run('touch /pgbackupdata/recovery.signal')
+
+#Copy paste backup-fetch master
+import os
+import shutil
+import docker
+client = docker.DockerClient(base_url='unix://var/run/docker.sock')
+container = client.containers.get('citus_master')
+container.stop()
+source_path = '/postgresdata/master/pgbackupdata'
+destination_path = '/postgresdata/master/postgresql/data'
+shutil.rmtree(destination_path)
+
+for y in [x[1] for x in os.walk(source_path)][0]:
+    path=source_path+"/"+y
+    dest_path=destination_path+"/"+y
+    shutil.copytree(path, dest_path)
+
+for file_name in os.listdir(source_path):
+    # construct full file path
+    source = source_path + "/" + file_name
+    destination = destination_path + "/" + file_name
+    # copy only files
+    if os.path.isfile(source):
+        shutil.copy(source, destination)
+
+
+#Copy paste backup-fetch worker 1
+import os
+import shutil
+import docker
+client = docker.DockerClient(base_url='unix://var/run/docker.sock')
+container = client.containers.get('citus_worker_1')
+container.stop()
+source_path = '/postgresdata/worker_1/pgbackupdata'
+destination_path = '/postgresdata/worker_1/postgresql/data'
+shutil.rmtree(destination_path)
+
+for y in [x[1] for x in os.walk(source_path)][0]:
+    path=source_path+"/"+y
+    dest_path=destination_path+"/"+y
+    shutil.copytree(path, dest_path)
+
+for file_name in os.listdir(source_path):
+    # construct full file path
+    source = source_path + "/" + file_name
+    destination = destination_path + "/" + file_name
+    # copy only files
+    if os.path.isfile(source):
+        shutil.copy(source, destination)
+
+#Copy paste backup-fetch worker 2
+import os
+import shutil
+import docker
+client = docker.DockerClient(base_url='unix://var/run/docker.sock')
+container = client.containers.get('citus_worker_2')
+container.stop()
+source_path = '/postgresdata/worker_2/pgbackupdata'
+destination_path = '/postgresdata/worker_2/postgresql/data'
+shutil.rmtree(destination_path)
+
+for y in [x[1] for x in os.walk(source_path)][0]:
+    path=source_path+"/"+y
+    dest_path=destination_path+"/"+y
+    shutil.copytree(path, dest_path)
+
+for file_name in os.listdir(source_path):
+    # construct full file path
+    source = source_path + "/" + file_name
+    destination = destination_path + "/" + file_name
+    # copy only files
+    if os.path.isfile(source):
+        shutil.copy(source, destination)

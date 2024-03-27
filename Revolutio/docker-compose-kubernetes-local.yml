@@ -1,0 +1,116 @@
+version: "3.8"
+
+services:
+  redis:
+    env_file:
+      - ".env"
+    image: ${REGISTRY_HOST}/revolutio_local/redis:5.0.4-stretch
+    build: ./redis
+    restart: always
+    stop_grace_period: 3s
+    volumes:
+      - "redis:/data"
+    ports:
+      - "6379:6379"
+
+  postgres:
+    image: ${REGISTRY_HOST}/revolutio_kubernetes_local/postgres:10-alpine
+    build: ./postgres
+    environment:
+      - POSTGRES_DB=Platform_DB
+      - POSTGRES_USER=revolutio
+      - POSTGRES_PASSWORD=supersecretpassword
+    volumes:
+      - postgresql-data:/var/lib/postgresql/data
+      - postgresql-backup:/backups
+    ports:
+      - "5432:5432"
+
+  web:
+    image: ${REGISTRY_HOST}/revolutio_kubernetes_local/revolutio:latest
+    build:
+      context: "."
+    command: bash -c 'python3 manage.py collectstatic --no-input; python manage.py compress; python3 manage.py migrate_schemas; python3 tenant_context_manage.py createsuperuser --noinput --username $DJANGO_SUPERUSER_USERNAME --email $DJANGO_SUPERUSER_EMAIL ; uvicorn config.asgi:application --port 5000 --host 0.0.0.0 '
+    depends_on:
+      - "redis"
+      - "postgres"
+    env_file:
+      - ".env"
+    healthcheck:
+      test: "${DOCKER_HEALTHCHECK_TEST:-curl localhost:8000/login}"
+      interval: "60s"
+      timeout: "3s"
+      start_period: "5s"
+      retries: 3
+    ports:
+      - "${DOCKER_WEB_PORT:-127.0.0.1:5000}:5000"
+    restart: always
+    stop_grace_period: 3s
+    volumes:
+      - "${DOCKER_WEB_VOLUME:-./revolutio.conf:/opt/revolutio/revolutio.conf}"
+      - static:/opt/revolutio/static
+      - media:/opt/revolutio/media
+      - ./:/opt/revolutio/
+
+  monitor:
+    image: ${REGISTRY_HOST}/revolutio_kubernetes_local/monitor:latest
+    build: ./rqmonitor
+    entrypoint: ["/bin/sh","-c"]
+    command:
+      - |
+        rqmonitor -b 0.0.0.0 -p 8899 -u ${REDIS_URL}
+    restart: always
+    volumes:
+      - "${DOCKER_WEB_VOLUME:-./revolutio.conf:/opt/revolutio/revolutio.conf}"
+    ports:
+      - "8899:8899"
+    env_file:
+        - ".env"
+    depends_on:
+      - redis
+      - web
+    init: true
+
+  #worker:
+  #  image: ${REGISTRY_HOST}/revolutio/worker:latest
+   # build:
+    #  context: "."
+    #command: celery -A config worker --pool=gevent --concurrency=500
+    #depends_on:
+     # - "redis"
+      #- "web"
+      #- "postgres"
+    #env_file:
+     # - ".env"
+    #3restart: always
+    #stop_grace_period: 3s
+    #volumes:
+     # - "${DOCKER_WEB_VOLUME:-./revolutio.conf:/opt/revolutio/revolutio.conf}"
+  nginx:
+    image: ${REGISTRY_HOST}/revolutio_kubernetes_local/nginx:latest
+    build: ./nginx
+    command: nginx -g "daemon off;"
+    ports:
+      - 8080:8080
+    restart: always
+    depends_on:
+      - web
+    volumes:
+      - "${DOCKER_NGINX_VOLUME:-./nginx/nginx_dev.conf:/etc/nginx/nginx.conf}"
+      - static:/var/www/revolutio/static
+      - media:/var/www/revolutio/media
+      #- "${DOCKER_SSL_CERT:-./nginx/cert.pem:/etc/ssl/fullchain.pem}"
+      #- "${DOCKER_SSL_KEY:-./nginx/ssl.key:/etc/ssl/privkey.pem}"
+
+volumes:
+  redis:
+  postgresql-data:
+  postgresql-backup:
+  static:
+  media:
+  revolutio_logs:
+  revolutio_configs:
+  user_defined_template:
+  revolutio_data:
+  relation_canvas:
+  hierarchy_canvas:

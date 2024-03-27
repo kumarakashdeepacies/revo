@@ -1,0 +1,461 @@
+version: "3.8"
+
+services:
+  redis:
+    env_file:
+      - ".env_prod"
+    image: ${REGISTRY_HOST}/revolutio_kubernetes/redis:5.0.4-stretch
+    build: ./redis
+    command: redis-server --maxmemory 10gb --maxmemory-policy allkeys-lru
+    restart: always
+    stop_grace_period: 3s
+    volumes:
+      - "redis:/data"
+    ports:
+      - "6379:6379"
+
+  redis-scheduler:
+    env_file:
+      - ".env_prod"
+    image: ${REGISTRY_HOST}/revolutio_kubernetes/redis:5.0.4-stretch
+    command: redis-server --maxmemory 10gb --maxmemory-policy allkeys-lru
+    build: ./redis
+    restart: always
+    stop_grace_period: 3s
+    volumes:
+      - "redis-scheduler:/data"
+    ports:
+      - "6479:6379"
+
+  keydb:
+    env_file:
+      - ".env_prod"
+    image: ${REGISTRY_HOST}/revolutio_kubernetes/keydb:latest
+    command: keydb-server --server-threads 4
+    build: ./keydb
+    restart: always
+    stop_grace_period: 3s
+    volumes:
+      - "keydb:/data"
+    ports:
+      - "6478:6379"
+
+  postgres:
+    image: ${REGISTRY_HOST}/revolutio_kubernetes/postgres:10-alpine
+    build: ./postgres
+    restart: always
+    environment:
+      - POSTGRES_DB=Platform_DB
+      - POSTGRES_USER=revolutio
+      - POSTGRES_PASSWORD=supersecretpassword
+      - ALLOW_EMPTY_PASSWORD=yes
+    volumes:
+      - postgresql-data:/var/lib/postgresql/data
+      - postgresql-backup:/backups
+      - ./postgres/postgresql.conf:/var/lib/postgresql/data/postgresql.conf
+      - ./pgbouncer/pg_hba.conf:/var/lib/postgresql/data/pg_hba.conf
+    # ports:
+    #  - "5432:5432"
+    restart: always
+
+  postgres-update:
+    image: ${REGISTRY_HOST}/revolutio_kubernetes/postgres:15-bullseye
+    build:
+      context: "./postgres"
+      dockerfile: ./Dockerfile_update
+    restart: always
+    environment:
+      - POSTGRES_DB=Platform_DB
+      - POSTGRES_USER=revolutio
+      - POSTGRES_PASSWORD=supersecretpassword
+      - ALLOW_EMPTY_PASSWORD=yes
+    volumes:
+      - postgresql-data-update:/var/lib/postgresql/data
+      - postgresql-backup-update:/backups
+      - ./postgresdump:/postgresdump
+      #- ./postgres/postgresql.conf:/var/lib/postgresql/data/postgresql.conf
+      #- ./pgbouncer/pg_hba.conf:/var/lib/postgresql/data/pg_hba.conf
+    # ports:
+    #  - "5432:5432"
+    restart: always
+
+  pgbouncer1:
+    image: edoburu/pgbouncer:1.17.0
+    restart: always
+    ports:
+      - 5432:5432
+    environment:
+      - POSTGRESQL_HOST=postgres
+      - PGBOUNCER_AUTH_TYPE=trust
+      - DB_HOST=postgres
+      - DB_USER=revolutio
+      - DB_PASSWORD=supersecretpassword
+      - POOL_MODE=session
+      - SERVER_RESET_QUERY=DISCARD ALL
+      - IGNORE_STARTUP_PARAMETERS="options"
+      - MAX_CLIENT_CONN=500
+    depends_on:
+    - "postgres"
+    restart: always
+
+  # frontend:
+  #   image: ${REGISTRY_HOST}/revolutio_kubernetes/frontend:latest
+  #   build: ./frontend
+  #   stdin_open: true
+  #   tty: true
+  #   volumes:
+  #     - ./frontend:/app
+  #     # One-way volume to use node_modules from inside image
+  #     - /app/node_modules
+  #   ports:
+  #     - "3000:3000"
+  #   environment:
+  #     - NODE_ENV=development
+  #   depends_on:
+  #     - web
+  #   command: npm start
+
+  web:
+    image: ${REGISTRY_HOST}/revolutio_kubernetes/revolutio:latest
+    build:
+      context: "."
+      dockerfile: ./Dockerfile-updated-python
+    # command: bash -c 'python3 manage.py collectstatic --no-input; uvicorn config.asgi:application --port 5000 --host 0.0.0.0'
+    # command: bash -c 'python3 manage.py collectstatic --no-input; python3 manage.py migrate_schemas; uvicorn config.asgi:application --port 5000 --host 0.0.0.0'
+    # command: bash -c 'while !</dev/tcp/postgres/5432; do sleep 1; done; python3 manage.py collectstatic --no-input; python3 manage.py compress; python3 manage.py makemigrations; python3 manage.py migrate_schemas; python3 tenant_context_manage.py createsuperuser --noinput --username $DJANGO_SUPERUSER_USERNAME --email $DJANGO_SUPERUSER_EMAIL ; uvicorn config.asgi:application --port 5000 --host 0.0.0.0 '
+    command: bash -c 'uvicorn config.asgi:application --port 5000 --host 0.0.0.0'
+
+    depends_on:
+      - "redis"
+      - "pgbouncer1"
+      - "redis-scheduler"
+    env_file:
+      - ".env_prod"
+    healthcheck:
+      test: "${DOCKER_HEALTHCHECK_TEST:-curl localhost:8000/login}"
+      interval: "60s"
+      timeout: "3s"
+      start_period: "5s"
+      retries: 3
+    ports:
+      - "${DOCKER_WEB_PORT:-127.0.0.1:5000}:5000"
+    restart: always
+    stop_grace_period: 3s
+    volumes:
+      - "${DOCKER_WEB_VOLUME:-./revolutio.conf:/opt/revolutio/revolutio.conf}"
+      - static:/opt/revolutio/static
+      - ./kore_investment/media:/opt/revolutio/kore_investment/media
+      - ./:/opt/revolutio/
+
+  worker:
+    image: ${REGISTRY_HOST}/revolutio_kubernetes/worker:latest
+    build:
+      context: "."
+      dockerfile: ./rqworker/Dockerfile-updated-python
+    command: /rqworker/start
+    restart: always
+    shm_size: '6gb'
+    env_file:
+        - ".env_prod"
+    depends_on:
+      - "redis"
+      - "web"
+    volumes:
+      - ./:/opt/revolutio/
+    init: true
+
+  worker-computation-0:
+    image: ${REGISTRY_HOST}/revolutio_kubernetes/worker:latest
+    build:
+      context: "."
+      dockerfile: ./rqworker/Dockerfile-updated-python
+    command: /rqworker/start-computation-0
+    restart: always
+    shm_size: '6gb'
+    env_file:
+        - ".env_prod"
+    depends_on:
+      - "redis"
+      - "web"
+    volumes:
+      - ./:/opt/revolutio/
+    init: true
+
+  worker-navbar:
+    image: ${REGISTRY_HOST}/revolutio_kubernetes/worker:latest
+    build:
+      context: "."
+      dockerfile: ./rqworker/Dockerfile-updated-python
+    command: /rqworker/start-navbar
+    restart: always
+    shm_size: '6gb'
+    env_file:
+        - ".env_prod"
+    depends_on:
+      - "redis"
+      - "web"
+    volumes:
+      - ./:/opt/revolutio/
+    init: true
+
+  worker-scheduler:
+    image: ${REGISTRY_HOST}/revolutio_kubernetes/worker:latest
+    build:
+      context: "."
+      dockerfile: ./rqworker/Dockerfile-updated-python
+    command: /rqworker/start-scheduler
+    restart: always
+    env_file:
+        - ".env"
+    depends_on:
+      - "redis-scheduler"
+      - "redis"
+      - "web"
+      - "pgbouncer1"
+    volumes:
+      - ./:/opt/revolutio/
+    init: true
+
+  monitor:
+    image: ${REGISTRY_HOST}/revolutio_kubernetes/monitor:latest
+    build: ./rqmonitor
+    command: /start
+    restart: always
+    volumes:
+      - "${DOCKER_WEB_VOLUME:-./revolutio.conf:/opt/revolutio/revolutio.conf}"
+    ports:
+      - "8899:8899"
+    env_file:
+        - ".env_prod"
+    depends_on:
+      - "redis"
+      - "web"
+    init: true
+
+  rqscheduler:
+    image: ${REGISTRY_HOST}/revolutio_kubernetes/rqscheduler:latest
+    build: ./rqscheduler
+    command: /start
+    restart: always
+    volumes:
+      - "${DOCKER_WEB_VOLUME:-./revolutio.conf:/opt/revolutio/revolutio.conf}"
+    env_file:
+        - ".env"
+    depends_on:
+      - "redis-scheduler"
+      - "web"
+      - "worker-scheduler"
+    init: true
+
+  nginx:
+    image: ${REGISTRY_HOST}/revolutio_kubernetes/nginx:latest
+    build: ./nginx
+    command: nginx -g "daemon off;"
+    ports:
+      - 8080:8080
+    restart: always
+    depends_on:
+      - web
+    volumes:
+      - "${DOCKER_NGINX_VOLUME:-./nginx/nginx_dev.conf:/etc/nginx/nginx.conf}"
+      - static:/var/www/revolutio/static
+      - ./kore_investment/media:/var/www/revolutio/media
+      #- "${DOCKER_SSL_CERT:-./nginx/cert.pem:/etc/ssl/fullchain.pem}"
+      #- "${DOCKER_SSL_KEY:-./nginx/ssl.key:/etc/ssl/privkey.pem}"
+
+  # zookeeper:
+  #   image: ${REGISTRY_HOST}/revolutio_kubernetes/zookeeper:latest
+  #   build:
+  #     context: "."
+  #     dockerfile: ./hadoop/dockerscripts/Dockerfile_zookeeper
+  #   hostname: zookeeper
+  #   container_name: zookeeper
+  #   ports:
+  #     - "2181:2181"
+  #   environment:
+  #     ZOOKEEPER_CLIENT_PORT: 2181
+  #     ZOOKEEPER_TICK_TIME: 2000
+
+  # broker:
+  #   image: ${REGISTRY_HOST}/revolutio_kubernetes/kafkabroker:latest
+  #   build:
+  #     context: "."
+  #     dockerfile: ./kafka/dockerscripts/Dockerfile_kafkabroker
+  #   hostname: broker
+  #   container_name: broker
+  #   depends_on:
+  #     - zookeeper
+  #   ports:
+  #     - "29092:29092"
+  #     - "9092:9092"
+  #     - "9101:9101"
+  #   environment:
+  #     KAFKA_BROKER_ID: 1
+  #     KAFKA_ZOOKEEPER_CONNECT: 'zookeeper:2181'
+  #     KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
+  #     KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://broker:29092,PLAINTEXT_HOST://localhost:9092
+  #     KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+  #     KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
+  #     KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
+  #     KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 0
+  #     KAFKA_JMX_PORT: 9101
+  #     KAFKA_JMX_HOSTNAME: localhost
+
+  # schema-registry:
+  #   image: ${REGISTRY_HOST}/revolutio_kubernetes/schemaregistry:latest
+  #   build:
+  #     context: "."
+  #     dockerfile: ./kafka/dockerscripts/Dockerfile_schemaregistry
+  #   hostname: schema-registry
+  #   container_name: schema-registry
+  #   depends_on:
+  #     - broker
+  #   ports:
+  #     - "8081:8081"
+  #   environment:
+  #     SCHEMA_REGISTRY_HOST_NAME: schema-registry
+  #     SCHEMA_REGISTRY_KAFKASTORE_BOOTSTRAP_SERVERS: 'broker:29092'
+  #     SCHEMA_REGISTRY_LISTENERS: http://0.0.0.0:8081
+
+  # connect:
+  #   image: ${REGISTRY_HOST}/revolutio_kubernetes/kafkaconnect:latest
+  #   build:
+  #     context: "."
+  #     dockerfile: ./kafka/dockerscripts/Dockerfile_kafkaconnect
+  #   container_name: connect
+  #   depends_on:
+  #     - broker
+  #     - schema-registry
+  #   ports:
+  #     - "8083:8083"
+  #     - "8000:8000"
+  #   environment:
+  #     CONNECT_BOOTSTRAP_SERVERS: 'broker:29092'
+  #     CONNECT_REST_ADVERTISED_HOST_NAME: connect
+  #     CONNECT_REST_PORT: 8083
+  #     CONNECT_GROUP_ID: compose-connect-group
+  #     CONNECT_CONFIG_STORAGE_TOPIC: docker-connect-configs
+  #     CONNECT_CONFIG_STORAGE_REPLICATION_FACTOR: 1
+  #     CONNECT_OFFSET_FLUSH_INTERVAL_MS: 10000
+  #     CONNECT_OFFSET_STORAGE_TOPIC: docker-connect-offsets
+  #     CONNECT_OFFSET_STORAGE_REPLICATION_FACTOR: 1
+  #     CONNECT_STATUS_STORAGE_TOPIC: docker-connect-status
+  #     CONNECT_STATUS_STORAGE_REPLICATION_FACTOR: 1
+  #     CONNECT_KEY_CONVERTER: org.apache.kafka.connect.storage.StringConverter
+  #     CONNECT_VALUE_CONVERTER: io.confluent.connect.avro.AvroConverter
+  #     CONNECT_VALUE_CONVERTER_SCHEMA_REGISTRY_URL: http://schema-registry:8081
+  #     CONNECT_INTERNAL_KEY_CONVERTER: "org.apache.kafka.connect.json.JsonConverter"
+  #     CONNECT_INTERNAL_VALUE_CONVERTER: "org.apache.kafka.connect.json.JsonConverter"
+  #     CONNECT_ZOOKEEPER_CONNECT: 'zookeeper:2181'
+  #     CONNECT_PLUGIN_PATH: "/usr/share/java,/usr/share/confluent-hub-components/,/usr/share/debezium/"
+  #     CONNECT_LOG4J_ROOT_LOGLEVEL: "INFO"
+  #     CONNECT_LOG4J_LOGGERS: org.apache.zookeeper=ERROR,org.I0Itec.zkclient=ERROR,org.reflections=ERROR
+  #     KAFKA_OPTS: "-agentlib:jdwp=transport=dt_socket,server=y,address=8000,suspend=n"
+  #   volumes:
+  #     - ./connect:/usr/share/debezium/
+  #     - ./python-client/python-scripts/datasets:/usr/share/appdata/
+
+  # namenode:
+  #   image: ${REGISTRY_HOST}/revolutio_kubernetes/hadoop-namenode:latest
+  #   build:
+  #     context: "."
+  #     dockerfile: ./hadoop/dockerscripts/Dockerfile_namenode
+  #   container_name: namenode
+  #   restart: always
+  #   ports:
+  #     - 9870:9870
+  #     - 9010:9000
+  #   volumes:
+  #     - hadoop_namenode:/hadoop/dfs/name
+  #   environment:
+  #     - CLUSTER_NAME=test
+  #     - CORE_CONF_fs_defaultFS=hdfs://namenode:9000
+  #   env_file:
+  #     - ./hadoop/hadoop.env
+
+  # datanode:
+  #   image: ${REGISTRY_HOST}/revolutio_kubernetes/hadoop-datanode:latest
+  #   build:
+  #     context: "."
+  #     dockerfile: ./hadoop/dockerscripts/Dockerfile_datanode
+  #   container_name: datanode
+  #   restart: always
+  #   volumes:
+  #     - hadoop_datanode:/hadoop/dfs/data
+  #   environment:
+  #     SERVICE_PRECONDITION: "namenode:9870"
+  #     CORE_CONF_fs_defaultFS: hdfs://namenode:9000
+  #   ports:
+  #     - "9864:9864"
+  #   env_file:
+  #     - ./hadoop/hadoop.env
+
+  # resourcemanager:
+  #   image: ${REGISTRY_HOST}/revolutio_kubernetes/hadoop-resourcemanager:latest
+  #   build:
+  #     context: "."
+  #     dockerfile: ./hadoop/dockerscripts/Dockerfile_resourcemanager
+  #   container_name: resourcemanager
+  #   restart: always
+  #   environment:
+  #     SERVICE_PRECONDITION: "namenode:9000 namenode:9870 datanode:9864"
+  #   env_file:
+  #     - ./hadoop/hadoop.env
+
+  # nodemanager1:
+  #   image: ${REGISTRY_HOST}/revolutio_kubernetes/hadoop-nodemanager:latest
+  #   build:
+  #     context: "."
+  #     dockerfile: ./hadoop/dockerscripts/Dockerfile_nodemanager
+  #   container_name: nodemanager
+  #   restart: always
+  #   environment:
+  #     SERVICE_PRECONDITION: "namenode:9000 namenode:9870 datanode:9864 resourcemanager:8088"
+  #   env_file:
+  #     - ./hadoop/hadoop.env
+
+  # historyserver:
+  #   image: ${REGISTRY_HOST}/revolutio_kubernetes/hadoop-historyserver:latest
+  #   build:
+  #     context: "."
+  #     dockerfile: ./hadoop/dockerscripts/Dockerfile_historyserver
+  #   container_name: historyserver
+  #   restart: always
+  #   environment:
+  #     SERVICE_PRECONDITION: "namenode:9000 namenode:9870 datanode:9864 resourcemanager:8088"
+  #   volumes:
+  #     - hadoop_historyserver:/hadoop/yarn/timeline
+  #   env_file:
+  #     - ./hadoop/hadoop.env
+
+  arrowflight:
+    env_file:
+      - ".env"
+    image: ${REGISTRY_HOST}/revolutio/arrowflight
+    build: ./arrowflight
+    restart: always
+    stop_grace_period: 3s
+    volumes:
+      - "data_store:/opt/data_store"
+      - "./arrowflight:/app"
+    ports:
+      - "8880:8815"
+
+volumes:
+  redis:
+  redis-scheduler:
+  keydb:
+  postgresql-data:
+  postgresql-backup:
+  static:
+  user_defined_template:
+  user_migration:
+  revolutioconf:
+  platform_configs:
+  media:
+  hadoop_namenode:
+  hadoop_datanode:
+  hadoop_historyserver:
+  data_store:
+  postgresql-data-update:
+  postgresql-backup-update:

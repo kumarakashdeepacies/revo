@@ -1,0 +1,3390 @@
+{% extends extend_template %}
+{% load crispy_forms_tags %}
+{% load static %}
+
+{% block body_block %}
+<!-- Select2 -->
+<link rel="stylesheet" href="{% static 'vendor/Base_theme/select2/css/select2.min.css' %}">
+<link rel="stylesheet" href="{% static 'vendor/Base_theme/select2-bootstrap4-theme/select2-bootstrap4.min.css' %}">
+<!-- Bootstrap4 Duallistbox -->
+<link rel="stylesheet" href="{% static 'vendor/Base_theme/bootstrap4-duallistbox/bootstrap-duallistbox.min.css' %}">
+
+<!-- Select2 -->
+<script src="{% static 'vendor/Base_theme/select2/js/select2.min.js' %}"></script>
+<!-- Bootstrap4 Duallistbox -->
+<script src="{% static 'vendor/Base_theme/bootstrap4-duallistbox/jquery.bootstrap-duallistbox.min.js' %}"></script>
+
+<style>
+  #orderProSub p {
+    font-family: Arial;
+    font-weight: bold ;
+  }
+  #orderProSub span {
+    font-family: Arial;
+  }
+  h6 {
+    text-align:center;
+    font-weight: bolder;
+    color: var(--primary-color);
+    margin-bottom: 20px;
+  }
+  thead {
+    border-bottom:1px solid var(--primary-color)
+  }
+  th,td {
+    text-align: center;
+  }
+  .input {
+    padding-left: 22px;
+    width: 55px;
+  }
+    .more_colors {
+      border: none;
+      padding: 5px 10px;
+      border-radius: 5px;
+      text-transform: capitalize;
+      margin-bottom: 20px;
+    }
+
+    .more_colors:hover {
+      box-shadow: 1px 1px 10px #c5c5c0;
+    }
+
+  ul[class^="icon-picker-list"] {
+      display: flex;
+      flex-flow: row wrap;
+      list-style: none;
+      padding-left: 0;
+      padding-right: 5px;
+      justify-content: flex-start;
+    }
+
+    ul[class^="icon-picker-list"] li {
+      width: 16%;
+      margin-bottom: 5px;
+    }
+
+    ul[class^="icon-picker-list"] a {
+      background-color: #f9f9f9;
+      border: 1px solid #fff;
+      color: black;
+      display: block;
+      flex: 1 1 auto;
+      font-size: 20px;
+      line-height: 1.4;
+      min-height: 50px;
+      padding: 10px;
+      text-align: center;
+      user-select: none;
+    }
+
+    ul[class^="icon-picker-list"] .fa {
+      font-size: 24px;
+      margin-bottom: 10px;
+      margin-top: 5px;
+    }
+
+    ul[class^="icon-picker-list"] .name-class {
+      display: block;
+      text-align: center;
+      word-wrap: break-word;
+    }
+    div.list_of_icons{
+      margin-left:20px;
+      margin-top:10px;
+    }
+    div.list_of_icons .listoficon{
+      padding:1px !important;
+      padding-bottom: 2px;
+    }
+    .switch {
+  position: relative;
+  display: inline-block;
+  width: 40px;
+  height: 20px;
+  margin-top: 5px;
+}
+
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.flex-pages-slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ccc;
+  -webkit-transition: .4s;
+  transition: .4s;
+  border-radius: 10px;
+}
+
+.flex-pages-slider:before {
+  position: absolute;
+  content: "";
+  height: 16px;
+  width: 16px;
+  left: 2px;
+  bottom: 2px;
+  background-color: var(--font-hover-color);
+  -webkit-transition: .4s;
+  transition: .4s;
+  border-radius: 50%;
+}
+
+.flex-pages-table-cell input:checked + .flex-pages-slider {
+  background-color:var(--primary-color);
+}
+
+.flex-pages-table-cell input:focus + .flex-pages-slider{
+  box-shadow: 0 0 1px var(--primary-color);
+}
+
+.flex-pages-table-cell input:checked + .flex-pages-slider:before {
+  -webkit-transform: translateX(18px);
+  -ms-transform: translateX(18px);
+  transform: translateX(18px);
+}
+
+.btn-tool{
+  margin: unset;
+}
+
+.sortableContainer tr.ui-sortable-placeholder {
+  visibility: hidden;
+}
+
+#Impact2_Final_Allocated tr:not(:has(th)){
+  white-space: nowrap;
+  line-height: 30px;
+}
+
+</style>
+<div id="orderProSub" class="modal" role="dialog" style="display: none; backdrop-filter: brightness(0.3);">
+  <div class="modal-dialog">
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header">
+        <h6 class="modal-title" style="color:var(--primary-color);">Order validation</h6>
+        <button type="button" class="modalClose btn btn-primary btn-xs rounded px-2" data-dismiss="modal">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="col-12">
+          <span>Performing validation</span>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary btn-xs rounded px-2 modalSave" data-dismiss="modal" disabled>Save</button>
+      </div>
+    </div>
+
+  </div>
+</div>
+<section class="content-header">
+  <div class="container-fluid">
+    <div class="row mb-2">
+      <div class="col-sm-6">
+        <ol class="breadcrumb float-sm-left">
+          <li class="breadcrumb-item"><a {% if current_application_code != 'App0' %} {% if current_application_code == 'Dev' %} {% if current_dev_mode == 'Edit' %} {% if edit_app_code != 'Not Selected' %} href="{% url 'users:homePage' edit_app_code current_dev_mode %}" {% else %} href="{% url 'users:homePage' 'Dev' current_dev_mode %}" {% endif %} {% elif current_dev_mode == 'Build' %} {% if build_app_code != 'Not Selected' %} href="{% url 'users:homePage' build_app_code current_dev_mode %}" {% else %} href="{% url 'users:select_application' %}"  {% endif %}  {% endif %} {% else %} href="{% url 'users:homePage' current_application_code 'User' %}" {% endif %} {% else %} href="{% url 'users:select_application' %}" {% endif %}>
+            <b> Home </b></a></li>
+          <li class="breadcrumb-item "><b>Process Creation</b></li>
+          <li class="breadcrumb-item "><b>Process Level Initialization</b></li>
+        </ol>
+      </div>
+      <div class="col-sm-6">
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<section class="content">
+  {% if current_application_code == 'Dev' %}
+  <div class="container-fluid">
+    <div id="card0" class="card card-default collapsed-card">
+      <div class="card-header process-creation d-flex justify-content-between align-items-center">
+        <h6 class="card-title">Process creation</h6>
+        <div class="card-tools" style="margin-right:unset;float:unset">
+          <button type="button" id="recoverDeletedWaypoints" class="btn btn-primary mr-1">Recover Deleted Waypoints</button>
+          <button type="button" class="btn btn-primary mr-1"><a onclick="generateAppHtml.call(this)" style="color: var(--font-hover-color);"
+            data-related_entity="">Regenerate process</a></button>
+          <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-plus"></i></button>
+          <!-- <button type="button" class="btn btn-tool" data-card-widget="remove"><i class="fas fa-remove"></i></button> -->
+        </div>
+      </div>
+
+      <div class="card-body">
+        <div class="card-body">
+          <div style="display: flex;justify-content: space-between;align-items: flex-start;margin-left: 45%;">
+            <h6>Final Allocated Process</h6>
+          </div>
+          <div class="table-wrap" style="overflow-x:auto;">
+            <table id="Impact_Final_Allocated" class="display" style="width:100%;overflow-x: scroll;overflow-y:scroll;">
+              <thead>
+                <tr>
+                  <th>Process</th>
+                  <th style="width: 420px;">Process Shortname</th>
+                  <th style="display:none;">Process order</th>
+                  <th>Status</th>
+                  <th>process Icon</th>
+                  <th>Actions</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody id="myTable" class="myTable sortableContainer sortable-order" style="height: 80px;border-bottom:1px solid var(--primary-color);">
+                {% if current_dev_mode == 'Edit' %}
+                {% for pro in editAppProcess %}
+                <tr class="sortableItem" style="cursor: move;">
+                  <td data-process_code="{{pro.item_code}}" data-process_type="final" data-process-status="existing"><span>{{pro.item_name}}</span></td>
+                  <td><span>{{pro.item_shortname}}</span></td>
+                  <td style="display:none;"><input class="input form-control" type="number" value="{{pro.order}}" min="1"></td>
+                  <td>Existing</td>
+                  <td>
+                    <i class="far fa-trash-alt ihover javaSC thin-icontrash deleteProcess" data-toggle="tooltip" title="Delete Process" style="color:var(--primary-color);font-size:15px;"></i>
+                  </td>
+                  <td>
+                    <button class="btn btn-light" style="border-radius: 50%;cursor: grab;height: 2.5rem;width: 2.5rem;"><i class="fa-solid fa-up-down" data-toggle="tooltip" title="Drag Up/ Down to reorder"></i></button>
+                  </td>
+                </tr>
+                {% endfor %}
+                {% endif %}
+                {% if current_dev_mode == 'Build' %}
+                    {% for pro in finalprocesses %}
+                      <tr class="sortableItem" id="{{pro.item_code}}" style="cursor: move;">
+                        <td data-process_code="{{pro.item_code}}" data-process_type="final"  data-process-status="existing"><span>{{pro.item_name}}</span></td>
+                        <td><span>{{pro.item_shortname}}</span></td>
+                        <td style="display:none;"><input class="input form-control" type="number" value="{{pro.order}}" min="1"></td>
+                        <td>Existing</td>
+                        <td><i class="{{pro.process_icon}}" style ="font-size:20px; color:var(--primary-color)"></i></td>
+                        <td>
+                          <i class="far fa-trash-alt ihover javaSC thin-icontrash deleteProcess" data-toggle="tooltip" title="Delete Process" style="color:var(--primary-color);font-size:15px;"></i>
+                          <i class="far fa-edit ihover editIcon_process" onclick="iconmodal('edit_icon_process', this)" data-toggle="tooltip" title="Edit Icon" style="color:var(--primary-color);font-size:15px;"></i>
+                        </td>
+                        <td>
+                          <button class="btn btn-light" style="border-radius: 50%;cursor: move;height: 2.5rem;width: 2.5rem;"><i class="fa-solid fa-up-down" data-toggle="tooltip" title="Drag Up/ Down to reorder"></i></button>
+                        </td>
+                      </tr>
+                    {% endfor %}
+                {% endif %}
+              </tbody>
+            </table>
+          </div>
+          <button type="button" id="save_process_order" name="submit" value="Save"
+            class="btn btn-primary float-right"  style="margin-left:70%;margin-right: 0.5rem; margin-top: 5px;">
+            Save process order
+          </button>
+          <script>
+            $("#Impact_Final_Allocated .sortableContainer").disableSelection();
+
+            $("#Impact_Final_Allocated #myTable").sortable({
+              axis: "y",
+              containment: "parent",
+              cursor: "grabbing",
+              handle: "td",
+              cancel: 'input,span,[contenteditable]',
+              helper: function (event, element) {
+                const helper = $("<div></div>").addClass("custom-helper");
+                helper.text($(element).find("td").eq(0).text());
+                return helper;
+              },
+              opacity: 0.6,
+              update: function (event, ui) {
+                node_list = document.getElementById('Impact_Final_Allocated').querySelectorAll(`input[type=number]`)  
+
+                for (var i = 0; i < node_list.length; ++i) {
+                  input = node_list[i];
+                  input.value = parseInt(i)+1
+                  $(input).val(parseInt(i)+1).trigger("change")
+                }
+              }
+            });
+
+            $("#Impact_Final_Allocated #myTable tr").draggable({
+              connectToSortable: "#myTable",
+              helper: "original",
+              revert: "invalid"
+            }).draggable("enable");
+
+
+            $("#Impact_Final_Allocated").find("span")
+              .bind('mousedown.ui-disableSelection selectstart.ui-disableSelection', function(e) {
+                e.stopImmediatePropagation();
+            });
+          </script>
+        </div>
+        <br>
+        {% if system_dev_mode == 'Edit + Build' %}
+        <div class="card-body">
+          <div style="display: flex;justify-content: space-between;align-items: flex-start;margin-left: 45%;">
+            <h6>Final Unallocated Process</h6>
+          </div>
+          <div class="table-wrap" style="overflow-x:auto;">
+            <table id="Impact_Final" class="display" style="width:100%;overflow-x: scroll;overflow-y:scroll;">
+
+              <thead>
+                <tr>
+                  <th>Process</th>
+                  <th style="width: 420px;">Process Shortname</th>
+                  <th>Status</th>
+                  <th>process Icon</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="myTable" class="myTable" style="height: 80px;border-bottom:1px solid var(--primary-color);">
+                    {% for pro in unallocatedProcess %}
+                      <tr>
+                        <td data-process_code="{{pro.item_code}}" data-process_type="final"  data-process-status="existing">{{pro.item_name}}</td>
+                        <td >{{pro.item_shortname}}</td>
+                        <td >Existing</td>
+                        <td><i class = "{{pro.process_icon}}" style ="font-size:20px; color:var(--primary-color)"></i></td>
+                        <td>
+                          <i class="far fa-trash-alt ihover javaSC thin-icontrash deleteProcess" data-toggle="tooltip" title="Delete Process" style="color:var(--primary-color);font-size:15px;"></i>
+                          <i class="far fa-edit ihover editIcon_process" onclick="iconmodal('edit_icon_process', this)" data-toggle="tooltip" title="Edit Icon" style="color:var(--primary-color);font-size:15px;"></i></td>
+                      </tr>
+                    {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <br /><br />
+        <div class="card-body">
+          <div style="display: flex;justify-content: space-between;align-items: flex-start;margin-left: 45%;">
+            <h6>Draft Process</h6>
+
+            <button type="button" id="previewDraftProcess" data-card-widget="collapse"  value="Save" class="btn btn-primary">
+            Preview &nbsp;<i class="fas fa-eye" data-toggle="tooltip" title="Preview Draft Process"></i>
+            </button>
+          </div>
+          <div class="table-wrap" style="overflow-x:auto;">
+            <table id="Impact_Draft" class="display" style="width:100%;overflow-x: scroll;overflow-y:scroll;">
+
+              <thead>
+                <tr>
+                  <th>Process</th>
+                  <th style="width: 420px;">Process Shortname</th>
+                  <th>Status</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="myTable" class="myTable" style="height: 80px;border-bottom:1px solid var(--primary-color);">
+                  {% for pro in user_draftProcess %}
+                    <tr>
+                      <td data-process_code="{{pro.item_code}}" data-process_type="draft"  data-process-status="existing">{{pro.item_name}}</td>
+                      <td style="width: 450px;">{{pro.item_shortname}}</td>
+                      <td>Existing</td>
+                      <td><i class="far fa-trash-alt ihover javaSC thin-icontrash deleteProcess" data-toggle="tooltip" title="Delete Process" style="color:var(--primary-color);font-size:15px;"></i><i class="far fa-save saveAsFinal" data-toggle="tooltip" title="Save as Final" style="color:var(--primary-color);font-size:15px;margin-left: 0.5rem;"></i><i class="fas fa-share-alt shareWithGroup" data-toggle="tooltip" title="Share with groups" style="color:var(--primary-color);font-size:15px;margin-left: 0.5rem;"></i></td>
+                    </tr>
+                  {% endfor %}
+                  {% for pro in group_draftProcess %}
+                    <tr>
+                      <td data-process_code="{{pro.item_code}}" data-process_type="draft">{{pro.item_name}}</td>
+                      <td style="width: 450px;">{{pro.item_shortname}}</td>
+                      <td >Existing</td>
+                      <td><i class="far fa-trash-alt ihover javaSC thin-icontrash deleteProcess" data-toggle="tooltip" title="Delete Process" style="color:var(--primary-color);font-size:15px;"></i><i class="far fa-save saveAsFinal" data-toggle="tooltip" title="Save as Final" style="color:var(--primary-color);font-size:15px;margin-left: 0.5rem;"></i></td>
+                    </tr>
+                  {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <br /><br />
+        <form method="post" id="formp">
+          {% csrf_token %}
+          <div class="form-row">
+            <div class="col form-group col-md-3">
+              <div class="col form-group col-md-10">
+              <div id="div_id_process_name" class="form-group">
+                <label for="id_process_name" class=" requiredField">
+                  Process<span class="asteriskField">*</span>
+                </label>
+                <div class="">
+                  <input type="text" name="process_name" placeholder="Process Name" maxlength="45"
+                    class="textinput textInput form-control" required="" id="id_process_name">
+                </div>
+              </div>
+              <div><span id ="alertspan" style="display:none;color:red;">Process with the same name already exists! Please create a new one.</span></div>
+            </div>
+          </div>
+          <div class="col form-group col-md-6">
+            <div id="div_id_process_name" class="form-group">
+              <label for="id_process_shortname" class="requiredField">Process Shortname<span class="requiredField">*</span> </label>
+              <div class="">
+                <input type="text" name="process_shortname" placeholder="Process Shortname" maxlength="10" class="textinput textInput form-control" required="" id="id_process_shortname">
+              </div>
+            </div>
+          </div>
+          <div class="col col-md-3">
+            <button type="button" class= "btn btn-primary"id="process-icon" data-toggle="modal" style="margin-top:30px;margin-left:30px;" onclick="iconmodal('process', this)">Choose Icon</button>
+          </div>
+          </div>
+          <button type="submit" value="Add record" id="Add_Draft" data-button-type="Draft" class="btn btn-primary float-left" style="border:none"> Add Draft process </button>
+          <button type="submit" value="Add record" id="Add_Final"  data-button-type="Final" class="btn btn-primary float-left " style="border:none;margin-left: 40px;"> Add Final process </button>
+          <button type="button"    class="btn btn-primary float-left renameEditMode" style="border:none;margin-left: 40px;"  data-rename-mode ='process' data-edit-status='off' onclick="RenameEditMode(this)">Rename Mode:OFF</button>
+          <button type="button" value="Save Rename Changes" id="Rename_Changes_Process"   class="btn btn-primary float-left " style="border:none;margin-left: 40px;display:none" onclick="RenameProcessChanges(rename_mode='process')"> Save Rename Change </button>
+          <button type="button" id="save_process_step_1" data-card-widget="collapse" name="submit" value="Save" class="btn btn-primary float-right standard_button_click">
+            Save
+          </button>
+        </form>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+
+  <!-- Icons modal for process and subprocess -->
+  <div class="modal fade" id="choose_icons_for_process" tabindex="-1" role="dialog" aria-labelledby="basicModal" aria-hidden="true">
+    <div class="modal-dialog modal-lg-center" style="max-width: 500px; max-height: 500px;margin-top:90px;">
+      <div class="modal-content" >
+        <div class="modal-header" style="max-height: 500px; margin: 10px;">
+          <h4 class="modal-title">Process Icons</h4>
+        </div>
+        <div class="modal-body" >
+          <div class="list_of_icons">
+          </div>
+          <div style="margin-top:10px; margin-left:16px;">
+            <button class="more_colors" id="processicons" data-toggle="modal" data-target="#moreicons" data-backdrop="static" data-keyboard="false">more icons</button>
+          </div>
+        </div>
+        <div class="modal-footer d-flex justify-content-between" >
+          <button type="button" class="btn buttonfooter" data-dismiss="modal" id="close_process_icon">Cancel <i class="fas fa-times"></i></button>
+          <button type="button" class="btn buttonfooter save-icons" id="save_iconconfig" data-dismiss="modal" style="justify-content: flex-end"  onclick="saveIcon('Icon')">Save  <i class="fa-solid fa-floppy-disk"></i></button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- more icons for the process and subprocess-->
+  <div class="modal fade" id="moreicons" tabindex="-1" role="dialog" aria-labelledby="more_icons" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" style="max-width: 1022px;" role="document">
+      <div class="modal-content" style="min-height: 400px;width:100%">
+        <div class="modal-header">
+          <h4 class="modal-title" id="exampleModalLongTitle">More Icons</h4>
+        </div>
+        <div class="modal-body">
+          <input type="text" name="search-icons" id="searchIcons" placeholder="Search Icons" onkeyup="search_Icons()">
+          <div class="wrapper" style="height: 426px; overflow-y: auto;">
+            <div id="categories_of_icons">
+              {% for category,icons in icons_data.items %}
+              <h5>{{category}}</h5>
+              <ul class="icon-picker-list" id="icons">
+                {% for i in icons %}
+                <li id="icon_1">
+                  <a class="icon" data-class="{{i}}" data-index="">
+                    <span class="{{i}}" aria-hidden="true"></span>
+                  </a>
+                </li>
+                {% endfor %}
+              </ul>
+              {% endfor %}
+            </div>
+            <div class="icons_without_category" id="icons_withoutany_categories" style="display: none;">
+              <ul class="icon-picker-list" id="icons">
+                {% for i in icons_without_category %}
+                <li id="icon_2">
+                  <a class="icon" data-class="{{i}}" data-index="">
+                    <span class="{{i}}" aria-hidden="true"></span>
+                  </a>
+                </li>
+                {% endfor %}
+              </ul>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer d-flex justify-content-between">
+          <button type="button" class="btn buttonfooter" data-dismiss="modal">Close <i class="fas fa-times"></i></button>
+          <button type="button" class="btn buttonfooter save-icons" data-dismiss="modal" id="save_icon" onclick="saveIcon('moreIcon')">Save <i class="fa-solid fa-floppy-disk"></i></button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="container-fluid">
+    <div id="card1" class="card card-default collapsed-card">
+      <div class="card-header process-creation d-flex justify-content-between align-items-center">
+        <h6 class="card-title">Subprocess creation</h6>
+        <div class="card-tools" style="margin-right:unset;float:unset">
+          <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-plus"></i></button>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="table-wrap" style="overflow-x:auto;">
+          <table id="Impact2_Final_Allocated" class="display" style="width:100%;overflow-x: scroll;overflow-y:scroll;border-bottom: 1px solid var(--primary-color);">
+            <h6>Final Allocated Subprocess</h6>
+            <thead>
+              <tr>
+                <th>Process</th>
+                <th>Subprocess</th>
+                <th style="display:none;">Subprocess order</th>
+                <th>Description</th>
+                <th>Status</th>
+                <th>Subprocess Icon</th>
+                <th>Actions</th>
+                <th style="display: none;">Process Status</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody id="myTable1_Final_Allocated" class="Impact2_Final_Allocated_tbody myTable1">
+              {% if current_dev_mode == 'Edit' %}
+              {% for spro in editAppSubprocess %}
+              <tr style="cursor: move;">
+                <td  data-process_code="{{spro.item_code}}"  data-process_group_code="{{spro.item_group_code}}" data-process-status="existing">{{spro.item_group_name}}</td>
+                <td>{{spro.item_name}}</td>
+                <td style="display:none;"><input class="input form-control" type="number" value="{{spro.order}}" min="1" ></td>
+                <td>{{spro.item_extra_details}}</td>
+                <td>Existing</td>
+                <td><i class="far fa-trash-alt ihover javaSC thin-icontrash deleteSubprocess" data-toggle="tooltip" title="Delete Subprocess" style="color:var(--primary-color);font-size:15px;padding-left:12px;"></i></td>
+                <td style="display: none;">final</td>
+                <td>
+                  <button class="btn btn-light" style="border-radius: 50%;cursor: move;height: 2.5rem;width: 2.5rem;"><i class="fa-solid fa-up-down" data-toggle="tooltip" title="Drag Up/ Down to reorder"></i></button>
+                </td>
+              </tr>
+              {% endfor %}
+              {% endif %}
+            </tbody>
+            {% if current_dev_mode == 'Build' %}
+              {% for pro in finalprocesses %}
+                <tbody id="myTable1_Final_Allocated_{{pro.item_code}}" class="Impact2_Final_Allocated_tbody myTable1">
+                  {% for spro in finalsubprocesses %}
+                    {% if spro.item_group_code == pro.item_code %}
+                      <tr style="cursor: move;">
+                        <td  data-process_code="{{spro.item_code}}" data-process_group_code="{{spro.item_group_code}}"  data-process-status="existing">{{spro.item_group_name}}</td>
+
+                        <td><span>{{spro.item_name}}</span></td>
+                        <td style="display:none;"><input class="input form-control" type="number" value="{{spro.order}}" min="1" max="{{spro.max}}"></td>
+                        <td>{{spro.item_extra_details}}</td>
+                        <td>Existing</td>
+                        <td><i class="{{spro.subprocess_Icon}}" style="font-size: 20px; color:var(--primary-color)"></i></td>
+                        <td>
+                          <i class="far fa-trash-alt ihover javaSC thin-icontrash deleteSubprocess" data-toggle="tooltip" title="Delete Subprocess" style="color:var(--primary-color);font-size:15px;padding-left:12px;"></i>
+                          <i class="far fa-edit ihover  editIcon_subprocess" onclick="iconmodal('edit_icon_subprocess', this)" data-toggle="tooltip" title="Edit Icon" style="color:var(--primary-color);font-size:15px;padding-left:12px;"></i>
+                        </td>
+                        <td style="display: none;">final</td>
+                        <td>
+                          <button class="btn btn-light" style="border-radius: 50%;cursor: move;height: 2.5rem;width: 2.5rem;"><i class="fa-solid fa-up-down" data-toggle="tooltip" title="Drag Up/ Down to reorder"></i></button>
+                        </td>
+                      </tr>
+                    {% endif %}
+                  {% endfor %}
+                </tbody>
+              {% endfor %}
+            {% endif %}
+          <script>
+            $(document).ready(function() {
+              $(".Impact2_Final_Allocated_tbody").sortable({
+                items: "> tr",
+                containment: "parent",
+                axis: "y",
+                cursor: "grabbing",
+                handle: "td",
+                cancel: 'input,textarea,span,[contenteditable]',
+                helper: function (event, element) {
+                  const helper = $("<div></div>").addClass("custom-helper");
+                  helper.text($(element).find("td").eq(0).text());
+                  return helper;
+                },
+                opacity: 0.6,
+                update: function(event, ui) {
+                  var sortedItems = $(this).find("tr");
+                  sortedItems.each(function(index) {
+                    $(this).find('input[type=number]').val(index + 1);
+                  });
+                },
+
+              }).disableSelection();
+              $(".Impact2_Final_Allocated_tbody").find("span")
+              .bind('mousedown.ui-disableSelection selectstart.ui-disableSelection', function(e) {
+                e.stopImmediatePropagation();
+              });
+            });
+
+            $(".Impact2_Final_Allocated_tbody tr").draggable({
+              connectToSortable: ".Impact2_Final_Allocated_tbody",
+              helper: "original",
+              revert: "invalid"
+            }).draggable("enable");
+          </script>
+          </table>
+          <button type="button" id="save_subprocess_order" name="submit" value="Save"
+            class="btn btn-primary float-right"  style="margin-left:70%;margin-right: 0.5rem; margin-top: 5px;">
+            Save subprocess order
+          </button>
+        </div>
+        <br><br>
+
+        {% if current_dev_mode == 'Build' %}
+        <div class="table-wrap" style="overflow-x:auto;">
+          <table id="Impact2" class="display" style="width:100%;overflow-x: scroll;overflow-y:scroll;">
+            <h6>Final Unallocated Subprocess</h6>
+            <thead>
+              <tr>
+                <th>Process</th>
+                <th>Subprocess</th>
+                <th>Description</th>
+                <th>Status</th>
+                <th>Subprocess Icon</th>
+                <th>Actions</th>
+                <th style="display: none;">Process Status</th>
+              </tr>
+            </thead>
+            <tbody id="myTable1_Final" class="Impact2_Final myTable1" style="height: 80px;border-bottom:1px solid var(--primary-color);">
+              {% for spro in unallocatedSubprocess %}
+                <tr>
+                  <td  data-process_code="{{spro.item_code}}" data-process_group_code="{{spro.item_group_code}}"  data-process-status="existing">{{spro.item_group_name}}</td>
+                  <td>{{spro.item_name}}</td>
+                  <td>{{spro.item_extra_details}}</td>
+                  <td>Existing</td>
+                  <td><i class="{{spro.subprocess_Icon}}" style="font-size: 20px; color:var(--primary-color)"></i></td>
+                  <td><i class="far fa-trash-alt ihover javaSC thin-icontrash deleteSubprocess" data-toggle="tooltip" title="Delete Subprocess" style="color:var(--primary-color);font-size:15px;"></i></td>
+                  <td style="display: none;">final</td>
+                </tr>
+                  {% endfor %}
+
+            </tbody>
+          </table>
+        </div>
+        <br><br>
+        <br>
+        <div class="table-wrap" style="overflow-x:auto;">
+          <table id="Impact2_Draft" class="display" style="width:100%;overflow-x: scroll;overflow-y:scroll;">
+            <div style="display: flex;justify-content: space-between;align-items: flex-start;margin-left: 45%;">
+              <h6>Draft Subprocess</h6>
+            </div>
+            <thead>
+              <tr>
+                <th>Process</th>
+                <th>Subprocess</th>
+                <th>Description</th>
+                <th>Status</th>
+                <th>Actions</th>
+                <th style="display: none;">Process Status</th>
+              </tr>
+            </thead>
+            <tbody id="myTable1_Draft" class="Impact2_Draft myTable1" style="height: 80px;border-bottom:1px solid var(--primary-color);">
+              {% for spro in Subprocess1draft %}
+                <tr>
+                  <td data-process_code="{{spro.item_code}}" data-process_group_code="{{spro.item_group_code}}"  data-process-status="existing">{{spro.item_group_name}}</td>
+                  <td>{{spro.item_name}}</td>
+                  <td>{{spro.item_extra_details}}</td>
+                  <td>Existing</td>
+                  <td><i class="far fa-save saveAsFinalSubprocess" data-toggle="tooltip" title="Save as Final" style="color:var(--primary-color);font-size:15px;margin-left: 0.5rem;"></i><i class="far fa-trash-alt ihover javaSC thin-icontrash deleteSubprocess" data-toggle="tooltip" title="Delete Subprocess" style="color:var(--primary-color);font-size:15px;padding-left:12px;"></i><i class="fas fa-share-alt shareSubProcessWithGroup" data-toggle="tooltip" title="Share with groups" style="color:var(--primary-color);font-size:15px;margin-left: 0.5rem;"></i></td>
+                  <td style="display: none;">draft</td>
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+        <br /><br />
+        {% endif %}
+        {% if current_dev_mode == 'Build' %}
+          <form method="post" action="" id="formsp">
+            {% csrf_token %}
+            <div class="row">
+              <div class="col form-group col-md-4">
+                <div id="div_id_process_name" class="form-group">
+                  <label for="process" class=" requiredField">
+                    Process<span class="asteriskField">*</span>
+                  </label>
+                  <div class="">
+                    <select class="select2 form-control" name="processlist" id='process' required style="width: fit-content">
+                      <option value="default" disabled selected>Select process</option>
+                      {% if current_application_code == 'Dev' %}
+                        {% if system_dev_mode == 'Edit' %}
+                          {% for j in editAppProcess %}
+                            <option value="{{j.item_code}}" data-process_status="final">{{j.item_name}}</option>
+                          {% endfor %}
+                        {% endif %}
+                        {% if system_dev_mode == 'Edit + Build' %}
+
+                            {% for j in finalprocesses %}
+                              <option value="{{j.item_code}}" data-process_status="final">{{j.item_name}}</option>
+                            {% endfor %}
+
+                            {% for j in user_draftProcess %}
+                              <option value="{{j.item_code}}" data-process_status="draft">{{j.item_name}}</option>
+                            {% endfor %}
+                            {% for j in group_draftProcess %}
+                              <option value="{{j.item_code}}" data-process_status="draft">{{j.item_name}}</option>
+                            {% endfor %}
+
+                            {% for j in unallocatedProcess %}
+                            <option value="{{j.item_code}}" data-process_status="final_unallocated">{{j.item_name}}</option>
+                          {% endfor %}
+
+                        {% endif %}
+
+                      {% endif %}
+                    </select>
+                  </div>
+                </div>
+              </div>
+
+              <div class="col form-group col-md-4">
+                <div id="div_id_subprocess_name" class="form-group">
+                  <label for="id_subprocess_name" class=" requiredField">
+                    Subprocess<span class="asteriskField">*</span>
+                  </label>
+                  <div class="">
+                    <input type="text" name="subprocess_name" placeholder="Subprocess Name" maxlength="45"
+                      class="textinput textInput form-control" required="" id="id_subprocess_name">
+                  </div>
+                </div>
+                <div><span id ="alertspan1" style="display:none;color:red;">Sub-Process with the same name already exists! Please create a new one.</span></div>
+              </div>
+              <div class="col form-group col-md-4 ">
+                <div id="div_id_hover" class="form-group">
+                  <label for="hover" class=" requiredField">
+                    Do you want a Popover?<span class="asteriskField">*</span>
+                  </label>
+                  <select id="hover" class="select2">
+
+                    <option value="yes">Yes</option>
+                    <option value="no">No</option>
+
+                  </select>
+                  <!-- <div><span id ="alertspan1" style="display:none;color:red;">Sub-Process with the same name already exists! Please create a new one.</span></div>  -->
+                </div>
+              </div>
+
+            </div>
+            <div class="row">
+              <div class="col-md-4">
+                <div class="row">
+                  <div class="form-group col-md-8" id="details_div">
+                    <div id="div_id_details" class="form-group">
+                      <label for="id_details" class=" requiredField" id="check">
+                        Description<span class="asteriskField">*</span>
+                      </label>
+                      <div class="">
+                        <input type="text" name="details" maxlength="264" placeholder="Details for the subprocess" class="textinput textInput form-control textadd" required="" id="id_details">
+                      </div>
+                    </div>
+                  </div>
+                  <!-- /// -->
+                  <div class="form-group col-md-4">
+                    <button type="button" class="btn btn-primary" id="subprocess-icon" data-toggle="modal" style="margin-top:30px;" onclick="iconmodal('subprocess', this)">Choose Icon</button>
+                  </div>
+
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <button type="submit" value="Add record" id="Add1_Draft" data-button-type="Draft" class="btn btn-primary float-left" style="border:none"> Add Draft Subprocess </button>
+              <button type="submit" value="Add record" id="Add1_Final" data-button-type="Final" class="btn btn-primary float-left" style="border:none;margin-left: 40px;"> Add Final Subprocess </button>
+
+              <button type="button"  class="btn btn-primary float-left renameEditMode " style="border:none;margin-left: 40px;"  data-rename-mode ='subprocess' data-edit-status='off' onclick="RenameEditMode(this)">Rename Mode:OFF</button>
+              <button type="button" value="Save Rename Changes" id="Rename_Changes_Subprocess"   class="btn btn-primary float-left " style="border:none;margin-left: 20px;display:none" onclick="RenameProcessChanges(rename_mode='subprocess')"> Save Rename Change </button>
+
+              <button type="button" id="save_subprocess_step_2" name="submit" value="Save"
+                class="btn btn-primary float-right standard_button_click"  style="margin-left:auto;margin-right: 0.5rem;">
+                Save
+              </button>
+
+
+            </div>
+
+
+          </form>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+
+  <div class="container-fluid">
+    <div id="card2" class="card card-default collapsed-card">
+      <div class="card-header sysManagement process-creation d-flex justify-content-between align-items-center">
+        <h6 class="card-title">System Management</h6>
+        <div class="card-tools" style="margin-right:unset;float:unset">
+          <button type="button" class="btn btn-tool" id="sysManagement-btn-tool" data-card-widget="collapse"><i class="fas fa-plus"></i></button>
+        </div>
+      </div>
+      <div class="card-body">
+        <div style="display: flex;justify-content: space-between;align-items: flex-start;margin-left: 45%;">
+          <h6>System Management</h6>
+        </div>
+        <div class="table-wrap" style="overflow-x:auto;">
+          <table id="Saved_sysManagement" class="display" style="width:100%;overflow-x: scroll;overflow-y:scroll;">
+            <thead>
+              <tr>
+                <th>Screens</th>
+                <th>Link Icons</th>
+                <th>Show/hide on Navbar</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody id="Saved_sysManagement_table_body" class="Saved_sysManagement_table_body" style="border-bottom:1px solid var(--primary-color);">
+              <tr>
+                <td>Home</td>
+                <td>
+                  <i class="fa fa-home" id="editIcon_HomeIcon" style="font-size: 20px; color:var(--primary-color)"></i>
+                </td>
+                <td>
+                  <div class="d-flex justify-content-center" style="height: 2rem;">
+                    <div class="switch-container">
+                      <input type="checkbox" class="sidenavswitch switch" id="switch_home" checked>
+                      <div class="switch-color"><label class="trigger-label" for="switch_home"></label></div>
+                      <label class="switch-label" for="switch_home"></label>
+                    </div>
+                  </div>
+                </td>
+                <td>
+                  <div class="d-flex justify-content-center" style="height: 2rem;">
+                    <i class="far fa-edit ihover  editIcon_HomeIcon"
+                    id="" onclick="iconmodal1('edit_icon_home', this)" data-toggle="tooltip" data-element-id="editIcon_HomeIcon" title="Edit Icon" style="color:var(--primary-color);font-size:20px;"></i>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td>Approval Management</td>
+                <td>
+                  <i class="fa fa-check-circle" id="editIcon_ApprovalIcon" style="font-size: 20px; color:var(--primary-color)"></i>
+                </td>
+                <td>
+                  <div class="d-flex justify-content-center" style="height: 2rem;">
+                    <div class="switch-container">
+                      <input type="checkbox" class="sidenavswitch switch" id="switch_approval" checked>
+                      <div class="switch-color"><label class="trigger-label" for="switch_approval"></label></div>
+                      <label class="switch-label" for="switch_approval"></label>
+                    </div>
+                  </div>
+                </td>
+                <td>
+                  <div class="d-flex justify-content-center" style="height: 2rem;">
+                    <i class="far fa-edit ihover  editIcon_ApprovalIcon"
+                    id="" onclick="iconmodal1('edit_icon_approval', this)" data-toggle="tooltip" data-element-id="editIcon_ApprovalIcon" title="Edit Icon" style="color:var(--primary-color);font-size:20px;"></i>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td>Reports</td>
+                <td>
+                  <i class="fa fa-chart-pie" id="editIcon_ReportIcon" style="font-size: 20px; color:var(--primary-color)"></i>
+                </td>
+                <td>
+                  <div class="d-flex justify-content-center" style="height: 2rem;">
+                    <div class="switch-container">
+                      <input type="checkbox" class="sidenavswitch switch" id="switch_report" checked>
+                      <div class="switch-color"><label class="trigger-label" for="switch_report"></label></div>
+                      <label class="switch-label" for="switch_report"></label>
+                    </div>
+                  </div>
+                </td>
+                <td>
+                  <div class="d-flex justify-content-center" style="height: 2rem;">
+                    <i class="far fa-edit ihover  editIcon_ReportIcon"
+                    id="" onclick="iconmodal1('edit_icon_report', this)" data-toggle="tooltip" data-element-id="editIcon_ReportIcon" title="Edit Icon" style="color:var(--primary-color);font-size:20px;"></i>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          <button type="button" id="save_sysManagement_details" data-card-widget="collapse" name="submit" value="Save" class="btn btn-primary float-right standard_button_click my-2">
+            Save
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+<!-- flex pages -->
+<div class="container-fluid">
+  <div id="card5" class="card card-default collapsed-card">
+    <div class="card-header  process-creation d-flex justify-content-between align-items-center">
+      <h6 class="card-title">Flex Pages</h6>
+      <div class="card-tools" style="margin-right:unset;float:unset">
+        <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-plus"></i></button>
+      </div>
+    </div>
+    <div class ="card-body">
+      <div class="table-wrap" style="overflow-x:auto;">
+        <table id="flex_pages_table" class="display" style="width:100%;overflow-x: scroll;overflow-y:scroll;">
+          <h6>Flex Pages </h6>
+          <thead>
+            <tr>
+              <th>Flex Pages</th>
+              <th>Show/Hide Sidebar Navbar</th>
+              <th>Show/Hide Top Navbar</th>
+              <th>Icon</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody id="myTable2_flex_page" class="myTable2_flex_page myTable2 flex-pages-table-body" style="height: 80px;border-bottom:1px solid var(--primary-color);">
+
+            {% for flex in flex_page_data.values %}
+            <tr class="flex-pages-table-row">
+              <td class="flex-pages-table-cell">{{flex.name}} </td>
+              <td class="flex-pages-table-cell">
+                <label class="switch flex-pages-switch">
+                  {% if flex.Sidebar == "show" %}
+                  <input type="checkbox" class="flex-pages-checkbox" checked  id ="flex-pages-checkbox1_{{forloop.counter0}}">
+                  {% else %}
+                  <input type="checkbox" class="flex-pages-checkbox"  id ="flex-pages-checkbox1_{{forloop.counter0}}">
+                  {% endif %}
+                  <span class="slider round flex-pages-slider"></span>
+                </label>
+              </td>
+              <td class="flex-pages-table-cell">
+                <label class="switch flex-pages-switch">
+                  {% if flex.Topbar == "show" %}
+                  <input type="checkbox" class="flex-pages-checkbox switch" checked id ="flex-pages-checkbox2_{{forloop.counter0}}" data-checkbox1="{{flex.name}}">
+                  {% else %}
+                  <input type="checkbox" class="flex-pages-checkbox switch"  id ="flex-pages-checkbox2_{{forloop.counter0}}" data-checkbox1="{{flex.name}}">
+                  {% endif %}
+                  <span class="slider round flex-pages-slider"></span>
+                </label>
+              </td>
+              <td class="flex-pages-table-cell">
+                <i id ="flex-pages-icon_{{forloop.counter0}}" data-Icon="{{flex.name}}" class="{{flex.Icon}}"  data-checkbox2="{{flex.name}}" data-toggle="tooltip" title="flex page icon" style="color:var(--primary-color);font-size:20px;padding-left:12px;"></i></td>
+              <td>
+                <i id ="flex-pages-edit_icon_{{forloop.counter0}}" data-Icon1="{{flex.name}}"  class="far fa-edit ihover  editIcon_flexpages flex-pages-edit" data-toggle="tooltip" onclick = "iconmodal('edit_icon_flexpage',this )" title="Edit Icon" style="color:var(--primary-color);font-size:15px;padding-left:12px;"></i>
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+        <button type="button" id="save_flex_page_show_and_hide_navbars" onclick ="save_flexpage_config()"name="submit" value="Save"
+        class="btn btn-primary float-right"  style="margin-left:70%;margin-right: 0.5rem; margin-top: 5px;">
+        Save
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Dependency -->
+<div class="modal" id="dependencyChecker">
+  <div class="modal-dialog modal-lg modal-dialog-centered" style="justify-content: center;">
+    <div class="modal-content" style="width: 50%;text-align: center;justify-content: center;" >
+
+      <div class="modal-header" style="background:#565a5e;color:white;">
+        <h6 class="modal-title">Related Application Dependencies</h6>
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+      </div>
+
+      <div class="modal-body" style="height: 8rem;overflow: auto;">
+          <table class="table">
+              <tbody id="dependencyTable" >
+              </tbody>
+          </table>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" id="btn_dependencySave" class="btn btn-primary btn-xs mx-2 rounded px-2" data-dismiss="modal">Delete</button>
+        <button type="button" class="btn btn-primary btn-xs mx-2 rounded px-2" data-dismiss="modal">Close</button>
+      </div>
+
+    </div>
+  </div>
+</div>
+{% endif %}
+
+
+</section>
+
+<script>
+
+  //script for process and subprocess//
+      var process_icon = false;
+      var subprocess_icon = false;
+      var edit_icon_process = false;
+      var edit_icon_subprocess = false;
+      var edit_icon_flexpage = false
+      window.processCode=""
+      window.subprocessname=""
+      window.processname=""
+      window.processiconconfig =""
+      window.subiconprocessconfig=""
+      window.flexpageicon=""
+      window.flexpage
+      var selectedIcon;
+      function iconmodal (val, element){
+        if (val=="process"){
+        var modal = $('#choose_icons_for_process').modal('show');
+        process_icon = true;
+        subprocess_icon = false;
+        edit_icon_process = false;
+        edit_icon_subprocess = false;
+        modal.find('.modal-title').text('Process Icon');
+
+        }
+        else if(val=="subprocess"){
+        var modal = $('#choose_icons_for_process').modal('show');
+        process_icon = false;
+        subprocess_icon = true;
+        edit_icon_process = false;
+        edit_icon_flexpage = false;
+        edit_icon_subprocess = false;
+        modal.find('.modal-title').text('Subprocess Icon');
+        }
+        else if(val=="edit_icon_process"){
+        var modal = $('#choose_icons_for_process').modal('show');
+        process_icon = false;
+        subprocess_icon = false;
+        edit_icon_flexpage = false;
+        edit_icon_process = true;
+        edit_icon_subprocess = false;
+        processCode = $(element).closest('tr').find("td").eq(0).attr('data-process_code')
+        modal.find('.modal-title').text('Edit Process Icon');
+        }else if(val =='edit_icon_subprocess'){
+        var modal = $('#choose_icons_for_process').modal('show');
+        process_icon = false;
+        subprocess_icon = false;
+        edit_icon_process = false;
+        edit_icon_flexpage = false;
+        edit_icon_subprocess = true;
+        processCode = $(element).closest('tr').find("td").eq(0).attr('data-process_code')
+        subprocessname=$(element).closest('tr').find("td").eq(1).text().trim()
+        processname=$(element).closest('tr').find("td").eq(0).text().trim()
+        modal.find('.modal-title').text('Edit Subprocess Icon');
+        }else if(val =='edit_icon_flexpage'){
+        var modal = $('#choose_icons_for_process').modal('show');
+        process_icon = false;
+        subprocess_icon = false;
+        edit_icon_process = false;
+        edit_icon_subprocess =false;
+        edit_icon_flexpage = true;
+        flexpage = $(element).attr('data-Icon1');
+        modal.find('.modal-title').text('Edit Flexpage Icon');
+        }
+
+      }
+      var string = `<div class="row" white-space="nowrap">`
+      var iconlist = ["fas fa-compass", "fas fa-address-card", "fas fa-clipboard", "fas fa-wallet", "fas fa-dollar-sign", "fas fa-table", "fas fa-atom", "fas fa-tasks", "fas fa-th", "fas fa-business-time", "fas fa-chart-area", "fas fa-chart-line", "fas fa-chart-bar", 'fas fa-chart-pie', "fas fa-sitemap", "fas fa-highlighter", "fas fa-th-large", "fas fa-globe", "fas fa-paperclip", "fas fa-project-diagram", "fas fa-print", "fas fa-i-cursor", "fas fa-indent", "fas fa-list-alt", "fas fa-list-ul", "fas fa-outdent", "far fa-building", "fas fa-bullseye", "fas fa-calendar", "far fa-compass"]
+      for (i = 0; i < iconlist.length; i++) {
+          if(iconlist.length){
+          string += `<div class="col-2 icons"><a href="#" ><i class="${iconlist[i]} listoficon" style="font-size:1rem;color: black;font-size: 1rem;background: #fff;padding:0px;border-radius: 5px;" ></i>&nbsp&nbsp</a></div>`
+          }
+      }
+      string += `</div>`
+
+      $(".list_of_icons").append(string)
+      $('.listoficon').on("click", function () {
+        $('.listoficon').each(function () {
+          $(this).css("color", "black");
+          $(this).css("background", "#fff");
+        });
+        $(this).attr("id", "selected_icon")
+        $(this).css("color", "white");
+        $(this).css("background", "var(--primary-color)");
+        var selectedIcon1 = $(this).attr("class").split(" ")[1]
+        selectedIcon = "fas " + selectedIcon1;
+        $(".icon").each(function(){
+          $(this).removeAttr("selected_a");
+          $(this).css("background-color", "#f9f9f9");
+          $(this).css("color","black");
+        })
+      })
+
+      function search_Icons() {
+        var input, filter, ul, div, li, a, i, txtValue, h5;
+        input = document.getElementById("searchIcons");
+        if (input.value.length > 0) {
+            $("#categories_of_icons").css("display", "none")
+            $("#icons_withoutany_categories").css("display", "block")
+            filter = input.value.toUpperCase();
+            div = document.getElementById("icons_withoutany_categories");
+            ul = document.getElementsByTagName("ul");
+            li = div.getElementsByTagName("li");
+              for (i = 0; i < li.length; i++) {
+                  a = li[i].getElementsByTagName("a")[0];
+                  txtValue = a.getAttribute("data-class");
+                  if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                    li[i].style.display = "";
+                  } else {
+                    li[i].style.display = "none";
+                  }
+              }
+        }
+        else {
+          $("#categories_of_icons").css("display", "block")
+          $("#icons_withoutany_categories").css("display", "none")
+        }
+      }
+      $(".icon").click(function () {
+        $(".icon").attr("selected_a", "false");
+        $(".icon").css("background-color", "#f9f9f9");
+        $(".icon").css("color", "black");
+        $(this).attr("selected_a", "true");
+        $(this).css("background-color", "var(--primary-color)");
+        $(this).css("color", "white");
+        selectedIcon = $(this).attr("data-class")
+        var list_icons = document.querySelectorAll(".icons a .listoficon")
+        list_icons.forEach(element => {
+          id = element.id
+          element.removeAttribute('id')
+          element.style.backgroundColor = "white"
+          element.style.color = "black"
+        })
+      })
+      function saveIcon(val){
+        if(val=="Icon"){
+          if(process_icon && !subprocess_icon && !edit_icon_process && !edit_icon_subprocess && !edit_icon_flexpage){
+           processiconconfig = selectedIcon
+            $("#save_iconconfig").attr('data-icon', processiconconfig)
+            Swal.fire({text:"process icon saved successfully.",icon:'success'})
+            process_icon === false
+          }else if(!process_icon && subprocess_icon && !edit_icon_process && !edit_icon_subprocess && !edit_icon_flexpage){
+            subiconprocessconfig = selectedIcon
+            $("#save_iconconfig").attr('data-icon',subiconprocessconfig )
+            Swal.fire({text:"subprocess icon saved successfully.",icon:'success'})
+            subprocess_icon===false
+          }else if(!process_icon && !subprocess_icon && edit_icon_process && !edit_icon_subprocess && !edit_icon_flexpage){
+            processiconconfig = selectedIcon
+            $("#save_iconconfig").attr('data-icon', processiconconfig)
+            edit_ProcessIcon_and_SubprocessIcon()
+            edit_icon_process = false
+          }else if(!process_icon && !subprocess_icon && !edit_icon_process && edit_icon_subprocess && !edit_icon_flexpage){
+            subiconprocessconfig = selectedIcon
+            $("#save_iconconfig").attr('data-icon',subiconprocessconfig )
+            edit_ProcessIcon_and_SubprocessIcon()
+            edit_icon_subprocess = false
+          }else if(!process_icon && !subprocess_icon && !edit_icon_process && !edit_icon_subprocess && edit_icon_flexpage){
+            flexpageicon = selectedIcon
+            edit_flexpage_icon(flexpage)
+            Swal.fire({text:"flexpage icon saved successfully.",icon:'success'})
+            edit_icon_flexpage = false
+          }
+
+          $(".listoficon").each(function(){
+            $(this).removeAttr("selected_icon");
+            $(this).css("background-color", "#f9f9f9");
+            $(this).css("color","black");
+          })
+        }else if(val=="moreIcon"){
+          if(process_icon && !subprocess_icon && !edit_icon_process && !edit_icon_subprocess && !edit_icon_flexpage){
+           processiconconfig = selectedIcon
+           $("#save_icon").attr('data-icon', processiconconfig)
+            Swal.fire({text:"process icon saved successfully.",icon:'success'})
+            process_icon === false
+            $("#close_process_icon").click()
+          }else if(!process_icon && subprocess_icon && !edit_icon_process && !edit_icon_subprocess && !edit_icon_flexpage ){
+            subiconprocessconfig = selectedIcon
+            $("#save_icon").attr('data-icon',subiconprocessconfig )
+            $("#close_process_icon").click()
+            Swal.fire({text:"subprocess icon saved successfully.",icon:'success'})
+            subprocess_icon===false
+          }else if(!process_icon && !subprocess_icon && edit_icon_process && !edit_icon_subprocess && !edit_icon_flexpage){
+            processiconconfig = selectedIcon
+            $("#save_icon").attr('data-icon', processiconconfig)
+            edit_ProcessIcon_and_SubprocessIcon()
+            $("#close_process_icon").click()
+            edit_icon_process = false
+          }else if(!process_icon && !subprocess_icon && !edit_icon_process && edit_icon_subprocess && !edit_icon_flexpage){
+            subiconprocessconfig = selectedIcon
+            $("#save_icon").attr('data-icon',subiconprocessconfig )
+            edit_ProcessIcon_and_SubprocessIcon()
+            $("#close_process_icon").click()
+            edit_icon_subprocess = false
+          } else if(!process_icon && !subprocess_icon && !edit_icon_process && !edit_icon_subprocess && edit_icon_flexpage){
+            flexpageicon = selectedIcon
+            edit_flexpage_icon(flexpage)
+            $("#close_process_icon").click()
+            edit_icon_flexpage = false
+            Swal.fire({text:"flexpage icon saved successfully.",icon:'success'})
+          }
+        }
+        if (val === "Icon" || val === "moreIcon") {
+          $(`#${sys_mgmt_currentElementId}`).attr('class', selectedIcon);
+        }
+      }
+    function edit_ProcessIcon_and_SubprocessIcon(){
+      var currentDevMode = "{{current_dev_mode}}"
+            var mode_list=["Edit","Build"]
+            if(mode_list.includes(currentDevMode.trim())){
+              let url_string = window.location.pathname
+              let f_occ = url_string.indexOf('/', url_string.indexOf('/') + 1)
+              let s_occ = url_string.indexOf('/', url_string.indexOf('/') + f_occ +1)
+              let t_occ = url_string.indexOf('/', url_string.indexOf('/') + s_occ +1)
+              let app_code2 = url_string.substring(f_occ+1,s_occ)
+              let current_dev_mode2 = url_string.substring(s_occ+1,t_occ)
+              let modes = ["Build","Edit"]
+              let url = ""
+              if(current_dev_mode2 != "Build" && current_dev_mode2 != "Edit"){
+                current_dev_mode2 = "User"
+              }
+              if(edit_icon_process && !edit_icon_subprocess){
+                  $.ajax({
+                          url: `/users/${app_code2}/${current_dev_mode2}/lvlcreation/`,
+
+                          data: {
+                            'operation': "editProcessIcon",
+                            'prCode':processCode,
+                            'process_icon':processiconconfig,
+                          },
+                          type: "POST",
+                          dataType: "json",
+                          success: function (data) {
+                            Swal.fire({icon: 'success',text: 'process icon saved successfully'});
+                            location.reload();
+                          },
+                          error: function () {
+                            Swal.fire({icon: 'error',text: 'Error! Failure in saving process icon. Please try again.'});;
+                          }
+                        })
+              }else if(!edit_icon_process && edit_icon_subprocess){
+                $.ajax({
+
+                url: `/users/${app_code2}/${current_dev_mode2}/lvlcreation/`,
+                data: {
+                  'operation': "editSubprocessIcon",
+                  'prCode': processCode,
+                  'spname': subprocessname,
+                  'pname':processname,
+                  'subprocess_icon':subiconprocessconfig,
+                },
+                type: "POST",
+                dataType: "json",
+                success: function (data) {
+                  Swal.fire({icon: 'success',text: 'subprocess icon saved successfully'});
+                  location.reload();
+                },
+                error: function () {
+                  Swal.fire({icon: 'error',text: 'Error! Failue in saving subprocess icon. Please try again.'});;
+                }
+              });
+
+              }
+
+          }
+}
+
+    function edit_flexpage_icon(flexpage){
+    var flexPageObject = {{flex_page_data | safe}};
+    let count = 0;
+    for (var key in flexPageObject) {
+    var flexPageIconId = `flex-pages-icon_${count}`;
+      if (flexPageObject[key].name === flexpage) {
+        $('#' + flexPageIconId).removeClass().addClass(flexpageicon);
+    }
+    count++
+    }
+    }
+    function save_flexpage_config(){
+      var config= {}
+      var flexPageObject = {{flex_page_data | safe}};
+      $("#myTable2_flex_page tr").each(function(){
+      var currentRow = $(this);
+        var key  = currentRow.find("td:nth-child(1)").text();
+      var checkbox1 = currentRow.find("td:nth-child(2) input[type='checkbox']");
+      var sidebar = checkbox1.prop("checked");
+      if (sidebar==true){
+        sidebar = "show"
+      }else{
+        sidebar = "hide"
+      }
+      var checkbox2 = currentRow.find("td:nth-child(3) input[type='checkbox']");
+      var topbar = checkbox2.prop("checked");
+      if (topbar==true){
+        topbar = "show"
+      }else{
+        topbar = "hide"
+      }
+      var fourthI = currentRow.find("td:nth-child(4) i");
+      var icon = fourthI.attr("class");
+      config[key] ={"Sidebar":sidebar, "Topbar":topbar, "Icon":icon}
+    });
+    var currentDevMode = "{{current_dev_mode}}"
+            var mode_list=["Edit","Build"]
+            if(mode_list.includes(currentDevMode.trim())){
+              let url_string = window.location.pathname
+              let f_occ = url_string.indexOf('/', url_string.indexOf('/') + 1)
+              let s_occ = url_string.indexOf('/', url_string.indexOf('/') + f_occ +1)
+              let t_occ = url_string.indexOf('/', url_string.indexOf('/') + s_occ +1)
+              let app_code2 = url_string.substring(f_occ+1,s_occ)
+              let current_dev_mode2 = url_string.substring(s_occ+1,t_occ)
+              let modes = ["Build","Edit"]
+              let url = ""
+              if(current_dev_mode2 != "Build" && current_dev_mode2 != "Edit"){
+                current_dev_mode2 = "User"
+              }
+              $.ajax({
+                          url: `/users/${app_code2}/${current_dev_mode2}/lvlcreation/`,
+
+                          data: {
+                            'operation': "saveflexpageconfig",
+                            'config':JSON.stringify(config)
+                          },
+                          type: "POST",
+                          dataType: "json",
+                          success: function (data) {
+                            Swal.fire({icon: 'success',text: 'flex page configuration saved successfully'});
+                            location.reload();
+                          },
+                          error: function () {
+                            Swal.fire({icon: 'error',text: 'Error! Failure in saving in config. Please try again.'});;
+                          }
+                        })
+    }
+
+  }
+    $(document).ready(function(){
+    var obj = {{flex_page_data | safe}};
+    let flexdata = Object.keys(obj)
+    $("#myTable2_flex_page tr").each(function(index){
+    var currentRow = $(this);
+    var currentFlexData = flexdata[index];
+    currentRow.attr("data-item_code", currentFlexData);
+    if(!currentFlexData.startsWith('Rgr')){
+      currentRow.find("td:nth-child(2)").css("visibility","hidden");
+      currentRow.find("td:nth-child(3)").css("visibility","hidden");
+    }
+  });
+  })
+var None = 'None';
+
+$('select.select2:not(.modal select.select2)').each(function(){
+  parent = $(this).parent()
+  $(this).select2({dropdownParent:parent})
+})
+$('.modal select.select2').each(function(){
+  $(this).select2()
+})
+$('#hover').on('select2:select',function(){
+if($('#hover').val() == "no" ){
+  $('#id_details').removeAttr("required")
+  $('#details_div').css("display", "none")
+  $("#subprocess-icon").css("margin-top","unset")
+
+}else{
+
+  $('#details_div').css("display", "block")
+  $("#subprocess-icon").css("margin-top","30px")
+}
+})
+$('.input').on('input',function() {
+  maxLimit($(this));
+})
+function maxLimit(current) {
+  if (parseInt(current.val()) > parseInt(current.attr('max'))) {
+    current.val(current.attr('max')).trigger('change');
+  }
+}
+</script>
+{% if current_application_code == 'Dev' %}
+{% if current_dev_mode == 'Build' %}
+<script>
+
+  var finalprocesses = {{finalprocesses | safe}}
+  var finalsubprocesses = {{finalsubprocesses | safe}}
+  var processOrder = []
+  $('#Impact2_Final_Allocated').find('.input').attr('max', '1')
+  $('#Impact_Final_Allocated').find('.input').attr('max', finalprocesses.length)
+  var count = 0;
+  for(let i = 0; i < finalprocesses.length; i++) {
+    $('#Impact_Final_Allocated').find('.input').eq(i).val(i+1).trigger('change');
+  }
+  for(let i = 0; i < finalsubprocesses.length; i++) {
+    count = 0
+    for(let j = 0; j < finalsubprocesses.length; j++) {
+      if (finalsubprocesses[i]["item_group_name"] ==  finalsubprocesses[j]["item_group_name"]) {
+        count = count + 1;
+      }
+    }
+    for (let j = 0; j < count; j++) {
+      $('#Impact2_Final_Allocated').find('.input').eq(j+i).attr('max', count)
+    }
+    i = count + i -1;
+
+  }
+  $('#Impact2_Final_Allocated').find('.input').css('width','55px');
+
+  $("#save_process_order").on('click',function() {
+    processOrder = []
+    processOrderCode = []
+
+    orderDict = {}
+    for(let i = 0; i < finalprocesses.length; i++) {
+      for(let j = 0; j < $('#Impact_Final_Allocated').find('.input').length; j++) {
+        if (i+1 == $('#Impact_Final_Allocated').find('.input').eq(j).val()) {
+          processOrder.push($('#Impact_Final_Allocated').find('tbody').find('tr').eq(j).find('td').eq(0).text())
+          processOrderCode.push($('#Impact_Final_Allocated').find('tbody').find('tr').eq(j).find('td').eq(0).attr('data-process_code'))
+        }
+      }
+    }
+
+    var count = 0
+    for (let i = 0; i < processOrderCode.length; i++) {
+      count = count + 1;
+      var count_pro = 0
+      orderDict[processOrderCode[i]] = {}
+      orderDict[processOrderCode[i]][count] = {}
+      for(let j = 0; j < finalsubprocesses.length; j++) {
+        if (processOrderCode[i] == finalsubprocesses[j]["item_group_code"]) {
+          count_pro = count_pro + 1;
+          orderDict[processOrderCode[i]][count][count_pro] = finalsubprocesses[j]["item_code"]
+        }
+      }
+    }
+
+    let url_string = window.location.pathname
+    let f_occ = url_string.indexOf('/', url_string.indexOf('/') + 1)
+    let s_occ = url_string.indexOf('/', url_string.indexOf('/') + f_occ +1)
+    let t_occ = url_string.indexOf('/', url_string.indexOf('/') + s_occ +1)
+    let app_code2 = url_string.substring(f_occ+1,s_occ)
+    let current_dev_mode2 = url_string.substring(s_occ+1,t_occ)
+    let modes = ["Build","Edit"]
+    let url = ""
+    if(current_dev_mode2 != "Build" && current_dev_mode2 != "Edit"){
+      current_dev_mode2 = "User"
+    }
+    $.ajax({
+      url: `/users/${app_code2}/${current_dev_mode2}/application_order/`,
+      data: {
+        'order_data':JSON.stringify(orderDict),
+        'operation': 'save_order',
+      },
+      type: "POST",
+      dataType: "json",
+      success: function (data) {
+        Swal.fire({icon: 'success',text: 'Process order saved successfully.'});
+      },
+      error: function () {
+        Swal.fire({icon: 'error',text: 'Error! Please try again.'});
+      }
+    });
+  })
+
+  $('#save_subprocess_order').on('click', function() {
+    processOrder = []
+    subprocessOrder = {}
+
+    for(let i = 0; i < finalprocesses.length; i++) {
+      for(let j = 0; j < $('#Impact_Final_Allocated').find('.input').length; j++) {
+        if (i+1 == $('#Impact_Final_Allocated').find('.input').eq(j).val()) {
+          processOrder.push($('#Impact_Final_Allocated').find('tbody').find('tr').eq(j).find('td').eq(0).text())
+        }
+      }
+    }
+    var len = 1;
+
+      for (let i = len - 1; i < finalsubprocesses.length; i++) {
+        subprocessOrder[finalsubprocesses[i]["item_group_code"]] = []
+        len = parseInt($('#Impact2_Final_Allocated').find('.input').eq(i).attr('max'));
+        for(let j = 0; j < len; j++) {
+          for(let k = 0 ; k < len; k++) {
+            if (j+1 == $('#Impact2_Final_Allocated').find('.input').eq(i+k).val()) {
+              subprocessOrder[finalsubprocesses[i]["item_group_code"]].push($('#Impact2_Final_Allocated').find('tbody').find('tr').eq(i+k).find('td').eq(0).attr("data-process_code"))
+            }
+          }
+        }
+        i = len + i - 1;
+      }
+      var orderDict = {}
+      var count = 0
+      for (const [key, value] of Object.entries(subprocessOrder)) {
+        count = count + 1;
+        var count_sub = 0;
+        orderDict[key] = {}
+        orderDict[key][count] = {}
+        for (let i = 0; i < value.length; i++) {
+          count_sub = count_sub + 1;
+          orderDict[key][count][count_sub] = value[i];
+        }
+      }
+      let url_string = window.location.pathname
+      let f_occ = url_string.indexOf('/', url_string.indexOf('/') + 1)
+      let s_occ = url_string.indexOf('/', url_string.indexOf('/') + f_occ +1)
+      let t_occ = url_string.indexOf('/', url_string.indexOf('/') + s_occ +1)
+      let app_code2 = url_string.substring(f_occ+1,s_occ)
+      let current_dev_mode2 = url_string.substring(s_occ+1,t_occ)
+      let modes = ["Build","Edit"]
+      let url = ""
+      if(current_dev_mode2 != "Build" && current_dev_mode2 != "Edit"){
+        current_dev_mode2 = "User"
+      }
+      $.ajax({
+        url: `/users/${app_code2}/${current_dev_mode2}/application_order/`,
+        data: {
+          'order_data':JSON.stringify(orderDict),
+          'operation': 'save_order',
+        },
+        type: "POST",
+        dataType: "json",
+        success: function (data) {
+          Swal.fire({icon: 'success',text: 'Subprocess order saved successfully.'});
+      },
+      error: function () {
+        Swal.fire({icon: 'error',text: 'Error! Failure in saving the sub-process order. Please try again.'});
+      }
+    });
+
+
+  })
+  $('.modalClose').on('click', function() {
+    $('#orderProSub').css('display','none');
+    $('.modalSave').prop('disabled', true);
+  })
+  $('.modalSave').on('click',function() {
+    $('.modalSave').prop('disabled', true);
+    $('#orderProSub').css('display','none');
+    location.reload(true)
+  })
+  $('.input').on('input',function() {
+    maxLimit($(this));
+  })
+
+</script>
+{%endif%}
+
+{% if current_dev_mode == 'Edit' %}
+<script>
+  var finalprocesses = {{editAppProcess | safe}}
+  var finalsubprocesses = {{editAppSubprocess | safe}}
+
+  var processOrder = []
+  $('#Impact2_Final_Allocated').find('.input').attr('max', '1')
+  $('#Impact_Final_Allocated').find('.input').attr('max', finalprocesses.length)
+  var count = 0;
+  for(let i = 0; i < finalprocesses.length; i++) {
+    $('#Impact_Final_Allocated').find('.input').eq(i).val(i+1).trigger('change');
+  }
+  for(let i = 0; i < finalsubprocesses.length; i++) {
+    count = 0
+    for(let j = 0; j < finalsubprocesses.length; j++) {
+      if (finalsubprocesses[i]["item_group_name"] ==  finalsubprocesses[j]["item_group_name"]) {
+        count = count + 1;
+      }
+    }
+    for (let j = 0; j < count; j++) {
+      $('#Impact2_Final_Allocated').find('.input').eq(j+i).attr('max', count)
+    }
+    i = count + i -1;
+
+  }
+  $('#Impact_Final_Allocated').find('.input').css('width','55px');
+  $('#Impact_Final_Allocated').find('.input').css('text-align','center');
+  $('#Impact2_Final_Allocated').find('.input').css('width','55px');
+  $('#Impact2_Final_Allocated').find('.input').css('text-align','center');
+  $("#save_process_order").on('click',function() {
+    $('#orderProSub').css('display','block')
+    processOrder = []
+    var checkSame = 0;
+    var checkEmpty = 0;
+    var checkInvalid = false;
+    for(let i = 0; i < $('#Impact_Final_Allocated').find('.input').length; i++) {
+      var checkOrder = $('#Impact_Final_Allocated').find('.input').eq(i).val();
+      checkSame = 0;
+      if (check == "0") {
+        checkInvalid = true;
+      } else {
+        for(let j = 0; j < $('#Impact_Final_Allocated').find('.input').length; j++) {
+          if (checkOrder == $('#Impact_Final_Allocated').find('.input').eq(j).val()) {
+            checkSame = checkSame + 1;
+          }
+          if ($('#Impact_Final_Allocated').find('.input').eq(j).val() == "" || $('#Impact_Final_Allocated').find('.input').eq(j).val() == null) {
+            checkEmpty = 1;
+          }
+        }
+      }
+      if (checkSame > 1 || checkEmpty == 1 || checkInvalid) {
+        break;
+      }
+    }
+    if (checkEmpty == 1 || checkSame > 1 || checkInvalid) {
+      if (checkSame > 1 && checkEmpty == 1 && checkInvalid) {
+        $('#orderProSub').find('.modal-body').html(`<p>Validation failed</p>
+          <span style="color:red; padding-right:8px">&#128473;</span> <span>Order of the process cannot be same</span>
+          <span style="color:red; padding-right:8px">&#128473;</span> <span>Order of the process cannot be empty</span>
+          <span style="color:red;padding-right:8px">&#128473;</span> <span>Invalid order number specified for process(s)</span>
+        `)
+      } else if (checkSame > 1 && checkEmpty == 1 && !checkInvalid) {
+        $('#orderProSub').find('.modal-body').html(`<p>Validation failed</p>
+          <span style="color:red; padding-right:8px">&#128473;</span> <span>Order of the process cannot be same</span>
+          <span style="color:red; padding-right:8px">&#128473;</span> <span>Order of the process cannot be empty</span>
+        `)
+      } else if (checkEmpty == 1) {
+        $('#orderProSub').find('.modal-body').html(`<p>Validation failed</p>
+          <span style="color:red; padding-right:8px">&#128473;</span> <span>Order of the process cannot be empty</span>
+          `)
+      } else if (checkSame > 1) {
+        $('#orderProSub').find('.modal-body').html(`<p>Validation failed</p>
+          <span style="color:red; padding-right:8px">&#128473;</span> <span>Order of the process cannot be same</span>
+          `)
+      } else if (checkInvalid) {
+        $('#orderProSub').find('.modal-body').html(`<p>Validation failed</p>
+          <span style="color:red;padding-right:8px">&#128473;</span> <span>Invalid order number specified for process(s)</span>
+          `)
+      }
+    } else {
+      orderDict = {}
+      for(let i = 0; i < finalprocesses.length; i++) {
+        for(let j = 0; j < $('#Impact_Final_Allocated').find('.input').length; j++) {
+          if (i+1 == $('#Impact_Final_Allocated').find('.input').eq(j).val()) {
+            processOrder.push($('#Impact_Final_Allocated').find('tbody').find('tr').eq(j).find('td').eq(0).text())
+          }
+        }
+      }
+      var count = 0
+      for (let i = 0; i < processOrder.length; i++) {
+        count = count + 1;
+        var count_pro = 0
+        orderDict[processOrder[i]] = {}
+        orderDict[processOrder[i]][count] = {}
+       for(let j = 0; j < finalsubprocesses.length; j++) {
+         if (processOrder[i] == finalsubprocesses[j]["item_group_name"]) {
+            count_pro = count_pro + 1;
+            orderDict[processOrder[i]][count][count_pro] = finalsubprocesses[j]["item_name"]
+         }
+       }
+      }
+      let url_string = window.location.pathname
+      let f_occ = url_string.indexOf('/', url_string.indexOf('/') + 1)
+      let s_occ = url_string.indexOf('/', url_string.indexOf('/') + f_occ +1)
+      let t_occ = url_string.indexOf('/', url_string.indexOf('/') + s_occ +1)
+      let app_code2 = url_string.substring(f_occ+1,s_occ)
+      let current_dev_mode2 = url_string.substring(s_occ+1,t_occ)
+      let modes = ["Build","Edit"]
+      let url = ""
+      if(current_dev_mode2 != "Build" && current_dev_mode2 != "Edit"){
+        current_dev_mode2 = "User"
+      }
+      $.ajax({
+        url: `/users/${app_code2}/${current_dev_mode2}/application_order/`,
+        data: {
+          'order_data':JSON.stringify(orderDict),
+          'operation': 'save_order',
+        },
+        type: "POST",
+        dataType: "json",
+        success: function (data) {
+        $('.modalSave').prop('disabled',false)
+        var html = ``
+        $('#Impact_Final_Allocated').find('tbody').empty();
+        for (i = 0; i < processOrder.length; i++) {
+          for(let j = 0; j < finalprocesses.length; j++) {
+            if(processOrder[i] == finalprocesses[j]["item_name"]) {
+              html = `
+              <tr>
+                <td data-process_code="${finalprocesses[j]["item_code"]}" data-process_type="final">${finalprocesses[j]["item_name"]}</td>
+                <td style="display: flex; justify-content: center;">${finalprocesses[j]["item_shortname"]}</td>
+                <td><input class="input form-control" type="number" value="${i + 1}" min="1" max="${processOrder.length}"></td>
+                <td>Existing</td>
+                <td><i class="far fa-trash-alt ihover javaSC thin-icontrash deleteProcess" data-toggle="tooltip" title="Delete Process" style="color:var(--primary-color);font-size:15px;"></i></td>
+              </tr>
+              `
+            }
+          }
+          $('#Impact_Final_Allocated').find('tbody').append(html);
+        }
+        $('#Impact_Final_Allocated').find('.input').css('width','90px');
+        $('#Impact2_Final_Allocated').find('.input').css('width','90px');
+        $('.deleteProcess').off('click').on('click',deleteProcess)
+        $('#orderProSub').find('.modal-body').html(`<p>Validation successfull</p>
+          <span style="color:green;padding-right:8px">&#10003;  </span> <span> Order of the process cannot be same</span><br>
+          <span style="color:green;padding-right:8px">&#10003;  </span> <span> Order of the process cannot be empty</span>
+
+        `)
+      },
+      error: function () {
+        Swal.fire({icon: 'error',text: 'Error! Please try again.'});
+      }
+    });
+
+    }
+  })
+  $('#save_subprocess_order').on('click', function() {
+    $('#orderProSub').css('display','block')
+    processOrder = []
+    subprocessOrder = {}
+    var checkSame = 0;
+    var checkEmpty = 0;
+    for(let i = 0; i < finalprocesses.length; i++) {
+      for(let j = 0; j < $('#Impact_Final_Allocated').find('.input').length; j++) {
+        if (i+1 == $('#Impact_Final_Allocated').find('.input').eq(j).val()) {
+          processOrder.push($('#Impact_Final_Allocated').find('tbody').find('tr').eq(j).find('td').eq(0).text())
+        }
+      }
+    }
+    var len = 1;
+    for (let i = len - 1; i < finalsubprocesses.length; i++) {
+      len = parseInt($('#Impact2_Final_Allocated').find('.input').eq(i).attr('max'));
+
+      for(let j = 0; j < len; j++) {
+        checkSame = 0;
+        var check = $('#Impact2_Final_Allocated').find('.input').eq(i+j).val();
+        for(let k = 0 ; k < len; k++) {
+          if (check == $('#Impact2_Final_Allocated').find('.input').eq(i+k).val()) {
+            checkSame = checkSame + 1;
+
+          } if (check == "" || check == null) {
+            checkEmpty = 1;
+            break
+          }
+        }
+        if(checkSame > 1 || checkEmpty == 1) {
+          break;
+        }
+      }
+      if(checkSame > 1 || checkEmpty == 1) {
+        break;
+      }
+      i = len + i - 1;
+    }
+    if(checkSame > 1 && checkEmpty == 1) {
+        $('#orderProSub').find('.modal-body').html(`<p">Validation failed</p>
+          <span style="color:red;padding-right:8px">&#128473;</span> <span> Order of the subprocess cannot be same</span>
+          <span style="color:red;padding-right:8px">&#128473;</span> <span> Order of the subprocess cannot be empty</span>
+
+        `)
+    } else if (checkSame > 1) {
+      $('#orderProSub').find('.modal-body').html(`<p>Validation failed</p>
+          <span style="color:red;padding-right:8px">&#128473;</span> <span> Order of the subprocess cannot be same</span>
+
+      `)
+    } else if (checkEmpty == 1) {
+      $('#orderProSub').find('.modal-body').html(`<p>Validation failed</p>
+          <span style="color:red;padding-right:8px">&#128473;</span> <span> Order of the subprocess cannot be empty</span>
+      `)
+    } else {
+      len = 1
+      for (let i = len - 1; i < finalsubprocesses.length; i++) {
+        subprocessOrder[finalsubprocesses[i]["item_group_name"]] = []
+        len = parseInt($('#Impact2_Final_Allocated').find('.input').eq(i).attr('max'));
+        for(let j = 0; j < len; j++) {
+          for(let k = 0 ; k < len; k++) {
+            if (j+1 == $('#Impact2_Final_Allocated').find('.input').eq(i+k).val()) {
+              subprocessOrder[finalsubprocesses[i]["item_group_name"]].push($('#Impact2_Final_Allocated').find('tbody').find('tr').eq(i+k).find('td').eq(1).text())
+            }
+          }
+        }
+        i = len + i - 1;
+      }
+      var orderDict = {}
+      var count = 0
+      for (const [key, value] of Object.entries(subprocessOrder)) {
+        count = count + 1;
+        var count_sub = 0;
+        orderDict[key] = {}
+        orderDict[key][count] = {}
+        for (let i = 0; i < value.length; i++) {
+          count_sub = count_sub + 1;
+          orderDict[key][count][count_sub] = value[i];
+        }
+      }
+      let url_string = window.location.pathname
+      let f_occ = url_string.indexOf('/', url_string.indexOf('/') + 1)
+      let s_occ = url_string.indexOf('/', url_string.indexOf('/') + f_occ +1)
+      let t_occ = url_string.indexOf('/', url_string.indexOf('/') + s_occ +1)
+      let app_code2 = url_string.substring(f_occ+1,s_occ)
+      let current_dev_mode2 = url_string.substring(s_occ+1,t_occ)
+      let modes = ["Build","Edit"]
+      let url = ""
+      if(current_dev_mode2 != "Build" && current_dev_mode2 != "Edit"){
+        current_dev_mode2 = "User"
+      }
+      $.ajax({
+        url: `/users/${app_code2}/${current_dev_mode2}/application_order/`,
+        data: {
+          'order_data':JSON.stringify(orderDict),
+          'operation': 'save_order',
+        },
+        type: "POST",
+        dataType: "json",
+        success: function (data) {
+        $('.modalSave').prop('disabled',false)
+        var html = ``
+        var count = 0
+        $('#Impact2_Final_Allocated').find('tbody').empty();
+        for (const [key, val] of Object.entries(subprocessOrder)) {
+          count = 0;
+          for (i = 0; i < val.length; i++) {
+            for(let j = 0; j < finalsubprocesses.length; j++) {
+              if(key == finalsubprocesses[j]["item_group_name"] && val[i] == finalsubprocesses[j]["item_name"]) {
+                count = count + 1;
+                html = `
+                <tr>
+                  <td>${finalsubprocesses[j]["item_group_name"]}</td>
+                  <td>${finalsubprocesses[j]["item_name"]}</td>
+                  <td style="display: flex; justify-content: center;"><input class="input form-control" type="number" value="${count}" min="1" max=${val.length}></td>
+                  <td>${finalsubprocesses[j]["item_extra_details"]}</td>
+                  <td>Existing</td>
+                  <td><i class="far fa-trash-alt ihover javaSC thin-icontrash deleteSubprocess" data-toggle="tooltip" title="Delete Subprocess" style="color:var(--primary-color);font-size:15px;padding-left:12px;"></i></td>
+                  <td style="display: none;">final</td>
+                </tr>
+                `
+              }
+            }
+            $('#Impact2_Final_Allocated').find('tbody').append(html);
+          }
+        }
+        $('#Impact_Final_Allocated').find('.input').css('width','90px');
+        $('#Impact2_Final_Allocated').find('.input').css('width','90px');
+        $('.deleteSubprocess').off('click').on('click',deleteSubprocess)
+        $('#orderProSub').find('.modal-body').html(`<p>Validation successfull</p>
+          <span style="color:green;padding-right:8px">&#10003;  </span> <span> Order of the subprocess cannot be same</span> <br>
+          <span style="color:green;padding-right:8px">&#10003;  </span> <span> Order of the subprocess cannot be empty</span>
+        `)
+      },
+      error: function () {
+        Swal.fire({icon: 'error',text: 'Error! Failure in saving sub process order. Please try again.'});
+      }
+    });
+    }
+
+  })
+  $('#Impact_Final_Allocated').find('.input').css('width','55px');
+  $('#Impact_Final_Allocated').find('.input').css('text-align','center');
+  $('#Impact2_Final_Allocated').find('.input').css('width','55px');
+  $('#Impact2_Final_Allocated').find('.input').css('text-align','center');
+  $('.modalClose').on('click', function() {
+    $('#orderProSub').css('display','none');
+    $('.modalSave').prop('disabled', true);
+  })
+  $('.modalSave').on('click',function() {
+    $('.modalSave').prop('disabled', true);
+    $('#orderProSub').css('display','none');
+    location.reload(true)
+  })
+  $('.input').on('input',function() {
+    maxLimit($(this));
+  })
+</script>
+{%endif%}
+<script>
+
+</script>
+{%endif%}
+
+
+<script>
+  var ctoken = $('form').find("input[name='csrfmiddlewaretoken']").attr('value')
+
+  $.ajaxSetup({
+    beforeSend: function (xhr, settings) {
+      //if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+      //xhr.setRequestHeader("X-CSRFToken", csrftoken);
+      xhr.setRequestHeader("X-CSRFToken", ctoken);
+      //}
+    }
+  });
+
+  $('#save_process_step_1').on('click', saveProcess);
+
+  $(".saveAsFinal").on('click', function(){
+    var proces_code=$(this).closest('tr').find('td').eq(0).attr('data-process_code');
+    var process_name=$(this).closest('tr').find('td').eq(0).text();
+    var process_shortname= $(this).closest('tr').find('td').eq(1).text();
+    let url_string = window.location.pathname
+    let f_occ = url_string.indexOf('/', url_string.indexOf('/') + 1)
+    let s_occ = url_string.indexOf('/', url_string.indexOf('/') + f_occ +1)
+    let t_occ = url_string.indexOf('/', url_string.indexOf('/') + s_occ +1)
+    let app_code2 = url_string.substring(f_occ+1,s_occ)
+    let current_dev_mode2 = url_string.substring(s_occ+1,t_occ)
+    let modes = ["Build","Edit"]
+    let url = ""
+    if(current_dev_mode2 != "Build" && current_dev_mode2 != "Edit"){
+      current_dev_mode2 = "User"
+    }
+    $.ajax({
+      url: `/users/${app_code2}/${current_dev_mode2}/processCreation/`,
+      data: {
+        'data_list': JSON.stringify({ data1:proces_code,data2:process_name,}),
+        'operation': 'save_draft_process_as_final'
+      },
+      type: "POST",
+      dataType: "json",
+      success: function (data) {
+        Swal.fire({icon: 'success',text: 'Draft process has been saved as final process successfully!'});
+        location.reload();
+      },
+      error: function () {
+        Swal.fire({icon: 'error',text: 'Error! Failure in saving draft process as final process. Please try again.'});
+      }
+    });
+  });
+
+  $(".saveAsFinalSubprocess").on('click', function(){
+
+    var process_name=$(this).closest('tr').find('td').eq(0).text();
+    var subprocess_name= $(this).closest('tr').find('td').eq(1).text();
+    let url_string = window.location.pathname
+    let f_occ = url_string.indexOf('/', url_string.indexOf('/') + 1)
+    let s_occ = url_string.indexOf('/', url_string.indexOf('/') + f_occ +1)
+    let t_occ = url_string.indexOf('/', url_string.indexOf('/') + s_occ +1)
+    let app_code2 = url_string.substring(f_occ+1,s_occ)
+    let current_dev_mode2 = url_string.substring(s_occ+1,t_occ)
+    let modes = ["Build","Edit"]
+    let url = ""
+    if(current_dev_mode2 != "Build" && current_dev_mode2 != "Edit"){
+      current_dev_mode2 = "User"
+    }
+    $.ajax({
+      url: `/users/${app_code2}/${current_dev_mode2}/processCreation/`,
+      data: {
+        'data_list': JSON.stringify({ data2:process_name,data3:subprocess_name}),
+        'operation': 'save_draft_process_as_final_subprocess'
+      },
+      type: "POST",
+      dataType: "json",
+      success: function (data) {
+        Swal.fire({icon: 'success',text: 'Draft sub process has been saved as final sub process successfully!'});
+        location.reload();
+      },
+      error: function () {
+        Swal.fire({icon: 'error',text: 'Error! Failure in saving draft sub process as final sub process. Please try again.'});
+      }
+    });
+  });
+
+  var checkForSpecialChar = function(string){
+    var specialChars = "<>@!#$%^&*()+[]{}?:;|'\"\\,./~`=";
+    for(i = 0; i < specialChars.length;i++){
+      if(string.indexOf(specialChars[i]) > -1){
+          return true
+        }
+    }
+    return false;
+    }
+    $('#id_process_name').on('keypress', function (event) {
+      var specialChars = "<>@!#$%^&*()+[]{}?:;|'\"\\,./~`=";
+      var key = String.fromCharCode(!event.charCode ? event.which : event.charCode);
+      for(i = 0; i < specialChars.length;i++){
+        if(key.indexOf(specialChars[i]) > -1){
+          event.preventDefault();
+          return false
+          }
+      }
+    });
+
+    $('#id_process_name').on('paste', function (event) {
+        var clipboardData = event.originalEvent.clipboardData || window.clipboardData;
+        var pastedText = clipboardData.getData('text');
+        var containsSpecialChars = false;
+        var specialChars = "<>@!#$%^&*()+[]{}?:;|'\"\\,./~`=";
+        for (i = 0; i < specialChars.length; i++) {
+            if (pastedText.indexOf(specialChars[i]) > -1) {
+                containsSpecialChars = true;
+                break;
+            }
+        }
+
+        if(containsSpecialChars){
+           event.preventDefault();
+           this.value = this.value+pastedText.replace(/[<>@!#$%^&*()+\[\]{}?:;|'\"\\,./~`=]/g, '')
+        }
+
+
+      });
+
+    function saveProcess() {
+      var process_icon = processiconconfig
+      var btnName=[]
+      var proces_code=$('#process').val();
+      var process_name=$('#id_process_name').val().trim();
+      var full_final_process_list = {{full_final_process_list_lower | safe}}
+      var full_draft_process_list = {{full_draft_process_list_lower|safe}}
+      var full_process_list =  full_final_process_list.concat(full_draft_process_list)
+      if(checkForSpecialChar(process_name)) {
+        Swal.fire({icon: 'warning',text: "Process name should not contain any special characters (<>@!#$%^&*()+[]{}?:;|'\"\\,./~`=)"});
+        var el = document.getElementById('id_process_name');
+        el.addEventListener('keydown', function(event) {
+            const key = event.key;
+            event.preventDefault();
+            if (key === "Backspace" || key === "Delete")
+                {
+                  $("#save_process_step_1").prop("disabled", false);
+                  $('#alertspan').css("display","none")
+                  $('#div_id_process_name').css("margin-bottom","1em")
+                }
+              })
+              $('#id_process_name').keypress(function(){
+                $("#save_process_step_1").prop("disabled", false);
+                $('#alertspan').css("display","none")
+                $('#div_id_process_name').css("margin-bottom","1em")
+              });
+        return
+      }
+
+      if(full_process_list.includes(process_name.toString().toLowerCase())){
+        $('#alertspan').css("display","block")
+          $('#alertspan').css("margin-bottom","1em")
+          $('#div_id_process_name').css("margin-bottom","0em")
+          bool = true;
+          var el = document.getElementById('id_process_name');
+          el.addEventListener('keydown', function(event) {
+              const key = event.key;
+              if (key === "Backspace" || key === "Delete")
+                  {
+                    $("#save_process_step_1").prop("disabled", false);
+                    $('#alertspan').css("display","none")
+                    $('#div_id_process_name').css("margin-bottom","1em")
+                  }
+                })
+                $('#id_process_name').keypress(function(){
+                  $("#save_process_step_1").prop("disabled", false);
+                  $('#alertspan').css("display","none")
+                  $('#div_id_process_name').css("margin-bottom","1em")
+                });
+                Swal.fire({icon: 'warning',text: 'The name applied in this Process is already being used by another Process. Please apply a unique name to this Process.'});
+                return
+              }
+      var process_shortname= $('#id_process_shortname').val().trim();
+      var Processtable = '{';
+      var otArr = [];
+      var tbl2
+
+      $('#Impact_Draft tr').each(function () {
+        if ($(this).find('td').eq(2).text().trim() === 'New') {
+          btnName.push('draft')
+        }
+      });
+      $('#Impact_Final tr').each(function () {
+        if ($(this).find('td').eq(2).text().trim() === 'New') {
+          btnName.push('final')
+        }
+      })
+        tbl2 = $('#Impact_Draft').find('tr').each(function (i) {
+      x = $(this).children();
+      var itArr = [];
+      x.each(function () {
+        itArr.push('"' + $(this).text() + '"');
+      });
+
+        if((itArr[2]) == '"Existing"')
+        {
+          itArr=[]
+        }
+        else if(itArr == "")
+        {
+          itArr=[]
+        }
+        else{
+          otArr.push('"' + i + '": [' + itArr.join(',') + ']');
+        }
+     })
+
+      tbl2 = $('#Impact_Final tr').each(function (i) {
+      x = $(this).children();
+      var itArr = [];
+      x.each(function () {
+        itArr.push('"' + $(this).text() + '"');
+      });
+
+        if((itArr[2]) == '"Existing"')
+        {
+          itArr=[]
+        }
+        else if(itArr == "")
+        {
+          itArr=[]
+        }
+        else{
+          otArr.push('"' + i + '": [' + itArr.join(',') + ' ]');
+        }
+  })
+      Processtable += otArr.join(",") + '}'
+
+      var newstr = (JSON.stringify({ data2 : Processtable}))
+     $("#myTable tr").each(function(){
+        if(($(this).find("td:nth-child(2)").text()) == "New")
+        {
+          ($(this).find("td:nth-child(2)").html("Existing"))
+        }
+      });
+      if((Processtable.length)>37){
+        let url_string = window.location.pathname
+        let f_occ = url_string.indexOf('/', url_string.indexOf('/') + 1)
+        let s_occ = url_string.indexOf('/', url_string.indexOf('/') + f_occ +1)
+        let t_occ = url_string.indexOf('/', url_string.indexOf('/') + s_occ +1)
+        let app_code2 = url_string.substring(f_occ+1,s_occ)
+        let current_dev_mode2 = url_string.substring(s_occ+1,t_occ)
+        let modes = ["Build","Edit"]
+        let url = ""
+        if(current_dev_mode2 != "Build" && current_dev_mode2 != "Edit"){
+          current_dev_mode2 = "User"
+        }
+        $.ajax({
+          url: `/users/${app_code2}/${current_dev_mode2}/processCreation/`,
+
+         data: {
+
+           'data_list': JSON.stringify({ data1 : proces_code,data2:process_name,data4:Processtable,data3: process_shortname,draft:btnName,processIcon:process_icon,}),
+           'operation': 'save_process_step_1'
+         },
+         type: "POST",
+         dataType: "json",
+         success: function (data) {
+          Swal.fire({icon: 'success',text: 'New Process created successfully!'});
+           var data = JSON.parse(data)
+           for (var i = 0; i < data.key2.length; i++) {
+              if (btnName[i] === 'final') {
+                var saveAs= 'final';
+              } else if(btnName[i] ==="draft"){
+                var saveAs = 'draft';
+              }
+              $('#process').append(`<option value="${data.key2[i][0]}" data-process_status="${saveAs}">${data.key2[i][1]}</option>`);
+               $('#process_act').append(new Option(data.key2[i][0],data.key2[i][1]));
+             }
+            location.reload();
+          },
+          error: function () {
+            Swal.fire({icon: 'error',text: 'Error! Failure in creating a new Process. Please try again.'});
+         }
+       })
+      }
+    }
+
+
+  $('#save_subprocess_step_2').on('click', function () {
+    var subprocess_list=[]
+    var process_name = []
+    var process_status = $('#process').attr('data-process_status');
+    var subprocess_icon = subiconprocessconfig
+    var process_status = []
+    var hoveroption= $('#hover').children("option:selected").val()
+    var subprocess_name = []
+    var desc =[]
+    if(checkForSpecialChar($("#id_subprocess_name").val())) {
+      Swal.fire({icon: 'warning',text:"Process name should not contain any special characters (<>@!#$%^&*()+[]{}?:;|'\"\\,./~`=)." });
+      return
+    }
+    for (let i =  0; i < finalsubprocesses.length; i++) {
+      if ($('#process option:selected').val() == finalsubprocesses[i]["item_group_code"]) {
+        if($("#id_subprocess_name").val().toLowerCase() == finalsubprocesses[i]["item_name"].toLowerCase()) {
+          $('#alertspan1').css("display","block")
+            $('#alertspan1').css("margin-bottom","1em")
+            $('#div_id_subprocess_name').css("margin-bottom","0em")
+            bool = true;
+            var el = document.getElementById('id_subprocess_name');
+            el.addEventListener('keydown', function(event) {
+                const key = event.key;
+                if (key === "Backspace" || key === "Delete")
+                    {
+                      $("#save_subprocess_step_2").prop("disabled", false);
+                      $('#alertspan1').css("display","none")
+                      $('#div_id_subprocess_name').css("margin-bottom","1em")
+                    }
+                  })
+          $('#id_subprocess_name').keypress(function(){
+            $("#save_subprocess_step_2").prop("disabled", false);
+            $('#alertspan1').css("display","none")
+            $('#div_id_subprocess_name').css("margin-bottom","1em")
+          });
+          return
+        }
+        }
+    }
+    $('#Impact2_Final_Allocated tr').each(function () {
+
+    if ($(this).find('td').eq(4).text().trim() === 'New') {
+      let valuer = $(this).find('td').eq(0).attr('data-process_type')
+      let pname = $(this).find('td').eq(0).text().trim()
+      let spname = $(this).find('td').eq(1).text().trim()
+      let descdetail = $(this).find('td').eq(3).text().trim()
+      process_name.push(pname)
+      desc.push(descdetail)
+      subprocess_name.push(spname)
+      process_status.push(valuer)
+      subprocess_list.push(valuer)
+
+    }
+  });
+
+    $('#Impact2 tr').each(function () {
+
+        if ($(this).find('td').eq(3).text().trim() === 'New') {
+          let valuer = $(this).find('td').eq(0).attr('data-process_type')
+      let pname = $(this).find('td').eq(0).text().trim()
+      let spname = $(this).find('td').eq(1).text().trim()
+      let descdetail = $(this).find('td').eq(2).text().trim()
+      let bstatus = $(this).find('td').eq(6).text().trim()
+      process_name.push(pname)
+      desc.push(descdetail)
+      subprocess_name.push(spname)
+      process_status.push(bstatus)
+      subprocess_list.push(valuer)
+        }
+      });
+      $('#Impact2_Draft tr').each(function () {
+
+    if ($(this).find('td').eq(3).text().trim() === 'New') {
+      let valuer = $(this).find('td').eq(0).attr('data-process_type')
+      let pname = $(this).find('td').eq(0).text().trim()
+      let spname = $(this).find('td').eq(1).text().trim()
+      let descdetail = $(this).find('td').eq(2).text().trim()
+      process_name.push(pname)
+      desc.push(descdetail)
+      subprocess_name.push(spname)
+      process_status.push(valuer)
+      subprocess_list.push(valuer)
+    }
+  });
+
+  var newdata3=[]
+    for(let i=0;i<process_name.length;i++){
+      var list_subprocess =[]
+      list_subprocess.push(process_name[i],subprocess_name[i],desc[i],'New',subprocess_list[i],process_status[i])
+      newdata3.push(list_subprocess)
+    }
+
+    var Subprocesstable = '{';
+    var otArr = [];
+    var tbl2 = $('#Impact2_Final_Allocated tr').each(function (i) {
+    x = $(this).children();
+
+    var itArr = [];
+    x.each(function () {
+    itArr.push('"' + $(this).text() + '"');
+  });
+  if((itArr[3]) == '"Existing"')
+      {
+        itArr=[]
+      }
+      else if(itArr == "")
+      {
+        itArr=[]
+      }
+      else{
+        otArr.push('"' + i + '": [' + itArr.join(',') + ']');
+      }
+
+})
+    var tbl2 = $('#Impact2 tr').each(function (i) {
+    x = $(this).children();
+
+    var itArr = [];
+    x.each(function () {
+    itArr.push('"' + $(this).text() + '"');
+  });
+  if((itArr[3]) == '"Existing"')
+      {
+        itArr=[]
+      }
+      else if(itArr == "")
+      {
+        itArr=[]
+      }
+      else{
+        otArr.push('"' + i + '": [' + itArr.join(',') + ']');
+      }
+
+})
+
+    var tbl2 = $('#Impact2_Draft tr').each(function (i) {
+    x = $(this).children();
+
+    var itArr = [];
+    x.each(function () {
+    itArr.push('"' + $(this).text() + '"');
+  });
+  if((itArr[3]) == '"Existing"')
+      {
+        itArr=[]
+      }
+      else if(itArr == "")
+      {
+        itArr=[]
+      }
+      else{
+        otArr.push('"' + i + '": [' + itArr.join(',') + ']');
+      }
+
+})
+
+
+
+    Subprocesstable += otArr.join(",") + '}'
+    $(".Impact2_Final_Allocated_tbody tr").each(function(){
+      if(($(this).find("td:nth-child(5)").text()) == "New")
+      {
+        ($(this).find("td:nth-child(5)").html("Existing"))
+      }
+    });
+    $("#myTable1_Final tr").each(function(){
+      if(($(this).find("td:nth-child(4)").text()) == "New")
+      {
+        ($(this).find("td:nth-child(4)").html("Existing"))
+      }
+    });
+
+    $("#myTable1_Draft tr").each(function(){
+      if(($(this).find("td:nth-child(4)").text()) == "New")
+      {
+        ($(this).find("td:nth-child(4)").html("Existing"))
+      }
+    });
+
+
+
+
+    if((Subprocesstable.length)>81)
+    {
+        let url_string = window.location.pathname
+        let f_occ = url_string.indexOf('/', url_string.indexOf('/') + 1)
+        let s_occ = url_string.indexOf('/', url_string.indexOf('/') + f_occ +1)
+        let t_occ = url_string.indexOf('/', url_string.indexOf('/') + s_occ +1)
+        let app_code2 = url_string.substring(f_occ+1,s_occ)
+        let current_dev_mode2 = url_string.substring(s_occ+1,t_occ)
+        let modes = ["Build","Edit"]
+        let url = ""
+        if(current_dev_mode2 != "Build" && current_dev_mode2 != "Edit"){
+          current_dev_mode2 = "User"
+        }
+        $.ajax({
+          url: `/users/${app_code2}/${current_dev_mode2}/processCreation/`,
+          data: {
+            'data_list': JSON.stringify({ data1: process_name, data2: subprocess_name ,data3:newdata3,data4:desc,data6:hoveroption, process_status:process_status,process_type:subprocess_list,data7:subprocess_icon,}),
+            'operation': 'save_subprocess_step_2'
+          },
+          type: "POST",
+          dataType: "json",
+          success: function (data) {
+            Swal.fire({icon: 'success',text:"New Subprocess created successfully!"});
+            let devMode = '{{current_dev_mode}}';
+            if (devMode === 'Build') {
+              let buildMode = '{{build_process_type}}';
+              let buildAppCode = '{{build_app_code}}';
+              let loc = `/users/${buildAppCode}/Build/developer_tools/`;
+              window.location.href = loc;
+            }
+
+          },
+          error: function () {
+            Swal.fire({icon: 'error',text: 'Error! Failure in creating a new Subprocess. Please try again.'});
+          }
+        })
+    }
+  })
+
+  $('#process_act').on('click', function () {
+    let url_string = window.location.pathname
+    let f_occ = url_string.indexOf('/', url_string.indexOf('/') + 1)
+    let s_occ = url_string.indexOf('/', url_string.indexOf('/') + f_occ +1)
+    let t_occ = url_string.indexOf('/', url_string.indexOf('/') + s_occ +1)
+    let app_code2 = url_string.substring(f_occ+1,s_occ)
+    let current_dev_mode2 = url_string.substring(s_occ+1,t_occ)
+    let modes = ["Build","Edit"]
+    let url = ""
+    if(current_dev_mode2 != "Build" && current_dev_mode2 != "Edit"){
+      current_dev_mode2 = "User"
+    }
+    var process_name = $('#process_act').val()
+    $.ajax({
+      url: `/users/${app_code2}/${current_dev_mode2}/processCreation/`,
+      data: {
+        'data_list': JSON.stringify({ data1: process_name }),
+        'operation': 'cascading'
+      },
+      type: "POST",
+      dataType: "json",
+      success: function (data) {
+        $("#subprocess option").remove();
+        for (var i = 0; i < data.data.length; i++) {
+
+            $('#subprocess').append(new Option(data.data[i],data.data[i]));
+
+          }
+      },
+      error: function () {
+        Swal.fire({icon: 'error',text: 'Error! Please try again.'});;
+      }
+    })
+  })
+</script>
+
+<script>
+  if(document.getElementById('formp')){
+    document.getElementById('formp').onsubmit = function (e) {
+        var newRow, i;
+        var btnName = e.submitter.getAttribute("data-button-type")
+        newRow = '<tr>';
+        var newvar1
+        if($("#save_iconconfig").attr('data-icon')){
+        newvar1 = $('#save_iconconfig').attr('data-icon')
+        }else if($("#save_icon").attr('data-icon')){
+        newvar1 = $('#save_icon').attr('data-icon')
+        }
+        var newvar = $('#id_process_name').val().trim();
+        var newvars=$('#id_process_shortname').val()
+        var check = []
+        var bool = false;
+        var full_final_process_list = {{full_final_process_list_lower | safe}}
+        var full_draft_process_list = {{full_draft_process_list_lower|safe}}
+        var full_process_list =  full_final_process_list.concat(full_draft_process_list)
+        $("#myTable tr").each(function(){
+          var x = ($(this).find("td").first().text())
+          check.push(x);
+          })
+
+         if(checkForSpecialChar(newvar)) {
+            e.preventDefault();
+            Swal.fire({icon: 'warning',text: "Process name should not contain any special characters (<>@!#$%^&*()+[]{}?:;|'\"\\,./~`=)."});
+            return
+          }
+         if(full_process_list.includes(newvar.toString().toLowerCase())){
+              $('#alertspan').css("display","block")
+               $('#alertspan').css("margin-bottom","1em")
+               $('#div_id_process_name').css("margin-bottom","0em")
+               bool = true;
+               var el = document.getElementById('id_process_name');
+               el.addEventListener('keydown', function(event) {
+                    const key = event.key;
+                    if (key === "Backspace" || key === "Delete")
+                        {
+                          $('#alertspan').css("display","none")
+                          $('#div_id_process_name').css("margin-bottom","1em")
+                        }
+                      })
+                      $('#id_process_name').keypress(function(){
+                        $('#alertspan').css("display","none")
+                        $('#div_id_process_name').css("margin-bottom","1em")
+                      });
+
+         }
+         if(bool == false){
+          newRow += '<td>' + newvar + '</td>';
+          newRow +=  '<td>' + newvars + '</td>';
+          newRow += '<td>' + "New" + '</td>';
+          newRow += '<td>' +`<i class = "${newvar1}" style="font-size:20px; color:var(--primary-color) !important" ></i></td>`;
+          newRow += '<td>' + `<button type="button" data-toggle="tooltip" title="Delete process" name="addition" value="creation" class="far fa-trash-alt btn deleteProcess" style="height: 25px; width: 30px;font-size:15px; padding-top: 2px;"> <!--Add--></button> </td>`
+         }
+   if(btnName =="Draft"){
+    $('#Impact_Draft').find('#myTable').append(newRow + '</tr>')
+    $('.deleteProcess').each(function () {
+      $(this).off('click').on('click', deleteProcess)
+    })
+    return false;
+   }else{
+    $('#Impact_Final').find('#myTable').append(newRow + '</tr>')
+    $('.deleteProcess').each(function () {
+      $(this).off('click').on('click', deleteProcess)
+    })
+    return false;
+   }
+
+  }
+  }
+  var finalsubprocesses = {{finalsubprocesses | safe}}
+  $('#id_subprocess_name').on('keypress', function (event) {
+      var specialChars = "<>@!#$%^&*()+[]{}?:;|'\"\\,./~`=";
+      var key = String.fromCharCode(!event.charCode ? event.which : event.charCode);
+      for(i = 0; i < specialChars.length;i++){
+        if(key.indexOf(specialChars[i]) > -1){
+          event.preventDefault();
+          return false
+          }
+      }
+    });
+    $('#id_subprocess_name').on('paste', function (event) {
+        var clipboardData = event.originalEvent.clipboardData || window.clipboardData;
+        var pastedText = clipboardData.getData('text');
+        var containsSpecialChars = false;
+        var specialChars = "<>@!#$%^&*()+[]{}?:;|'\"\\,./~`=";
+        for (i = 0; i < specialChars.length; i++) {
+            if (pastedText.indexOf(specialChars[i]) > -1) {
+                containsSpecialChars = true;
+                break;
+            }
+        }
+
+        if(containsSpecialChars){
+           event.preventDefault();
+           this.value = this.value+pastedText.replace(/[<>@!#$%^&*()+\[\]{}?:;|'\"\\,./~`=]/g, '')
+        }
+
+
+      });
+  if(document.getElementById('formsp')){
+  document.getElementById('formsp').onsubmit = function (e) {
+    var newRow, i;
+
+    newRow = '<tr>';
+      var process_name = $('#process option:selected').html();
+      var process_status = $('#process option:selected').attr('data-process_status');
+      var btnName = e.submitter.getAttribute("data-button-type")
+      var newvar = $('#id_subprocess_name').val().trim();
+      var newvar1 = $('#id_details').val()
+      var newvar2
+      if($("#save_iconconfig").attr('data-icon')){
+        newvar2 = $('#save_iconconfig').attr('data-icon')
+      }else if($("#save_icon").attr('data-icon')){
+        newvar2 = $('#save_icon').attr('data-icon')
+      }
+      var tab_type
+      if(checkForSpecialChar(newvar)) {
+        Swal.fire({icon: 'warning',text:"Subprocess name should not contain any special characters (<>@!#$%^&*()+[]{}?:;|'\"\\,./~`=)." });
+        e.preventDefault();
+        return
+      }
+      for (let i =  0; i < finalsubprocesses.length; i++) {
+        if ($('#process option:selected').val() == finalsubprocesses[i]["item_group_code"]) {
+          if(newvar.toLowerCase() == finalsubprocesses[i]["item_name"].toLowerCase()) {
+            $('#alertspan1').css("display","block")
+              $('#alertspan1').css("margin-bottom","1em")
+              $('#div_id_subprocess_name').css("margin-bottom","0em")
+              bool = true;
+              var el = document.getElementById('id_subprocess_name');
+              el.addEventListener('keydown', function(event) {
+                  const key = event.key;
+                  if (key === "Backspace" || key === "Delete")
+                      {
+                        $('#alertspan1').css("display","none")
+                        $('#div_id_subprocess_name').css("margin-bottom","1em")
+                      }
+                    })
+            $('#id_subprocess_name').keypress(function(){
+              $('#alertspan1').css("display","none")
+              $('#div_id_subprocess_name').css("margin-bottom","1em")
+            });
+            e.preventDefault();
+            return
+          }
+          }
+      }
+      if(process_status == "draft"){
+        tab_type=$("#myTable1_Draft tr")
+      }else if(process_status == "final"){
+        tab_type=$("#myTable1_Final tr")
+      }else{
+        tab_type=$(".Impact2_Final_Allocated_tbody tr")
+      }
+      var check = []
+      var bool = false;
+      tab_type.each(function(){
+          var x = ($(this).find("td:nth-child(2)").text())
+          if((newvar) == $(this).find("td:nth-child(2)").text())
+          {
+                if(process_name == ($(this).find("td:first-child").text()))
+                  {
+                    $('#alertspan1').css("display","block")
+               $('#alertspan1').css("margin-bottom","1em")
+               $('#div_id_subprocess_name').css("margin-bottom","0em")
+               bool = true;
+               var el = document.getElementById('id_subprocess_name');
+               el.addEventListener('keydown', function(event) {
+                    const key = event.key;
+                    if (key === "Backspace" || key === "Delete")
+                        {
+                          $('#alertspan1').css("display","none")
+                          $('#div_id_subprocess_name').css("margin-bottom","1em")
+                        }
+                      })
+              $('#id_subprocess_name').keypress(function(){
+                $('#alertspan1').css("display","none")
+                          $('#div_id_subprocess_name').css("margin-bottom","1em")
+              });
+
+                  return
+                  }
+          }
+          check.push(x);
+          });
+          if(bool == false){
+            newRow += `<td data-process_type=${process_status}>` +  process_name + '</td>';
+            newRow += '<td>' + newvar + '</td>';
+            if(process_status == 'final') {
+              newRow += '<td style="display:none;"></td>';
+            }
+            newRow += '<td>' + newvar1 + '</td>';
+            newRow += '<td>' + "New" + '</td>';
+            newRow += '<td>' +`<i class = "${newvar2}" style="font-size:20px; color:var(--primary-color) !important" ></i></td>`;
+            newRow += '<td>' + `<button type="button" data-toggle="tooltip" title="Delete Subprocess" name="addition" value="creation" class="far fa-trash-alt btn ihover javaSC thin-icontrash deleteSubprocess" style="height: 25px; width: 30px; font-size:15px;padding-top: 2px;"> <!--Add--></button> </td>`
+            newRow += '<td style="display:none;">' + btnName.toLowerCase() + '</td>';
+          }
+  if(process_status =="draft" && btnName == "Draft"){
+    $("#myTable1_Draft").append(newRow + '</tr>')
+    $('.deleteSubprocess').each(function () {
+      $(this).off('click').on('click', deleteSubprocess)
+    })
+
+  }else if(process_status == 'final'){
+    if(btnName == "Final"){
+      newTbody = newRow + '<td><button class="btn btn-light" style="border-radius: 50%;cursor: move;height: 2.5rem;width: 2.5rem;"><i class="fa-solid fa-up-down" data-toggle="tooltip" title="Drag Up/ Down to reorder"></i></button></td> </tr>'
+      $("#Impact2_Final_Allocated tbody:last").after(newTbody);
+      $('.deleteSubprocess').each(function () {
+        $(this).off('click').on('click', deleteSubprocess)
+      })
+    }
+
+  }else if(process_status =="final_unallocated"){
+    if(btnName == "Final"){
+      $("#myTable1_Final").append(newRow + '</tr>')
+      $('.deleteSubprocess').each(function () {
+        $(this).off('click').on('click', deleteSubprocess)
+      })
+    }else{
+          $("#myTable1_Draft").append(newRow + '</tr>')
+    $('.deleteSubprocess').each(function () {
+      $(this).off('click').on('click', deleteSubprocess)
+    })
+    }
+  }
+return false
+  };
+}
+
+  $('.deleteProcess').off('click').on('click',function() {
+    let This = this;
+    Swal.fire({
+      icon : 'question',
+      text: `Are you sure you want to delete this process?`,
+      showDenyButton: true,
+      showCancelButton: true,
+      confirmButtonText: 'Yes',
+      denyButtonText: `No`,
+    }).then((result) => {
+      if (result.isConfirmed) {
+        deleteProcess.call(This);
+      }
+    });
+  });
+  function deleteProcess() {
+
+      var name = $(this).closest("tr").find("td").eq(0).html();
+      var prCode= $(this).closest("tr").find("td").eq(0).attr('data-process_code');
+      var data_processType =  $(this).closest("tr").find("td").eq(0).attr('data-process_type')
+      var ny = 0
+      if (data_processType != 'final') {
+        ny = 2
+      } else {
+        ny = 3
+      }
+      if($(this).closest('tr').find('td').eq(ny).text().trim()!="New"){
+
+        var process_type = $(this).closest('tr').find('td').find('i').eq(1).hasClass('saveAsFinal')
+        var data_type
+        if (data_processType != 'final'){
+          if(process_type){
+          data_type ='draft'
+        }else{
+          data_type = 'final'
+        }
+        }else{
+          data_type = 'final'
+        }
+
+        var selectobject = document.getElementById("process");
+        if(selectobject){
+          for (var i=0; i<selectobject.length; i++) {
+          if (selectobject.options[i].text == name){
+            selectobject.remove(i);
+            break
+          }
+
+        }
+
+        }
+        var currentDevMode = "{{current_dev_mode}}"
+            var mode_list=["Edit","Build"]
+            if(mode_list.includes(currentDevMode.trim())){
+              let url_string = window.location.pathname
+              let f_occ = url_string.indexOf('/', url_string.indexOf('/') + 1)
+              let s_occ = url_string.indexOf('/', url_string.indexOf('/') + f_occ +1)
+              let t_occ = url_string.indexOf('/', url_string.indexOf('/') + s_occ +1)
+              let app_code2 = url_string.substring(f_occ+1,s_occ)
+              let current_dev_mode2 = url_string.substring(s_occ+1,t_occ)
+              let modes = ["Build","Edit"]
+              let url = ""
+              if(current_dev_mode2 != "Build" && current_dev_mode2 != "Edit"){
+                current_dev_mode2 = "User"
+              }
+                $.ajax({
+                        url: `/users/${app_code2}/${current_dev_mode2}/lvlcreation/`,
+                        data: {
+                        'operation': "fetchDependenciesLvlCreation",
+                        'name': name,
+                        'data_type':data_type,
+                        'prCode': prCode,
+                        },
+                        type: "POST",
+                        dataType: "json",
+                        success: function (data) {
+                        if (data.appDependency.length > 0) {
+                          $('#dependencyTable').empty()
+
+                            for(var i=0;i<data.appDependency.length;i++){
+                              $('#dependencyTable').append(`<tr><td style="font-weight:bold">${i+1}.</td><td style="font-weight:bold;text-align:start">&nbsp;&nbsp;${data.appDependency[i]}</td></tr>`)
+                            }
+                            $('#dependencyChecker').modal('show')
+                             $('#btn_dependencySave').off('click').on('click',function(){
+                              $("#Impact_Final tr").each(function(){
+                              if(($(this).find("td").first().text()) == name){
+                                console.log($(this).remove())
+                                console.log($(this).closest('tr'))
+                              }
+                            });
+
+                            $(this).closest('tr').remove();
+                            $.ajax({
+                              url: `/users/${app_code2}/${current_dev_mode2}/lvlcreation/`,
+
+                              data: {
+                                'operation': "deletecol",
+                                'name': name,
+                                'processType':data_type,
+                                'prCode': prCode,
+                              },
+                              type: "POST",
+                              dataType: "json",
+                              success: function (data) {
+                                Swal.fire({icon: 'success',text: 'Process deleted successfully!'});
+                                location.reload();
+                              },
+                              error: function () {
+                                Swal.fire({icon: 'error',text: 'Error! Failure in deleting process. Please try again.'});;
+                              }
+                            })
+                            })
+
+
+                        } else {
+                          $("#Impact2 tr").each(function(){
+                          if(($(this).find("td").first().text()) == name){
+                            console.log($(this).remove())
+                            console.log($(this).closest('tr'))
+                          }
+                        });
+                        $(this).closest('tr').remove();
+                        $.ajax({
+                          url: `/users/${app_code2}/${current_dev_mode2}/lvlcreation/`,
+
+                          data: {
+                            'operation': "deletecol",
+                            'name': name,
+                            'processType':data_type,
+                            'prCode': prCode,
+                          },
+                          type: "POST",
+                          dataType: "json",
+                          success: function (data) {
+                            Swal.fire({icon: 'success',text: 'Process deleted successfully!'});
+                            location.reload();
+                          },
+                          error: function () {
+                            Swal.fire({icon: 'error',text: 'Error! Failure in deleting process. Please try again.'});;
+                          }
+                        })
+                        }
+      }
+    })
+  }else{
+    $("#Impact2 tr").each(function(){
+            if(($(this).find("td").first().text()) == name){
+              console.log($(this).remove())
+              console.log($(this).closest('tr'))
+            }
+          });
+              let url_string = window.location.pathname
+              let f_occ = url_string.indexOf('/', url_string.indexOf('/') + 1)
+              let s_occ = url_string.indexOf('/', url_string.indexOf('/') + f_occ +1)
+              let t_occ = url_string.indexOf('/', url_string.indexOf('/') + s_occ +1)
+              let app_code2 = url_string.substring(f_occ+1,s_occ)
+              let current_dev_mode2 = url_string.substring(s_occ+1,t_occ)
+              let modes = ["Build","Edit"]
+              let url = ""
+              if(current_dev_mode2 != "Build" && current_dev_mode2 != "Edit"){
+                current_dev_mode2 = "User"
+              }
+          $(this).closest('tr').remove();
+          $.ajax({
+            url: `/users/${app_code2}/${current_dev_mode2}/lvlcreation/`,
+
+            data: {
+              'operation': "deletecol",
+              'name': name,
+              'processType':data_type,
+              'prCode': prCode,
+            },
+            type: "POST",
+            dataType: "json",
+            success: function (data) {
+              Swal.fire({icon: 'success',text: 'Process deleted successfully!'});
+              location.reload();
+            },
+            error: function () {
+              Swal.fire({icon: 'error',text: 'Error! Failure in deleting process. Please try again.'});;
+            }
+          })
+
+      }
+    }
+    else{
+        $(this).closest('tr').remove();
+
+      }
+  }
+/////edit option functionality/////
+
+
+
+
+
+$('.shareWithGroup').on('click',function () {
+    var td = $(this).closest("td");
+    var name = td.prev().prev().prev().html();
+    var prCode = td.prev().prev().prev().attr("data-process_code");
+    var prType = td.prev().prev().prev().attr("data-process_type");
+    let url_string = window.location.pathname
+    let f_occ = url_string.indexOf('/', url_string.indexOf('/') + 1)
+    let s_occ = url_string.indexOf('/', url_string.indexOf('/') + f_occ +1)
+    let t_occ = url_string.indexOf('/', url_string.indexOf('/') + s_occ +1)
+    let app_code2 = url_string.substring(f_occ+1,s_occ)
+    let current_dev_mode2 = url_string.substring(s_occ+1,t_occ)
+    let modes = ["Build","Edit"]
+    let url = ""
+    if(current_dev_mode2 != "Build" && current_dev_mode2 != "Edit"){
+      current_dev_mode2 = "User"
+    }
+     $.ajax({
+        url: `/users/${app_code2}/${current_dev_mode2}/processCreation/`,
+        data: {
+          'operation': "shareWithGroups",
+          'prCode': prCode,
+          'prType': prType,
+          'name': name,
+        },
+        type: "POST",
+        dataType: "json",
+        success: function (data) {
+          Swal.fire({icon: 'success',text: 'Process shared with groups successfully!'});
+          location.reload();
+        },
+        error: function () {
+          Swal.fire({icon: 'error',text: 'Error! Failure in sharing the selected process with groups. Please try again.'});;
+        }
+      })
+});
+
+$('.shareSubProcessWithGroup').on('click',function () {
+  let url_string = window.location.pathname
+    let f_occ = url_string.indexOf('/', url_string.indexOf('/') + 1)
+    let s_occ = url_string.indexOf('/', url_string.indexOf('/') + f_occ +1)
+    let t_occ = url_string.indexOf('/', url_string.indexOf('/') + s_occ +1)
+    let app_code2 = url_string.substring(f_occ+1,s_occ)
+    let current_dev_mode2 = url_string.substring(s_occ+1,t_occ)
+    let modes = ["Build","Edit"]
+    let url = ""
+    if(current_dev_mode2 != "Build" && current_dev_mode2 != "Edit"){
+      current_dev_mode2 = "User"
+    }
+    var td = $(this).closest("td");
+    var name = td.prev().prev().prev().prev().html();
+    var sub_name = td.prev().prev().prev().html();
+    var prCode = td.prev().prev().prev().prev().attr("data-process_code");
+    var prType = 'draft';
+     $.ajax({
+        url: `/users/${app_code2}/${current_dev_mode2}/processCreation/`,
+        data: {
+          'operation': "shareSubWithGroups",
+          'prCode': prCode,
+          'prType': prType,
+          'name': name,
+          'sub_name': sub_name,
+        },
+        type: "POST",
+        dataType: "json",
+        success: function (data) {
+          Swal.fire({icon: 'success',text: 'Subprocess shared with groups successfully!'});
+          location.reload();
+        },
+        error: function () {
+          Swal.fire({icon: 'error',text: 'Error! Failure in sharing the selcted subprocess with groups. Please try again.'});;
+        }
+      })
+});
+
+$('.deleteSubprocess').off('click').on('click', function() {
+  let This = this;
+  Swal.fire({
+    icon : 'question',
+    text: `Are you sure you want to delete this sub-process?`,
+    showDenyButton: true,
+    showCancelButton: true,
+    confirmButtonText: 'Yes',
+    denyButtonText: `No`,
+  }).then((result) => {
+    if (result.isConfirmed) {
+      deleteSubprocess.call(This);
+    }
+  });
+});
+  function deleteSubprocess() {
+    var name = $(this).closest("tr").find("td").eq(1).text();
+    var subprocessCode = $(this).closest("tr").find("td").eq(0).attr('data-process_code');
+    var pname = $(this).closest("tr").find("td").eq(0).text();
+    var processCode = $(this).closest("tr").find("td").eq(0).attr('data-process_group_code');
+    var subprocess_status =  $(this).closest("tr").find("td").eq(4).text().trim()
+    var process_type =  $(this).closest("tr").find("td").eq(7).text()
+    var addition_process_type =  $(this).closest("tr").find("td").eq(0).attr('data-process_type')
+    var saveAsFinalSubprocess =$(this).closest("tr").find("td").eq(5).find('i').hasClass('saveAsFinalSubprocess')
+    if(subprocess_status != "New" && subprocess_status != "Existing") {
+      subprocess_status =  $(this).closest("tr").find("td").eq(3).text().trim()
+      process_type =  $(this).closest("tr").find("td").eq(5).text()
+      saveAsFinalSubprocess =$(this).closest("tr").find("td").eq(4).find('i').hasClass('saveAsFinalSubprocess')
+    }
+    let url_string = window.location.pathname
+    let f_occ = url_string.indexOf('/', url_string.indexOf('/') + 1)
+    let s_occ = url_string.indexOf('/', url_string.indexOf('/') + f_occ +1)
+    let t_occ = url_string.indexOf('/', url_string.indexOf('/') + s_occ +1)
+    let app_code2 = url_string.substring(f_occ+1,s_occ)
+    let current_dev_mode2 = url_string.substring(s_occ+1,t_occ)
+    let modes = ["Build","Edit"]
+    let url = ""
+    if(current_dev_mode2 != "Build" && current_dev_mode2 != "Edit"){
+      current_dev_mode2 = "User"
+    }
+    if(subprocess_status != "New"){
+
+      var currentDevMode = "{{current_dev_mode}}"
+            var mode_list=["Edit","Build"]
+            if(mode_list.includes(currentDevMode.trim())){
+                $.ajax({
+                        url: `/users/${app_code2}/${current_dev_mode2}/lvlcreation/`,
+                        data: {
+                        'operation': "fetchDependenciesSubprocessLvlCreation",
+                        'name': name,
+                        'pname':pname,
+                        'subprocessCode':subprocessCode,
+                        'processCode':processCode,
+                        'data_type':process_type,
+                        },
+                        type: "POST",
+                        dataType: "json",
+                        success: function (data) {
+                        if (data.appDependency.length > 0) {
+
+                          $('#dependencyTable').empty()
+
+                            for(var i=0;i<data.appDependency.length;i++){
+
+                              $('#dependencyTable').append(`<tr><td style="font-weight:bold">${i+1}.</td><td style="font-weight:bold;text-align:start">&nbsp;&nbsp;${data.appDependency[i]}</td></tr>`)
+                            }
+                            $('#dependencyChecker').modal('show')
+                             $('#btn_dependencySave').off('click').on('click',function(){
+                              if(saveAsFinalSubprocess){
+
+                                    $(this).closest('tr').remove();
+                                            $.ajax({
+                                              url: `/users/${app_code2}/${current_dev_mode2}/lvlcreation/`,
+
+                                              data: {
+                                                'operation': "deletecol1",
+                                                'name': name,
+                                                'pname':pname,
+                                                'process_type':process_type,
+                                                'addition_process_type':addition_process_type,
+                                                'processCode':processCode,
+                                                'subprocessCode':subprocessCode,
+                                              },
+                                              type: "POST",
+                                              dataType: "json",
+                                              success: function (data) {
+                                                Swal.fire({icon: 'success',text: 'Subprocess deleted successfully!'});
+                                                location.reload();
+                                              },
+                                              error: function () {
+                                                Swal.fire({icon: 'error',text: 'Error! Failue in deleting the subprocess. Please try again.'});;
+                                              }
+                                            });
+
+                                }else if(process_type=="final"){
+
+                                  $(this).closest('tr').remove();
+                                            $.ajax({
+                                              url: `/users/${app_code2}/${current_dev_mode2}/lvlcreation/`,
+
+                                              data: {
+                                                'operation': "deletecol1",
+                                                'name': name,
+                                                'pname':pname,
+                                                'process_type':process_type,
+                                                'addition_process_type':addition_process_type,
+                                                'processCode':processCode,
+                                                'subprocessCode':subprocessCode,
+                                              },
+                                              type: "POST",
+                                              dataType: "json",
+                                              success: function (data) {
+                                                Swal.fire({icon: 'success',text: 'Subprocess deleted successfully!.'});
+                                                location.reload();
+                                              },
+                                              error: function () {
+                                                Swal.fire({icon: 'error',text: 'Error! Failue in deleting the subprocess. Please try again.'});;
+                                              }
+                                            });
+                                }else{
+
+                                  $(this).closest('tr').remove();
+                                }
+                            })
+
+
+                        } else {
+
+                          if(saveAsFinalSubprocess){
+                              $(this).closest('tr').remove();
+                                      $.ajax({
+                                        url: `/users/${app_code2}/${current_dev_mode2}/lvlcreation/`,
+
+                                        data: {
+                                          'operation': "deletecol1",
+                                          'name': name,
+                                          'pname':pname,
+                                          'process_type':process_type,
+                                          'addition_process_type':addition_process_type,
+                                          'processCode':processCode,
+                                          'subprocessCode':subprocessCode,
+                                        },
+                                        type: "POST",
+                                        dataType: "json",
+                                        success: function (data) {
+                                          Swal.fire({icon: 'success',text: 'Subprocess deleted successfully!'});
+                                          location.reload();
+                                        },
+                                        error: function () {
+                                          Swal.fire({icon: 'error',text: 'Error! Failue in deleting the subprocess. Please try again.'});;
+                                        }
+                                      });
+
+                          }else if(process_type=="final"){
+                            $(this).closest('tr').remove();
+                                      $.ajax({
+                                        url: `/users/${app_code2}/${current_dev_mode2}/lvlcreation/`,
+
+                                        data: {
+                                          'operation': "deletecol1",
+                                          'name': name,
+                                          'pname':pname,
+                                          'process_type':process_type,
+                                          'addition_process_type':addition_process_type,
+                                          'processCode':processCode,
+                                          'subprocessCode':subprocessCode,
+                                        },
+                                        type: "POST",
+                                        dataType: "json",
+                                        success: function (data) {
+                                          Swal.fire({icon: 'success',text: 'Subprocess deleted successfully!'});
+                                          location.reload();
+                                        },
+                                        error: function () {
+                                          Swal.fire({icon: 'error',text: 'Error! Failue in deleting the subprocess. Please try again.'});;
+                                        }
+                                      });
+                          }else{
+                            $(this).closest('tr').remove();
+                          }
+                        }
+                      }
+                    })
+                  }
+    }else{
+
+    $(this).closest('tr').remove();
+    }
+  }
+
+  $("#previewDraftProcess").on('click', function(){
+    let url_string = window.location.pathname
+    let f_occ = url_string.indexOf('/', url_string.indexOf('/') + 1)
+    let s_occ = url_string.indexOf('/', url_string.indexOf('/') + f_occ +1)
+    let t_occ = url_string.indexOf('/', url_string.indexOf('/') + s_occ +1)
+    let app_code2 = url_string.substring(f_occ+1,s_occ)
+    let current_dev_mode2 = url_string.substring(s_occ+1,t_occ)
+    let modes = ["Build","Edit"]
+    let url = ""
+    if(current_dev_mode2 != "Build" && current_dev_mode2 != "Edit"){
+      current_dev_mode2 = "User"
+    }
+    $.ajax({
+      url: `/users/${app_code2}/${current_dev_mode2}/lvlcreation/`,
+      data: {
+          'operation': "previewDraftProcess",
+      },
+      type: "POST",
+      dataType: "json",
+      success: function(data) {
+          let loc = window.location.href.split("users")[0];
+          loc = loc + `users/${app_code2}/Build/homePage/`;
+          window.location.href = loc;
+      },
+      error: function () {
+        Swal.fire({icon: 'error',text: 'Error! Failure in previewing the draft process. Please try again.'});;
+      }
+    });
+  });
+
+  //Rename Process and Subprocess Names
+  function RenameEditMode(current_clicked){
+    let status = current_clicked.getAttribute('data-edit-status')
+    let rename_mode = current_clicked.getAttribute('data-rename-mode')
+
+    let class_mode =''
+    let final_allocated_id = ''
+    let button_type = ''
+    if(rename_mode =='process'){
+      class_mode ='process_edit_mode'
+      final_allocated_id ='.myTable'
+      button_type = 'Rename_Changes_Process'
+    }else{
+      class_mode ='subprocess_edit_mode'
+      final_allocated_id ='.myTable1'
+      button_type = 'Rename_Changes_Subprocess'
+    }
+    if(status == "off"){
+      current_clicked.setAttribute('data-edit-status','on')
+      current_clicked.innerText="Rename Mode:ON"
+      current_clicked.value="Rename Mode:ON"
+      $(`#${button_type}`).css('display','inline-block')
+
+      $(`${final_allocated_id}`).find('tr').each(function(){
+        let process_status = $(this).find('td').eq(0).attr('data-process-status')
+        if(process_status == 'existing'){
+          if(rename_mode =='process'){
+            $(this).find('td').eq(0).find('span').attr('contenteditable',true)
+            $(this).find('td').eq(1).find('span').attr('contenteditable',true)
+            $(this).find('td').eq(0).addClass(`${class_mode}`)
+            $(this).find('td').eq(1).addClass(`${class_mode}`)
+          }else{
+            $(this).find('td').eq(1).find('span').attr('contenteditable',true)
+            $(this).find('td').eq(1).addClass(`${class_mode}`)
+          }
+        }
+      })
+   }else{
+    $(`${final_allocated_id}`).find('tr').each(function(){
+      let process_status = $(this).find('td').eq(0).attr('data-process-status')
+      if(process_status == 'existing'){
+        if(rename_mode =='process'){
+          $(this).find('td').eq(0).find('span').attr('contenteditable',false)
+          $(this).find('td').eq(1).find('span').attr('contenteditable',false)
+          $(this).find('td').eq(0).addClass(`${class_mode}`)
+          $(this).find('td').eq(1).addClass(`${class_mode}`)
+        }else{
+          $(this).find('td').eq(1).find('span').attr('contenteditable',false)
+          $(this).find('td').eq(1).addClass(`${class_mode}`)
+        }
+      }
+    })
+
+      current_clicked.setAttribute('data-edit-status','off')
+      current_clicked.innerText = "Rename Mode:OFF"
+      current_clicked.value = "Rename Mode:OFF"
+      $(`#${button_type}`).css('display','none')
+    }
+  }
+
+
+ var process_names_list= {}
+ var subprocess_names_list= {}
+  $(document).on('focusout','.process_edit_mode',function(){
+    var process_edited_dict = {}
+    let process_id =$(this).parent().closest('tr').find('td').eq(0).attr('data-process_code')
+    let process_name = $(this).parent().closest('tr').find('td').eq(0).text()
+    let process_shortname =$(this).parent().closest('tr').find('td').eq(1).text()
+    let process_type = $(this).parent().closest('tr').find('td').eq(0).attr('data-process_type')
+    process_edited_dict = {'Process_name':process_name,'Process_shortname':process_shortname,'Process_type':process_type}
+    process_names_list[process_id] = process_edited_dict
+
+  })
+
+  $(document).on('focusout','.subprocess_edit_mode',function(){
+    var subprocess_edited_dict = {}
+    let process_id =$(this).parent().closest('tr').find('td').eq(0).attr('data-process_code')
+    let process_name = $(this).parent().closest('tr').find('td').eq(0).text()
+    let process_shortname =$(this).parent().closest('tr').find('td').eq(1).text()
+    let process_type = $(this).parent().closest('tr').find('td').eq(-1).text()
+    let process_group_code =  $(this).parent().closest('tr').find('td').eq(0).attr('data-process_group_code')
+    subprocess_edited_dict = {'Process_name':process_name,'Process_shortname':process_shortname,'Process_type':process_type,"Process_group":process_group_code}
+
+    subprocess_names_list[process_id] = subprocess_edited_dict
+
+  })
+  function RenameProcessChanges(rename_mode=''){
+    let url_string = window.location.pathname
+    let f_occ = url_string.indexOf('/', url_string.indexOf('/') + 1)
+    let s_occ = url_string.indexOf('/', url_string.indexOf('/') + f_occ +1)
+    let t_occ = url_string.indexOf('/', url_string.indexOf('/') + s_occ +1)
+    let app_code2 = url_string.substring(f_occ+1,s_occ)
+    let current_dev_mode2 = url_string.substring(s_occ+1,t_occ)
+    let modes = ["Build","Edit"]
+    let url = ""
+    if(current_dev_mode2 != "Build" && current_dev_mode2 != "Edit"){
+      current_dev_mode2 = "User"
+    }
+   let final_dict = {}
+    if(rename_mode == "process"){
+      final_dict = process_names_list
+    }else{
+      final_dict = subprocess_names_list
+    }
+    $.ajax({
+      url: `/users/${app_code2}/${current_dev_mode2}/lvlcreation/`,
+      data: {
+          'operation': "renameProcess_Subprocess",
+          'rename_config_dict':JSON.stringify(final_dict),
+          'rename_mode':rename_mode,
+      },
+      type: "POST",
+      dataType: "json",
+      success: function(data) {
+        if(data.hasOwnProperty("error")){
+          if(data["error"] == "yes"){
+            Swal.fire({icon: 'error',text: data.msg})
+            process_names_list= {}
+            subprocess_names_list= {};
+          }
+        }else{
+          Swal.fire({icon: 'success',text: 'Configuration saved successfully!.'});
+          process_names_list= {}
+          subprocess_names_list= {};
+          location.reload();
+        }
+      },
+      error: function () {
+        Swal.fire({icon: 'error',text:`Error! Failure while renaming ${rename_mode}. Please try again. `});
+      }
+    });
+  }
+  function generateAppHtml() {
+    let url_string = window.location.pathname
+    let f_occ = url_string.indexOf('/', url_string.indexOf('/') + 1)
+    let s_occ = url_string.indexOf('/', url_string.indexOf('/') + f_occ +1)
+    let t_occ = url_string.indexOf('/', url_string.indexOf('/') + s_occ +1)
+    let app_code2 = url_string.substring(f_occ+1,s_occ)
+    let current_dev_mode2 = url_string.substring(s_occ+1,t_occ)
+    let modes = ["Build","Edit"]
+    let url = ""
+    if(current_dev_mode2 != "Build" && current_dev_mode2 != "Edit"){
+      current_dev_mode2 = "User"
+    }
+    $.ajax({
+      url: `/users/${app_code2}/${current_dev_mode2}/dynamicVal/`,
+      data: {
+        'operation': "generateHtmlApp",
+      },
+      type: "POST",
+      dataType: "json",
+      success: function(data) {
+        var jobId = data.job_id;
+        Swal.fire({icon: 'info',text: 'Process regeneration is in progress. Please wait ...'});
+
+      },
+      error: function () {
+      }
+    });
+  }
+
+  $('#recoverDeletedWaypoints').on('click', function() {
+    $(this).prop('disabled', true);
+    $.ajax({
+      url: `/users/${urlPath}/reset_navigation_waypoints/`,
+      data: {},
+      type: "POST",
+      dataType: "json",
+      success: function(data) {
+        $('#recoverDeletedWaypoints').prop('disabled', false);
+        Swal.fire({icon: 'success',text: 'Deleted navigation waypoints recovered successfully.'});
+      },
+      error: function() {
+        $('#recoverDeletedWaypoints').prop('disabled', false);
+        Swal.fire({icon: 'error',text: 'Error! Failure in recovering deleted waypoints. Please try again.'});
+      }
+    });
+  });
+
+  var sys_mgmt_currentElementId;
+  function iconmodal1(val, element){
+    if(val==='edit_icon_home'){
+      sys_mgmt_currentElementId = $(element).data("element-id");
+      var modal = $('#choose_icons_for_process').modal('show');
+      modal.find('.modal-title').text('Edit Home Icon');
+    }
+    if(val==='edit_icon_approval'){
+      sys_mgmt_currentElementId = $(element).data("element-id");
+      var modal = $('#choose_icons_for_process').modal('show');
+      modal.find('.modal-title').text('Edit Approval Icon');
+    }
+    if(val==='edit_icon_report'){
+      sys_mgmt_currentElementId = $(element).data("element-id");
+      var modal = $('#choose_icons_for_process').modal('show');
+      modal.find('.modal-title').text('Edit Report Icon');
+    }
+
+  }
+
+  $('#sysManagement-btn-tool').on('click', function(){
+  $.ajax({
+    url: `/users/${urlPath}/Levelcreation/`,
+    data: {
+      'operation': 'user_preference_config_for_nav'
+    },
+    type: "POST",
+    dataType: "json",
+    success: function (data) {
+      var contextConfig = JSON.parse(data.context_config);
+      var preference_config = null;
+
+      // Loop through the contextConfig array and find the object with screens = 'SideNavBar'
+      for (var i = 0; i < contextConfig.length; i++) {
+        if (contextConfig[i].screens === 'SideNavBar') {
+          preference_config = JSON.parse(contextConfig[i].preference_config);
+          break;
+        }
+      }
+
+      if (preference_config) {
+        const preferences = preference_config[0];
+        for (const key in preferences) {
+          const showOrHide = preferences[key].Show_or_hide_on_Navbar;
+          const icon = preferences[key].icon;
+          if(key === 'home'){
+            $(`#editIcon_HomeIcon`).attr('class',icon)
+            $('#switch_home').prop('checked', showOrHide ? true : false);
+          }
+          if(key === 'approval'){
+            $(`#editIcon_ApprovalIcon`).attr('class',icon)
+            $('#switch_approval').prop('checked', showOrHide ? true : false);
+          }
+          if(key === 'reports'){
+            $(`#editIcon_ReportIcon`).attr('class',icon)
+            $('#switch_report').prop('checked', showOrHide ? true : false);
+          }
+        }
+
+      }
+    },
+    error: function () {
+      Swal.fire({
+        icon: 'error',
+        text: 'Error! Please try again.'
+      });
+    },
+  });
+});
+
+
+  $('#save_sysManagement_details').on('click', function(){
+    var switch_home = $(`#switch_home`).is(':checked');
+    var switch_approval = $(`#switch_approval`).is(':checked');
+    var switch_report = $(`#switch_report`).is(':checked');
+    var picked_home_icon = $(`#editIcon_HomeIcon`).attr('class')
+    var picked_approval_icon = $(`#editIcon_ApprovalIcon`).attr('class')
+    var picked_report_icon = $(`#editIcon_ReportIcon`).attr('class')
+    var navConfigdata = [{ home:{"Show_or_hide_on_Navbar":switch_home,"icon":picked_home_icon},
+                  approval:{"Show_or_hide_on_Navbar":switch_approval,"icon":picked_approval_icon},
+                  reports:{"Show_or_hide_on_Navbar":switch_report,"icon":picked_report_icon}
+                }]
+
+    $.ajax({
+      url: `/users/${urlPath}/Levelcreation/`,
+      data :{
+        'operation' : 'user_preference_config_for_nav',
+        "navConfigdata":JSON.stringify(navConfigdata),
+        "page":"SideNavBar"
+      },
+      type: "POST",
+      dataType: "json",
+      success: function (data) {
+        window.location.reload()
+      },
+      error: function () {
+        Swal.fire({icon: 'error',text: 'Error! Please try again.'});
+      },
+    });
+  })
+
+</script>
+
+{% endblock %}

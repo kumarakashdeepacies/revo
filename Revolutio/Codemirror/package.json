@@ -1,0 +1,22 @@
+{
+  "name": "codemirrorupdateeditor",
+  "version": "1.0.0",
+  "description": "Code mirror 6 update",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Tejas Rahate",
+  "license": "ISC",
+  "dependencies": {
+    "@codemirror/lang-python": "^6.0.2",
+    "@codemirror/state": "^6.1.2",
+    "@rollup/plugin-node-resolve": "^14.1.0",
+    "codemirror": "^6.0.1",
+    "rollup": "^2.79.1"
+  },
+  "devDependencies": {
+    "webpack": "^5.74.0",
+    "webpack-cli": "^4.10.0"
+  }
+}

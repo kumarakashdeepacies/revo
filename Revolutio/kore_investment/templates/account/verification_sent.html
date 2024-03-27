@@ -1,0 +1,30 @@
+{% extends "account/base.html" %}
+{% load static %}
+{% load i18n %}
+
+{% block head_title %}{% trans "Verify Your E-mail Address" %}{% endblock %}
+
+{% block inner %}
+  <div class="login-page">
+    <div class="login-box">
+      <div class="card">
+        <div class="card-body login-card-body">
+          <!--EXTRA CODE-->
+          <a href="{% url 'account_login' %}">
+            <img src="{%static 'images/Base_theme/Acies_short_logo.png'%}"
+                 alt="Acies Logo" height="50" width="60">
+          </a>
+          <a href="{% url 'account_login' %}" style="float:right;text-align:center;color:var(--primary-color);position: relative; right: 0%; top: 3vh;" onMouseOver="this.style.color='black'" onMouseOut="this.style.color='#B8860B'">Back to Sign In</a>
+          <p></p>
+          <h6 style="text-align:left;"><b>{% trans "Verify Your E-mail Address" %}</b></h6>
+
+          <p style="text-align:left;">{% blocktrans %}We have sent an e-mail to you for verification. Follow the link provided to finalize the signup process. Please contact us if you do not receive it within a few minutes.{% endblocktrans %}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+{% endblock %}
+
+

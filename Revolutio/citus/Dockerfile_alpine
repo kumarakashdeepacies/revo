@@ -1,0 +1,111 @@
+# This file is auto generated from it's template,
+# see citusdata/tools/packaging_automation/templates/docker/latest/latest.tmpl.dockerfile.
+FROM golang:1.20.2-alpine AS builder
+ENV WALG_VERSION=v2.0.1
+
+ENV _build_deps="wget cmake git build-base bash"
+
+RUN set -ex  \
+     && apk add --no-cache $_build_deps \
+     && git clone https://github.com/wal-g/wal-g/  $GOPATH/src/wal-g \
+     && cd $GOPATH/src/wal-g/ \
+     && git checkout $WALG_VERSION \
+     && make install \
+     && make deps \
+     && make pg_build \
+     && install main/pg/wal-g / \
+     && /wal-g --help
+
+
+FROM postgres:15.2-alpine
+ARG VERSION=11.2.0
+
+COPY --from=builder /wal-g /
+
+LABEL maintainer="Citus Data https://citusdata.com" \
+      org.label-schema.name="Citus" \
+      org.label-schema.description="Scalable PostgreSQL for multi-tenant and real-time workloads" \
+      org.label-schema.url="https://www.citusdata.com" \
+      org.label-schema.vcs-url="https://github.com/citusdata/citus" \
+      org.label-schema.vendor="Citus Data, Inc." \
+      org.label-schema.version=${VERSION}-alpine \
+      org.label-schema.schema-version="1.0"
+
+# Build citus and delete all used libraries. Warning: Libraries installed in this section will be deleted after build completion
+
+RUN apk update \
+    && apk add tar
+
+RUN apk add --no-cache \
+            --virtual builddeps \
+        build-base \
+        krb5-dev \
+        curl \
+        curl-dev \
+        openssl-dev \
+        ca-certificates \
+        clang \
+        llvm \
+        lz4-dev \
+        zstd-dev \
+        libxslt-dev \
+        libxml2-dev \
+        icu-dev && \
+    apk add --no-cache libcurl && \
+    curl -sfLO "https://github.com/citusdata/citus/archive/v${VERSION}.tar.gz" && \
+    tar xzf "v${VERSION}.tar.gz" && \
+    cd "citus-${VERSION}" && \
+   ./configure --with-security-flags && \
+    make install && \
+    cd .. && \
+    rm -rf "citus-${VERSION}" "v${VERSION}.tar.gz" && \
+    apk del builddeps
+
+#--------End of Citus Build
+
+# add citus to default PostgreSQL config
+RUN echo "shared_preload_libraries='citus'" >> /usr/local/share/postgresql/postgresql.conf.sample
+
+# add scripts to run after initdb
+COPY /scripts/001-create-citus-extension.sql /docker-entrypoint-initdb.d/
+
+# add health check script
+COPY pg_healthcheck /
+
+COPY ./env /env
+
+ENV WALG_VERSION=v2.0.1
+ENV BROTLI_VERSION=v1.0.7
+ENV ARCHIVE_MODE=off
+
+RUN echo "archive_mode = $ARCHIVE_MODE" >> /usr/local/share/postgresql/postgresql.conf.sample \
+    && echo "archive_command = '/wal-g wal-push %p'" >> /usr/local/share/postgresql/postgresql.conf.sample \
+    && echo "archive_timeout = 60" >> /usr/local/share/postgresql/postgresql.conf.sample \
+    && echo "restore_command = '/wal-g wal-fetch \"%f\" \"%p\" >> /tmp/wal.log 2>&1'" >> /usr/local/share/postgresql/postgresql.conf.sample
+
+# See environment variables documentation https://github.com/wal-g/wal-g#configuration
+ENV WALG_AZ_PREFIX=azure://datastoretesting/walg-folder
+ENV AZURE_STORAGE_ACCOUNT=revolutiouatdatastore
+ENV AZURE_STORAGE_ACCESS_KEY=ztIN0J1z+QfNRP+YItGimdULuwqktL7rxS9lcORwD5KyhSQJlXBQ6Ffc6NQtGkfw0E84eM7qYnJHxgFZjngusw==
+ENV PGPASSWORD=$POSTGRES_PASSWORD
+#ENV AWS_ENDPOINT=http://s3-like-service:9000
+ENV AWS_S3_FORCE_PATH_STYLE=true
+ENV WALG_COMPRESSION_METHOD brotli
+
+# See environment variables documentation https://github.com/wal-g/wal-g/blob/master/PostgreSQL.md#configuration
+ENV PGHOST=/var/run/postgresql
+ENV PGUSER=$POSTGRES_USER
+#ENV PGPASSWORD=secret
+ENV ARCHIVE_MODE=off
+ENV ARCHIVE_TIMEOUT=0
+#ENV WALG_PGP_KEY_PATH=/keys/wal-g.pub
+
+
+# entry point unsets PGPASSWORD, but we need it to connect to workers
+# https://github.com/docker-library/postgres/blob/33bccfcaddd0679f55ee1028c012d26cd196537d/12/docker-entrypoint.sh#L303
+RUN sed "/unset PGPASSWORD/d" -i /usr/local/bin/docker-entrypoint.sh
+
+# Add lz4 dependencies
+RUN apk add zstd zstd-dev lz4 lz4-dev
+
+HEALTHCHECK --interval=4s --start-period=6s CMD ./pg_healthcheck

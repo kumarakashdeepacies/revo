@@ -1,0 +1,1820 @@
+[
+    {
+        "operation_name": "Column sum",
+        "input_order": 1,
+        "input_name": "Column sum",
+        "input_label": "Select columns",
+        "dependency": 1,
+        "dependency_condition": "Column sum",
+        "input_type": "Column range"
+    },
+    {
+        "operation_name": "Column sum",
+        "input_order": 1,
+        "input_name": "Column sum",
+        "input_label": "Input value",
+        "dependency": 2,
+        "dependency_condition": "Column sum",
+        "input_type": "User numeric input"
+    },
+    {
+        "operation_name": "Row sum",
+        "input_order": 2,
+        "input_name": "Row sum",
+        "input_label": "Select row index",
+        "dependency": 1,
+        "dependency_condition": "Row sum",
+        "input_type": "Row range"
+    },
+    {
+        "operation_name": "Row sum",
+        "input_order": 2,
+        "input_name": "Row sum",
+        "input_label": "Input value",
+        "dependency": 2,
+        "dependency_condition": "Row sum",
+        "input_type": "User numeric input"
+    },
+    {
+        "operation_name": "Cell sum",
+        "input_order": 3,
+        "input_name": "Cell 1",
+        "input_label": "Select row index",
+        "dependency": 1,
+        "dependency_condition": "Cell 1",
+        "input_type": "Row range"
+    },
+    {
+        "operation_name": "Cell sum",
+        "input_order": 3,
+        "input_name": "Cell 1",
+        "input_label": "Select column index",
+        "dependency": 2,
+        "dependency_condition": "Cell 1",
+        "input_type": "Column range"
+    },
+    {
+        "operation_name": "Cell sum",
+        "input_order": 3,
+        "input_name": "Cell sum",
+        "input_label": "Input value",
+        "dependency": 3,
+        "dependency_condition": "Cell sum",
+        "input_type": "User numeric input"
+    },
+    {
+        "operation_name": "Column subtraction",
+        "input_order": 1,
+        "input_name": "Column subtraction",
+        "input_label": "Select columns",
+        "dependency": 1,
+        "dependency_condition": "Column sum",
+        "input_type": "Column range"
+    },
+    {
+        "operation_name": "Column subtraction",
+        "input_order": 1,
+        "input_name": "Column subtraction",
+        "input_label": "Input value",
+        "dependency": 2,
+        "dependency_condition": "Column sum",
+        "input_type": "User numeric input"
+    },
+    {
+        "operation_name": "Row subtraction",
+        "input_order": 2,
+        "input_name": "Row subtraction",
+        "input_label": "Select row index",
+        "dependency": 1,
+        "dependency_condition": "Row sum",
+        "input_type": "Row range"
+    },
+    {
+        "operation_name": "Row subtraction",
+        "input_order": 2,
+        "input_name": "Row subtraction",
+        "input_label": "Input value",
+        "dependency": 2,
+        "dependency_condition": "Row sum",
+        "input_type": "User numeric input"
+    },
+    {
+        "operation_name": "Cell subtraction",
+        "input_order": 3,
+        "input_name": "Cell 1",
+        "input_label": "Select row index",
+        "dependency": 1,
+        "dependency_condition": "Cell 1",
+        "input_type": "Row range"
+    },
+    {
+        "operation_name": "Cell subtraction",
+        "input_order": 3,
+        "input_name": "Cell 1",
+        "input_label": "Select column index",
+        "dependency": 2,
+        "dependency_condition": "Cell 1",
+        "input_type": "Column range"
+    },
+    {
+        "operation_name": "Cell subtraction",
+        "input_order": 3,
+        "input_name": "Cell subtraction",
+        "input_label": "Input value",
+        "dependency": 3,
+        "dependency_condition": "Cell sum",
+        "input_type": "User numeric input"
+    },
+    {
+        "operation_name": "Column multiplication",
+        "input_order": 1,
+        "input_name": "Column multiplication",
+        "input_label": "Select columns",
+        "dependency": 1,
+        "dependency_condition": "Column sum",
+        "input_type": "Column range"
+    },
+    {
+        "operation_name": "Column multiplication",
+        "input_order": 1,
+        "input_name": "Column multiplication",
+        "input_label": "Input value",
+        "dependency": 2,
+        "dependency_condition": "Column sum",
+        "input_type": "User numeric input"
+    },
+    {
+        "operation_name": "Row multiplication",
+        "input_order": 2,
+        "input_name": "Row multiplication",
+        "input_label": "Select row index",
+        "dependency": 1,
+        "dependency_condition": "Row sum",
+        "input_type": "Row range"
+    },
+    {
+        "operation_name": "Row multiplication",
+        "input_order": 2,
+        "input_name": "Row multiplication",
+        "input_label": "Input value",
+        "dependency": 2,
+        "dependency_condition": "Row sum",
+        "input_type": "User numeric input"
+    },
+    {
+        "operation_name": "Cell multiplication",
+        "input_order": 3,
+        "input_name": "Cell 1",
+        "input_label": "Select row index",
+        "dependency": 1,
+        "dependency_condition": "Cell 1",
+        "input_type": "Row range"
+    },
+    {
+        "operation_name": "Cell multiplication",
+        "input_order": 3,
+        "input_name": "Cell 1",
+        "input_label": "Select column index",
+        "dependency": 2,
+        "dependency_condition": "Cell 1",
+        "input_type": "Column range"
+    },
+    {
+        "operation_name": "Cell multiplication",
+        "input_order": 3,
+        "input_name": "Cell multiplication",
+        "input_label": "Input value",
+        "dependency": 3,
+        "dependency_condition": "Cell sum",
+        "input_type": "User numeric input"
+    },
+    {
+        "operation_name": "Column division",
+        "input_order": 1,
+        "input_name": "Column division",
+        "input_label": "Select columns",
+        "dependency": 1,
+        "dependency_condition": "Column sum",
+        "input_type": "Column range"
+    },
+    {
+        "operation_name": "Column division",
+        "input_order": 1,
+        "input_name": "Column division",
+        "input_label": "Input value",
+        "dependency": 2,
+        "dependency_condition": "Column sum",
+        "input_type": "User numeric input"
+    },
+    {
+        "operation_name": "Row division",
+        "input_order": 2,
+        "input_name": "Row division",
+        "input_label": "Select row index",
+        "dependency": 1,
+        "dependency_condition": "Row sum",
+        "input_type": "Row range"
+    },
+    {
+        "operation_name": "Row division",
+        "input_order": 2,
+        "input_name": "Row division",
+        "input_label": "Input value",
+        "dependency": 2,
+        "dependency_condition": "Row sum",
+        "input_type": "User numeric input"
+    },
+    {
+        "operation_name": "Cell division",
+        "input_order": 3,
+        "input_name": "Cell 1",
+        "input_label": "Select row index",
+        "dependency": 1,
+        "dependency_condition": "Cell 1",
+        "input_type": "Row range"
+    },
+    {
+        "operation_name": "Cell division",
+        "input_order": 3,
+        "input_name": "Cell 1",
+        "input_label": "Select column index",
+        "dependency": 2,
+        "dependency_condition": "Cell 1",
+        "input_type": "Column range"
+    },
+    {
+        "operation_name": "Cell division",
+        "input_order": 3,
+        "input_name": "Cell division",
+        "input_label": "Input value",
+        "dependency": 3,
+        "dependency_condition": "Cell sum",
+        "input_type": "User numeric input"
+    },
+    {
+        "operation_name": "Square root",
+        "input_order": 1,
+        "input_name": "Root Operation",
+        "input_label": "Select column",
+        "dependency": 1,
+        "dependency_condition": "Root Operation",
+        "input_type": "Column value"
+    },
+    {
+        "operation_name": "Square root",
+        "input_order": 1,
+        "input_name": "Root Operation",
+        "input_label": "Power",
+        "dependency": 2,
+        "dependency_condition": "Root Operation",
+        "input_type": "User numeric input"
+    },
+    {
+        "operation_name": "Log",
+        "input_order": 1,
+        "input_name": "Natural Log",
+        "input_label": "Select column",
+        "dependency": 1,
+        "dependency_condition": "Natural Log",
+        "input_type": "Column value"
+    },
+    {
+        "operation_name": "Log",
+        "input_order": 2,
+        "input_name": "Base Log",
+        "input_label": "Select column",
+        "dependency": 1,
+        "dependency_condition": "Base Log",
+        "input_type": "Column value"
+    },
+    {
+        "operation_name": "Log",
+        "input_order": 2,
+        "input_name": "Log Base value",
+        "input_label": "Input value",
+        "dependency": 2,
+        "dependency_condition": "Log Base value",
+        "input_type": "User numeric input"
+    },
+    {
+        "operation_name": "Log",
+        "input_order": 3,
+        "input_name": "Exponential",
+        "input_label": "Select column",
+        "dependency": 1,
+        "dependency_condition": "Exponential",
+        "input_type": "Column value"
+    },
+    {
+        "operation_name": "Round",
+        "input_order": 1,
+        "input_name": "Ceiling",
+        "input_label": "Select column",
+        "dependency": 1,
+        "dependency_condition": "Ceiling",
+        "input_type": "Column value"
+    },
+    {
+        "operation_name": "Round",
+        "input_order": 1,
+        "input_name": "Ceiling Significance Multiple",
+        "input_label": "Input value",
+        "dependency": 2,
+        "dependency_condition": "Ceiling Significance Multiple",
+        "input_type": "User numeric input"
+    },
+    {
+        "operation_name": "Round",
+        "input_order": 2,
+        "input_name": "Floor",
+        "input_label": "Select column",
+        "dependency": 1,
+        "dependency_condition": "Floor",
+        "input_type": "Column value"
+    },
+    {
+        "operation_name": "Round",
+        "input_order": 2,
+        "input_name": "Floor Significance Multiple",
+        "input_label": "Input value",
+        "dependency": 2,
+        "dependency_condition": "Floor Significance Multiple",
+        "input_type": "User numeric input"
+    },
+    {
+        "operation_name": "Round",
+        "input_order": 3,
+        "input_name": "Odd",
+        "input_label": "Select column",
+        "dependency": 1,
+        "dependency_condition": "Odd",
+        "input_type": "Column value"
+    },
+    {
+        "operation_name": "Round",
+        "input_order": 4,
+        "input_name": "Even",
+        "input_label": "Select column",
+        "dependency": 1,
+        "dependency_condition": "Even",
+        "input_type": "Column value"
+    },
+    {
+        "operation_name": "Round",
+        "input_order": 5,
+        "input_name": "Round",
+        "input_label": "Select column",
+        "dependency": 1,
+        "dependency_condition": "Round",
+        "input_type": "Column value"
+    },
+    {
+        "operation_name": "Round",
+        "input_order": 5,
+        "input_name": "No of Decimals",
+        "input_label": "Input value",
+        "dependency": 2,
+        "dependency_condition": "No of Decimals",
+        "input_type": "User numeric input"
+    },
+    {
+        "operation_name": "Round",
+        "input_order": 6,
+        "input_name": "Round Up",
+        "input_label": "Select column",
+        "dependency": 1,
+        "dependency_condition": "Round Up",
+        "input_type": "Column value"
+    },
+    {
+        "operation_name": "Round",
+        "input_order": 7,
+        "input_name": "Round Down",
+        "input_label": "Select column",
+        "dependency": 1,
+        "dependency_condition": "Round Down",
+        "input_type": "Column value"
+    },
+    {
+        "operation_name": "Round",
+        "input_order": 8,
+        "input_name": "Truncate",
+        "input_label": "Select column",
+        "dependency": 1,
+        "dependency_condition": "Truncate",
+        "input_type": "Column value"
+    },
+    {
+        "operation_name": "Square root",
+        "input_order": 2,
+        "input_name": "Target Column",
+        "input_label": "Input name",
+        "dependency": 1,
+        "dependency_condition": "Target Column",
+        "input_type": "Text input"
+    },
+    {
+        "operation_name": "Log",
+        "input_order": 4,
+        "input_name": "Target Column",
+        "input_label": "Input name",
+        "dependency": 1,
+        "dependency_condition": "Target Column",
+        "input_type": "Text input"
+    },
+    {
+        "operation_name": "Round",
+        "input_order": 9,
+        "input_name": "Target Column",
+        "input_label": "Input name",
+        "dependency": 1,
+        "dependency_condition": "Target Column",
+        "input_type": "Text input"
+    },
+    {
+        "operation_name": "Left Join",
+        "input_order": 1,
+        "input_name": "Left join on Data1",
+        "input_label": "Select column",
+        "dependency": 1,
+        "dependency_condition": "Left join on Data1",
+        "input_type": "Column value"
+    },
+    {
+        "operation_name": "Left Join",
+        "input_order": 1,
+        "input_name": "Left join on Data2",
+        "input_label": "Select column",
+        "dependency": 2,
+        "dependency_condition": "Left join on Data2",
+        "input_type": "Column value"
+    },
+    {
+        "operation_name": "Left Join",
+        "input_order": 1,
+        "input_name": "Left join Data1",
+        "input_label": "Display columns",
+        "dependency": 3,
+        "dependency_condition": "Left join Data1",
+        "input_type": "Column range"
+    },
+    {
+        "operation_name": "Left Join",
+        "input_order": 1,
+        "input_name": "Left join Data2",
+        "input_label": "Display columns",
+        "dependency": 4,
+        "dependency_condition": "Left join Data2",
+        "input_type": "Column range"
+    },
+    {
+        "operation_name": "Right Join",
+        "input_order": 2,
+        "input_name": "Right join on Data1",
+        "input_label": "Select column",
+        "dependency": 1,
+        "dependency_condition": "Right join on Data1",
+        "input_type": "Column value"
+    },
+    {
+        "operation_name": "Right Join",
+        "input_order": 2,
+        "input_name": "Right join on Data2",
+        "input_label": "Select column",
+        "dependency": 2,
+        "dependency_condition": "Right join on Data2",
+        "input_type": "Column value"
+    },
+    {
+        "operation_name": "Right Join",
+        "input_order": 2,
+        "input_name": "Right join Data1",
+        "input_label": "Display columns",
+        "dependency": 3,
+        "dependency_condition": "Right join Data1",
+        "input_type": "Column range"
+    },
+    {
+        "operation_name": "Right Join",
+        "input_order": 2,
+        "input_name": "Right join Data2",
+        "input_label": "Display columns",
+        "dependency": 4,
+        "dependency_condition": "Right join Data2",
+        "input_type": "Column range"
+    },
+    {
+        "operation_name": "Inner Join",
+        "input_order": 3,
+        "input_name": "Inner join on Data1",
+        "input_label": "Select column",
+        "dependency": 1,
+        "dependency_condition": "Inner join on Data1",
+        "input_type": "Column value"
+    },
+    {
+        "operation_name": "Inner Join",
+        "input_order": 3,
+        "input_name": "Inner join on Data2",
+        "input_label": "Select column",
+        "dependency": 2,
+        "dependency_condition": "Inner join on Data2",
+        "input_type": "Column value"
+    },
+    {
+        "operation_name": "Inner Join",
+        "input_order": 3,
+        "input_name": "Inner join Data1",
+        "input_label": "Display columns",
+        "dependency": 3,
+        "dependency_condition": "Inner join Data1",
+        "input_type": "Column range"
+    },
+    {
+        "operation_name": "Inner Join",
+        "input_order": 3,
+        "input_name": "Inner join Data2",
+        "input_label": "Display columns",
+        "dependency": 4,
+        "dependency_condition": "Inner join Data2",
+        "input_type": "Column range"
+    },
+    {
+        "operation_name": "Outer Join",
+        "input_order": 4,
+        "input_name": "Outer join on Data1",
+        "input_label": "Select column",
+        "dependency": 1,
+        "dependency_condition": "Outer join on Data1",
+        "input_type": "Column value"
+    },
+    {
+        "operation_name": "Outer Join",
+        "input_order": 4,
+        "input_name": "Outer join on Data2",
+        "input_label": "Select column",
+        "dependency": 2,
+        "dependency_condition": "Outer join on Data2",
+        "input_type": "Column value"
+    },
+    {
+        "operation_name": "Outer Join",
+        "input_order": 4,
+        "input_name": "Outer join Data1",
+        "input_label": "Display columns",
+        "dependency": 3,
+        "dependency_condition": "Outer join Data1",
+        "input_type": "Column range"
+    },
+    {
+        "operation_name": "Outer Join",
+        "input_order": 4,
+        "input_name": "Outer join Data2",
+        "input_label": "Display columns",
+        "dependency": 4,
+        "dependency_condition": "Outer join Data2",
+        "input_type": "Column range"
+    },
+    {
+        "operation_name": "Cell sum",
+        "input_order": 3,
+        "input_name": "Cell 2",
+        "input_label": "Select row index",
+        "dependency": 1,
+        "dependency_condition": "Cell 2",
+        "input_type": "Row range"
+    },
+    {
+        "operation_name": "Cell sum",
+        "input_order": 3,
+        "input_name": "Cell 2",
+        "input_label": "Select column index",
+        "dependency": 2,
+        "dependency_condition": "Cell 2",
+        "input_type": "Column range"
+    },
+    {
+        "operation_name": "Cell sum",
+        "input_order": 3,
+        "input_name": "Target Cell 1",
+        "input_label": "Select row index",
+        "dependency": 1,
+        "dependency_condition": "Target Cell 1",
+        "input_type": "Row range"
+    },
+    {
+        "operation_name": "Cell sum",
+        "input_order": 3,
+        "input_name": "Target Cell 2",
+        "input_label": "Select column index",
+        "dependency": 2,
+        "dependency_condition": "Target Cell 2",
+        "input_type": "Column range"
+    },
+    {
+        "operation_name": "Cell subtraction",
+        "input_order": 3,
+        "input_name": "Cell 2",
+        "input_label": "Select row index",
+        "dependency": 1,
+        "dependency_condition": "Cell 2",
+        "input_type": "Row range"
+    },
+    {
+        "operation_name": "Cell subtraction",
+        "input_order": 3,
+        "input_name": "Cell 2",
+        "input_label": "Select column index",
+        "dependency": 2,
+        "dependency_condition": "Cell 2",
+        "input_type": "Column range"
+    },
+    {
+        "operation_name": "Cell subtraction",
+        "input_order": 3,
+        "input_name": "Target Cell 1",
+        "input_label": "Select row index",
+        "dependency": 1,
+        "dependency_condition": "Target Cell 1",
+        "input_type": "Row range"
+    },
+    {
+        "operation_name": "Cell subtraction",
+        "input_order": 3,
+        "input_name": "Target Cell 2",
+        "input_label": "Select column index",
+        "dependency": 2,
+        "dependency_condition": "Target Cell 2",
+        "input_type": "Column range"
+    },
+    {
+        "operation_name": "Cell multiplication",
+        "input_order": 3,
+        "input_name": "Cell 2",
+        "input_label": "Select row index",
+        "dependency": 1,
+        "dependency_condition": "Cell 2",
+        "input_type": "Row range"
+    },
+    {
+        "operation_name": "Cell multiplication",
+        "input_order": 3,
+        "input_name": "Cell 2",
+        "input_label": "Select column index",
+        "dependency": 2,
+        "dependency_condition": "Cell 2",
+        "input_type": "Column range"
+    },
+    {
+        "operation_name": "Cell multiplication",
+        "input_order": 3,
+        "input_name": "Target Cell 1",
+        "input_label": "Select row index",
+        "dependency": 1,
+        "dependency_condition": "Target Cell 1",
+        "input_type": "Row range"
+    },
+    {
+        "operation_name": "Cell multiplication",
+        "input_order": 3,
+        "input_name": "Target Cell 2",
+        "input_label": "Select column index",
+        "dependency": 2,
+        "dependency_condition": "Target Cell 2",
+        "input_type": "Column range"
+    },
+    {
+        "operation_name": "Cell division",
+        "input_order": 3,
+        "input_name": "Cell 2",
+        "input_label": "Select row index",
+        "dependency": 1,
+        "dependency_condition": "Cell 2",
+        "input_type": "Row range"
+    },
+    {
+        "operation_name": "Cell division",
+        "input_order": 3,
+        "input_name": "Cell 2",
+        "input_label": "Select column index",
+        "dependency": 2,
+        "dependency_condition": "Cell 2",
+        "input_type": "Column range"
+    },
+    {
+        "operation_name": "Cell division",
+        "input_order": 3,
+        "input_name": "Target Cell 1",
+        "input_label": "Select row index",
+        "dependency": 1,
+        "dependency_condition": "Target Cell 1",
+        "input_type": "Row range"
+    },
+    {
+        "operation_name": "Cell division",
+        "input_order": 3,
+        "input_name": "Target Cell 2",
+        "input_label": "Select column index",
+        "dependency": 2,
+        "dependency_condition": "Target Cell 2",
+        "input_type": "Column range"
+    },
+    {
+        "operation_name": "Column sum",
+        "input_order": 4,
+        "input_name": "Target Column",
+        "input_label": "Input name",
+        "dependency": 1,
+        "dependency_condition": "Target Column",
+        "input_type": "Text input"
+    },
+    {
+        "operation_name": "Column subtraction",
+        "input_order": 4,
+        "input_name": "Target Column",
+        "input_label": "Input name",
+        "dependency": 1,
+        "dependency_condition": "Target Column",
+        "input_type": "Text input"
+    },
+    {
+        "operation_name": "Column multiplication",
+        "input_order": 4,
+        "input_name": "Target Column",
+        "input_label": "Input name",
+        "dependency": 1,
+        "dependency_condition": "Target Column",
+        "input_type": "Text input"
+    },
+    {
+        "operation_name": "Column division",
+        "input_order": 4,
+        "input_name": "Target Column",
+        "input_label": "Input name",
+        "dependency": 1,
+        "dependency_condition": "Target Column",
+        "input_type": "Text input"
+    },
+    {
+        "operation_name": "Row sum",
+        "input_order": 4,
+        "input_name": "Target Column",
+        "input_label": "Input name",
+        "dependency": 1,
+        "dependency_condition": "Target Column",
+        "input_type": "Text input"
+    },
+    {
+        "operation_name": "Row subtraction",
+        "input_order": 4,
+        "input_name": "Target Column",
+        "input_label": "Input name",
+        "dependency": 1,
+        "dependency_condition": "Target Column",
+        "input_type": "Text input"
+    },
+    {
+        "operation_name": "Row multiplication",
+        "input_order": 4,
+        "input_name": "Target Column",
+        "input_label": "Input name",
+        "dependency": 1,
+        "dependency_condition": "Target Column",
+        "input_type": "Text input"
+    },
+    {
+        "operation_name": "Row division",
+        "input_order": 4,
+        "input_name": "Target Column",
+        "input_label": "Input name",
+        "dependency": 1,
+        "dependency_condition": "Target Column",
+        "input_type": "Text input"
+    },
+    {
+        "operation_name": "Rename and Drop",
+        "input_order": 1,
+        "input_name": "Dropping",
+        "input_label": "Select Columns",
+        "dependency": 1,
+        "dependency_condition": "Drop Columns",
+        "input_type": "Column range"
+    },
+    {
+        "operation_name": "Rename and Drop",
+        "input_order": 2,
+        "input_name": "Renaming",
+        "input_label": "Select Columns",
+        "dependency": 2,
+        "dependency_condition": "Rename Columns",
+        "input_type": "Rename Card"
+    },
+    {
+        "operation_name": "Filter",
+        "input_order": 1,
+        "input_name": "Filtering",
+        "input_label": "Select Columns",
+        "dependency": 1,
+        "dependency_condition": "Filter Columns",
+        "input_type": "Filter Card"
+    },
+    {
+        "operation_name": "Add Time Periods",
+        "input_order": 1,
+        "input_name": "Time Periods",
+        "input_label": "Select column",
+        "dependency": 1,
+        "dependency_condition": "Time Periods",
+        "input_type": "Column value"
+    },
+    {
+        "operation_name": "Add Time Periods",
+        "input_order": 1,
+        "input_name": "Days",
+        "input_label": "Input value",
+        "dependency": 2,
+        "dependency_condition": "Days",
+        "input_type": "User numeric input"
+    },
+    {
+        "operation_name": "Add Time Periods",
+        "input_order": 1,
+        "input_name": "Months",
+        "input_label": "Input value",
+        "dependency": 3,
+        "dependency_condition": "Months",
+        "input_type": "User numeric input"
+    },
+    {
+        "operation_name": "Add Time Periods",
+        "input_order": 1,
+        "input_name": "Years",
+        "input_label": "Input value",
+        "dependency": 4,
+        "dependency_condition": "Years",
+        "input_type": "User numeric input"
+    },
+    {
+        "operation_name": "Add Time Periods",
+        "input_order": 1,
+        "input_name": "Target Column",
+        "input_label": "Input name",
+        "dependency": 1,
+        "dependency_condition": "Target Column",
+        "input_type": "Text input"
+    },
+    {
+        "operation_name": "Data Utilities",
+        "input_order": 1,
+        "input_name": "Reset Index",
+        "input_label": "Select Option",
+        "dependency": 1,
+        "dependency_condition": "Reset Index",
+        "input_type": "Column value"
+    },
+    {
+        "operation_name": "Data Utilities",
+        "input_order": 1,
+        "input_name": "Drop Index",
+        "input_label": "Select Option",
+        "dependency": 2,
+        "dependency_condition": "Drop Index",
+        "input_type": "Column value"
+    },
+    {
+        "operation_name": "Add Column",
+        "input_order": 1,
+        "input_name": "Target Column",
+        "input_label": "Input value",
+        "dependency": 1,
+        "dependency_condition": "Target Column",
+        "input_type": "Text input"
+    },
+    {
+        "operation_name": "Add Column",
+        "input_order": 1,
+        "input_name": "Target Column",
+        "input_label": "Select Field Type",
+        "dependency": 2,
+        "dependency_condition": "Target Column",
+        "input_type": "Column value"
+    },
+    {
+        "operation_name": "Add Column",
+        "input_order": 1,
+        "input_name": "Target Column",
+        "input_label": "Select Value Type",
+        "dependency": 3,
+        "dependency_condition": "Target Column",
+        "input_type": "Column value"
+    },
+    {
+        "operation_name": "Add Column",
+        "input_order": 1,
+        "input_name": "Target Column",
+        "input_label": "Add conditions",
+        "dependency": 4,
+        "dependency_condition": "Target Column",
+        "input_type": "Column Card"
+    },
+    {
+        "operation_name": "Append and Concatenate",
+        "input_order": 1,
+        "input_name": "Table",
+        "input_label": "Select Operation",
+        "dependency": 1,
+        "dependency_condition": "Target Column",
+        "input_type": "Column value"
+    },
+    {
+        "operation_name": "Sort",
+        "input_order": 1,
+        "input_name": "Target Column",
+        "input_label": "Add Column",
+        "dependency": 1,
+        "dependency_condition": "Target Column",
+        "input_type": "Sort Card"
+    },
+    {
+        "operation_name": "Groupby",
+        "input_order": 1,
+        "input_name": "Group By",
+        "input_label": "Enter Columns",
+        "dependency": 1,
+        "dependency_condition": "Target Column",
+        "input_type": "Column range"
+    },
+    {
+        "operation_name": "Groupby",
+        "input_order": 1,
+        "input_name": "Aggregate Column",
+        "input_label": "Add Condition",
+        "dependency": 2,
+        "dependency_condition": "Aggregate Column",
+        "input_type": "Group Card"
+    },
+    {
+        "operation_name": "Pivot",
+        "input_order": 1,
+        "input_name": "Pivoting",
+        "input_label": "Select index",
+        "dependency": 1,
+        "dependency_condition": "Target Column",
+        "input_type": "Column value"
+    },
+    {
+        "operation_name": "Pivot",
+        "input_order": 1,
+        "input_name": "Pivoting on",
+        "input_label": "Select Columns",
+        "dependency": 2,
+        "dependency_condition": "Target Column",
+        "input_type": "Column range"
+    },
+    {
+        "operation_name": "Pivot",
+        "input_order": 1,
+        "input_name": "Populating new data",
+        "input_label": "Select Columns",
+        "dependency": 3,
+        "dependency_condition": "Target Column",
+        "input_type": "Column range"
+    },
+    {
+        "operation_name": "Unpivot",
+        "input_order": 2,
+        "input_name": "Unpivoting",
+        "input_label": "Select index",
+        "dependency": 1,
+        "dependency_condition": "Target Column",
+        "input_type": "Column range"
+    },
+    {
+        "operation_name": "Unpivot",
+        "input_order": 2,
+        "input_name": "Unpivoting",
+        "input_label": "Select Columns",
+        "dependency": 2,
+        "dependency_condition": "Target Column",
+        "input_type": "Column range"
+    },
+    {
+        "operation_name": "Unpivot",
+        "input_order": 2,
+        "input_name": "Unpivoting",
+        "input_label": "Select variable Column name",
+        "dependency": 3,
+        "dependency_condition": "Target Column",
+        "input_type": "Text input"
+    },
+    {
+        "operation_name": "Unpivot",
+        "input_order": 2,
+        "input_name": "Unpivoting",
+        "input_label": "Select value Column name",
+        "dependency": 4,
+        "dependency_condition": "Target Column",
+        "input_type": "Text input"
+    },
+    {
+        "operation_name": "Concat Columns",
+        "input_order": 1,
+        "input_name": "Target Column",
+        "input_label": "Input name",
+        "dependency": 1,
+        "dependency_condition": "Target Column",
+        "input_type": "Text input"
+    },
+    {
+        "operation_name": "Concat Columns",
+        "input_order": 1,
+        "input_name": "Concatenation",
+        "input_label": "Select Columns",
+        "dependency": 2,
+        "dependency_condition": "Target Column",
+        "input_type": "Column range"
+    },
+    {
+        "operation_name": "Concat Columns",
+        "input_order": 1,
+        "input_name": "Concatenation",
+        "input_label": "Input Separator",
+        "dependency": 3,
+        "dependency_condition": "Target Column",
+        "input_type": "Text input"
+    },
+    {
+        "operation_name": "Fill Missing Values",
+        "input_order": 1,
+        "input_name": "Operation",
+        "input_label": "Select Option",
+        "dependency": 1,
+        "dependency_condition": "Select Operation",
+        "input_type": "Column value"
+    },
+    {
+        "operation_name": "Fill Missing Values",
+        "input_order": 1,
+        "input_name": "Data Table",
+        "input_label": "Select Data",
+        "dependency": 2,
+        "dependency_condition": "Data Table",
+        "input_type": "Column value"
+    },
+    {
+        "operation_name": "Fill Missing Values",
+        "input_order": 1,
+        "input_name": "Custom value",
+        "input_label": "Custom value",
+        "dependency": 3,
+        "dependency_condition": "Custom value",
+        "input_type": "Text input"
+    },
+    {
+        "operation_name": "Sum Product",
+        "input_order": 1,
+        "input_name": "Grouping By",
+        "input_label": "Select Column",
+        "dependency": 1,
+        "dependency_condition": "Column Group",
+        "input_type": "Column range"
+    },
+    {
+        "operation_name": "Sum Product",
+        "input_order": 1,
+        "input_name": "Sum Product",
+        "input_label": "Select Column",
+        "dependency": 2,
+        "dependency_condition": "Column Value",
+        "input_type": "Column range"
+    },
+    {
+        "operation_name": "Sum Product",
+        "input_order": 1,
+        "input_name": "Name",
+        "input_label": "New Column",
+        "dependency": 3,
+        "dependency_condition": "Column Name",
+        "input_type": "Text input"
+    },
+    {
+        "operation_name": "Weighted Average",
+        "input_order": 1,
+        "input_name": "Grouping By",
+        "input_label": "Select Column",
+        "dependency": 1,
+        "dependency_condition": "Column Group",
+        "input_type": "Column range"
+    },
+    {
+        "operation_name": "Weighted Average",
+        "input_order": 1,
+        "input_name": "Value",
+        "input_label": "Select Column",
+        "dependency": 2,
+        "dependency_condition": "Average Value",
+        "input_type": "Column value"
+    },
+    {
+        "operation_name": "Weighted Average",
+        "input_order": 1,
+        "input_name": "Weight",
+        "input_label": "Select Column",
+        "dependency": 3,
+        "dependency_condition": "Average Weight",
+        "input_type": "Column value"
+    },
+    {
+        "operation_name": "Weighted Average",
+        "input_order": 1,
+        "input_name": "Name",
+        "input_label": "Input New Column",
+        "dependency": 4,
+        "dependency_condition": "Column Name",
+        "input_type": "Text input"
+    },
+    {
+        "operation_name": "Drop Duplicate",
+        "input_order": 1,
+        "input_name": "Operation",
+        "input_label": "Select Option",
+        "dependency": 1,
+        "dependency_condition": "Select operation",
+        "input_type": "Column value"
+    },
+    {
+        "operation_name": "Drop Duplicate",
+        "input_order": 1,
+        "input_name": "Data Table",
+        "input_label": "Select Data",
+        "dependency": 2,
+        "dependency_condition": "Data table",
+        "input_type": "Column range"
+    },
+    {
+        "operation_name": "Add Fix Column",
+        "input_order": 2,
+        "input_name": "Add Fix Column",
+        "input_label": "Input Name",
+        "dependency": 2,
+        "dependency_condition": "Input Column",
+        "input_type": "Text input"
+    },
+    {
+        "operation_name": "Add Fix Column",
+        "input_order": 2,
+        "input_name": "Add Fix Column",
+        "input_label": "Input Value",
+        "dependency": 2,
+        "dependency_condition": "Add Column",
+        "input_type": "Text input"
+    },
+    {
+        "operation_name": "Delimit Column",
+        "input_order": 1,
+        "input_name": "Delimiting",
+        "input_label": "Select column",
+        "dependency": 1,
+        "dependency_condition": "Delimit Column",
+        "input_type": "Column value"
+    },
+    {
+        "operation_name": "Delimit Column",
+        "input_order": 2,
+        "input_name": "Delimiter",
+        "input_label": "Input Value",
+        "dependency": 2,
+        "dependency_condition": "Delimit Column",
+        "input_type": "Text input"
+    },
+    {
+        "operation_name": "Find and Replace",
+        "input_order": 1,
+        "input_name": "Find column",
+        "input_label": "Select column",
+        "dependency": 1,
+        "dependency_condition": "Find and Replace",
+        "input_type": "Column value"
+    },
+    {
+        "operation_name": "Find and Replace",
+        "input_order": 2,
+        "input_name": "Replace column",
+        "input_label": "Select column",
+        "dependency": 2,
+        "dependency_condition": "Find and Replace",
+        "input_type": "Column value"
+    },
+    {
+        "operation_name": "Find and Replace",
+        "input_order": 3,
+        "input_name": "Find Case",
+        "input_label": "Select Option",
+        "dependency": 3,
+        "dependency_condition": "Find and Replace",
+        "input_type": "Column value"
+    },
+    {
+        "operation_name": "Find and Replace",
+        "input_order": 4,
+        "input_name": "Find",
+        "input_label": "Input Value",
+        "dependency": 4,
+        "dependency_condition": "Find and Replace",
+        "input_type": "Text input"
+    },
+    {
+        "operation_name": "Find and Replace",
+        "input_order": 5,
+        "input_name": "Replace",
+        "input_label": "Input Value",
+        "dependency": 5,
+        "dependency_condition": "Find and Replace",
+        "input_type": "Text input"
+    },
+    {
+        "operation_name": "Date",
+        "input_order": 1,
+        "input_name": "year",
+        "input_label": "Select column",
+        "dependency": 1,
+        "dependency_condition": "Date",
+        "input_type": "Column value"
+    },
+    {
+        "operation_name": "Date",
+        "input_order": 1,
+        "input_name": "month",
+        "input_label": "Select column",
+        "dependency": 2,
+        "dependency_condition": "Date",
+        "input_type": "Column value"
+    },
+    {
+        "operation_name": "Date",
+        "input_order": 1,
+        "input_name": "day",
+        "input_label": "Select column",
+        "dependency": 3,
+        "dependency_condition": "Date",
+        "input_type": "Column value"
+    },
+    {
+        "operation_name": "Date",
+        "input_order": 1,
+        "input_name": "column",
+        "input_label": "Input Value",
+        "dependency": 4,
+        "dependency_condition": "Date",
+        "input_type": "Text input"
+    },
+    {
+        "operation_name": "Day",
+        "input_order": 1,
+        "input_name": "date",
+        "input_label": "Select column",
+        "dependency": 1,
+        "dependency_condition": "Day",
+        "input_type": "Column value"
+    },
+    {
+        "operation_name": "Day",
+        "input_order": 1,
+        "input_name": "column",
+        "input_label": "Input Value",
+        "dependency": 2,
+        "dependency_condition": "Day",
+        "input_type": "Text input"
+    },
+    {
+        "operation_name": "Days",
+        "input_order": 1,
+        "input_name": "start date",
+        "input_label": "Select column",
+        "dependency": 1,
+        "dependency_condition": "Days",
+        "input_type": "Column value"
+    },
+    {
+        "operation_name": "Days",
+        "input_order": 1,
+        "input_name": "end date",
+        "input_label": "Select column",
+        "dependency": 2,
+        "dependency_condition": "Days",
+        "input_type": "Column value"
+    },
+    {
+        "operation_name": "Days",
+        "input_order": 1,
+        "input_name": "column",
+        "input_label": "Input Value",
+        "dependency": 3,
+        "dependency_condition": "Days",
+        "input_type": "Text input"
+    },
+    {
+        "operation_name": "Edate",
+        "input_order": 1,
+        "input_name": "start date",
+        "input_label": "Select column",
+        "dependency": 1,
+        "dependency_condition": "Edate",
+        "input_type": "Column value"
+    },
+    {
+        "operation_name": "Edate",
+        "input_order": 1,
+        "input_name": "months",
+        "input_label": "Input Value",
+        "dependency": 2,
+        "dependency_condition": "Edate",
+        "input_type": "Text input"
+    },
+    {
+        "operation_name": "Edate",
+        "input_order": 1,
+        "input_name": "column",
+        "input_label": "Input Value",
+        "dependency": 3,
+        "dependency_condition": "Edate",
+        "input_type": "Text input"
+    },
+    {
+        "operation_name": "Days360",
+        "input_order": 1,
+        "input_name": "start date",
+        "input_label": "Select column",
+        "dependency": 1,
+        "dependency_condition": "Days360",
+        "input_type": "Column value"
+    },
+    {
+        "operation_name": "Days360",
+        "input_order": 1,
+        "input_name": "end date",
+        "input_label": "Select column",
+        "dependency": 2,
+        "dependency_condition": "Days360",
+        "input_type": "Column value"
+    },
+    {
+        "operation_name": "Days360",
+        "input_order": 1,
+        "input_name": "method",
+        "input_label": "Select value",
+        "dependency": 3,
+        "dependency_condition": "Days360",
+        "input_type": "Column value"
+    },
+    {
+        "operation_name": "Days360",
+        "input_order": 1,
+        "input_name": "column",
+        "input_label": "Input Value",
+        "dependency": 4,
+        "dependency_condition": "Days360",
+        "input_type": "Text input"
+    },
+    {
+        "operation_name": "Eomonth",
+        "input_order": 1,
+        "input_name": "start date",
+        "input_label": "Select column",
+        "dependency": 1,
+        "dependency_condition": "Eomonth",
+        "input_type": "Column value"
+    },
+    {
+        "operation_name": "Eomonth",
+        "input_order": 1,
+        "input_name": "months",
+        "input_label": "Input Value",
+        "dependency": 2,
+        "dependency_condition": "Eomonth",
+        "input_type": "Text input"
+    },
+    {
+        "operation_name": "Eomonth",
+        "input_order": 1,
+        "input_name": "column",
+        "input_label": "Input Value",
+        "dependency": 3,
+        "dependency_condition": "Eomonth",
+        "input_type": "Text input"
+    },
+    {
+        "operation_name": "Hour",
+        "input_order": 1,
+        "input_name": "date",
+        "input_label": "Select column",
+        "dependency": 1,
+        "dependency_condition": "Hour",
+        "input_type": "Column value"
+    },
+    {
+        "operation_name": "Hour",
+        "input_order": 1,
+        "input_name": "column",
+        "input_label": "Input Value",
+        "dependency": 2,
+        "dependency_condition": "Hour",
+        "input_type": "Text input"
+    },
+    {
+        "operation_name": "Isoweeknum",
+        "input_order": 1,
+        "input_name": "date",
+        "input_label": "Select column",
+        "dependency": 1,
+        "dependency_condition": "Isoweeknum",
+        "input_type": "Column value"
+    },
+    {
+        "operation_name": "Isoweeknum",
+        "input_order": 1,
+        "input_name": "column",
+        "input_label": "Input Value",
+        "dependency": 2,
+        "dependency_condition": "Isoweeknum",
+        "input_type": "Text input"
+    },
+    {
+        "operation_name": "Minute",
+        "input_order": 1,
+        "input_name": "date",
+        "input_label": "Select column",
+        "dependency": 1,
+        "dependency_condition": "Minute",
+        "input_type": "Column value"
+    },
+    {
+        "operation_name": "Minute",
+        "input_order": 1,
+        "input_name": "column",
+        "input_label": "Input Value",
+        "dependency": 2,
+        "dependency_condition": "Minute",
+        "input_type": "Text input"
+    },
+    {
+        "operation_name": "Month",
+        "input_order": 1,
+        "input_name": "date",
+        "input_label": "Select column",
+        "dependency": 1,
+        "dependency_condition": "Month",
+        "input_type": "Column value"
+    },
+    {
+        "operation_name": "Month",
+        "input_order": 1,
+        "input_name": "column",
+        "input_label": "Input Value",
+        "dependency": 2,
+        "dependency_condition": "Month",
+        "input_type": "Text input"
+    },
+    {
+        "operation_name": "Now",
+        "input_order": 1,
+        "input_name": "column",
+        "input_label": "Input Value",
+        "dependency": 1,
+        "dependency_condition": "Now",
+        "input_type": "Text input"
+    },
+    {
+        "operation_name": "Second",
+        "input_order": 1,
+        "input_name": "date",
+        "input_label": "Select column",
+        "dependency": 1,
+        "dependency_condition": "Second",
+        "input_type": "Column value"
+    },
+    {
+        "operation_name": "Second",
+        "input_order": 1,
+        "input_name": "column",
+        "input_label": "Input Value",
+        "dependency": 2,
+        "dependency_condition": "Second",
+        "input_type": "Text input"
+    },
+    {
+        "operation_name": "Time",
+        "input_order": 1,
+        "input_name": "hour",
+        "input_label": "Select column",
+        "dependency": 1,
+        "dependency_condition": "Time",
+        "input_type": "Column value"
+    },
+    {
+        "operation_name": "Time",
+        "input_order": 1,
+        "input_name": "minute",
+        "input_label": "Select column",
+        "dependency": 2,
+        "dependency_condition": "Time",
+        "input_type": "Column value"
+    },
+    {
+        "operation_name": "Time",
+        "input_order": 1,
+        "input_name": "second",
+        "input_label": "Select column",
+        "dependency": 3,
+        "dependency_condition": "Time",
+        "input_type": "Column value"
+    },
+    {
+        "operation_name": "Time",
+        "input_order": 1,
+        "input_name": "column",
+        "input_label": "Input Value",
+        "dependency": 4,
+        "dependency_condition": "Time",
+        "input_type": "Text input"
+    },
+    {
+        "operation_name": "Today",
+        "input_order": 1,
+        "input_name": "column",
+        "input_label": "Input Value",
+        "dependency": 1,
+        "dependency_condition": "Today",
+        "input_type": "Text input"
+    },
+    {
+        "operation_name": "Weekday",
+        "input_order": 1,
+        "input_name": "date",
+        "input_label": "Select column",
+        "dependency": 1,
+        "dependency_condition": "Weekday",
+        "input_type": "Column value"
+    },
+    {
+        "operation_name": "Weekday",
+        "input_order": 1,
+        "input_name": "method",
+        "input_label": "Select Value",
+        "dependency": 2,
+        "dependency_condition": "Weekday",
+        "input_type": "Column value"
+    },
+    {
+        "operation_name": "Weekday",
+        "input_order": 1,
+        "input_name": "column",
+        "input_label": "Input Value",
+        "dependency": 3,
+        "dependency_condition": "Weekday",
+        "input_type": "Text input"
+    },
+    {
+        "operation_name": "Weeknum",
+        "input_order": 1,
+        "input_name": "date",
+        "input_label": "Select column",
+        "dependency": 1,
+        "dependency_condition": "Weeknum",
+        "input_type": "Column value"
+    },
+    {
+        "operation_name": "Weeknum",
+        "input_order": 1,
+        "input_name": "method",
+        "input_label": "Select Value",
+        "dependency": 2,
+        "dependency_condition": "Weeknum",
+        "input_type": "Column value"
+    },
+    {
+        "operation_name": "Weeknum",
+        "input_order": 1,
+        "input_name": "column",
+        "input_label": "Input Value",
+        "dependency": 3,
+        "dependency_condition": "Weeknum",
+        "input_type": "Text input"
+    },
+    {
+        "operation_name": "Year",
+        "input_order": 1,
+        "input_name": "date",
+        "input_label": "Select column",
+        "dependency": 1,
+        "dependency_condition": "Year",
+        "input_type": "Column value"
+    },
+    {
+        "operation_name": "Year",
+        "input_order": 1,
+        "input_name": "column",
+        "input_label": "Input Value",
+        "dependency": 2,
+        "dependency_condition": "Year",
+        "input_type": "Text input"
+    },
+    {
+        "operation_name": "Yearfrac",
+        "input_order": 1,
+        "input_name": "start date",
+        "input_label": "Select column",
+        "dependency": 1,
+        "dependency_condition": "Yearfrac",
+        "input_type": "Column value"
+    },
+    {
+        "operation_name": "Yearfrac",
+        "input_order": 1,
+        "input_name": "end date",
+        "input_label": "Select column",
+        "dependency": 2,
+        "dependency_condition": "Yearfrac",
+        "input_type": "Column value"
+    },
+    {
+        "operation_name": "Yearfrac",
+        "input_order": 1,
+        "input_name": "basis",
+        "input_label": "Select Value",
+        "dependency": 3,
+        "dependency_condition": "Yearfrac",
+        "input_type": "Column value"
+    },
+    {
+        "operation_name": "Yearfrac",
+        "input_order": 1,
+        "input_name": "column",
+        "input_label": "Input Value",
+        "dependency": 4,
+        "dependency_condition": "Yearfrac",
+        "input_type": "Text input"
+    },
+    {
+        "operation_name": "Networkdays",
+        "input_order": 1,
+        "input_name": "start date",
+        "input_label": "Select column",
+        "dependency": 1,
+        "dependency_condition": "Networkdays",
+        "input_type": "Column value"
+    },
+    {
+        "operation_name": "Networkdays",
+        "input_order": 1,
+        "input_name": "end date",
+        "input_label": "Select column",
+        "dependency": 2,
+        "dependency_condition": "Networkdays",
+        "input_type": "Column value"
+    },
+    {
+        "operation_name": "Networkdays",
+        "input_order": 1,
+        "input_name": "holiday",
+        "input_label": "Select column",
+        "dependency": 3,
+        "dependency_condition": "Networkdays",
+        "input_type": "Column value"
+    },
+    {
+        "operation_name": "Networkdays",
+        "input_order": 1,
+        "input_name": "column",
+        "input_label": "Input value",
+        "dependency": 4,
+        "dependency_condition": "Networkdays",
+        "input_type": "Text input"
+    },
+    {
+        "operation_name": "Networkdays.Intl",
+        "input_order": 1,
+        "input_name": "start date",
+        "input_label": "Select column",
+        "dependency": 1,
+        "dependency_condition": "NetworkdaysIntl",
+        "input_type": "Column value"
+    },
+    {
+        "operation_name": "Networkdays.Intl",
+        "input_order": 1,
+        "input_name": "end date",
+        "input_label": "Select column",
+        "dependency": 2,
+        "dependency_condition": "NetworkdaysIntl",
+        "input_type": "Column value"
+    },
+    {
+        "operation_name": "Networkdays.Intl",
+        "input_order": 1,
+        "input_name": "holiday",
+        "input_label": "Select column",
+        "dependency": 3,
+        "dependency_condition": "NetworkdaysIntl",
+        "input_type": "Column value"
+    },
+    {
+        "operation_name": "Networkdays.Intl",
+        "input_order": 1,
+        "input_name": "weekend",
+        "input_label": "Input value",
+        "dependency": 4,
+        "dependency_condition": "NetworkdaysIntl",
+        "input_type": "Text input"
+    },
+    {
+        "operation_name": "Networkdays.Intl",
+        "input_order": 1,
+        "input_name": "column",
+        "input_label": "Input value",
+        "dependency": 5,
+        "dependency_condition": "NetworkdaysIntl",
+        "input_type": "Text input"
+    },
+    {
+        "operation_name": "Workdays",
+        "input_order": 1,
+        "input_name": "start date",
+        "input_label": "Select column",
+        "dependency": 1,
+        "dependency_condition": "Workdays",
+        "input_type": "Column value"
+    },
+    {
+        "operation_name": "Workdays",
+        "input_order": 1,
+        "input_name": "holiday",
+        "input_label": "Select column",
+        "dependency": 2,
+        "dependency_condition": "Workdays",
+        "input_type": "Column value"
+    },
+    {
+        "operation_name": "Workdays",
+        "input_order": 1,
+        "input_name": "days",
+        "input_label": "Input Value",
+        "dependency": 3,
+        "dependency_condition": "Workdays",
+        "input_type": "Text input"
+    },
+    {
+        "operation_name": "Workdays",
+        "input_order": 1,
+        "input_name": "column",
+        "input_label": "Input Value",
+        "dependency": 4,
+        "dependency_condition": "Workdays",
+        "input_type": "Text input"
+    },
+    {
+        "operation_name": "Workdays.Intl",
+        "input_order": 1,
+        "input_name": "start date",
+        "input_label": "Select column",
+        "dependency": 1,
+        "dependency_condition": "WorkdaysIntl",
+        "input_type": "Column value"
+    },
+    {
+        "operation_name": "Workdays.Intl",
+        "input_order": 1,
+        "input_name": "holiday",
+        "input_label": "Select column",
+        "dependency": 2,
+        "dependency_condition": "WorkdaysIntl",
+        "input_type": "Column value"
+    },
+    {
+        "operation_name": "Workdays.Intl",
+        "input_order": 1,
+        "input_name": "weekend",
+        "input_label": "Select column",
+        "dependency": 3,
+        "dependency_condition": "WorkdaysIntl",
+        "input_type": "Column range"
+    },
+    {
+        "operation_name": "Workdays.Intl",
+        "input_order": 1,
+        "input_name": "days",
+        "input_label": "Input value",
+        "dependency": 4,
+        "dependency_condition": "WorkdaysIntl",
+        "input_type": "Text input"
+    },
+    {
+        "operation_name": "Workdays.Intl",
+        "input_order": 1,
+        "input_name": "column",
+        "input_label": "Input value",
+        "dependency": 5,
+        "dependency_condition": "WorkdaysIntl",
+        "input_type": "Text input"
+    }
+]

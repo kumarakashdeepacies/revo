@@ -1,0 +1,268 @@
+{% extends extend_template %}
+
+{% load static %}
+
+{% block body_block %}
+
+
+{%csrf_token%}
+<style>
+    .dev-tools .card-body .card-header{
+        background-color: var(--primary-color);
+        vertical-align: middle;
+    }
+    .dev-tools .card-body .card-title{
+        color: var(--light);
+    }
+
+    .devItems-container {
+        padding: 0.5rem;
+        padding-top: 1rem;
+    }
+    .dev-items {
+        text-align: center;
+        margin: 1rem 0;
+        line-height: 1rem;
+        padding: 0.35rem !important;
+        min-height: 7.3rem;
+        align-items: center;
+        display: flex;
+        justify-content: center;
+        width: 95%;
+        box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+        border-radius: 0.25rem;
+    }
+    .dev-items i{
+      height: 3.5rem;
+    }
+    .dev-items:hover{
+      box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+    }
+    .container-fluid.dev-tools a u{
+        text-decoration: none;
+        font-size: small !important;
+    }
+    .devtool-card1,.devtool-card3,.devtool-card4,.devtool-card2{
+        margin-left: 2.75%;
+        margin-right: 2.75%;
+    }
+    .dev-card{
+      min-height: 11rem;
+    }
+    @media (min-width:768px) {
+        .devtool-card1,.devtool-card3{
+            margin-left: 5.5%;
+            margin-right: 2.75%;
+        }
+        .devtool-card4,.devtool-card2{
+            margin-left: 2.75%;
+            margin-right: 5.5%;
+        }
+    }
+
+    @media (max-width:768px) {
+        .dev-card {
+            min-height: 23.7rem;
+        }
+        .dev-items{
+          min-height: 7.8rem;
+        }
+    }
+    @media (max-width: 500px){
+      .col-xs-6 {
+          -ms-flex: 0 0 50%;
+          flex: 0 0 50%;
+          max-width: 50%;
+      }
+      .dev-card {
+          min-height: 11rem;
+      }
+      .dev-items{
+        min-height: 7.3rem;
+      }
+    }
+
+    @media (max-width: 376px){
+      .devItems-container {
+          padding: 0rem;
+      }
+      .dev-items {
+          min-height: 7.8rem;
+      }
+    }
+
+    @media (max-width: 321px){
+      .dev-card {
+          padding: 10px;
+      }
+      .dev-items {
+          min-height: 8.3rem;
+      }
+    }
+
+</style>
+<section class="content">
+
+    <div class="container-fluid dev-tools">
+        <div class="row" style="margin: 0.25%;">
+            <div class="card col-12" style="padding-left: 0%; padding-right: 0%; border-radius: 0.5rem;">
+                <div class="card-header" style="background-color:#d8d8d8;">
+                    <span class="card-title" style='font-weight:bold;'>Jump to:</span>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="card col-md-5 col-sm-12 devtool-card1" style=" box-shadow: 3px 4px 6px 2px #c5c5c0; padding-left: 0%; padding-right: 0%; border-radius: 0.5rem;">
+                            <div class="card-header">
+                                <h4 class="card-title">Access Controls</h4>
+                            </div>
+                            <div class="card-body dev-card">
+                                <div class="devItems-container row">
+                                  <div class="col-xs-6 col-sm-6 col-md-6 col-lg-4 d-flex justify-content-center align-items-center">
+                                    <div class="dev-items">
+                                      <a href="{% url 'users:user_management' current_app_code current_access_mode %}">
+                                        <i class="fa-solid fa-universal-access fa-3x" style=" display: flex;justify-content: center;align-items: center;margin-bottom: 0.2em;color: #e6576e;"></i>
+                                        <u>User Management</u>
+                                      </a>
+                                    </div>
+                                  </div>
+                                  <div class="col-xs-6 col-sm-6 col-md-6 col-lg-4 d-flex justify-content-center align-items-center">
+                                    <div class="dev-items">
+                                      <a href="{% url 'users:audit_trail' current_app_code current_access_mode %}">
+                                        <i class="fa-solid fa-server fa-3x" style=" display: flex;justify-content: center;align-items: center;margin-bottom: 0.2em;color: #e6576e;"></i>
+                                        <u>User Insights</u>
+                                      </a>
+                                    </div>
+                                  </div>
+                                  <div class="col-xs-6 col-sm-6 col-md-6 col-lg-4 d-flex justify-content-center align-items-center">
+                                    <div class="dev-items"><a href="{% url 'users:jobexecution' current_app_code current_access_mode %}">
+                                        <i class="fa-solid fa-calendar-check fa-3x" style=" display: flex;justify-content: center;align-items: center;margin-bottom: 0.2em;color: #e6576e;"></i>
+                                        <u>Scheduler</u>
+                                      </a>
+                                    </div>
+                                  </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card col-md-5 col-sm-12 devtool-card2" style=" box-shadow: 3px 4px 6px 2px #c5c5c0; padding-left: 0%; padding-right: 0%; border-radius: 0.5rem;">
+                            <div class="card-header" >
+                                <h4 class="card-title">Data and Logics</h4>
+                            </div>
+                            <div class="card-body dev-card">
+                                <div class="devItems-container row">
+                                  <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6  d-flex justify-content-center align-items-center">
+                                    <div class="dev-items">
+                                      <a href="{% url 'users:datamanagement' current_app_code current_access_mode %}">
+                                        <i class="fa-solid fa-sitemap fa-3x" style=" display: flex;justify-content: center;align-items: center;margin-bottom: 0.2em; color: #C0DDB1;"></i>
+                                        <u>Data Management <br> Studio</u>
+                                      </a>
+                                    </div>
+                                  </div>
+                                  <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6  d-flex justify-content-center align-items-center">
+                                    <div class="dev-items">
+                                      <a href="{% url 'users:computation_module' current_app_code current_access_mode %}">
+                                        <i class="fa-solid fa-toolbox fa-3x" style=" display: flex;justify-content: center;align-items: center;margin-bottom: 0.2em; color: #C0DDB1;"></i>
+                                        <u>Computation <br> Studio</u>
+                                      </a>
+                                    </div>
+                                  </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="card col-md-5 col-sm-12 devtool-card3" style=" box-shadow: 3px 4px 6px 2px #c5c5c0; padding-left: 0%; padding-right: 0%; border-radius: 0.5rem;">
+                            <div class="card-header">
+                                <h4 class="card-title">Workflows</h4>
+                            </div>
+                            <div class="card-body dev-card">
+                                <div class="devItems-container row">
+                                  <div class="col-xs-6 col-sm-6 col-md-6 col-lg-4 d-flex justify-content-center align-items-center">
+                                    <div class="dev-items">
+                                      <a href="{% url 'users:LevelCreation' current_app_code current_access_mode %}">
+                                        <i class="fa-solid fa-microchip fa-3x" style=" display: flex;justify-content: center;align-items: center;margin-bottom: 0.2em;color: #decc73;"></i>
+                                        <u>Process Manager</u>
+                                      </a>
+                                    </div>
+                                  </div>
+                                  <div class="col-xs-6 col-sm-6 col-md-6 col-lg-4 d-flex justify-content-center align-items-center">
+                                    <div class="dev-items">
+                                      <a href="{% url 'users:processGraphModule' current_app_code current_access_mode %}">
+                                        <i class="fa-solid fa-pen-ruler fa-3x" style=" display: flex;justify-content: center;align-items: center;margin-bottom: 0.2em;color: #decc73;"></i>
+                                        <u>Process Canvas</u>
+                                      </a>
+                                    </div>
+                                  </div>
+                                  <div class="col-xs-6 col-sm-6 col-md-6 col-lg-4 d-flex justify-content-center align-items-center">
+                                    <div class="dev-items">
+                                      <a href="{% url 'users:FlowMonitor' current_app_code current_access_mode %}">
+                                        <i class="fa-solid fa-bars-staggered fa-3x" style=" display: flex;justify-content: center;align-items: center;margin-bottom: 0.2em;color: #decc73;"></i>
+                                        <u>Process Flow Monitor</u>
+                                      </a>
+                                    </div>
+                                  </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card col-md-5 col-sm-12 devtool-card4" style=" box-shadow: 3px 4px 6px 2px #c5c5c0; padding-left: 0%; padding-right: 0%; border-radius: 0.5rem;">
+                            <div class="card-header">
+                                <h4 class="card-title">Application Settings</h4>
+                            </div>
+                            <div class="card-body dev-card">
+                                <div class="devItems-container row">
+                                  <div class="col-xs-6 col-sm-6 col-md-6 col-lg-3 d-flex justify-content-center align-items-center">
+                                    <div class="dev-items">
+                                      <a href="{% url 'users:application' current_app_code current_access_mode %}">
+                                        <i class="fa-solid fa-gears fa-3x" style=" display: flex;justify-content: center;align-items: center;margin-bottom: 0.2em;margin-top:0.2em;color: #87b4ff;"></i>
+                                        <u>Application Configuration</u>
+                                      </a>
+                                    </div>
+                                  </div>
+                                  <div class="col-xs-6 col-sm-6 col-md-6 col-lg-3 d-flex justify-content-center align-items-center">
+                                    <div class="dev-items">
+                                      <a href="{% url 'users:alert_management' current_app_code current_access_mode %}">
+                                        <i class="fa-solid fa-business-time fa-3x" style=" display: flex;justify-content: center;align-items: center;margin-bottom: 0.2em;margin-top:0.2em;color: #87b4ff;"></i>
+                                        <u>Alert <br> Management</u>
+                                      </a>
+                                    </div>
+                                  </div>
+                                  <div class="col-xs-6 col-sm-6 col-md-6 col-lg-3 d-flex justify-content-center align-items-center">
+                                    <div class="dev-items">
+                                      <a href="{% url 'users:business_model' current_app_code current_access_mode %}">
+                                        <i class="fa-solid fa-file-invoice-dollar fa-3x" style=" display: flex;justify-content: center;align-items: center;margin-bottom: 0.2em;margin-top: -0.3em;color: #87b4ff;"></i>
+                                        <u>Business Models</u>
+                                      </a>
+                                    </div>
+                                  </div>
+                                  <div class="col-xs-6 col-sm-6 col-md-6 col-lg-3 d-flex justify-content-center align-items-center">
+                                    <div class="dev-items">
+                                      <a data-toggle="modal" data-target="#AppThemeModal">
+                                        <i class="fa-solid fa-wand-magic-sparkles fa-3x" style=" display: flex;justify-content: center;align-items: center;margin-bottom: 0.2em;margin-top:0.2em;color: #87b4ff;"></i>
+                                        <u>Application <br> Theme</u>
+                                      </a>
+                                    </div>
+                                  </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</section>
+<script>
+    $('.common_passwords').select2({ tags: true });
+    var ctoken = document.getElementById('dummyFormForAjaxCall').elements[0].value
+    $.ajaxSetup({
+        beforeSend: function (xhr, settings) {
+
+            xhr.setRequestHeader("X-CSRFToken", ctoken);
+        }
+    })
+
+</script>
+
+{% endblock %}

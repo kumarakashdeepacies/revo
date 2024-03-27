@@ -1,0 +1,114 @@
+{% extends "base.html" %}
+{% block title %}Server Error{% endblock %}
+{% block content %}
+
+<style>
+       :root {
+  --primary-color:#d4af37;
+  --secondary-color:black;
+  --font-color: #000000;
+  --font-hover-color: #ffffff;
+  }
+
+  {{ root_css|safe }}
+  .custom-button {
+    width: 30%;
+    background: var(--buttonBgColor,var(--primary-color));
+    color: var(--buttonFontColor, var(--font-hover-color));
+    border: var(--buttonBorderThickness) var(--buttonBorderStyle) var(--buttonBorderColor);
+    box-shadow: none;
+    display: inline-block;
+    font-weight: 400;
+    text-align: center;
+    vertical-align: middle;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    padding: .375rem .75rem;
+    line-height: 1.5;
+    border-radius: .25rem;
+  }
+  .custom-button:hover {
+    width: 30%;
+    background: var(--buttonBgHoverColor,var(--secondary-color));
+    color: var(--buttonFontHoverColor, var(--font-hover-color));
+    border: var(--buttonBorderThickness) var(--buttonBorderStyle) var(--buttonBorderColor);
+    box-shadow: var(--button_shadow_x) var(--button_shadow_y) var(--button_blur_radius) var(--button_shadow_thickness) var(--buttonShadowColor);
+    text-decoration: none;
+  }
+    .error-container{
+      background-image: url('/static/images/error-pages/500.png');
+      background-position: center;
+      background-repeat: no-repeat;
+      background-size: cover;
+    }
+    .error-overlay{
+        position: absolute;
+        width: 100%;
+        height: 100vh;
+        top: 0;
+        background: rgba(0,0,0,0.1);
+    }
+    .error-text{
+        margin: 1.5rem;
+    }
+    .acies_head_logo {
+        width: 10%;
+    }
+</style>
+
+<div class="error-container" style="height: 100vh;width:100%;display: flex;align-items: flex-start;justify-content: center;">
+    <div class="error-overlay"></div>
+    <div style="padding-top:4.5rem;z-index:2">
+        <div class="error-text" style="text-align: center;">
+            <div style="padding:0.5rem">
+                <h4 style="color:red;margin:0;text-align:center;font-weight: bold;">500 - Configuration Error</h4>
+            </div>
+            <div class="card-body">
+                <h5 style="text-align:center;">Looks like something went wrong!</h5>
+                <p style="text-align:center;">Configuration error! Please check and update application configuration</p>
+            </div>
+        </div>
+        <div class="d-flex justify-content-center">
+            <button  value="Back to Home" class="custom-button" id='Back_to_Home' name="Back_to_Home" style="width: 8rem;">Back</button>
+        </div>
+    </div>
+</div>
+<script>
+    $('#Back_to_Home').click(function(){
+        window.history.back();
+    })
+
+    if("{{add_logo_error}}" && "{{add_logo_error}}" == "True"){
+        if("{{logo_file_error_page}}"){
+            $(".acies_head_logo img").attr("src",`/media/{{tenant}}/TenantTheme/custom_error_pages/logo/{{logo_file_error_page}}`)
+        }
+    }
+
+    if("{{add_logo_error}}" && "{{add_logo_error}}" == "True_App"){
+        if("{{logo_file_error_page}}"){
+            $(".acies_head_logo img").attr("src",`/media/{{tenant}}/{{app_code}}/ErrorConfigfiles/logo/{{error_code3}}/{{logo_file_error_page}}`)
+        }
+    }
+
+    if("{{add_bg_error500}}" && "{{add_bg_error500}}" == "True"){
+        if("{{500bg}}"){
+            $(".error-container").css("background-image",`url('/media/{{tenant}}/TenantTheme/custom_error_pages/background/{{500bg}}')`)
+        }
+    }
+
+    if("{{add_bg_error500}}" && "{{add_bg_error500}}" == "True_App"){
+        if("{{500bg}}"){
+          $(".error-container").css("background-image",`url('/media/{{tenant}}/{{app_code}}/ErrorConfigfiles/background/{{error_code1}}/{{500bg}}')`)
+        }
+      }
+
+
+    if("{{change_500_text}}" && "{{change_500_text}}" == "True"){
+        let string = `{{text_500|safe}}`
+        if(string){
+            $(".error-text").html(string)
+        }
+    }
+</script>
+{% endblock content %}

@@ -1,0 +1,866 @@
+{% extends extend_template %}
+{% load crispy_forms_tags %}
+{% load static %}
+
+{% block body_block %}
+<!-- Bootstrap4 Duallistbox -->
+<link rel="stylesheet" href="{% static 'vendor/Base_theme/bootstrap4-duallistbox/bootstrap-duallistbox.min.css' %}">
+
+<!-- Bootstrap4 Duallistbox -->
+<script src="{% static 'vendor/Base_theme/bootstrap4-duallistbox/jquery.bootstrap-duallistbox.min.js' %}"></script>
+<link rel="stylesheet" href="{% static 'css/KoreD/jquery.dataTables.css' %}">
+<link rel="stylesheet" href="{% static 'vendor/Base_theme/datatables-responsive/css/responsive.bootstrap4.min.css' %}">
+<link rel="stylesheet" href="{% static 'vendor/Base_theme/datatables-colreorder/css/colReorder.bootstrap4.min.css' %}">
+<link rel="stylesheet" href="{% static 'css/KoreD/buttons.dataTables.min.css' %}">
+
+<!-- DataTables -->
+<script src="{% static 'vendor/Base_theme/datatables/jquery.dataTables.js' %}"></script>
+<script src="{% static 'vendor/Base_theme/datatables-responsive/js/dataTables.responsive.min.js' %}"></script>
+<script src="{% static 'vendor/Base_theme/datatables-fixedheader/js/dataTables.fixedHeader.min.js' %}"></script>
+<script src="{% static 'vendor/Base_theme/datatables-colreorder/js/dataTables.colReorder.min.js' %}"></script>
+<script src="{%static 'vendor/Base_theme/datatables-bs4/js/dataTables.bootstrap4.js'%}"></script>
+
+<script src="{%static 'vendor/Base_theme/datatables-buttons/js/dataTables.buttons.min.js'%}"></script>
+<script src="{%static 'vendor/Base_theme/jszip/jszip.min.js'%}"></script>
+<script src="{%static 'vendor/Base_theme/pdfmake/pdfmake.min.js'%}"></script>
+<script src="{%static 'vendor/Base_theme/pdfmake/vfs_fonts.js'%}"></script>
+<script src="{%static 'vendor/Base_theme/datatables-buttons/js/buttons.html5.min.js'%}"></script>
+<script src="{%static 'vendor/Base_theme/datatables-buttons/js/buttons.colVis.min.js'%}"></script>
+
+<style>
+  #orderProSub p {
+    font-family: Arial;
+    font-weight: bold ;
+  }
+  #orderProSub span {
+    font-family: Arial;
+  }
+  .input {
+    padding-left: 22px;
+    width: 55px;
+  }
+</style>
+<style>
+  .rectangle {
+    height: 56.73px;
+    width: 86.4px;
+    background-color: #fff;
+    border-style: solid;
+    border-color: black;
+    border-width: 2px;
+    margin-top: 18px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  .rectangle1 {
+    height: 56.73px;
+    width: 66.4px;
+    background-color: #fff;
+    border-style: solid;
+    border-color: black;
+    border-width: 2px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  .parallelogram {
+    height: 56.73px;
+    width: 86.4px;
+    background-color: #fff;
+    border-style: solid;
+    border-color: black;
+    border-width: 2px;
+    margin-top: 18px;
+    transform: skew(-20deg);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  .square {
+    height: 56.73px;
+    width: 86.4px;
+    background-color: #fff;
+    border-style: solid;
+    border-color: black;
+    border-width: 2px;
+    margin-top: 18px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  .circle {
+    height: 86.73px;
+    width: 86.73px;
+    background-color: #fff;
+    border-radius: 50%;
+    border-style: solid;
+    border-color: black;
+    border-width: 2px;
+    margin-top: 5px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  .common {
+    margin-top: 38px;
+  }
+  .commonArrow {
+    margin-top: 34px;
+
+    font-size: x-large;
+  }
+  .name {
+    cursor: pointer;
+  }
+  .accordion {
+    background-color: #eee;
+    color: #444;
+    cursor: pointer;
+    padding-top: 18px;
+    font-weight:bold;
+    padding-bottom:18px;
+    border: none;
+    text-align: left;
+    outline: none;
+    font-size: 15px;
+    transition: 0.4s;
+  }
+
+  .active, .accordion:hover {
+    background-color: #ccc;
+  }
+
+  .panel {
+    padding: 0 18px;
+    background-color: white;
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.2s ease-out;
+  }
+  .dot {
+    height: 10px;
+    width: 10px;
+    background-color: red;
+    border-radius: 100%;
+    display: inline-block;
+    margin-right:4px;
+  }
+  </style>
+<div id="orderProSub" class="modal" role="dialog" style="display: none; backdrop-filter: brightness(0.3);">
+  <div class="modal-dialog">
+
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header">
+        <h6 class="modal-title" style="color:var(--primary-color);">Order validation</h6>
+        <button type="button" class="modalClose btn btn-primary btn-xs rounded px-2" data-dismiss="modal">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="col-12">
+          <span>Performing validation</span>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary btn-xs rounded px-2 modalSave" data-dismiss="modal" disabled>Save</button>
+      </div>
+    </div>
+
+  </div>
+</div>
+<section class="content-header">
+  <div class="container-fluid">
+    <div class="row mb-2">
+      <div class="col-sm-6">
+        <ol class="breadcrumb float-sm-left">
+          <li class="breadcrumb-item"><a {% if current_application_code != 'App0' %} {% if current_application_code == 'Dev' %} {% if current_dev_mode == 'Edit' %} {% if edit_app_code != 'Not Selected' %} href="{% url 'users:homePage' edit_app_code current_dev_mode %}" {% else %} href="{% url 'users:homePage' 'Dev' current_dev_mode %}" {% endif %} {% elif current_dev_mode == 'Build' %} {% if build_app_code != 'Not Selected' %} href="{% url 'users:homePage' build_app_code current_dev_mode %}" {% else %} href="{% url 'users:select_application' %}"  {% endif %}  {% endif %} {% else %} href="{% url 'users:homePage' current_application_code 'User' %}" {% endif %} {% else %} href="{% url 'users:select_application' %}" {% endif %}>
+            <b> Home </b></a></li>
+          <li class="breadcrumb-item "><b>Process Creation</b></li>
+          <li class="breadcrumb-item "><b>Process Flow Monitor</b></li>
+        </ol>
+      </div>
+      <div class="col-sm-6">
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<section class="content">
+<form>{% csrf_token %}</form>
+  <div class="container-fluid">
+    <div id="card890" class="card" style="padding:15px;">
+      <div>
+        <button class="float-right btn btn-primary btn-xs" onClick="resetAllFilters(this)">Reset all filters</button>
+      </div>
+      <div class="row" ><div class="col-2  text-center" ><label for="userName_select" style="font-size:18px;">User Name</label>
+
+        <select class="select2 form-control"  id="userName_select" name="created_by" onchange="accSelectChange(this)">
+            <option value="">User name</option>
+        </select>
+
+        </div><div class="col-2 text-center"><label for="process_name_select" style="font-size:18px;">Process Name</label>
+
+        <select class="select2 form-control" id="process_name_select" name="process" onchange="accSelectChange(this)" >
+            <option value="">Process Name</option>
+        </select>
+
+        </div><div class="col-2 text-center"><label for="sub_process_name_select" style="font-size:18px;">Sub Process Name</label>
+
+        <select class="select2 form-control"  id="sub_process_name_select" name="subprocess" onchange="accSelectChange(this)" >
+            <option value="">Sub Process Name</option>
+        </select>
+
+        </div><div class="col-2 text-center"><label for="start_date_select" style="font-size:18px;">Start Date</label>
+
+        <select class="select2 form-control" id="start_date_select" name="created_date" onchange="accSelectChange(this)" >
+            <option value="">Start Date</option>
+        </select>
+
+        </div><div class="col-2  text-center"><label for="transaction_id_select" style="font-size:18px;">Transaction ID</label>
+
+        <select class="select2 form-control"  id="transaction_id_select" name="transaction_id" onchange="accSelectChange(this)" >
+            <option value="">Transaction ID</option>
+        </select>
+        </div><div class="col-2  text-center"><label for="tasks_select" style="font-size:18px;">Tasks</label>
+
+
+        </div></div>
+        <div class="main-div-container" style="width: 100%; height: 70vh; overflow-y: scroll;">
+
+        </div>
+          </div>
+        </section>
+<script>
+    var ctoken = $('form').find(`input[name='csrfmiddlewaretoken']`).attr('value')
+    $.ajaxSetup({
+        beforeSend: function (xhr, settings) {{
+            xhr.setRequestHeader("X-CSRFToken", ctoken);
+        }}
+    });
+    $.ajax({
+      url:window.location.href,
+      data: {
+      "operation":"fetchFlowMonitorData",
+      },
+      type: "POST",
+      dataType: "json",
+      success: function (data) {
+          html = ""
+          if(data.data.length > 0) {
+            transaction_id = data.data[0]["transaction_id"]
+            data.data.push({"transaction_id":"yoyoy"})
+            var userName =[]
+            var startDate=[]
+            var transId =[]
+            var processSelect = []
+            var subprocessSelect = []
+            for(let i = 0; i < data.data.length; i++) {
+                t_id = data.data[i]["transaction_id"]
+
+                if(data.data[i+1]){
+                    if(data.data[i]["transaction_id"] == data.data[i+1]["transaction_id"]) {
+
+                    } else {
+                        var dropDown = []
+                        for (let l = 0; l < data.data.length; l++){
+                          if (data.data[l]["transaction_id"] == data.data[i]["transaction_id"]){
+                            dropDown.push(data.data[l])
+                          }
+                        }
+                        dropDown.reverse();
+                        var dropDown1 = JSON.stringify(dropDown).replace(/[']+/g, '')
+                        userName.push(data.data[i]["created_by"])
+                        startDate.push(data.data[i]["created_date"])
+                        transId.push(data.data[i]["transaction_id"])
+                        processSelect.push(data.data[i]["process"])
+                        subprocessSelect.push(data.data[i]["subprocess"])
+                        html = html + `
+                        <div class="container-fluid">
+                          <div class="row text-center accordion" data-list='${dropDown1}'>
+                            <div class="col-2" data-list="${data.data[i]["created_by"]}">
+                              ${data.data[i]["created_by"]}
+                            </div>
+                            <div class="col-2" data-list="${data.code[data.data[i]["process"]]}">
+                              ${data.code[data.data[i]["process"]]}
+                            </div>
+                            <div class="col-2" data-list="${data.code[data.data[i]["subprocess"]]}">
+                              ${data.code[data.data[i]["subprocess"]]}
+                            </div>
+                          <div class="col-2" data-list="${data.data[i]["created_date"]}">
+                            ${data.data[i]["created_date"]}
+                            </div><div class="col-2" data-list="${data.data[i]["transaction_id"]}">
+                              ${data.data[i]["transaction_id"]}
+                            </div><div class="col-2">
+                              One of three six
+                            </div>
+                          </div>
+                          <div class="panel" style="">
+                            <table class="display" style="width:90%;margin:auto;">
+
+                              <thead style="border-bottom:1px solid var(--primary-color)">
+                              <tr>
+                                  <th>Element Name</th>
+                                  <th>Status</th>
+                                  <th>Log</th>
+                                  <th>Date Executed</th>
+                                  <th>Elapsed Time</th>
+                                  <th>Run Time</th>
+                                  <th>Link</th>
+                              </tr>
+                              </thead>
+                              <tbody style="border-bottom:1px solid var(--primary-color);">
+
+                        `
+                        html = html + `
+                      </tbody>
+                    </table>
+                  </div>
+                  </div>`
+
+                    }
+                    transaction_id = data.data[i]["transaction_id"]
+
+                }
+            }
+            var userName1 = [...new Set(userName)];
+            var startDate1 = [...new Set(startDate)];
+            var transId1 = [...new Set(transId)];
+            var processSelect1 = [...new Set(processSelect)];
+            var subprocessSelect1 = [...new Set(subprocessSelect)];
+            $('#userName_select').empty()
+            $('#userName_select').append(`<option disabled selected value="">User Name</option>`)
+            for (let u in userName1){
+              $('#userName_select').append(`<option value="${userName1[u]}">${userName1[u]}</option>`)
+            }
+            $('#start_date_select').empty()
+            $('#start_date_select').append(`<option disabled selected value="">Start Date</option>`)
+            for (let u in startDate1){
+              $('#start_date_select').append(`<option value="${startDate1[u]}">${startDate1[u]}</option>`)
+            }
+            $('#transaction_id_select').empty()
+            $('#transaction_id_select').append(`<option disabled selected value="">Transaction ID</option>`)
+            for (let u in transId1){
+              $('#transaction_id_select').append(`<option value="${transId1[u]}">${transId1[u]}</option>`)
+            }
+            $('#process_name_select').empty()
+            $('#process_name_select').append(`<option disabled selected value="">Process</option>`)
+            for (let u in processSelect1){
+              $('#process_name_select').append(`<option value="${processSelect1[u]}">${data.code[processSelect1[u]]}</option>`)
+            }
+            $('#sub_process_name_select').empty()
+            $('#sub_process_name_select').append(`<option disabled selected value="">Sub Process</option>`)
+            for (let u in subprocessSelect1){
+              $('#sub_process_name_select').append(`<option value="${subprocessSelect1[u]}">${data.code[subprocessSelect1[u]]}</option>`)
+            }
+
+          }
+          $('#card890').find('.main-div-container').empty()
+          $('#card890').find('.main-div-container').append(html)
+          var acc = document.getElementsByClassName("accordion");
+          var i;
+          for (i = 0; i < acc.length; i++) {
+            var attrData = $(acc[i]).attr('data-list')
+            if (attrData){
+              var attrData1 = JSON.parse(attrData)
+              var length = attrData1.length
+              var pass_list = 0
+              for (let k in attrData1){
+                if (attrData1[k]['current_status'] == 'Pass'){
+                  pass_list++
+                }
+              }
+              $(acc[i]).children().eq(5).attr('data-list',`${pass_list}/${length}`)
+              $(acc[i]).children().eq(5).html(`${pass_list}/${length}   <progress value="${pass_list}" max="${length}"></progress>`)
+            }
+            acc[i].addEventListener("click", function() {
+              var tBody = $(this).parent().find('tbody')
+              $(tBody).empty()
+              if ($(this).attr('data-list')){
+                var parsedAttr = JSON.parse($(this).attr('data-list'))
+                for (let o in parsedAttr){
+                    var html_4 = "---"
+                    var dot =""
+                    var timePending = "---"
+                    var jsDate = new Date(parseInt(parsedAttr[o]['created_date'].slice(0,4)),parseInt(parsedAttr[o]['created_date'].slice(5,7))-1,parseInt(parsedAttr[o]['created_date'].slice(8,10)),parseInt(parsedAttr[o]['created_date'].slice(11,13)),parseInt(parsedAttr[o]['created_date'].slice(14,16)),parseInt(parsedAttr[o]['created_date'].slice(17,19)))
+                    var newDate = new Date()
+                    var diffTime = Math.abs(jsDate - newDate);
+                    var diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)) -1;
+                    if (parsedAttr[o]['current_status'] != "Pass"){
+                      html_4 = `<a data-toggle="tooltip" title="Go to subprocess" href="/users/${urlPath}/${parsedAttr[o]['subprocess']}/" style="color:var(--primary-color)">Sub-process</a>`
+                    }
+                    if (parsedAttr[o]['current_status'] == "Pass"){
+                      dot = `<span class="dot" style="background-color:green;"></span>`
+                    }else if (parsedAttr[o]['current_status'] == "Fail"){
+                      dot = `<span class="dot" style="background-color:red;"></span>`
+                      timePending=`${diffDays} day`
+                    }else{
+                      dot = `<span class="dot" style="background-color:#FFD700;"></span>`
+                      timePending=`${diffDays} day`
+                    }
+                    var runTime = "---"
+                    if (parsedAttr[o]['current_status'] != "Not started" && parsedAttr[o]['current_status'] != "Ongoing"){
+                      if (parsedAttr[o]['run_time'] != null){
+                        runTime = `${parsedAttr[o]['run_time']} m`
+                      }
+                    }
+
+
+                    $(tBody).append(`
+                    <tr>
+                    <td style="white-space:normal;">${dot}</span>${parsedAttr[o]['element_name']}</td>
+                    <td style="white-space:normal;">${parsedAttr[o]['current_status']}</td>
+                    <td style="white-space:normal;">${parsedAttr[o]['detailed_status']}</td>
+                    <td style="white-space:normal;">${parsedAttr[o]['created_date']}</td>
+                    <td style="white-space:normal;">${timePending}</td>
+                    <td style="white-space:normal;">${runTime}</td>
+                    <td style="white-space:normal;">${html_4}</td>
+                    </tr>
+                    `)
+                }
+                $(tBody).css('height','100%')
+              }
+              this.classList.toggle("active");
+              var panel = this.nextElementSibling;
+              if (panel.style.maxHeight) {
+                panel.style.maxHeight = null;
+              } else {
+                panel.style.maxHeight = panel.scrollHeight + "px";
+              }
+            });
+          }
+          $('#card890').find('select').each(function(){
+            parent = $(this).parent()
+            $(this).select2({dropdownParent:parent})
+          })
+      },
+      failure: function () {
+        Swal.fire({icon: 'error',text: 'Error! Please try again.'});
+      },
+  });
+function accSelectChange(obj){
+  var dict_a = {'created_by':$('#userName_select').val(),'process':$('#process_name_select').val(),'subprocess':$('#sub_process_name_select').val(),'created_date':$('#start_date_select').val(),'transaction_id':$('#transaction_id_select').val()}
+  $.ajax({
+    url:window.location.href,
+    data: {
+    "dict_a":JSON.stringify(dict_a),
+    "operation":"fetchFlowMonitorData_select_change",
+    },
+    type: "POST",
+    dataType: "json",
+    success: function (data) {
+      html = ""
+          if(data.data.length > 0) {
+            transaction_id = data.data[0]["transaction_id"]
+            data.data.push({"transaction_id":"yoyoy"})
+            var userName =[]
+            var startDate=[]
+            var transId =[]
+            var processSelect = []
+            var subprocessSelect = []
+            for(let i = 0; i < data.data.length; i++) {
+                  if(data.data[i+1]){
+                    if(data.data[i]["transaction_id"] == data.data[i+1]["transaction_id"]) {
+
+                    } else {
+                        var dropDown = []
+                        for (let l = 0; l < data.data.length; l++){
+                          if (data.data[l]["transaction_id"] == data.data[i]["transaction_id"]){
+                            dropDown.push(data.data[l])
+                          }
+                        }
+                        dropDown.reverse();
+                        var dropDown1 = JSON.stringify(dropDown).replace(/[']+/g, '')
+                        userName.push(data.data[i]["created_by"])
+                        startDate.push(data.data[i]["created_date"])
+                        transId.push(data.data[i]["transaction_id"])
+                        processSelect.push(data.data[i]["process"])
+                        subprocessSelect.push(data.data[i]["subprocess"])
+                        html = html + `
+                        <div class="container-fluid">
+                          <div class="row text-center accordion" data-list='${dropDown1}'>
+                            <div class="col-2" data-list="${data.data[i]["created_by"]}">
+                              ${data.data[i]["created_by"]}
+                            </div>
+                            <div class="col-2" data-list="${data.code[data.data[i]["process"]]}">
+                              ${data.code[data.data[i]["process"]]}
+                            </div>
+                            <div class="col-2" data-list="${data.code[data.data[i]["subprocess"]]}">
+                              ${data.code[data.data[i]["subprocess"]]}
+                            </div>
+                          <div class="col-2" data-list="${data.data[i]["created_date"]}">
+                            ${data.data[i]["created_date"]}
+                            </div><div class="col-2" data-list="${data.data[i]["transaction_id"]}">
+                              ${data.data[i]["transaction_id"]}
+                            </div><div class="col-2">
+                              One of three six
+                            </div>
+                          </div>
+                          <div class="panel" style="">
+                            <table class="display" style="width:90%;margin:auto;">
+
+                              <thead style="border-bottom:1px solid var(--primary-color)">
+                              <tr>
+                                  <th>Element Name</th>
+                                  <th>Status</th>
+                                  <th>Log</th>
+                                  <th>Date Executed</th>
+                                  <th>Elapsed Time</th>
+                                  <th>Run Time</th>
+                                  <th>Link</th>
+                              </tr>
+                              </thead>
+                              <tbody style="border-bottom:1px solid var(--primary-color);">
+
+                        `
+                        html = html + `
+                            </tbody>
+                            </table>
+                          </div>
+                          </div>`
+                    }
+                    transaction_id = data.data[i]["transaction_id"]
+                }
+
+
+            }
+
+            var userName1 = [...new Set(userName)];
+            var startDate1 = [...new Set(startDate)];
+            var transId1 = [...new Set(transId)];
+            var processSelect1 = [...new Set(processSelect)];
+            var subprocessSelect1 = [...new Set(subprocessSelect)];
+            if ($('#userName_select').val() == null){
+              if ($(obj).attr('name') != "created_by"){
+                $('#userName_select').empty()
+                $('#userName_select').append(`<option disabled selected value="">User Name</option>`)
+                for (let u in userName1){
+                  $('#userName_select').append(`<option value="${userName1[u]}">${userName1[u]}</option>`)
+                }
+              }
+            }
+            if ($('#start_date_select').val() ==null){
+              if ($(obj).attr('name') != "created_date"){
+                $('#start_date_select').empty()
+                $('#start_date_select').append(`<option disabled selected value="">Start Date</option>`)
+                for (let u in startDate1){
+                  $('#start_date_select').append(`<option value="${startDate1[u]}">${startDate1[u]}</option>`)
+                }
+              }
+            }
+            if ($('#transaction_id_select').val() ==null){
+              if ($(obj).attr('name') != "transaction_id"){
+                $('#transaction_id_select').empty()
+                $('#transaction_id_select').append(`<option disabled selected value="">Transaction ID</option>`)
+                for (let u in transId1){
+                  $('#transaction_id_select').append(`<option value="${transId1[u]}">${transId1[u]}</option>`)
+                }
+              }
+            }
+            if ($('#process_name_select').val() ==null){
+              if ($(obj).attr('name') != "process"){
+                $('#process_name_select').empty()
+                $('#process_name_select').append(`<option disabled selected value="">Process</option>`)
+                for (let u in processSelect1){
+                  $('#process_name_select').append(`<option value="${processSelect1[u]}">${data.code[processSelect1[u]]}</option>`)
+                }
+              }
+            }
+            if ($('#sub_process_name_select').val() ==null){
+              if ($(obj).attr('name') != "subprocess"){
+                $('#sub_process_name_select').empty()
+                $('#sub_process_name_select').append(`<option disabled selected value="">Sub Process</option>`)
+                for (let u in subprocessSelect1){
+                  $('#sub_process_name_select').append(`<option value="${subprocessSelect1[u]}">${data.code[subprocessSelect1[u]]}</option>`)
+                }
+              }
+            }
+
+          }
+          $('#card890').find('.main-div-container').empty()
+          $('#card890').find('.main-div-container').append(html)
+          var acc = document.getElementsByClassName("accordion");
+          var i;
+          for (i = 0; i < acc.length; i++) {
+            var attrData = $(acc[i]).attr('data-list')
+            if (attrData){
+              var attrData1 = JSON.parse(attrData)
+              var length = attrData1.length
+              var pass_list = 0
+              for (let k in attrData1){
+                if (attrData1[k]['current_status'] == 'Pass'){
+                  pass_list++
+                }
+              }
+              $(acc[i]).children().eq(5).attr('data-list',`${pass_list}/${length}`)
+              $(acc[i]).children().eq(5).html(`${pass_list}/${length}   <progress value="${pass_list}" max="${length}"></progress>`)
+            }
+            acc[i].addEventListener("click", function() {
+              var tBody = $(this).parent().find('tbody')
+              $(tBody).empty()
+              if ($(this).attr('data-list')){
+                var parsedAttr = JSON.parse($(this).attr('data-list'))
+                for (let o in parsedAttr){
+                    var html_4 = "---"
+                    var dot =""
+                    var timePending = "---"
+                    var jsDate = new Date(parseInt(parsedAttr[o]['created_date'].slice(0,4)),parseInt(parsedAttr[o]['created_date'].slice(5,7))-1,parseInt(parsedAttr[o]['created_date'].slice(8,10)),parseInt(parsedAttr[o]['created_date'].slice(11,13)),parseInt(parsedAttr[o]['created_date'].slice(14,16)),parseInt(parsedAttr[o]['created_date'].slice(17,19)))
+                    var newDate = new Date()
+                    var diffTime = Math.abs(jsDate - newDate);
+                    var diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)) -1;
+                    if (parsedAttr[o]['current_status'] != "Pass"){
+                      html_4 = `<a data-toggle="tooltip" title="Go to subprocess" href="/users/${urlPath}/${parsedAttr[o]['subprocess']}/" style="color:var(--primary-color)">Sub-process</a>`
+                    }
+                    if (parsedAttr[o]['current_status'] == "Pass"){
+                      dot = `<span class="dot" style="background-color:green;"></span>`
+                    }else if (parsedAttr[o]['current_status'] == "Fail"){
+                      dot = `<span class="dot" style="background-color:red;"></span>`
+                      timePending=`${diffDays} day`
+                    }else{
+                      dot = `<span class="dot" style="background-color:#FFD700;"></span>`
+                      timePending=`${diffDays} day`
+                    }
+                    var runTime = "---"
+                    if (parsedAttr[o]['current_status'] != "Not started" && parsedAttr[o]['current_status'] != "Ongoing"){
+                      if (parsedAttr[o]['run_time'] != null){
+                        runTime = `${parsedAttr[o]['run_time']} m`
+                      }
+                    }
+
+                    $(tBody).append(`
+                    <tr>
+                    <td style="white-space:normal;">${dot}</span>${parsedAttr[o]['element_name']}</td>
+                    <td style="white-space:normal;">${parsedAttr[o]['current_status']}</td>
+                    <td style="white-space:normal;">${parsedAttr[o]['detailed_status']}</td>
+                    <td style="white-space:normal;">${parsedAttr[o]['created_date']}</td>
+                    <td style="white-space:normal;">${timePending}</td>
+                    <td style="white-space:normal;">${runTime}</td>
+                    <td style="white-space:normal;">${html_4}</td>
+                    </tr>
+                    `)
+                }
+                $(tBody).css('height','100%')
+              }
+              this.classList.toggle("active");
+              var panel = this.nextElementSibling;
+              if (panel.style.maxHeight) {
+                panel.style.maxHeight = null;
+              } else {
+                panel.style.maxHeight = panel.scrollHeight + "px";
+              }
+            });
+          }
+          $('#card890').find('select').each(function(){
+            parent = $(this).parent()
+            $(this).select2({dropdownParent:parent})
+          })
+      },
+    failure: function () {
+      Swal.fire({icon: 'error',text: 'Error! Please try again.'});
+    },
+});
+}
+function resetAllFilters(obj){
+  $.ajax({
+    url:window.location.href,
+    data: {
+    "operation":"fetchFlowMonitorData",
+    },
+    type: "POST",
+    dataType: "json",
+    success: function (data) {
+        html = ""
+        if(data.data.length > 0) {
+          transaction_id = data.data[0]["transaction_id"]
+          data.data.push({"transaction_id":"yoyoy"})
+          var userName =[]
+          var startDate=[]
+          var transId =[]
+          var processSelect = []
+          var subprocessSelect = []
+          for(let i = 0; i < data.data.length; i++) {
+              t_id = data.data[i]["transaction_id"]
+
+              if(data.data[i+1]){
+                  if(data.data[i]["transaction_id"] == data.data[i+1]["transaction_id"]) {
+
+                  } else {
+                      var dropDown = []
+                      for (let l = 0; l < data.data.length; l++){
+                        if (data.data[l]["transaction_id"] == data.data[i]["transaction_id"]){
+                          dropDown.push(data.data[l])
+                        }
+                      }
+                      dropDown.reverse();
+                      var dropDown1 = JSON.stringify(dropDown).replace(/[']+/g, '')
+                      userName.push(data.data[i]["created_by"])
+                      startDate.push(data.data[i]["created_date"])
+                      transId.push(data.data[i]["transaction_id"])
+                      processSelect.push(data.data[i]["process"])
+                      subprocessSelect.push(data.data[i]["subprocess"])
+                      html = html + `
+                      <div class="container-fluid">
+                        <div class="row text-center accordion" data-list='${dropDown1}'>
+                          <div class="col-2" data-list="${data.data[i]["created_by"]}">
+                            ${data.data[i]["created_by"]}
+                          </div>
+                          <div class="col-2" data-list="${data.code[data.data[i]["process"]]}">
+                            ${data.code[data.data[i]["process"]]}
+                          </div>
+                          <div class="col-2" data-list="${data.code[data.data[i]["subprocess"]]}">
+                            ${data.code[data.data[i]["subprocess"]]}
+                          </div>
+                        <div class="col-2" data-list="${data.data[i]["created_date"]}">
+                          ${data.data[i]["created_date"]}
+                          </div><div class="col-2" data-list="${data.data[i]["transaction_id"]}">
+                            ${data.data[i]["transaction_id"]}
+                          </div><div class="col-2">
+                            One of three six
+                          </div>
+                        </div>
+                        <div class="panel" style="">
+                          <table class="display" style="width:90%;margin:auto;">
+
+                            <thead style="border-bottom:1px solid var(--primary-color)">
+                            <tr>
+                                <th>Element Name</th>
+                                <th>Status</th>
+                                <th>Log</th>
+                                <th>Date Executed</th>
+                                <th>Elapsed Time</th>
+                                <th>Run Time</th>
+                                <th>Link</th>
+                            </tr>
+                            </thead>
+                            <tbody style="border-bottom:1px solid var(--primary-color);">
+
+                      `
+                      html = html + `
+                    </tbody>
+                  </table>
+                </div>
+                </div>`
+
+                  }
+                  transaction_id = data.data[i]["transaction_id"]
+
+              }
+          }
+          var userName1 = [...new Set(userName)];
+          var startDate1 = [...new Set(startDate)];
+          var transId1 = [...new Set(transId)];
+          var processSelect1 = [...new Set(processSelect)];
+          var subprocessSelect1 = [...new Set(subprocessSelect)];
+          $('#userName_select').empty()
+          $('#userName_select').append(`<option disabled selected value="">User Name</option>`)
+          for (let u in userName1){
+            $('#userName_select').append(`<option value="${userName1[u]}">${userName1[u]}</option>`)
+          }
+          $('#start_date_select').empty()
+          $('#start_date_select').append(`<option disabled selected value="">Start Date</option>`)
+          for (let u in startDate1){
+            $('#start_date_select').append(`<option value="${startDate1[u]}">${startDate1[u]}</option>`)
+          }
+          $('#transaction_id_select').empty()
+          $('#transaction_id_select').append(`<option disabled selected value="">Transaction ID</option>`)
+          for (let u in transId1){
+            $('#transaction_id_select').append(`<option value="${transId1[u]}">${transId1[u]}</option>`)
+          }
+          $('#process_name_select').empty()
+          $('#process_name_select').append(`<option disabled selected value="">Process</option>`)
+          for (let u in processSelect1){
+            $('#process_name_select').append(`<option value="${processSelect1[u]}">${data.code[processSelect1[u]]}</option>`)
+          }
+          $('#sub_process_name_select').empty()
+          $('#sub_process_name_select').append(`<option disabled selected value="">Sub Process</option>`)
+          for (let u in subprocessSelect1){
+            $('#sub_process_name_select').append(`<option value="${subprocessSelect1[u]}">${data.code[subprocessSelect1[u]]}</option>`)
+          }
+
+        }
+        $('#card890').find('.main-div-container').empty()
+        $('#card890').find('.main-div-container').append(html)
+        var acc = document.getElementsByClassName("accordion");
+        var i;
+        for (i = 0; i < acc.length; i++) {
+          var attrData = $(acc[i]).attr('data-list')
+          if (attrData){
+            var attrData1 = JSON.parse(attrData)
+            var length = attrData1.length
+            var pass_list = 0
+            for (let k in attrData1){
+              if (attrData1[k]['current_status'] == 'Pass'){
+                pass_list++
+              }
+            }
+            $(acc[i]).children().eq(5).attr('data-list',`${pass_list}/${length}`)
+            $(acc[i]).children().eq(5).html(`${pass_list}/${length}   <progress value="${pass_list}" max="${length}"></progress>`)
+          }
+          acc[i].addEventListener("click", function() {
+            var tBody = $(this).parent().find('tbody')
+            $(tBody).empty()
+            if ($(this).attr('data-list')){
+              var parsedAttr = JSON.parse($(this).attr('data-list'))
+              for (let o in parsedAttr){
+                  var html_4 = "---"
+                  var dot =""
+                  var timePending = "---"
+                  var jsDate = new Date(parseInt(parsedAttr[o]['created_date'].slice(0,4)),parseInt(parsedAttr[o]['created_date'].slice(5,7))-1,parseInt(parsedAttr[o]['created_date'].slice(8,10)),parseInt(parsedAttr[o]['created_date'].slice(11,13)),parseInt(parsedAttr[o]['created_date'].slice(14,16)),parseInt(parsedAttr[o]['created_date'].slice(17,19)))
+                  var newDate = new Date()
+                  var diffTime = Math.abs(jsDate - newDate);
+                  var diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)) -1;
+                  if (parsedAttr[o]['current_status'] != "Pass"){
+                    html_4 = `<a data-toggle="tooltip" title="Go to subprocess" href="/users/${urlPath}/${parsedAttr[o]['subprocess']}/" style="color:var(--primary-color)">Sub-process</a>`
+                  }
+                  if (parsedAttr[o]['current_status'] == "Pass"){
+                    dot = `<span class="dot" style="background-color:green;"></span>`
+                  }else if (parsedAttr[o]['current_status'] == "Fail"){
+                    dot = `<span class="dot" style="background-color:red;"></span>`
+                    timePending=`${diffDays} day`
+                  }else{
+                    dot = `<span class="dot" style="background-color:#FFD700;"></span>`
+                    timePending=`${diffDays} day`
+                  }
+                  var runTime = "---"
+                  if (parsedAttr[o]['current_status'] != "Not started" && parsedAttr[o]['current_status'] != "Ongoing"){
+                    if (parsedAttr[o]['run_time'] != null){
+                      runTime = `${parsedAttr[o]['run_time']} m`
+                    }
+                  }
+
+
+                  $(tBody).append(`
+                  <tr>
+                  <td style="white-space:normal;">${dot}</span>${parsedAttr[o]['element_name']}</td>
+                  <td style="white-space:normal;">${parsedAttr[o]['current_status']}</td>
+                  <td style="white-space:normal;">${parsedAttr[o]['detailed_status']}</td>
+                  <td style="white-space:normal;">${parsedAttr[o]['created_date']}</td>
+                  <td style="white-space:normal;">${timePending}</td>
+                  <td style="white-space:normal;">${runTime}</td>
+                  <td style="white-space:normal;">${html_4}</td>
+                  </tr>
+                  `)
+              }
+              $(tBody).css('height','100%')
+            }
+            this.classList.toggle("active");
+            var panel = this.nextElementSibling;
+            if (panel.style.maxHeight) {
+              panel.style.maxHeight = null;
+            } else {
+              panel.style.maxHeight = panel.scrollHeight + "px";
+            }
+          });
+        }
+        $('#card890').find('select').each(function(){
+          parent = $(this).parent()
+          $(this).select2({dropdownParent:parent})
+        })
+    },
+    failure: function () {
+      Swal.fire({icon: 'error',text: 'Error! Please try again.'});
+    },
+});
+}
+</script>
+        {% endblock %}

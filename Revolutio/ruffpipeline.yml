@@ -1,0 +1,41 @@
+# Docker
+# Build a Docker image
+# https://docs.microsoft.com/azure/devops/pipelines/languages/docker
+
+trigger:
+- development_deployment_tech_updates
+
+resources:
+- repo: self
+
+variables:
+  tag: '$(Build.BuildId)'
+  dockerRegistryServiceConnection: trivy-scan-conn
+
+pool:
+  vmImage: ubuntu-latest
+
+strategy:
+  matrix:
+    Python310:
+      python.version: '3.10'
+
+steps:
+- script: |
+    python -m pip install --upgrade pip
+    pip install ruff
+  displayName: 'Installing ruff'
+- script: |
+    mkdir "$(pwd)/report"
+    ruff check . --exit-zero>./report/report.txt
+  displayName: 'Perform ruff checks'
+- task: CopyFiles@2
+  inputs:
+    SourceFolder: '$(System.DefaultWorkingDirectory)/report'
+    Contents: '**'
+    TargetFolder: '$(Build.ArtifactStagingDirectory)/report'
+    OverWrite: true
+- task: PublishBuildArtifacts@1
+  inputs:
+    PathtoPublish: '$(Build.ArtifactStagingDirectory)/report'
+    ArtifactName: 'ruffreport'

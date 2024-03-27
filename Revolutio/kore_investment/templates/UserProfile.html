@@ -1,0 +1,2323 @@
+<!DOCTYPE html>
+{% extends extend_template %}
+{% load i18n %}
+{% load account socialaccount %}
+{% load crispy_forms_tags %}
+{% load static %}
+
+
+{% block body_block %}
+
+<link rel="stylesheet" href="{% static 'css/KoreD/jquery.dataTables.css' %}">
+<link rel="stylesheet" href="{% static 'vendor/Base_theme/datatables-responsive/css/responsive.bootstrap4.min.css' %}">
+<link rel="stylesheet" href="{% static 'vendor/Base_theme/datatables-colreorder/css/colReorder.bootstrap4.min.css' %}">
+<link rel="stylesheet" href="{% static 'css/KoreD/buttons.dataTables.min.css' %}">
+<!-- Theme style -->
+<link rel="stylesheet" href="{%static 'css/Base_theme/CSS_min.css'%}">
+<!-- DataTables -->
+<script src="{% static 'vendor/Base_theme/datatables/jquery.dataTables.js' %}"></script>
+<script src="{% static 'vendor/Base_theme/datatables-responsive/js/dataTables.responsive.min.js' %}"></script>
+<script src="{% static 'vendor/Base_theme/datatables-fixedheader/js/dataTables.fixedHeader.min.js' %}"></script>
+<script src="{% static 'vendor/Base_theme/datatables-colreorder/js/dataTables.colReorder.min.js' %}"></script>
+<script src="{%static 'vendor/Base_theme/datatables-bs4/js/dataTables.bootstrap4.js'%}"></script>
+
+<script src="{%static 'vendor/Base_theme/datatables-buttons/js/dataTables.buttons.min.js'%}"></script>
+<script src="{%static 'vendor/Base_theme/jszip/jszip.min.js'%}"></script>
+<script src="{%static 'vendor/Base_theme/pdfmake/pdfmake.min.js'%}"></script>
+<script src="{%static 'vendor/Base_theme/pdfmake/vfs_fonts.js'%}"></script>
+<script src="{%static 'vendor/Base_theme/datatables-buttons/js/buttons.html5.min.js'%}"></script>
+<script src="{%static 'vendor/Base_theme/datatables-buttons/js/buttons.colVis.min.js'%}"></script>
+<script src="{%static 'vendor/Base_theme/datatables-buttons/js/buttons.print.min.js'%}"></script>
+<script src="{%static 'vendor/Base_theme/datatables-buttons/js/buttons.print.js'%}"></script>
+<script src="{%static 'vendor/Base_theme/datatables-buttons/js/buttons.flash.min.js'%}"></script>
+
+
+<!-- Sweet Alert2 -->
+<script src="{% static 'vendor/sweet_alert/sweetalert2.all.min.js' %}"></script>
+
+
+<style>
+  input:-webkit-autofill,
+  input:-webkit-autofill:hover,
+  input:-webkit-autofill:focus
+  input:-webkit-autofill,
+  textarea:-webkit-autofill,
+  textarea:-webkit-autofill:hover
+  textarea:-webkit-autofill:focus,
+  select:-webkit-autofill,
+  select:-webkit-autofill:hover,
+  select:-webkit-autofill:focus {
+    -webkit-text-fill-color: inherit !important;
+    -webkit-box-shadow: inherit !important;
+    transition: background-color 5000s ease-in-out 0s;
+  }
+
+  .mob-nav-dropdown{
+    height: fit-content;
+    min-width: 15em;
+    border-radius: 1rem;
+    overflow-y: auto;
+    padding:0;
+    overflow: hidden;
+    padding-top: 10%;
+  }
+  .mob-nav-dropdown .dropdown-divider{
+    margin: 0;
+  }
+  .mob-nav-dropdown.show{
+    overflow-y: unset;
+  }
+  .mob-nav-dropdown .dropdown-item:hover{
+    background-color: var(--primary-color);
+    color: white;
+  }
+  .mob-nav-dropdown .dropdown-item{
+    font-size: 85%;
+    padding: 6% 10%;
+  }
+
+  #exampleprofile_length {
+  display: inline-block;
+  float: none;
+}
+
+#exampleprofile_filter {
+  margin-left: 5em;
+  display: inline-block;
+  float: right;
+}
+#exampleroles_length {
+  display: inline-block;
+  float: none;
+}
+
+#exampleroles_filter {
+  margin-left: 5em;
+  display: inline-block;
+  float: right;
+}
+
+#examplehierarchy_length {
+  display: inline-block;
+  float: none;
+}
+
+#examplehierarchy_filter {
+  margin-left: 5em;
+  display: inline-block;
+  float: right;
+}
+
+.content-container{
+  width: 95%;
+  height: 30vh;
+  margin: auto;
+  border-radius: 15px;
+  box-shadow: 1px 1px 10px grey;
+}
+.cover-photo{
+  position: relative;
+    height: 100%;
+    overflow: hidden;
+    border-radius: 15px;
+}
+.cover-img{
+  height: auto;
+}
+.profile-photo{
+  height: 100px;
+  width: 100px;
+  background: black;
+}
+.profile-img{
+  height: 80px;
+  width: 80px;
+  border-radius: 50%;
+}
+.profile-wrapper{
+  margin-top: -4%;
+  backdrop-filter: blur(5px);
+  background: #ffffffd1;
+  margin-left: 2%;
+  margin-right: 2%;
+  padding: .5rem 1rem;
+  border-radius: 10px;
+  border-radius: 10px;
+  border: 1px solid white;
+  box-shadow: 1px 1px 5px #80808036;
+}
+.profile-img-container{
+  flex: 1;
+}
+.profile-tabs{
+  margin: 0;
+  padding: 0;
+}
+.profile-tab-link{
+  text-transform: capitalize;
+  color: black;
+  margin: 0 10px;
+  padding: 8px 15px;
+  font-size: 15px;
+  border-radius: 10px;
+  text-shadow: 1px 1px 3px grey;
+  letter-spacing: 1px;
+  cursor: pointer;
+  transition: .4s;
+}
+
+.profile-tab-link .nav-link{
+  color: #000;
+}
+.profile-tab-link:hover .nav-link{
+  color: #000;
+}
+.profile-tab-link .nav-link.active{
+  color: var(--font-color);
+  box-shadow: 1px 1px 4px #bbbab7;
+}
+.profile-tab-link:hover .nav-link.active{
+  color: var(--font-hover-color);
+  box-shadow: 1px 1px 4px #bbbab7;
+  background-color: var(--secondary-color);
+}
+.nav-pills .nav-link:not(.active):hover{
+  color: #000;
+}
+.profile-tab-container{
+  width: 95%;
+  height: auto;
+  border-radius: 15px;
+  margin: auto;
+  margin-top: 6%;
+}
+.initials{
+  height: 80px;
+  width: 80px;
+  border-radius: 50%;
+  background: var(--primary-color);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.upload_cover{
+  cursor: pointer;
+  position: absolute;
+  color: black;
+  right: 15px;
+  top: 15px;
+  background: #ffffffc9;
+  padding: 2px 7px;
+  font-size: 23px;
+  border-radius: 5px;
+  backdrop-filter: blur(1px);
+}
+.profile-card{
+  backdrop-filter: blur(3px);
+  background: #ffffffb8;
+  border-radius: 10px;
+  border: 1px solid white;
+  box-shadow: 1px 1px 5px #80808036;
+  padding: 20px;
+  margin-bottom: 15px;
+}
+.edit-profile{
+  cursor: pointer;
+  font-size: 17px;
+}
+
+.social-container {
+    margin-top: 15px;
+    margin-bottom: 20px;
+    text-align: left;
+    z-index: 1;
+  }
+
+  .social-container a {
+    border: 1px solid #ffffff;
+    border-radius: 50%;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    margin: 0 2px;
+    height: 35px;
+    width: 35px;
+  }
+
+  .smGlobalBtn{
+      display: inline-block;
+      position: relative;
+      cursor: pointer;
+      width: 50px;
+      height: 50px;
+      box-shadow: 0 2px 2px #999;
+      padding: 0px;
+      text-decoration: none;
+      text-align: center;
+      color: #fff;
+      font-size: 18px;
+      font-weight: normal;
+      line-height: 2em;
+      border-radius: 25px;
+      -moz-border-radius:25px;
+      -webkit-border-radius:25px;
+      transition: .3s;
+  }
+
+  .smGlobalBtn:hover{
+    color: white !important;
+  }
+
+  .facebookBtn{
+    background: #4060A5;
+  }
+  .twitterBtn{
+    background: #00acee;
+  }
+  .linkedinBtn{
+    background-color: #0077b5;
+  }
+  .githubBtn{
+    background-color: #333333;
+  }
+  .profile-tabs-mobile-menu{
+    display: none;
+  }
+  .profile-tabs-wrapper{
+    display: flex;
+    align-items: center;
+  }
+
+  .confirm-buttons{
+    display: none;
+  }
+  .edit-profile-overview{
+    cursor: pointer;
+    font-size: 15px;
+    margin-top: 2px;
+  }
+
+  #Bio{
+    width: 100%;
+    background: none;
+    border: none;
+    padding: 5px;
+  }
+  .hideSocialMedia{
+    display:none !important;
+  }
+  .popuptext {
+    visibility: hidden;
+    width: 200px;
+    height: 34px;
+    background-color: rgb(208 208 208);
+    color: #fff;
+    text-align: center;
+    border-radius: 6px;
+    padding: 4px 0;
+    position: absolute;
+    z-index: 100;
+    bottom: 125%;
+    left: 47%;
+    margin-left: -30px;
+    border: 1px solid rgb(194 194 194 / 28%);
+  }
+
+  /* Popup arrow */
+  .popuptext::after {
+    content: "";
+    position: absolute;
+    top: 100%;
+    left: 25%;
+    margin-left: -5px;
+    border-width: 5px;
+    border-style: solid;
+    border-color: rgb(208 208 208) transparent transparent transparent;
+  }
+  .popuptext input{
+    width: 164px !important;
+    height: 100%;
+    font-size: 15px;
+    font-family: none;
+    text-transform: lowercase !important;
+    padding: 0 3px;
+  }
+  /* Toggle this class - hide and show the popup */
+  .showpopup {
+    visibility: visible;
+    -webkit-animation: fadeIn 1s;
+    animation: fadeIn 1s;
+  }
+  .editButtonOnMedia{
+    font-size: 8px;
+    position: absolute;
+    top: -14px;
+    right: -6px;
+    color: #fff;
+    border-radius: 50%;
+    background: #000;
+    padding: 5px;
+    border: 1px solid #f7f7f7;
+  }
+  #profiletabForm input, #profiletabForm textarea{
+    border: 1px solid lightgrey !important;
+    border-radius: 5px !important;
+    padding: 5px !important;
+  }
+
+  .pro-info input{
+    border: none ;
+    padding: 2px 8px ;
+    height: 28px ;
+  }
+  .social-links-header{
+    margin-top: 35px;
+  }
+  #v-pills-tab a{
+    color: black ;
+  }
+  #v-pills-tab a.active{
+    color: var(--font-color) ;
+  }
+  .modal-footer{
+    justify-content: space-between;
+    border-top: none;
+  }
+  .modal-header{
+    border-bottom: none;
+  }
+
+  .modal-body{
+    display:flex;
+    flex-direction:column;
+    font-family: Arial;
+  }
+  .modal_dg ol{
+    padding-top: 16px;
+    padding-left: 16px;
+    font-size: 1em;
+  }
+  .buttonfoot{
+    width:150px;
+    background-color: var(--primary-color);
+    border: none;
+    padding:8px;
+    color:var(--font-color);
+  }
+  .buttonfoot:hover, .buttonfoot:active, .buttonfoot:focus{
+    background-color: var(--secondary-color) !important;
+    color: var(--font-hover-color);
+    font-family:Arial;
+    font-size:1em;
+    box-shadow: 0 0 0 3px var(--secondary-color) !important;;
+  }
+
+  /* Add animation (fade in the popup) */
+  @-webkit-keyframes fadeIn {
+    from {opacity: 0;}
+    to {opacity: 1;}
+  }
+
+  @keyframes fadeIn {
+    from {opacity: 0;}
+    to {opacity:1 ;}
+  }
+  @media only screen and (max-width: 1200px){
+    .profile-tab-link{
+      margin: 0 7px;
+      padding: 8px 11px;
+      font-size: 12px;
+    }
+    .profile-img, .initials {
+      height: 70px;
+      width: 70px;
+    }
+    .profile-title h4{
+      font-size: 16px;
+      padding-top: 7px;
+    }
+    .initials h3{
+      font-size: 28px !important;
+    }
+  }
+
+  @media only screen and (max-width: 991px){
+    .profile-img, .initials{
+      height: 60px !important;
+      width: 60px !important;
+    }
+    .profile-wrapper{
+      padding: 0.2rem 1rem;
+    }
+  }
+
+  @media only screen and (max-width: 900px){
+    .profile-tab-container{
+      margin-top: 7%;
+    }
+    .profile-tabs-wrapper{
+      display: none;
+    }
+    .profile-tabs-mobile-menu{
+      display: block;
+    }
+    .bars {
+      display: inline-block;
+      cursor: pointer;
+    }
+
+    .bar1, .bar2, .bar3 {
+      width: 35px;
+      height: 4px;
+      background-color: #5a5959;
+      margin: 6px 0;
+      transition: 0.4s;
+    }
+
+    .change .bar1 {
+      -webkit-transform: rotate(-45deg) translate(-9px, 6px);
+      transform: rotate(-45deg) translate(-7px, 6px);
+    }
+
+    .change .bar2 {opacity: 0;}
+
+    .change .bar3 {
+      -webkit-transform: rotate(45deg) translate(-8px, -8px);
+      transform: rotate(45deg) translate(-8px, -8px);
+    }
+  }
+
+@media only screen and (max-width: 768px){
+  .social-links-header{
+    font-size: 1.3rem;
+  }
+  .profile-wrapper {
+    margin-top: -8% !important;
+  }
+  .profile-img, .initials {
+    margin-left: 0% !important;
+    height: 50px !important;
+    width: 50px !important;
+  }
+  .profile-title h4{
+    font-size: 15px !important;
+    padding-top: 7px !important;
+    margin-bottom: 1px !important;
+  }
+  .initials h3{
+    font-size: 25px;
+  }
+}
+
+
+@media only screen and (max-width: 576px){
+  #profiletab_uploadphoto,.profile-tab-img{
+    margin:auto;
+  }
+}
+
+@media only screen and (max-width: 500px){
+
+  .profile-tab-container {
+    margin-top: 14%;
+  }
+}
+
+@media only screen and (max-width: 340px){
+
+  .profile-tab-container {
+    margin-top: 20%;
+  }
+  .bar1, .bar2, .bar3 {
+    width: 25px;
+    height: 2px;
+  }
+
+}
+
+</style>
+<section class="content-header">
+  <div class="container-fluid">
+      {% if selected_any_app == 'true' %}
+      <div class="row mb-2">
+        <ol class="breadcrumb float-sm-right">
+          <li class="breadcrumb-item"><a {% if current_application_code != 'App0' %} {% if current_application_code == 'Dev' %} {% if current_dev_mode == 'Edit' %} {% if edit_app_code != 'Not Selected' %} href="{% url 'users:homePage' edit_app_code current_dev_mode %}" {% else %} href="{% url 'users:homePage' 'Dev' current_dev_mode %}" {% endif %} {% elif current_dev_mode == 'Build' %} {% if build_process_type != 'Not Selected' %} href="{% url 'users:homePage' build_process_type current_dev_mode %}" {% else %} href="{% url 'users:homePage' 'Dev' current_dev_mode %}" {% endif %} {% endif %} {% else %} href="{% url 'users:homePage' current_application_code 'User' %}" {% endif %} {% else %} href="{% url 'users:select_application' %}" {% endif %}>
+              Home </a></li>
+            <li class="breadcrumb-item active">User Profile</li>
+        </ol>
+      </div>
+      <br>
+      <br>
+      {% endif %}
+  </div><!-- /.container-fluid -->
+</section>
+
+<!-- Main content -->
+<section class="content" style="padding: 0">
+  <div class="container-fluid">
+    <div class="content-container">
+      <div class="cover-photo"
+        {% if user.profile.cover_photo %}
+        style="background-image: url('{{ user.profile.cover_photo.url }}');background-position: center;background-size: cover;"
+        {% endif %}>
+        <div class="upload_cover" data-toggle="modal" data-target="#upload_cover_photo">
+          <i class="fa fa-camera" data-toggle="tooltip" title="Upload Cover Photo"></i>
+        </div>
+      </div>
+      <div class="position-relative" style="z-index: 200">
+        <div class="profile-wrapper d-flex align-items-center justify-content-between">
+          <div class="profile-img-container d-flex align-items-center">
+            <div style="margin-left: 2%; overflow: hidden">
+              {% if user.profile.profile_pic %}
+                <div class="profile-img">
+                  <img src="{{ user.profile.profile_pic.url }}" alt="profile photo" class="img-circle" style="height: 100%; width: 100%;">
+                </div>
+              {% elif user.profile.first_name and user.profile.last_name  %}
+                <div class="initials">
+                  <h3 style="margin: 0;color: white;font-weight: 600;font-size: 40px;" class="profile-initials">{{user.profile.first_name.0}}{{user.profile.last_name.0}}</h3>
+                </div>
+              {% else %}
+                <div class="initials">
+                  <i class="fa fa-user profile_user" style="font-size: 35px;" aria-hidden="true"></i>
+                </div>
+              {% endif %}
+            </div>
+            <div class="profile-title ml-3">
+              <h4 class="text-black firstname-lastname"> {{user.profile.first_name}} {{user.profile.last_name}} </h4>
+              <p class="text-black"> username: {{ user.get_username }} </p>
+            </div>
+          </div>
+          <div class="profile-tabs-wrapper">
+            <ul class="nav nav-pills profile-tabs" id="profile-pills-tab" role="tablist">
+              <li class="nav-item profile-tab-link">
+                <a class="nav-link active" id="overview-tab" href="#OverviewTab" data-toggle="pill" role="tab" aria-controls="overview" aria-selected="true">Overview</a>
+              </li>
+              <li class="nav-item profile-tab-link">
+                <a class="nav-link" id="profile-tab" href="#ProfileTab" data-toggle="pill" role="tab" aria-controls="profile" aria-selected="false">Profile</a>
+              </li>
+              <li class="profile-tab-link nav-item">
+                <a class="tab-a nav-link" id="useractivity-tab" href="#UserActivity" data-toggle="pill" role="tab" aria-controls="useractivity" aria-selected="false" >User Activity</a>
+              </li>
+              <li class="profile-tab-link nav-item">
+                <a class="tab-a nav-link" id="messages-tab" href="#Messages" data-toggle="pill" role="tab" aria-controls="messages" aria-selected="false">Messages</a>
+              </li>
+              <li class="profile-tab-link nav-item">
+                <a class="tab-a nav-link  " href="#" data-toggle="tab">Others</a>
+              </li>
+            </ul>
+          </div>
+          <div class="profile-tabs-mobile-menu dropdown">
+            <div class="bars" data-toggle="dropdown">
+              <div class="bar1"></div>
+              <div class="bar2"></div>
+              <div class="bar3"></div>
+            </div>
+            <div class="dropdown-menu dropdown-menu-sm dropdown-menu-right mob-nav-dropdown">
+              <div class="dropdown-item" data-name="OverviewTab" onclick="openTab(this.getAttribute('data-name'))">
+                Overview
+              </div>
+              <div class="dropdown-divider"></div>
+              <div data-name="ProfileTab" class="dropdown-item" onclick="openTab(this.getAttribute('data-name'))">
+                Profile
+              </div>
+              <div class="dropdown-divider"></div>
+              <div data-name="UserActivity" class="dropdown-item" onclick="openTab(this.getAttribute('data-name'))">
+                User Activity
+              </div>
+              <div class="dropdown-divider"></div>
+              <div data-name="Messages" class="dropdown-item" onclick="openTab(this.getAttribute('data-name'))">
+                Messages
+              </div>
+              <div class="dropdown-divider"></div>
+              <div data-name="Others" class="dropdown-item" onclick="openTab(this.getAttribute('data-name'))">
+                Others
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="profile-tab-container">
+      <div class="tab-content" id="profileMainTabContent">
+        <div class="tab-pane fade show active" id="OverviewTab" role="tabpanel" aria-labelledby="overview-tab">
+          <div class="row">
+            <div class="col-sm-12 col-md-4 col-lg-4" style="z-index: 100;">
+              <!-- Profile Image -->
+                <div class="profile-card" style="max-height: 500px;height: 500px; overflow:hidden;">
+                  <div class="profile-header d-flex justify-content-between mb-3">
+                    <h5 style="font-size: 18px;">Profile Information</h5>
+                    <i class="fa-solid fa-user-pen edit-profile-overview" onclick="editProfile()"></i>
+                  </div>
+                  <div class="profile-info-wrapper">
+                    <ul style="list-style: none; padding: 8px 15px;font-size: 14px;max-height: 360px; overflow: auto; " class="pro-info">
+                      <li>
+                        <p>
+                          <label for="First_name">First Name:</label>
+                          <input type="text" name="firstname" id="First_name"
+                          {% if user.profile.first_name %}
+                            value="{{user.profile.first_name}}"
+                          {% else %}
+                            placeholder="Add your first name"
+                          {% endif %}
+                          disabled>
+                        </p>
+                      </li>
+                      <li>
+                        <p>
+                          <label for="Last_name">Last Name:</label>
+                          <input type="text" name="lastname" id="Last_name"
+                          {% if user.profile.last_name %}
+                            value="{{user.profile.last_name}}"
+                          {% else %}
+                            placeholder="Add your last name"
+                          {% endif %}
+                          disabled>
+                        </p>
+                      </li>
+                      <li>
+                        <p>
+                          <label for="email">Email:</label>
+                          <input type="text" name="email" id="email"
+                          {% if user.profile.email %}
+                            value="{{user.profile.email}}"
+                          {% else %}
+                            placeholder="Add your email"
+                          {% endif %}
+                          disabled>
+                        </p>
+                      </li>
+                      <li>
+                        <p>
+                          <label for="contact_number">Contact Number:</label>
+                          <input type="tel" name="tel" maxlength="10" id="contact_number" pattern="[0-9+]+"
+                          {% if user.profile.contact_number %}
+                            value="{{user.profile.contact_number}}" style="border-radius: 0 !important"
+                          {% else %}
+                            placeholder="Add your contact number"
+                          {% endif %}
+                          disabled>
+                        </p>
+                      </li>
+                      {% if user.profile.job_title %}
+                      <li>
+                        <p>
+                          <label for="job_title">Job Title: </label>
+                            <input type="jobtitle" name="job_title" id="job_title"
+                            {% if user.profile.job_title %}
+                              value="{{user.profile.job_title}}" style="border-radius: 0 !important; background: none;"
+                            {% else %}
+                              placeholder="Job title"
+                            {% endif %}
+                            disabled>
+                        </p>
+                      </li>
+                      {% endif %}
+                      {% if user.profile.department %}
+                      <li>
+                        <p>
+                          <label for="department">Department: </label>
+                            <input type="department" name="department" id="department"
+                            {% if user.profile.department %}
+                              value="{{user.profile.department}}" style="border-radius: 0 !important; background: none;"
+                            {% else %}
+                              placeholder="Department"
+                            {% endif %}
+                            disabled>
+                        </p>
+                      </li>
+                      {% endif %}
+                      {% if user.profile.location %}
+                      <li>
+                        <p>
+                          <label for="Location">Location: </label>
+                            <input type="Location" name="Location" id="location"
+                            {% if user.profile.location %}
+                              value="{{user.profile.location}}" style="border-radius: 0 !important; background: none;"
+                            {% else %}
+                              placeholder="Location"
+                            {% endif %}
+                            disabled>
+                        </p>
+                      </li>
+                      {% endif %}
+                      {% if user.profile.bio %}
+                      <li>
+                        <p>
+                          <label for="Bio">About me: </label>
+                            <textarea name="aboutme" id="Bio" disabled>{{user.profile.bio}}</textarea>
+                        </p>
+                      </li>
+                      {% endif %}
+                      {% if user.profile.facebook or user.profile.linkedin or user.profile.github or user.profile.twitter %}
+                        <li>
+                          <p>
+                            <label style="margin-top: 25px;">Social details:</label>
+                            <p class="social-container">
+                              {% if user.profile.facebook %}
+                                <a href="{{user.profile.facebook}}" class="social smGlobalBtn main facebookBtn" >
+                                  <i class="fab fa-facebook-f "></i>
+                                </a>
+                                <a class="social smGlobalBtn edit facebookBtn hideSocialMedia" id="facebook" onclick="editSocialMedia(this)">
+                                  <i class="fab fa-facebook-f ">
+                                    <span class="popuptext " id="socialPopupfacebook">
+                                      <input type="url" name="facebook" value="{{user.profile.facebook}}">
+                                      <i class="fa fa-circle-check" id="closeIcon" onclick="closePopup(event,this.parentNode)" aria-hidden="true"></i>
+                                    </span>
+                                  </i>
+                                  <i class="fa fa-pen editButtonOnMedia" aria-hidden="true"></i>
+                                </a>
+                              {% endif %}
+
+                              {% if user.profile.linkedin %}
+                                <a href="{{user.profile.linkedin}}" class="social smGlobalBtn main linkedinBtn" >
+                                  <i class="fab fa-linkedin"></i>
+                                </a>
+                                <a class="social smGlobalBtn edit linkedinBtn hideSocialMedia" id="linkedin"   onclick="editSocialMedia(this)">
+                                  <i class="fab fa-linkedin">
+                                    <span class="popuptext " id="socialPopuplinkedin">
+                                      <input type="url" name="linkedin" value="{{user.profile.linkedin}}">
+                                      <i class="fa fa-circle-check" id="closeIcon" onclick="closePopup(event,this.parentNode)" aria-hidden="true"></i>
+                                    </span>
+                                  </i>
+                                  <i class="fa fa-pen editButtonOnMedia" aria-hidden="true"></i>
+                                </a>
+                              {% endif %}
+
+                              {% if user.profile.github %}
+                                <a href="{{user.profile.github}}" class="social smGlobalBtn main githubBtn" >
+                                  <i class="fab fa-github"></i>
+                                </a>
+                                <a class="social smGlobalBtn edit githubBtn hideSocialMedia" id="github" onclick="editSocialMedia(this)">
+                                  <i class="fab fa-github">
+                                    <span class="popuptext " id="socialPopupgithub">
+                                      <input type="url" name="github" id value="{{user.profile.github}}">
+                                      <i class="fa fa-circle-check" id="closeIcon" onclick="closePopup(event,this.parentNode)" aria-hidden="true"></i>
+                                    </span>
+                                  </i>
+                                  <i class="fa fa-pen editButtonOnMedia" aria-hidden="true"></i>
+                                </a>
+                              {% endif %}
+
+                              {% if user.profile.twitter %}
+                                <a href="{{user.profile.twitter}}" class="social smGlobalBtn main twitterBtn" >
+                                  <i class="fab fa-twitter"></i>
+                                </a>
+                                <a class="social smGlobalBtn edit twitterBtn hideSocialMedia" id="twitter" onclick="editSocialMedia(this)">
+                                  <i class="fab fa-twitter">
+                                    <span class="popuptext " id="socialPopuptwitter">
+                                      <input type="url" name="twitter" id value="{{user.profile.twitter}}">
+                                      <i class="fa fa-circle-check" id="closeIcon" onclick="closePopup(event,this.parentNode)" aria-hidden="true"></i>
+                                    </span>
+                                  </i>
+                                  <i class="fa fa-pen editButtonOnMedia" aria-hidden="true"></i>
+                                </a>
+                              {% endif %}
+                            </p>
+                          </p>
+                        </li>
+                      {% endif %}
+                    </ul>
+                  </div>
+                  <div class="confirm-buttons mt-4 justify-content-end">
+                    <button class="save-profilechanges btn btn-secondary" onclick="saveChanges()">Save changes</button>
+                  </div>
+                </div>
+            </div>
+            <div class="col-sm-12 col-md-4 col-lg-4">
+              <div class="profile-card" style="height: 500px;max-height: 500px;">
+                <h5 style="font-size: 18px;">User Forums</h5>
+                <p>Coming soon...</p>
+              </div>
+            </div>
+            <div class="col-sm-12 col-md-4 col-lg-4 d-flex flex-column">
+              <div class="profile-card" style="height: 334px;max-height: 500px;">
+                <h5 style="font-size: 18px;">Recent Logins</h5>
+                <div class="card-body box-profile">
+                  <div class="text-center">
+                    <table id="examplereport" class="display compact" style="width:100%;">
+                      <thead>
+                        <tr>
+                          <th>Login Date</th>
+                          <th>Login IP</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr>
+                          {% for d in datauser %}
+                          <td>{{d.time_logged_in}}</td>
+                          <td >{{d.ip}}</td>
+                        </tr>
+                         {% endfor %}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+              <div class="profile-card" style="height: 150px;">
+                <h5 style="font-size: 18px;">My Planner</h5>
+                <a {% if selected_any_app == 'false' %} href="{% url 'users:planner'%}" {% else %} href="{% url 'users:plannerApp' current_app_code current_access_mode %}" {% endif %} class="btn btn-secondary mt-3">
+                  View My Planner
+                </a>
+              </div>
+            </div>
+
+            <div id="MyPopup" class="modal fade" role="dialog">
+              <div class="modal-dialog">
+                  <!-- Modal content-->
+                  <div class="modal-content">
+                      <div class="modal-header">
+                        <h4 class="modal-title">Hierarchy Access
+                        </h4>
+                          <button type="button" class="close" data-dismiss="modal">
+                              &times;</button>
+                      </div>
+                      <div class="modal-body">
+                      </div>
+                      <div class="modal-footer">
+                          <button type="button" class="btn btn-danger" data-dismiss="modal">
+                              Close</button>
+                      </div>
+                  </div>
+              </div>
+            </div>
+            <div class="modal fade" id="accessmodal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+              <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+                <div class="modal-content" style="border:none;">
+                  <div class="modal-header" style="background:#565a5e; color:white; text-align:center;">
+                    <h5 class="modal-title text-center w-100" style="margin:0 auto;">View Status</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                    </button>
+                  </div>
+                  <div class="modal-body">
+                    <div id="rname"></div>
+                    <div style="text-align:center">
+                      <div class="dot" style= "padding:35px 12px;border-radius:50%;display:inline-block;background-color:var(--primary-color);color:white;"><b>Requested</b></div>
+                      <div style= "height:8px;width:8px;border-radius:50%;display:inline-block;background-color:var(--primary-color);color:white;"></div>
+                      <div style= "height:8px;width:8px;border-radius:50%;display:inline-block;background-color:var(--primary-color);color:white;"></div>
+                      <div style= "height:8px;width:8px;border-radius:50%;display:inline-block;background-color:var(--primary-color);color:white;"></div>
+                      <div style= "padding:35px 10px;border-radius:50%;display:inline-block;background-color:var(--primary-color);color:white;"><b>In Progress</b></div>
+                      <div style= "height:8px;width:8px;border-radius:50%;display:inline-block;background-color:var(--primary-color);color:white;"></div>
+                      <div style= "height:8px;width:8px;border-radius:50%;display:inline-block;background-color:var(--primary-color);color:white;"></div>
+                      <div style= "height:8px;width:8px;border-radius:50%;display:inline-block;background-color:var(--primary-color);color:white;"></div>
+                      <div class="dot" id="filleddot" style= "padding:35px 18px;border-radius:50%;display:inline-block;"><b id="filleddotid"></b></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="tab-pane" id="ProfileTab" role="tabpanel" aria-labelledby="profile-tab">
+          <div class="row">
+            <div class="col-md-3 col-sm-3 col-xs-12">
+              <div class="profile-card">
+                <div class="nav flex-column nav-pills" id="v-pills-tab" role="tablist" aria-orientation="vertical">
+                  <a class="nav-link active" id="v-pills-profile-tab" data-toggle="pill" href="#v-pills-profile" role="tab" aria-controls="v-pills-home" aria-selected="true">Your Profile</a>
+                  <a class="nav-link" id="v-pills-roles-tab" data-toggle="pill" href="#v-pills-roles" role="tab" aria-controls="v-pills-messages" aria-selected="false">Roles and Access</a>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-9 col-sm-9 col-xs-12">
+              <div class="profile-card">
+                <div class="tab-content" id="v-pills-tabContent">
+                  <div class="tab-pane fade show active" id="v-pills-profile" role="tabpanel" aria-labelledby="v-pills-profile-tab">
+                    <div class="profile-photo-upload-option">
+                      {% if user.profile.profile_pic %}
+                        <div class="row" style="margin: 30px 0;">
+                          <div class="col-md-2 col-sm-4">
+                            <div class="profile-tab-img" style="height: 100px; width: 100px;border-radius:5px;overflow:hidden;">
+                              <img src="{{ user.profile.profile_pic.url }}" alt="profile photo" style="height: 100%; width: 100%;">
+                            </div>
+                          </div>
+                          <div class="col-md-10 col-sm-8" style="height: 100px;">
+                            <div class="d-flex align-items-center" style="height: 100%;">
+                              <a class="btn btn-secondary" id="profiletab_uploadphoto" data-toggle="modal" data-target="#uploadphoto_modal" >Upload photo</a>
+                            </div>
+                          </div>
+                        </div>
+                      {% elif user.profile.first_name and user.profile.last_name  %}
+                        <div class="row">
+                          <div class="col-md-3 col-sm-12">
+                            <div class="initials" style="height: 100px; width: 100px;border-radius:5px;overflow:hidden;">
+                              <h3 style="margin: 0;color: white;font-weight: 600;font-size: 45px;">{{user.profile.first_name.0}}{{user.profile.last_name.0}}</h3>
+                            </div>
+                          </div>
+                          <div class="col-md-9 col-sm-12" style="height: 100px;">
+                            <div class="d-flex align-items-center" style="height: 100%;">
+                              <a class="btn btn-secondary" data-toggle="modal" data-target="#uploadphoto_modal" >Upload photo</a>
+                            </div>
+                          </div>
+                        </div>
+                      {% else %}
+                        <div class="row">
+                          <div class="col-md-2 col-sm-12">
+                            <div class="initials" style="height: 100px; width: 100px;border-radius:5px;overflow:hidden;">
+                              <i class="fa fa-user profile_user" style="font-size: 50px;" aria-hidden="true"></i>
+                            </div>
+                          </div>
+                          <div class="col-md-10 col-sm-12" style="height: 100px;">
+                            <div class="d-flex align-items-center" style="height: 100%;">
+                              <a class="btn btn-secondary" data-toggle="modal" data-target="#uploadphoto_modal" >Upload photo</a>
+                            </div>
+                          </div>
+                        </div>
+                      {% endif %}
+                    </div>
+                    <div id="profiletabForm" style="margin: 20px 10px;">
+                      <div class="form-row">
+                        <div class="form-group col-md-6">
+                          <label for="profileTab-First_name">First Name</label>
+                          <input type="text" class="form-control" id="profileTab-First_name"
+                          {% if user.profile.first_name %}
+                            value="{{user.profile.first_name}}"
+                          {% else %}
+                            placeholder="First Name"
+                          {% endif %}>
+                        </div>
+                        <div class="form-group col-md-6">
+                          <label for="profileTab-Last_name">Last Name</label>
+                          <input type="text" class="form-control" id="profileTab-Last_name"
+                          {% if user.profile.last_name %}
+                            value="{{user.profile.last_name}}"
+                          {% else %}
+                            placeholder="Last Name"
+                          {% endif %}>
+                        </div>
+                      </div>
+                      <div class="form-row">
+                        <div class="form-group col-md-6">
+                          <label for="profileTab-email">Email</label>
+                          <input type="email" class="form-control" id="profileTab-email"
+                          {% if user.profile.email %}
+                            value="{{user.profile.email}}"
+                          {% else %}
+                            placeholder="Email"
+                          {% endif %}>
+                        </div>
+                        <div class="form-group col-md-6">
+                          <label for="profileTab-contact_number">Contact</label>
+                          <input type="number" class="form-control" id="profileTab-contact_number" style="border-radius: 5px"
+                          {% if user.profile.contact_number %}
+                            value="{{user.profile.contact_number}}" style="border-radius: 0 !important"
+                          {% else %}
+                            placeholder="Contact"
+                          {% endif %}>
+                        </div>
+                      </div>
+                      <!-- job title and department -->
+                      <div class="form-row">
+                        <div class="form-group col-md-6">
+                          <label for="profileTab-job_title">Job Title</label>
+                          <input type="text" class="form-control" id="profileTab-job_title"
+                          {% if user.profile.job_title %}
+                            value="{{user.profile.job_title}}"
+                          {% else %}
+                            placeholder="Job Title"
+                          {% endif %}>
+                        </div>
+                        <div class="form-group col-md-6">
+                          <label for="profileTab-department">Department</label>
+                          <input type="text" class="form-control" id="profileTab-department" style="border-radius: 5px"
+                          {% if user.profile.department %}
+                            value="{{user.profile.department}}" style="border-radius: 0 !important"
+                          {% else %}
+                            placeholder="Department"
+                          {% endif %}>
+                        </div>
+                      </div>
+                      <div class="form-row">
+                        <div class="form-group col-md-6">
+                          <label for="profileTab-Location">Location</label>
+                          <input type="text" class="form-control" id="profileTab-Location" style="border-radius: 5px"
+                          {% if user.profile.location %}
+                            value="{{user.profile.location}}" style="border-radius: 0 !important"
+                          {% else %}
+                            placeholder="Location"
+                          {% endif %}>
+                        </div>
+                        </div>
+                      <div class="form-group">
+                        <label for="profileTab-Bio">About Me</label>
+                        <textarea class="form-control" id="profileTab-Bio" placeholder="About Me">{% if user.profile.bio %}{{user.profile.bio}}{% endif %}</textarea>
+                      </div>
+                      <h4 class="social-links-header">Social Links</h4>
+                      <div class="form-row">
+                        <div class="form-group col-md-6">
+                          <label for="profileTab-facebook">Facebook</label>
+                          <input type="text" class="form-control" id="profileTab-facebook"
+                          {% if user.profile.facebook %}
+                          value="{{user.profile.facebook}}"
+                          {% else %}
+                          placeholder="Facebook link"
+                          {% endif %}>
+                        </div>
+                        <div class="form-group col-md-6">
+                          <label for="profileTab-twitter">Twitter</label>
+                          <input type="text" class="form-control" id="profileTab-twitter"
+                          {% if user.profile.twitter %}
+                          value="{{user.profile.twitter}}"
+                          {% else %}
+                          placeholder="Twitter Link"
+                          {% endif %}>
+                        </div>
+                      </div>
+                      <div class="form-row">
+                        <div class="form-group col-md-6">
+                          <label for="profileTab-github">Github</label>
+                          <input type="text" class="form-control" id="profileTab-github"
+                          {% if user.profile.github %}
+                          value="{{user.profile.github}}"
+                          {% else %}
+                          placeholder="Github Link"
+                          {% endif %}>
+                        </div>
+                        <div class="form-group col-md-6">
+                          <label for="profileTab-linkedin">LinkedIn</label>
+                          <input type="text" class="form-control" id="profileTab-linkedin"
+                          {% if user.profile.linkedin %}
+                          value="{{user.profile.linkedin}}"
+                          {% else %}
+                          placeholder="LinkedIn Link"
+                          {% endif %}>
+                        </div>
+                      </div>
+                      <h4 class="social-links-header">Link User Account</h4>
+                      <div class="form-row">
+                        <div class="form-group col-md-6">
+                          <label for="userprofiletags">Choose User</label>
+                          <select name="userprofiletags" id="userprofiletags" class="select2">
+                            <option value="" selected disabled >Choose User</option>
+                            {% for username in users_list %}
+                              <option {% if username == user.profile.tagged_user %} selected {% endif %} value="{{username}}">{{username}}</option>
+                            {% endfor %}
+                          </select>
+                        </div>
+
+                      </div>
+                      <button class="btn btn-secondary" id="saveProfiletabChanges" onclick="saveProfiletabChanges(this)">Save</button>
+                    </div>
+                  </div>
+
+                  <div class="tab-pane fade" id="v-pills-roles" role="tabpanel" aria-labelledby="v-pills-roles-tab">
+                    <h5>Roles and access details</h5>
+                    <ul class="nav nav-pills navclass1 ml-2 mt-3">
+                      <li class="nav-item"><a class="nav-link navclass active" href="#profile_summary" data-toggle="tab">Roles Assigned</a></li>
+                      <li class="nav-item"><a class="nav-link navclass" href="#update_profile" data-toggle="tab">Request Roles</a></li>
+                      <li class="nav-item"><a class="nav-link navclass" href="#profile" data-toggle="tab">Approval Status</a></li>
+                    </ul>
+                    <div class="card-body" style="overflow: auto;">
+                      <div class="tab-content">
+                        <div class="active tab-pane" id="profile_summary">
+                          <div class="post">
+                            <div id="selectitem" class="mb-4">
+                              <select id="selectpermission" class="select2 form-control" name="selectTable">
+                                <option value="screen_access"selected>Screen Access</option>
+                                <option value="f_and_d_access">Data Access</option>
+                              </select>
+                            </div>
+                            <div id="permissioncard" style="display:block">
+                              <table id="exampleprofile" class="display compact" style="width:100%;word-wrap:break-word;">
+                                <thead>
+                                  <tr>
+                                    <th>Process</th>
+                                    <th>Sub-Process</th>
+                                    <th>Sub-process Component</th>
+                                    <th>View Access</th>
+                                    <th>Edit Access</th>
+                                    <th>Request Access</th>
+                                    <th>Save Access Request</th>
+                                  </tr>
+                                </thead>
+                                <tbody>
+                                  {% for d in data %}
+                                    <tr>
+                                      <td>
+                                        {{d.level0name}}
+                                      </td>
+                                      <td>
+                                        {{d.level1name}}
+                                      </td>
+                                      <td>
+                                        {{d.level2name}}
+                                      </td>
+                                      <td>
+                                          {% if d.vaccess == "yes" %}
+                                          <i class="fa fa-check" aria-hidden="true"></i>
+                                          {% else %}
+                                          <i class="fa fa-remove"></i>
+                                          <button type="button" class="btn btn-primary btn-xs mb-1 rounded ml-2 px-2" onclick="gaccess(&quot;{{d.level0name}} &quot;,&quot;{{d.level1name}} &quot;,&quot;{{d.level2name}}&quot;,&quot;{{d.lvlname0}}{{d.lvlname1}}{{d.lvlname2}} &quot;)">Request Access</button>
+                                          {% endif %}
+                                      </td>
+                                      <td style="max-width:250px;white-space:initial;">
+                                            {% if d.btn %}
+                                              {% for db in d.btn%}
+                                                      <button type="button" id="{{d.level1name}}{{d.level2name}}{{db}}" class="btn btn-primary btn-xs rounded mb-1 px-2">{{db}}</button>
+                                              {% endfor %}
+                                        {% else %}
+                                          <i class="fa fa-remove"></i>
+                                          <button type="button" class="btn btn-primary btn-xs mb-1 rounded ml-2 px-2" onclick="gaccessall(&quot;{{d.lvlname2}}{{d.lvlname1}}{{d.lvlname0}} &quot;,&quot;{{d.level0name}} &quot;,&quot;{{d.level1name}} &quot;,&quot;{{d.level2name}}&quot;,&quot;{{d.lvlname0}}{{d.lvlname1}}{{d.lvlname2}} &quot;)">Request All</button>
+                                        {% endif %}
+                                      </td>
+                                        <td id ="{{d.lvlname2}}{{d.lvlname1}}{{d.lvlname0}}" style="max-width:250px;white-space:initial;">
+                                          {% for edit in d.editAccess%}
+                                          <button type="button" id="{{d.lvlname0}}{{d.lvlname1}}{{d.lvlname2}}{{edit}}" class="btn btn-primary btn-xs mb-1 rounded px-2" onclick="buttonshift(&quot;{{edit}} &quot;,&quot;{{d.lvlname0}}{{d.lvlname1}}{{d.lvlname2}} &quot;,&quot;{{d.level0name}}&quot;,&quot;{{d.level1name}}&quot;,&quot;{{d.level2name}}&quot;,&quot;{{edit}}&quot;)">{{edit}}</button>
+                                          {% endfor %}
+                                        </td>
+                                      <td id="{{d.lvlname0}}{{d.lvlname1}}{{d.lvlname2}}" style="max-width:250px;white-space:initial;"></td>
+                                    </tr>
+                                  {% endfor %}
+                                </tbody>
+                              </table>
+                              <button type="button" id="confirmbutton" style="float:right;" class="btn btn-primary btn mt-3 rounded px-2 standard_button_click">Confirm</button>
+                            </div>
+                            <div id="hierarchycard" style="display:none;">
+                              <table id="examplehierarchy" class="display compact" style="width:100%;">
+                                <thead>
+                                  <tr>
+                                    <th>Data Access Available</th>
+                                    <th>Hierarchy Group</th>
+                                    <th>Related tables</th>
+                                    <th>Edit Access</th>
+                                    <th>Request Access</th>
+                                  </tr>
+                                </thead>
+                                <tbody>
+                                  {% for d in hdata %}
+                                  <tr>
+                                    <td style="max-width:250px;white-space:initial;">
+                                      {{d.name}}
+                                    </td>
+                                    <td>{{d.group}}</td>
+                                    <td>{{d.table}}</td>
+                                    <td>
+                                      {% if d.vaccess == "yes" %}
+                                      <i class="fa fa-check" aria-hidden="true"></i>
+                                      {% else %}
+                                      <i class="fa fa-remove"></i>
+                                      <button type="button" class="btn btn-primary btn-xs mb-1 rounded ml-2 px-2" onclick="haccess(&quot;{{d.gname}}{{d.hname}} &quot;,&quot;{{d.group}} &quot;,&quot;{{d.name}} &quot;)">Request Access</button>
+                                      {% endif %}
+                                    </td>
+                                    <td id="{{d.gname}}{{d.hname}}"></td>
+                                  </tr>
+                                  {% endfor %}
+                                </tbody>
+                              </table>
+                              <button type="button" id="confirmbuttonh" style="float:right;" class="btn btn-primary btn mt-3 rounded px-2">Confirm</button>
+                            </div>
+                          </div>
+
+                        </div>
+
+                        <div class="tab-pane" id="update_profile">
+                          <div class="post">
+                            <table id="exampleroles" class="display compact" style="width:100%;word-wrap:break-word;">
+                              <thead>
+                                <tr>
+                                  <th>Process</th>
+                                  <th>Sub-Process</th>
+                                  <th>Category</th>
+                                  <th>Permission Requested</th>
+                                  <th>Status</th>
+                                </tr>
+                              </thead>
+                              <tbody>
+                              {% for s in status_data %}
+                                <tr>
+                                    <td>{{s.l0}}</td>
+                                    <td>{{s.l1}}</td>
+                                    <td>{{s.l2}}</td>
+                                    <td>{{s.pname}}</td>
+                                    <td onclick="openmodal(&quot;{{s.status}} &quot;)">{{s.status}}</td>
+                                </tr>
+                              {% endfor %}
+                              </tbody>
+                            </table>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="tab-pane" id="UserActivity" role="tabpanel" aria-labelledby="useractivity-tab">
+          <div class="profile-card" style="margin-bottom: 15px;overflow: auto;">
+            <h5 style="font-size: 18px;">Recent Activities</h5>
+            <div style="margin-top:2em;">
+              <table id="examplereport2" class="display compact" style="width:100%;">
+                <thead>
+                  <tr>
+                    <th>Id</th>
+                    <th>Session id</th>
+                    <th>Ip</th>
+                    <th>Username</th>
+                    <th>Application</th>
+                    <th>Url Request</th>
+                    <th>Url From</th>
+                    <th>Screen</th>
+                    <th>Date</th>
+                    <th>Time</th>
+                    <th>Time spent</th>
+                  </tr>
+                </thead>
+                <tbody>
+
+                  <tr>
+                    {% for d1 in dataurl %}
+
+                    <td>{{ d1.id }}</td>
+                    <td>{{ d1.session_id }}</td>
+                    <td><a>{{ d1.ip }} </a></td>
+                    <td>{{ d1.user_name }}</td>
+                    <td>{{ d1.app_code }}</td>
+                    <td>{{ d1.url_current }}</td>
+                    <td>{{ d1.url_from }}</td>
+                    <td>{{ d1.screen }}</td>
+                    <td>{{ d1.logged_date }}</td>
+                    <td>{{ d1.logged_time }}</td>
+                    <td>{{ d1.time_spent }}</td>
+
+                  </tr>
+
+                  {% endfor %}
+
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        <div class="tab-pane" id="Messages" role="tabpanel" aria-labelledby="messages-tab">
+          <div class="profile-card" style="margin-bottom: 15px;overflow: auto;">
+            <h5 style="font-size: 18px;">Messages</h5>
+            <p>Coming Soon...</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="modal" id="upload_cover_photo">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <form id="id_form_upload_cover_photo_modal"  onsubmit="coverphoto();return false">
+          {% csrf_token%}
+
+        <div class="modal-header">
+          <h5 class="modal-title">Upload cover photo</h5>
+        </div>
+
+        <div class="modal-body">
+          <div class="modal_dg">
+            <div class="col-12">
+              <input type="file" class="custom-file-input" accept=".jpg,.jpeg,.png" name="user_cover_photo" id="user_cover_photo" required onclick="this.value=null;">
+              <label id="cover_photo_label" class="custom-file-label" for="user_cover_photo">Upload File</label>
+            </div>
+            <ol>
+              <li>Upload only jpg/ jpeg/ png file</li>
+              <li>File size should not exceed 500 KB</li>
+            </ol>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="submit" name="uploadCoverphoto" id="uploadCoverphoto" value="uploadCoverphoto" class="btn buttonfooter">Submit</button>
+          <button data-dismiss="modal" class="btn buttonfooter">Close</button>
+
+        </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  <div class="modal" id="uploadphoto_modal">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <form id="id_form_upload_user_photo_modal" onsubmit="profilephoto();return false" >
+          {% csrf_token%}
+
+        <div class="modal-header">
+          <h5 class="modal-title">Upload profile photo</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+
+        <div class="modal-body">
+          <div class="modal_dg">
+            <div class="col-12">
+              <input type="file" class="custom-file-input" id="user_profile_photo"  name="user_profile_photo" required onclick="this.value=null;">
+              <label id="profile_photo_label" class="custom-file-label" for="user_profile_photo">Upload File</label>
+            </div>
+            <ol>
+              <li>Upload only jpg/ jpeg/ png file</li>
+              <li>File size should not exceed 500 KB</li>
+            </ol>
+
+
+
+          </div>
+
+        </div>
+        <div class=" modal-footer">
+          <button type="button" onclick="removeprofilephoto()" id="removephoto" class="btn buttonfoot" class="close" data-dismiss="modal" aria-label="Close">Remove profile photo</button>
+          <button type="submit" id="profile_pic_btn" name="uploadphoto" id="rem" value="uploadphoto" class="btn buttonfoot">Submit</button>
+        </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  function openTab(element) {
+    var tabs = document.querySelectorAll("#profileMainTabContent > .tab-pane")
+    tabs.forEach(ele=>{
+      ele.classList.remove("fade","show","active")
+    })
+    document.getElementById(element).classList.add("fade","show","active")
+  }
+
+  function closePopup(event,parent) {
+    parent.classList.remove("showpopup");
+    event.stopPropagation();
+  }
+  function editSocialMedia(element) {
+    var removeShow = document.querySelectorAll(".popuptext.showpopup");
+    removeShow.forEach(element => {
+      element.classList.remove("showpopup");
+    });
+    var popup = document.getElementById("socialPopup"+element.id);
+    popup.classList.add("showpopup");
+  }
+
+  var inputs = document.querySelectorAll(".pro-info input")
+  var inputTextArea = document.getElementById("Bio");
+  if(inputs){
+    inputs.forEach(id=>{
+      id.style.border = "none";
+      id.style.width = "100%";
+    })
+  }
+  var socialMediaEditPopup = document.querySelectorAll(".social.smGlobalBtn.edit");
+  var socialMediaMain = document.querySelectorAll(".social.smGlobalBtn.main");
+
+  var socialMediaEditPopupInput = document.querySelectorAll(".social.smGlobalBtn.edit input");
+
+  function editProfile(){
+    if(inputs){
+      inputs.forEach(id=>{
+        id.style.border = "1px solid lightgrey";
+        id.style.borderRadius = "5px";
+        id.removeAttribute("disabled");
+      })
+      inputs[0].focus();
+    }
+
+    if(inputTextArea){
+      inputTextArea.style.border = "1px solid lightgrey";
+      inputTextArea.style.borderRadius = "5px";
+      inputTextArea.removeAttribute("disabled");
+    }
+
+    if(socialMediaMain){
+      socialMediaMain.forEach(element=>{
+        element.classList.add("hideSocialMedia");
+      })
+    }
+
+    if(socialMediaEditPopup){
+      socialMediaEditPopup.forEach(element=>{
+        element.classList.remove("hideSocialMedia");
+      })
+    }
+
+    $(".confirm-buttons").css("display","flex")
+  }
+
+  function saveChanges(){
+    data={}
+    var Bio = $("#Bio").val()
+    if(Bio){
+      data["Bio"] = Bio;
+    }
+    var uid = '{{user.profile.user_id|safe}}'
+    data["user_id"] = uid;
+    if(inputs){
+      inputs.forEach(id=>{
+        if(id.id != ""){
+          data[id.id] = id.value
+        }
+      })
+    }
+    if(socialMediaEditPopupInput){
+      socialMediaEditPopupInput.forEach(element=>{
+        data[element.name] = element.value
+      })
+    }
+    let check_result = true
+    for (let i in data){
+      if (check_result){
+        let check_html = /<|>/.test(data[i]);
+        if (check_html){
+          check_result = false
+          break;
+        }
+      }
+    }
+    if (!check_result){
+      Swal.fire({
+        icon: "error",
+        text: "Unauthorised input. Please check and try again.",
+      });
+    }
+    else{
+      $.ajax({
+        url: '/users/changeprofilename/',
+
+            data: {
+              'operation': "edit_profile",
+              'data': JSON.stringify(data),
+            },
+            type: "POST",
+            dataType: "json",
+            success: function (data) {
+              if (data.msg == 'email_invalid'){
+                Swal.fire({text:"Email format is invalid.",icon:"error"});
+              }
+              else{
+                Swal.fire({text:"Profile information updated successfully!",icon:"success"})
+                .then((result)=>{
+                  if(result.isConfirmed){
+                    window.location.reload()
+                  }
+                })
+              }
+            },
+            error: function () {
+              Swal.fire({text:"Error in saving Profile information. Please try again.",icon:"error"});
+            }
+      })
+    }
+
+  }
+
+  function saveProfiletabChanges(element){
+    var data={}
+    var Bio = $("#profileTab-Bio").val()
+    if(Bio){
+      data["Bio"] = Bio;
+    }
+    var parent = element.parentNode;
+    var selector = '#'+parent.id+' input'
+    var profileTabinputs = document.querySelectorAll(selector)
+    var uid = '{{user.profile.user_id|safe}}'
+    data["user_id"] = uid;
+
+    if(profileTabinputs){
+      profileTabinputs.forEach(element=>{
+        if(element.id != ""){
+          if(element.id.substr(0,7) == 'profile'){
+            var key = element.id.split('-')[1]
+            data[key] = element.value
+          }
+          else{
+            data[element.id] = element.value
+          }
+        }
+      })
+    }
+
+    user_tag = $("#userprofiletags").val()
+
+    if(user_tag){
+      data["tagged_user"] = user_tag
+    }
+
+    $.ajax({
+      url: '/users/changeprofilename/',
+
+      data: {
+        'operation': "edit_profile",
+        'data': JSON.stringify(data),
+      },
+      type: "POST",
+      dataType: "json",
+      success: function (data) {
+
+        Swal.fire({text:"Profile information updated successfully!",icon:"success"})
+          .then((result)=>{
+            if(result.isConfirmed){
+              window.location.reload()
+            }
+          })
+      },
+      error: function () {
+        Swal.fire({text:"Error in saving Profile information. Please try again.",icon:"error"});
+      }
+    })
+  }
+
+  $("#selectitem .select2").css("width","70%");
+
+  function openMenu(menu) {
+    menu.classList.toggle("change");
+  }
+
+   function openmodal(perm)
+    {
+      $('#filleddotid').html('')
+        $("#accessmodal").modal("show")
+        var perm = perm.trim()
+        var prog = "Approved"
+        if(perm == prog)
+        {
+          $('#filleddot').css('background-color','var(--primary-color)')
+          $('#filleddot').css('color','white')
+          $('#filleddotid').html(perm.trim())
+        }
+        else{
+          $('#filleddot').css('background-color','#D3D3D3')
+          $('#filleddot').css('color','black')
+          $('#filleddotid').html(perm.trim())
+        }
+    }
+
+  $('.select2bs4').select2();
+
+  $('select.select2:not(.modal select.select2)').each(function(){
+    parent = $(this).parent()
+    $(this).select2({dropdownParent:parent})
+})
+$('.modal select.select2').each(function(){
+    $(this).select2()
+})
+  $('[data-toggle="tooltip"]').tooltip({
+    placement: 'top'
+  });
+
+  $( "#selectpermission" ).change(function() {
+    $('#hierarchycard').css("display","none")
+    $('#permissioncard').css("display","none")
+    val = $(this).val();
+    if(val == "screen_access")
+    {
+      $('#hierarchycard').css("display","none")
+      $('#permissioncard').css("display","block")
+    }
+    if(val == "f_and_d_access")
+    {
+      $('#permissioncard').css("display","none")
+      $('#hierarchycard').css("display","block")
+    }
+  });
+  var dicthie = new Array;
+  function haccess(aid,appendid,aid2)
+  {
+    var tempid = "#" + aid;
+    $(tempid).append(appendid + "__" + aid2);
+    var lvldict={
+        level0name:appendid.trim(),
+        level1name:aid2.trim(),
+        level2name:""
+      };
+      var dict = {
+        userid:'{{user.profile.user_id |safe}}',
+        firstname:'{{user.profile.first_name |safe}}',
+        lastname:'{{user.profile.last_name |safe}}',
+        emailid:'{{user.email |safe}}',
+        uname:'{{user}}',
+        leveldict: JSON.stringify(lvldict),
+        level0name:appendid.trim(),
+        level1name:aid2.trim(),
+        level2name:"",
+        level3name:"",
+        level:1,
+      };
+      dicthie.push(dict)
+
+  }
+
+  $("#confirmbuttonh").on("click",function() {
+
+    $.ajax({
+          url: '/users/requestlevel4access/',
+
+          data: {
+            'operation': "hierequest",
+            'hie_list': JSON.stringify(dicthie),
+          },
+          type: "POST",
+          dataType: "json",
+          success: function (data) {
+            Swal.fire({text:"Data sent for approval",icon:"success"})
+            location.reload()
+          },
+          error: function () {
+            Swal.fire({text:"Error",icon:"error"});
+          }
+        })
+  })
+  var dictbtn = new Array;
+  function gaccessall(aid,l1,l2,l3,appendid)
+  {
+    var tempid = "#"+aid;
+    var btnid = "#" + appendid;
+    var text = ($(tempid).text())
+    tablefields = ($(tempid).children())
+    for (var i = 0; i < tablefields.length; i++) {
+      var tableChild = tablefields[i].innerHTML;
+      var button = document.createElement("button");
+      button.classList.add('btn','btn-primary','btn-xs','ml-1','mb-1','rounded','px-2')
+      button.innerHTML = tableChild;
+      $(btnid).append(button);
+      $(tempid).empty();
+      var lvldict={
+        level0name:l1.trim(),
+        level1name:l2.trim(),
+        level2name:l3.trim(),
+      };
+      var dict = {
+        userid:'{{user.profile.user_id |safe}}',
+        firstname:'{{user.profile.first_name |safe}}',
+        lastname:'{{user.profile.last_name |safe}}',
+        emailid:'{{user.email |safe}}',
+        uname:'{{user}}',
+        leveldict: JSON.stringify(lvldict),
+        level0name:l1.trim(),
+        level1name:l2.trim(),
+        level2name:l3.trim(),
+        level3name:tableChild.trim(),
+        level:4,
+      };
+      dictbtn.push(dict)
+    }
+  }
+
+  function gaccess(l1,l2,l3,appendid)
+  {
+      var tempid = "#"+appendid;
+      $(tempid).append(l1);
+      var lvldict={
+        level0name:l1.trim(),
+        level1name:l2.trim(),
+        level2name:l3.trim(),
+      };
+      var dict = {
+        userid:'{{user.profile.user_id |safe}}',
+        firstname:'{{user.profile.first_name |safe}}',
+        lastname:'{{user.profile.last_name |safe}}',
+        emailid:'{{user.email |safe}}',
+        uname:'{{user}}',
+        leveldict: JSON.stringify(lvldict),
+        level0name:l1.trim(),
+        level1name:l2.trim(),
+        level2name:l3.trim(),
+        level3name:l3.trim(),
+        level:0,
+      };
+
+  dictbtn.push(dict)
+
+  }
+
+  function removeprofilephoto()
+  {
+    var uid = '{{user.profile.user_id|safe}}'
+    $.ajax({
+          url: '/users/changeprofilename/',
+
+          data: {
+            'operation': "removephoto",
+            'uid':uid,
+          },
+          type: "POST",
+          dataType: "json",
+          success: function (data) {
+            location.reload();
+          },
+          error: function () {
+            Swal.fire({text:"Error",icon:"warning"});
+          }
+        })
+  }
+
+$("#profile_pic_btn").on('click', function(e){
+  e.preventDefault()
+  let filename = $('#user_profile_photo').attr('title')
+  let regex = /\.jpg|\.png|\.jpeg/g;
+
+  let count = (filename.match(regex) || []).length;
+
+  if (count > 1) {
+    Swal.fire({text:`File name should not contain ${count} extensions.`,icon:"error"});
+  }
+  else{
+    $('#id_form_upload_user_photo_modal').trigger('submit')
+  }
+})
+
+  {% comment %} $('#textfieldToClose').change(txt1function)
+  $('#textfieldToClose1').change(txt2function)
+  function txt1function()
+  {
+    var fname = '{{ user.profile.first_name|safe }}';
+      var name = $('#textfieldToClose').val()
+      var uid = '{{user.profile.user_id|safe}}'
+      if(name != "")
+      {
+        name = name[0].toUpperCase() + name.slice(1)
+      }
+
+      var result = null
+      Swal.fire({
+        icon:'question',
+        text: "Do you want to save the first name?\n\n Click 'Yes' to confirm or click 'No' if you do not wish to save it.",
+                  showDenyButton: true,
+                  showCancelButton: true,
+                  confirmButtonText: 'Yes',
+                  denyButtonText: 'No',
+                }).then((result) => {
+                  if (result.isConfirmed) {
+                     result = true
+                  } else if (result.isDenied) {
+                     result = false
+                  }
+                })
+        if (result = true) {
+          $.ajax({
+          url: '/users/changeprofilename/',
+
+          data: {
+            'operation': "firstname",
+            'name': name,
+            'uid':uid,
+          },
+          type: "POST",
+          dataType: "json",
+          success: function (data) {
+            var image_profile = $(".profile_photo_card")[0].innerHTML
+            if(image_profile.includes("img src") == false)
+            {
+              if($('#textfieldToClose').val() != "" && $('#textfieldToClose1').val() != "")
+              {
+                $(".profile_name").css("display","inline-block")
+                $(".profile_name").css("padding-top","0.2em")
+                $(".profile_name").css("padding-bottom","0.2em")
+                $(".profile_user").css("display","none")
+                $(".profile_name")[0].innerHTML = $('#textfieldToClose').val().charAt(0).toUpperCase() + $('#textfieldToClose1').val().charAt(0).toUpperCase()
+              }
+              if($('#textfieldToClose').val() == "")
+              {
+              $(".profile_user").css("display","inline-block")
+              $(".profile_name").css("display","none")
+              }
+            }
+          },
+          error: function () {
+            Swal.fire({text:"Error",icon:"error"});
+          }
+        })
+        }
+        else{
+          $('#textfieldToClose').val(fname)
+        }
+
+
+  }
+  document.getElementById("textfieldToClose").addEventListener("keydown", function(event) {
+    if (event.keyCode === 13) {
+      txt1function();
+    }
+    });
+  document.getElementById("textfieldToClose1").addEventListener("keydown", function(event) {
+  if (event.keyCode === 13) {
+    txt2function();
+  }
+  });
+  function txt2function(){
+      var lname = '{{ user.profile.last_name|safe }}';
+      var name = $('#textfieldToClose1').val()
+      var uid = '{{user.profile.user_id|safe}}'
+      if(name != "")
+      {
+        name = name[0].toUpperCase() + name.slice(1)
+      }
+        var result = null
+             Swal.fire({
+                  icon:'question',
+                  text: "Do you want to save the last name?\n\n Click 'Yes' to confirm or click 'No' if you do not wish to save it.",
+                  showDenyButton: true,
+                  showCancelButton: true,
+                  confirmButtonText: 'Yes',
+                  denyButtonText: 'No',
+                }).then((result) => {
+                  if (result.isConfirmed) {
+                     result = true
+                  } else if (result.isDenied) {
+                     result = false
+                  }
+                })
+        if (result = true) {
+        $.ajax({
+          url: '/users/changeprofilename/',
+
+          data: {
+            'operation': "lastname",
+            'name': name,
+            'uid':uid,
+          },
+          type: "POST",
+          dataType: "json",
+          success: function (data) {
+            var image_profile = $(".profile_photo_card")[0].innerHTML
+            if(image_profile.includes("img src") == false)
+            {
+              if($('#textfieldToClose').val() != "" && $('#textfieldToClose1').val() != "")
+              {
+                $(".profile_name").css("display","inline-block")
+                $(".profile_name").css("padding-top","0.2em")
+                $(".profile_name").css("padding-bottom","0.2em")
+                $(".profile_user").css("display","none")
+                $(".profile_name")[0].innerHTML = $('#textfieldToClose').val().charAt(0).toUpperCase() + $('#textfieldToClose1').val().charAt(0).toUpperCase()
+              }
+              if($('#textfieldToClose1').val() == "")
+              {
+              $(".profile_user").css("display","inline-block")
+              $(".profile_name").css("display","none")
+              }
+            }
+          },
+          error: function () {
+            Swal.fire({text:"Error",icon:"error"});
+          }
+        })
+      }
+      else{
+        $('#textfieldToClose1').val(lname)
+      }
+
+    }{% endcomment %}
+    var htable = $('#example12').DataTable({
+        "paging": false,
+        "ordering": false,
+        "info": false,
+        "searching": false,
+        "autoWidth": true,
+      "scrollY": "200px",
+      "scrollCollapse": true,
+      columnDefs: [
+        {
+          targets: "_all",
+          className: 'dt-center allColumnClass all'
+        }
+        ],
+
+      });
+    $('#examplehierarchy thead tr').eq(0).clone(true).appendTo('#examplehierarchy thead');
+    $('#examplehierarchy thead tr').eq(0).find('th').eq(0).css('cursor', 'default');
+    $('#examplehierarchy thead tr').eq(0).find('th').eq(0).css('background-image', 'none');
+    $('#examplehierarchy thead tr').eq(1).find('th').css('padding', '5px');
+    $('#examplehierarchy thead tr').eq(1).find('th').each(function (i) {
+      $(this).addClass('dt-center')
+      var title = $(this).text();
+      $(this).html('<input type="text" value="" data-input_value="" style="text-align:center;border-bottom:none;border:1px solid #ced4da;width:190px;"placeholder="Search ' + title + '" />');
+    });
+    var profile_activity_table = $('#examplereport').DataTable({
+      "bPaginate": false,
+      "bLengthChange": false,
+      "scrollY": "150",
+      "bFilter": true,
+      "bInfo": false,
+      "bAutoWidth": false,
+      "searching": false
+    })
+
+
+    var profile_recent_activity_table = $('#examplereport2').DataTable({
+      scroller: true,
+      scrollY: 200,
+      "bPaginate": false,
+      "bLengthChange": false,
+      "bFilter": true,
+      "bInfo": false,
+      "bAutoWidth": false,
+      "searching": false,
+      "autoWidth": true,
+      columnDefs: [
+        {
+          targets: "_all",
+          className: 'dt-center allColumnClass all'
+        },
+      ],
+    })
+
+    $('a[data-toggle="pill"]').on('shown.bs.tab', function(e){
+      $($.fn.dataTable.tables(true)).DataTable()
+      .columns.adjust()
+      .scroller.measure()
+      .responsive.recalc();
+
+    });
+
+      var profiletable = $('#examplehierarchy').DataTable( {
+      "autoWidth": false,
+      "scrollY": 200,
+      "scrollX": 500,
+      "scrollCollapse": true,
+      "sScrollXInner": "100%",
+      orderCellsTop: true,
+      responsive: true,
+      colReorder: {
+        fixedColumnsLeft: 1
+      },
+      stateSave: true,
+      "deferRender": true,
+      "paging": true,
+      "lengthMenu": [[1, 5, 50, -1], [1, 5, 50, "All"]],
+      stripeClasses: false,
+      "pageLength": 50,
+      dom: 'lfBrtip',
+      buttons: [
+          {
+            extend: 'collection',
+            text: 'Export',
+            buttons: [
+              {
+                extend: 'copy', title: '', exportOptions: {
+                  columns: ':visible:not(.noVis)'
+                }
+              },
+              {
+                extend: 'excel', title: '', exportOptions: {
+                  columns: ':visible:not(.noVis)'
+                }
+              },
+              {
+                extend: 'csv', title: '', exportOptions: {
+                  columns: ':visible:not(.noVis)'
+                }
+              },
+              {
+                extend: 'pdf', title: '', exportOptions: {
+                  columns: ':visible:not(.noVis)'
+                }
+              },
+            ],
+          },
+          {
+            extend: 'colvis',
+            className: "scroller",
+          }
+          ],
+          columnDefs: [
+        {
+          targets: "_all",
+          className: 'dt-center allColumnClass all'
+        },
+        //{ 'visible': false, 'targets': [1,3] }
+      ],
+      } );
+    $('#exampleprofile thead tr').eq(0).clone(true).appendTo('#exampleprofile thead');
+    $('#exampleprofile thead tr').eq(0).find('th').eq(0).css('cursor', 'default');
+    $('#exampleprofile thead tr').eq(0).find('th').eq(0).css('background-image', 'none');
+    $('#exampleprofile thead tr').eq(1).find('th').css('padding', '5px');
+    $('#exampleprofile thead tr').eq(1).find('th').each(function (i) {
+      $(this).addClass('dt-center')
+      var title = $(this).text();
+      $(this).html('<input type="text" value="" data-input_value="" style="text-align:center;border-bottom:none;border:1px solid #ced4da;width:190px;"placeholder="Search ' + title + '" />');
+    });
+      var profiletable = $('#exampleprofile').DataTable( {
+      "autoWidth": false,
+      "scrollY": 200,
+      "scrollX": 500,
+      "scrollCollapse": true,
+      "sScrollXInner": "100%",
+      orderCellsTop: true,
+      responsive: true,
+      colReorder: {
+        fixedColumnsLeft: 1
+      },
+      stateSave: true,
+      "deferRender": true,
+      "paging": true,
+      "lengthMenu": [[1, 5, 50, -1], [1, 5, 50, "All"]],
+      stripeClasses: false,
+      "pageLength": 50,
+      dom: 'lfBrtip',
+      buttons: [
+          {
+            extend: 'collection',
+            text: 'Export',
+            buttons: [
+              {
+                extend: 'copy', title: '', exportOptions: {
+                  columns: ':visible:not(.noVis)'
+                }
+              },
+              {
+                extend: 'excel', title: '', exportOptions: {
+                  columns: ':visible:not(.noVis)'
+                }
+              },
+              {
+                extend: 'csv', title: '', exportOptions: {
+                  columns: ':visible:not(.noVis)'
+                }
+              },
+              {
+                extend: 'pdf', title: '', exportOptions: {
+                  columns: ':visible:not(.noVis)'
+                }
+              },
+            ],
+          },
+          {
+            extend: 'colvis',
+            className: "scroller",
+          }
+          ],
+          columnDefs: [
+        {
+          targets: "_all",
+          className: 'dt-center allColumnClass all'
+        },
+        //{ 'visible': false, 'targets': [1,3] }
+      ],
+      } );
+      profiletable.columns.adjust().draw();
+
+  function buttonshift(name,appendid,level0name,level1name,level2name,level3name) {
+  btnname = ("#"+(appendid.trim())+(name.trim()))
+  $(btnname).remove()
+  var tempid = "#"+appendid;
+  var button = document.createElement("button");
+  button.classList.add('btn','btn-primary','btn-xs','ml-1','mb-1','rounded','px-2')
+  button.innerHTML = name;
+  $(tempid).append(button);
+  var lvldict={
+    level0name:level0name.trim(),
+    level1name:level1name.trim(),
+    level2name:level2name.trim(),
+  };
+  var dict = {
+    userid:'{{user.profile.user_id |safe}}',
+    firstname:'{{user.profile.first_name |safe}}',
+    lastname:'{{user.profile.last_name |safe}}',
+    emailid:'{{user.email |safe}}',
+    uname:'{{user}}',
+    leveldict: JSON.stringify(lvldict),
+    level0name:level0name,
+    level1name:level1name,
+    level2name:level2name,
+    level3name:level3name,
+    level:4,
+  };
+  dictbtn.push(dict)
+  }
+
+  $("#confirmbutton").on("click",function() {
+    $.ajax({
+          url: '/users/requestlevel4access/',
+
+          data: {
+            'operation': "accessrequest",
+            'btn_list': JSON.stringify(dictbtn),
+          },
+          type: "POST",
+          dataType: "json",
+          success: function (data) {
+            Swal.fire({text:"Data sent for approval",icon:"success"})
+            location.reload()
+            $('.standard_button_click').prop('disabled',false)
+          },
+          error: function () {
+            Swal.fire({text:"Error",icon:"error"});
+            $('.standard_button_click').prop('disabled',false)
+          }
+        })
+  })
+
+
+
+  $('#exampleroles thead tr').eq(0).clone(true).appendTo('#exampleroles thead');
+    $('#exampleroles thead tr').eq(0).find('th').eq(0).css('cursor', 'default');
+    $('#exampleroles thead tr').eq(0).find('th').eq(0).css('background-image', 'none');
+    $('#exampleroles thead tr').eq(1).find('th').css('padding', '5px');
+    $('#exampleroles thead tr').eq(1).find('th').each(function (i) {
+      $(this).addClass('dt-center')
+      var title = $(this).text();
+      $(this).html('<input type="text" value="" data-input_value="" style="text-align:center;border-bottom:none;border:1px solid #ced4da;width:190px;"placeholder="Search ' + title + '" />');
+    });
+      var rolestable = $('#exampleroles').DataTable( {
+      "autoWidth": false,
+      "scrollY": 200,
+      "scrollX": 500,
+      "scrollCollapse": true,
+      "sScrollXInner": "100%",
+      orderCellsTop: true,
+      responsive: true,
+      colReorder: {
+        fixedColumnsLeft: 1
+      },
+      stateSave: true,
+      "deferRender": true,
+      "paging": true,
+      "lengthMenu": [[1, 5, 50, -1], [1, 5, 50, "All"]],
+      stripeClasses: false,
+      "pageLength": 50,
+      dom: 'lfBrtip',
+      buttons: [
+          {
+            extend: 'collection',
+            text: 'Export',
+            buttons: [
+              {
+                extend: 'copy', title: '', exportOptions: {
+                  columns: ':visible:not(.noVis)'
+                }
+              },
+              {
+                extend: 'excel', title: '', exportOptions: {
+                  columns: ':visible:not(.noVis)'
+                }
+              },
+              {
+                extend: 'csv', title: '', exportOptions: {
+                  columns: ':visible:not(.noVis)'
+                }
+              },
+              {
+                extend: 'pdf', title: '', exportOptions: {
+                  columns: ':visible:not(.noVis)'
+                }
+              },
+            ],
+          },
+          {
+            extend: 'colvis',
+            className: "scroller",
+          }
+          ],
+          columnDefs: [
+        {
+          targets: "_all",
+          className: 'dt-center allColumnClass all'
+        },
+        //{ 'visible': false, 'targets': [1,3] }
+      ],
+      } );
+      function coverphoto(){
+        coverphotodata= new FormData()
+        coverphotodata.append($('#user_cover_photo').attr("name"), $("#user_cover_photo").prop("files")[0])
+        $.ajax({
+          url: '/users/ajax/coverphoto_upload/',
+          data:coverphotodata,
+          type: "POST",
+          dataType: "json",
+          contentType: false,
+          processData: false,
+          success: function (data) {
+            $("#upload_cover_photo").css("display","none")
+            if (data.msg == "photo_invalid"){
+              Swal.fire({text:"Incorrect file uploaded.",icon:"error"})
+              .then((result)=>{
+                if(result.isConfirmed){
+                  window.location.reload()
+                }
+              }
+              )
+            }else{
+              Swal.fire({text:"Your Cover Photo has been uploaded successfully!",icon:"success"})
+                .then((result)=>{
+                  if(result.isConfirmed){
+                    window.location.reload()
+                  }
+                }
+              )
+            }
+          },
+          error: function () {
+          Swal.fire({text:"Error in saving cover photo. Please try again.",icon:"error"});
+          }
+        });
+      }
+
+
+
+  var uploadField = document.getElementById("user_cover_photo");
+
+  uploadField.onchange = function() {
+      var fileName = uploadField.value
+      idxDot = fileName.lastIndexOf(".") + 1,
+      extFile = fileName.substr(idxDot, fileName.length).toLowerCase();
+      if (extFile=="jpg" || extFile=="jpeg" || extFile=="png"){
+        ;
+      }else{
+        Swal.fire({text:"Please upload only jpeg, jpg or png image file format.",icon:"warning"});
+        uploadField.value = "";
+      }
+      if(this.files[0].size > 500000){ //File size should not exceed 500 KB
+        Swal.fire({text:"Your image file size has exceeded 500 KB. Please upload image file upto 500 KB only.",icon:"warning"});
+        this.value = "";
+      };
+  };
+
+  function profilephoto(){
+        profilephotodata= new FormData()
+        profilephotodata.append($('#user_profile_photo').attr("name"), $("#user_profile_photo").prop("files")[0])
+        $.ajax({
+          url: '/users/ajax/profilephoto_upload/',
+          data:profilephotodata,
+          type: "POST",
+          dataType: "json",
+          contentType: false,
+          processData: false,
+          success: function (data) {
+            $("#uploadphoto_modal").css("display","none")
+            if (data.msg == "photo_invalid"){
+              Swal.fire({text:"Incorrect file uploaded.",icon:"error"})
+              .then((result)=>{
+                if(result.isConfirmed){
+                  window.location.reload()
+                }
+              }
+              )
+            }else{
+              Swal.fire({text:"Your Profile Photo has been uploaded successfully!",icon:"success"})
+                .then((result)=>{
+                  if(result.isConfirmed){
+                    window.location.reload()
+                  }
+                }
+              )
+            }
+          },
+          error: function () {
+          Swal.fire({text:"Error in saving profile photo. Please try again.",icon:"error"});
+          }
+        });
+     }
+  var uploadFieldPhoto = document.getElementById("user_profile_photo");
+
+  uploadFieldPhoto.onchange = function() {
+    var fileName = uploadFieldPhoto.value
+    idxDot = fileName.lastIndexOf(".") + 1,
+    extFile = fileName.substr(idxDot, fileName.length).toLowerCase();
+    if (extFile=="jpg" || extFile=="jpeg" || extFile=="png"){
+      ;
+    }else{
+      Swal.fire({text:"Please upload only jpeg, jpg or png image file format.",icon:"warning"});
+      uploadFieldPhoto.value = "";
+    }
+    if(this.files[0].size > 500000){ //File size should not exceed 500 KB
+      Swal.fire({text:"Your image file size has exceeded 500 KB. Please upload image file upto 500 KB only.",icon:"warning"});
+      this.value = "";
+    };
+};
+</script>
+
+
+
+{% endblock %}
+
+

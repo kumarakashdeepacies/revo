@@ -1,0 +1,1538 @@
+{% extends extend_template %}
+
+{% load crispy_forms_tags %}
+{% load static %}
+
+{% block body_block %}
+
+{%csrf_token%}
+<style>
+    .list-group-item.active {
+        background-color: var(--primary-color) !important;
+        border-color: var(--primary-color) !important;
+    }
+
+    .popover-content {
+        display: none;
+    }
+
+    /* optional shadow */
+    .popover {
+        -moz-box-shadow: 0 0 8px #5b7d83;
+        -webkit-box-shadow: 0 0 8px #5b7d83;
+        box-shadow: 0 0 8px #5b7d83;
+    }
+</style>
+<section class="content pt-4">
+    <div class="card mx-4" style="width: auto;">
+
+        <ul class="nav nav-tabs nav-fill" id="myTab" role="tablist">
+            <li class="nav-item">
+              <a class="nav-link l3items l3items active" id="alert-content-tab" data-toggle="tab" href="#alert-content" role="tab" aria-controls="alert-content" aria-selected="true">Alert Setup</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link l3items" id="approval-content-tab" data-toggle="tab" href="#approval-content" role="tab" aria-controls="approval-content" aria-selected="false">Alert Approval</a>
+            </li>
+          </ul>
+
+          <div class="tab-content" id="myTabContent">
+            <div class="tab-pane fade show active" id="alert-content" role="tabpanel" aria-labelledby="alert-content-tab">
+
+                <div class="card-body">
+                    <h3 class="">Alerts Management</h3>
+                    <hr>
+                    <div class="row">
+                        <div class="col-3">
+                            <label for="app">Application: </label>
+                            <select name="app" id="app" class="select2 form-control" onchange="onappchange()">
+                                {% for a in applications %}
+                                <option value="{{a.application_code}}">{{a.application_name}}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="col-4">
+                            <label for="alertsNumber">Number of alerts to be shown in notification panel: </label>
+                            <input type="number" name="alertsNumber" id="alertsNumber" class="form-control col-3" value="{{max_alert}}">
+                        </div>
+                    </div>
+                    <div class="mt-2">
+                        <button class="btn btn-primary" onclick="saveAppConfig()">Save</button>
+                    </div>
+                    <hr>
+
+                    <p class="lead" id="contenttitle">Application Alerts</p>
+                    <hr>
+                    <div class="row mt-4">
+                        <div class="col-2">
+                            <div class="list-group list-group-flush" id="list-tab" role="tablist">
+                                <a onclick="menuBtn(this)" class="list-group-item list-group-item-action active"
+                                    id="list-appalert-list" data-toggle="list" href="#list-appalert" role="tab"
+                                    aria-controls="appalert" aria-current="true">Application
+                                    Alerts</a>
+                                <a onclick="menuBtn(this)" class="list-group-item list-group-item-action"
+                                    id="list-dbcontent-list" data-toggle="list" href="#list-dbcontent" role="tab"
+                                    aria-controls="dbcontent">DB
+                                    transaction alert</a>
+                                <a onclick="menuBtn(this)" class="list-group-item list-group-item-action"
+                                    id="list-screenvs-list" data-toggle="list" href="#list-screenvs" role="tab"
+                                    aria-controls="screenvs">Access alerts</a>
+                                <a onclick="menuBtn(this)" class="list-group-item list-group-item-action"
+                                    id="list-unauth-list" data-toggle="list" href="#list-unauth" role="tab"
+                                    aria-controls="unauth">Failed login alerts</a>
+                            </div>
+                        </div>
+                        <div class="d-flex ms-auto" style="width: 1px;background-color:var(--primary-color);opacity: 0.5;"></div>
+                        <div class="col-5 p-4">
+                            <div class="tab-content" id="nav-tabContent">
+                                <div class="tab-pane fade show active" id="list-appalert" role="tabpanel"
+                                    aria-labelledby="list-appalert-list">
+                                    <div class="row">
+                                        <div class="col-6">
+                                            <select name="process" id="process" class="select2 form-control"
+                                                onchange="onprocesschange()">
+                                            </select>
+                                        </div>
+                                        <div class="col-6">
+                                            <select name="subprocess" id="subprocess" class="select2 form-control"
+                                                onchange="onselectsubprocess()">
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                    <div class="row mt-4" id="processcontent">
+
+                                        <div class="col">
+                                            <table class="table table-hover table-borderless" id="elementssdatatable">
+                                                <thead class="thead-dark">
+                                                    <tr>
+                                                        <th>Elements</th>
+                                                        <th></th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody id="elements"></tbody>
+                                            </table>
+                                        </div>
+                                        <div class="col" style="margin-left: -15px;">
+                                            <table class="table table-hover table-borderless" id="datatable">
+                                                <thead class="thead-dark">
+                                                    <tr>
+                                                        <th>Events</th>
+                                                        <th></th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody id="events"></tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+
+
+                                <div class="tab-pane fade" id="list-dbcontent" role="tabpanel"
+                                    aria-labelledby="list-dbcontent-list">
+                                    <div class="row">
+                                        <div class="col-6">
+                                            <label for="db">Database connection name: </label>
+                                            <select name="db" id="db" class="select2 form-control col" multiple>
+                                                {% for db in db_names %}
+                                                <option value="{{db}}">{{db}}</option>
+                                                {% endfor %}
+                                            </select>
+                                            <small>Get alerts after any database transaction.</small>
+                                            <label for="dbgroup">Configure your group alerts: </label>
+                                            <select name="dbgroup" id="dbgroup" class="select2 form-control col">
+                                                {% for group in all_groups %}
+                                                <option value="{{group.id}}">{{group.name}}</option>
+                                                {% endfor %}
+                                            </select>
+                                            <div class="form-inline m-2">
+                                                <div class="mr-4">
+                                                    <label>Notification</label><input type="checkbox" name="dbnotification"
+                                                        id="dbnotification">
+                                                </div>
+                                                <div class="mr-4">
+                                                    <label>Email</label><input type="checkbox" name="dbemail" id="dbemail">
+                                                </div>
+                                                <div class="mr-4">
+                                                    <label>Message</label><input type="checkbox" name="dbmessage"
+                                                        id="dbmessage">
+                                                </div>
+                                            </div>
+                                            <button href="#" class="btn btn-primary float-right"
+                                                onclick="saveBtn()">Save</button>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="tab-pane fade" id="list-screenvs" role="tabpanel"
+                                aria-labelledby="list-screenvs-list">
+                                    <div class="col-7">
+                                        <div class=" mb-2">
+                                            <label for="access_type">Alert on: </label>
+                                            <select name="access_type" id="access_type" class="form-control col">
+                                                <option value="Screen Visit">Screen access alert</option>
+                                                <option value="Unauthorized access alert">Unauthorized screen access alert</option>
+                                            </select>
+                                        </div>
+                                        <div id="screen_visit_div">
+                                            <select name="screen_visit" id="screen_visit" class="select2 form-control col" multiple>
+                                            </select>
+                                            <small>Get alerts when user visits a screen.</small>
+                                        </div>
+
+                                        <label for="screen_visitgroup">Configure your group alerts: </label>
+                                        <select name="screen_visitgroup" id="screen_visitgroup" class="select2 form-control col"
+                                            >
+                                            {% for group in all_groups %}
+                                            <option value="{{group.id}}">{{group.name}}</option>
+                                            {% endfor %}
+                                        </select>
+
+                                        <div class="form-inline m-2">
+                                            <div class="mr-4">
+                                                <label>Notification</label><input type="checkbox" name="screen_visitnotification"
+                                                    id="screen_visitnotification">
+                                            </div>
+                                            <div class="mr-4">
+                                                <label>Email</label><input type="checkbox" name="screen_visitemail" id="screen_visitemail">
+                                            </div>
+                                            <div class="mr-4">
+                                                <label>Message</label><input type="checkbox" name="screen_visitmessage"
+                                                    id="screen_visitmessage">
+                                            </div>
+                                        </div>
+                                        <button href="#" class="btn btn-primary float-right"
+                                            onclick="saveBtn()">Save</button>
+                                    </div>
+                                </div>
+                                <div class="tab-pane fade" id="list-unauth" role="tabpanel"
+                                    aria-labelledby="list-unauth-list">
+
+                                    <div class="col-7">
+
+                                        <label for="unauthgroup">Configure your group alerts:: </label>
+                                        <select name="unauthgroup" id="unauthgroup" class="select2 form-control col"
+                                            >
+                                            {% for group in all_groups %}
+                                            <option value="{{group.id}}">{{group.name}}</option>
+                                            {% endfor %}
+                                        </select>
+
+                                        <div class="form-inline m-2">
+                                            <div class="mr-4">
+                                                <label>Notification</label><input type="checkbox" name="unauthnotification"
+                                                    id="unauthnotification">
+                                            </div>
+                                            <div class="mr-4">
+                                                <label>Email</label><input type="checkbox" name="unauthemail" id="unauthemail">
+                                            </div>
+                                            <div class="mr-4">
+                                                <label>Message</label><input type="checkbox" name="unauthmessage"
+                                                    id="unauthmessage">
+                                            </div>
+                                        </div>
+                                        <button href="#" class="btn btn-primary float-right"
+                                            onclick="saveBtn()">Save</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-4" id="appalertsavecard">
+                            <label for="appalertgroup">Configure your group alerts: </label>
+                                        <select name="appalertgroup" id="appalertgroup" class="select2 form-control col"
+                                            >
+                                            {% for group in all_groups %}
+                                            <option value="{{group.id}}">{{group.name}}</option>
+                                            {% endfor %}
+                                        </select>
+                            <div class="form-inline m-2">
+                                <div class="mr-4">
+                                    <label>Notification</label><input type="checkbox" name="appalertnotification"
+                                        id="appalertnotification">
+                                </div>
+                                <div class="mr-4">
+                                    <label>Email</label><input type="checkbox" name="appalertemail" id="appalertemail">
+                                </div>
+                                <div class="mr-4">
+                                    <label>Message</label><input type="checkbox" name="appalertmessage"
+                                        id="appalertmessage">
+                                </div>
+                            </div>
+                            <button href="#" class="btn btn-primary float-right"
+                                onclick="saveBtn()">Save</button>
+                        </div>
+                        </div>
+                        <hr>
+                        <div id="appalertcard" class="text-center">
+                            <div class="card-body">
+                                <h5 class="card-title">Alerts assigned to you</h5>
+                                <br>
+                                <br>
+                                <table class="table table-sm table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th scope="col">Group</th>
+                                            <th scope="col">Element</th>
+                                            <th scope="col">Events</th>
+                                            <th scope="col">Notification</th>
+                                            <th scope="col">Email</th>
+                                            <th scope="col">Message</th>
+                                            <th scope="col">Actions
+                                            </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="atbodyappalert">
+
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <div id="dbalertcard" class="text-center">
+                            <div class="card-body">
+                                <h5 class="card-title">Alerts assigned to you</h5>
+                                <br>
+                                <br>
+                                <table class="table table-sm table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th scope="col">Group</th>
+                                            <th scope="col">Database Connection</th>
+                                            <th scope="col">Notification</th>
+                                            <th scope="col">Email</th>
+                                            <th scope="col">Message</th>
+                                            <th scope="col">Actions
+                                            </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="atbodydb">
+
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <div id="accessalertcard" class="text-center">
+                            <div class="card-body">
+                                <h5 class="card-title">Alerts assigned to you</h5>
+                                <br>
+                                <br>
+                                <table class="table table-sm table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th scope="col">Group</th>
+                                            <th scope="col" class="screenhideclass">Screens</th>
+                                            <th scope="col">Notification</th>
+                                            <th scope="col">Email</th>
+                                            <th scope="col">Message</th>
+                                            <th scope="col">Actions
+                                            </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="atbodyscreen">
+
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <div id="unauthalertcard" class="text-center">
+                            <div class="card-body">
+                                <h5 class="card-title">Manage alerts</h5>
+                                <br>
+                                <br>
+                                <table class="table table-sm table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th scope="col">Group</th>
+                                            <th scope="col">Unauthorized and Failed logins</th>
+                                            <th scope="col">Notification</th>
+                                            <th scope="col">Email</th>
+                                            <th scope="col">Message</th>
+                                            <th scope="col">Actions
+                                            </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="atbodyunauth">
+
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                </div>
+            </div>
+
+            <div class="tab-pane fade" id="approval-content" role="tabpanel" aria-labelledby="approval-content-tab">
+                <div class="tab-pane fade show active" id="alert-content" role="tabpanel" aria-labelledby="alert-content-tab">
+                    <div class="row">
+                        <div class="col-3 ml-3 mt-3">
+                            <label for="app-approval">Application: </label>
+                            <select name="app-approval" id="app-approval" class="select2 form-control">
+                                {% for a in applications %}
+                                <option value="{{a.application_code}}">{{a.application_name}}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="col-2 mx-3">
+                            <label for="approval-type" class="mt-3">Alert type: </label>
+                            <select name="approval-type" id="approval-type" class="select2 form-control" style="width: 240px;">
+                                <option value="Application">Application Alerts</option>
+                                <option value="DB">DB Transaction</option>
+                                <option value="Access alerts">Access Alert</option>
+                                <option value="Unauthorized alerts">Failed login Alert</option>
+                            </select>
+                        </div>
+                        <div class="col-3 ml-3" id="approval-access-type-div">
+                            <label for="approval-access-type" class="mt-3">Choose Access Type: </label>
+                            <select name="approval-access-type" id="approval-access-type" class="select2 form-control" style="width: 240px;">
+                                <option value="Screen Visit">Screen access alert</option>
+                                <option value="Unauthorized access alert">Unauthorized screen access alert</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <h3 class="">Alert Approval</h3>
+                        <hr>
+                        <table class="table table-sm table-hover text-center">
+                            <thead id="approval-table-head">
+                            </thead>
+                            <tbody id="approval-table-body">
+
+                            </tbody>
+                        </table>
+                    </div>
+
+            </div>
+            </div>
+          </div>
+    </div>
+</section>
+{{ all_groups|json_script:"all_groups" }}
+<script>
+    $('select.select2:not(.modal select.select2)').each(function(){
+        parent = $(this).parent()
+        $(this).select2({dropdownParent:parent})
+    })
+    $('.modal select.select2').each(function(){
+        $(this).select2()
+    })
+    $("#dbalertcard").hide();
+    $("#accessalertcard").hide();
+    $("#appalertcard").hide();
+    $("#unauthalertcard").hide();
+    $("#appalertsavecard").hide();
+    $("#approval-access-type-div").hide();
+    $("#approvalEmail").select2({"tags":true});
+
+    $("#access_type").on("select2:select", function() {
+        if ($(this).val() == "Screen Visit") {
+            $("#screen_visit_div").show()
+            loadconfig("Access alerts")
+        }
+        else {
+            $("#screen_visit_div").hide();
+            loadconfig("Unauthorized access alert")
+        }
+        $("#screen_visit").val("").trigger('change');
+        $("#screen_visitgroup").val("").trigger('change');
+        $("#screen_visitnotification").prop("checked", false)
+        $("#screen_visitemail").prop("checked", false)
+        $("#screen_visitmessage").prop("checked", false)
+    });
+
+    function onappchange() {
+        $("#appalertcard").hide();
+        $("#atbodyscreen").empty();
+        let app_name = $("#app").val();
+        if (app_name != "") {
+            $.ajax({
+                url: '/users/alertsSetup/',
+                data: {
+                    'app_code': app_name,
+                    'operation': 'get_process_list',
+                },
+                type: "POST",
+                dataType: "json",
+                success: function (data) {
+                    $("#process").empty();
+                    $("#process").append(`<option value="">Select process</option>`)
+                    for (i in data.data) {
+                        $("#process").append(`<option value="${data.data[i].item_code}">${data.data[i].item_name}</option>`)
+                    }
+                },
+                error: function () {
+                    Swal.fire({icon: 'error',text: 'Error! Please re-select the application and try again.'});
+                }
+            });
+        }
+        showscreenvisit()
+        load_approval_alert($("#approval-type").val())
+    }
+    function onprocesschange() {
+        $("#appalertcard").hide();
+        $("#atbodyscreen").empty();
+        let app_name = $("#app").val();
+        let process = $("#process").val();
+        if (process != "") {
+            $.ajax({
+                url: '/users/alertsSetup/',
+                data: {
+                    'app_code': app_name,
+                    'process': process,
+                    'operation': 'get_subprocess_list',
+                },
+                type: "POST",
+                dataType: "json",
+                success: function (data) {
+                    $("#subprocess").empty();
+                    $("#subprocess").append(`<option value="">Select subprocess</option>`)
+                    for (i in data.data) {
+                        $("#subprocess").append(`<option value="${data.data[i].item_code}">${data.data[i].item_name}</option>`)
+                    }
+                },
+                error: function () {
+                    Swal.fire({icon: 'error',text: 'Error! Please re-select the process and try again.'});
+                }
+            });
+        }
+    }
+    function menuBtn(obj) {
+        var currMenu = $("#contenttitle").text().split(/\n/)[0];
+        if (currMenu == 'Application Alerts') {
+            currMenu = 'Application'
+        }
+        $("#atbody").empty();
+        $("#appalertcard").hide();
+        $("#appalertsavecard").hide();
+        $("#dbalertcard").hide();
+        $("#unauthalertcard").hide();
+        $("#accessalertcard").hide();
+        $("#contenttitle").text($(obj).text());
+        if ($("#contenttitle").text().startsWith("Application")) {
+            $("#appalertcard").hide();
+        }
+        else if ($("#contenttitle").text().startsWith("DB")) {
+            $("#dbalertcard").show();
+            $("#db").select2();
+            loadconfig("DB");
+        }
+        else if ($("#contenttitle").text().startsWith("Failed login alerts")) {
+            $("#unauthalertcard").show();
+            loadconfig("Unauthorized alerts");
+        }
+        else {
+            $("#screen_visit").select2();
+            $("#access_type").select2()
+            $("#accessalertcard").show();
+            loadconfig("Access alerts");
+        }
+    }
+    let temp1;
+    function onselectsubprocess(obj) {
+        $("#alertcard").hide();
+        let app_name = $("#app").val();
+        $.ajax({
+            url: '/users/alertsSetup/',
+            data: {
+                'app_code': app_name,
+                'subprocess': $("#subprocess").val(),
+                'operation': 'get_tabs_events_list',
+            },
+            type: "POST",
+            dataType: "json",
+            success: function (data) {
+                $("#elements").empty();
+                temp1 = data.data;
+                for (i in temp1.tab_data) {
+                    $("#elements").append(`<tr element_id="${temp1.tab_data[i].element_id}" element_name="${temp1.tab_data[i].tab_header_name}" class="subprclass" onclick="showevents(this)">
+                                <td value="${temp1.tab_data[i].element_id}">${temp1.tab_data[i].tab_header_name}</td>
+                                <td value=""><a class="fa fa-arrow-right float-right"></a>
+                                </td>
+                            </tr>
+                            `)
+                }
+                $(".popover").popover();
+            },
+            error: function () {
+                Swal.fire({icon: 'error',text: 'Error! Please re-select sub-process and try again.'});
+            }
+        });
+    }
+
+    function showevents(obj) {
+        $('.subprclass').removeClass('btn-dark');
+        $(obj).addClass('btn-dark');
+        currElement = $(obj)
+        let element_id = $(obj).attr("element_id");
+        let element_name = $(obj).attr("element_name");
+        $("#events").empty();
+        for (i in temp1.events[element_id]) {
+            $("#events").append(`<tr element_id="${element_id}" element_name="${element_name}" event="${temp1.events[element_id][i]}" class="eventclass" onclick="drawcard(this)">
+                    <td>${temp1.events[element_id][i]}</td>
+                    <td value=""><a class="fa fa-gear float-right"></a>
+                    </td>
+                    </tr>
+                    `)
+        }
+        loadconfig("Application");
+    }
+
+    function showscreenvisit() {
+        $.ajax({
+            url: '/users/alertsSetup/',
+            data: {
+                'app_code': $("#app").val(),
+                'operation': 'get_screen_visit_list',
+            },
+            type: "POST",
+            dataType: "json",
+            success: function (data) {
+                $("#screen_visit").empty();
+                if (Object.keys(data).length > 0)
+                    for (i in data.data) {
+                        $("#screen_visit").append(`<option value="${i}__${data.data[i]}">${data.data[i]}</option>`)
+                    }
+            }
+        });
+    }
+
+    function saveBtn() {
+        $("#appalertcard").hide();
+        var currMenu = $("#contenttitle").text().split(/\n/)[0];
+        if (currMenu == 'Application Alerts') {
+            currMenu = 'Application'
+        }
+        else if(currMenu == 'Failed login alerts') {
+            currMenu = 'Unauthorized alerts'
+        }
+        var configDict = {
+            "noOfAlerts": $("#alertsNumber").val(),
+            "app_code": $("#app").val(),
+            "alert_type": currMenu,
+            "alert_owner": "user",
+        }
+        if (currMenu == "Application") {
+            configDict["groups"] = [$("#appalertgroup").val()];
+            alert_dict = {}
+            alert_dict[`${currElement.attr("element_id")}__${currElement.attr("event")}`] = {
+                "notification": $("#appalertnotification").is(":checked"),
+                "email": $("#appalertemail").is(":checked"),
+                "message": $("#appalertmessage").is(":checked")
+            }
+            configDict["alert_options"] = alert_dict
+            configDict["process"] = $("#process").val();
+            configDict["subprocess"] = $("#subprocess").val();
+            events = {}
+            element_id_config = {}
+            all_event = []
+            element_event = []
+            element_event.push(currElement.attr("event"))
+            element_id_config["event"] = element_event
+            element_id_config["element_name"] = currElement.attr("element_name")
+            element_id_config["process"] = $("#process").val()
+            element_id_config["subprocess"] = $("#subprocess").val()
+
+            events[currElement.attr("element_id")] = element_id_config
+            configDict["events"] = events
+            $("#appalertcard").show();
+        }
+        else if (currMenu == "DB") {
+            configDict["groups"] = [$("#dbgroup").val()];
+            configDict["alert_options"] = {
+                "notification": $("#dbnotification").is(":checked"),
+                "email": $("#dbemail").is(":checked"),
+                "message": $("#dbmessage").is(":checked")
+            }
+            configDict["events"] = $("#db").val();
+        }
+        else if (currMenu == "Access alerts") {
+            accessConfig = {}
+            configDict["groups"] = [$("#screen_visitgroup").val()];
+            let alert_options = {
+            "notification": $("#screen_visitnotification").is(":checked"),
+            "email": $("#screen_visitemail").is(":checked"),
+            "message": $("#screen_visitmessage").is(":checked")
+            }
+            if ($("#access_type").val() == "Screen Visit") {
+                let screen_visit = $("#screen_visit").val();
+                accessConfig = screen_visit
+                screen_visit_alert = {};
+
+                for (i in screen_visit) {
+                    screen_visit_alert[screen_visit[i]] = alert_options;
+                }
+                configDict["alert_options"] = screen_visit_alert;
+            }
+            else {
+                currMenu = "Unauthorized access alert"
+                configDict["alert_type"] = "Unauthorized access alert"
+                configDict["alert_options"] = alert_options;
+            }
+
+            ;
+            configDict["events"] = accessConfig
+        }
+        else {
+            accessConfig = {}
+            configDict["groups"] = [$("#unauthgroup").val()];
+            configDict["alert_options"] = {
+                "notification": $("#unauthnotification").is(":checked"),
+                "email": $("#unauthemail").is(":checked"),
+                "message": $("#unauthmessage").is(":checked")
+            }
+            accessConfig["unauth"] = $("#unauth").is(":checked");
+            configDict["events"] = accessConfig
+        }
+        $.ajax({
+            url: '/users/alertsSetup/',
+            data: {
+                'data': JSON.stringify(configDict),
+                'operation': 'save_alert_config',
+            },
+            type: "POST",
+            dataType: "json",
+            success: function (data) {
+                Swal.fire({icon: 'success',text: 'Alert successfully saved!.'});
+            }
+        });
+        loadconfig(currMenu);
+    }
+
+    var currElement;
+    function drawcard(obj) {
+        $('.eventclass').removeClass('btn-secondary');
+        $(obj).addClass('btn-secondary');
+        currElement = $(obj)
+        $("#appalertcard").show();
+        $("#atbody").empty();
+        $("#appalertsavecard").show();
+    }
+
+    function delgroup(obj) {
+        var currMenu = $("#contenttitle").text().split(/\n/)[0];
+        let data = JSON.parse($(obj).parent().parent().attr("data-value"));
+        if(currMenu == 'Failed login alerts') {
+            currMenu = 'Unauthorized alerts'
+        }
+        var configData = {
+                'app_code': $("#app").val(),
+                'operation': 'delete_alert',
+                'alert_type': currMenu,
+                'alert_owner': "user",
+                'usergroup': data.usergroup,
+            }
+        if (currMenu == 'Application Alerts') {
+            currMenu = 'Application'
+        }
+        else if(currMenu == "Access alerts") {
+            if ($("#access_type").val() != "Screen Visit") {
+                currMenu = "Unauthorized access alert"
+            }
+            else {
+                configData["screen_element"] = $(obj).attr("key");
+            }
+        }
+
+        $.ajax({
+            url: '/users/alertsSetup/',
+            data: configData,
+            type: "POST",
+            dataType: "json",
+            success: function (data) {
+                Swal.fire({icon: 'success',text: 'Selected Alert has been successfully deleted!'});
+            },
+            error: function () {
+                  loadconfig(currMenu);
+              }
+        });
+        $(obj).parent().parent().remove();
+    }
+
+    let all_groups = JSON.parse(document.getElementById('all_groups').textContent);
+    function loadconfig(alert_type) {
+        groups = {};
+        for (x in all_groups) {
+            groups[all_groups[x]["id"]] = all_groups[x]["name"]
+        }
+        if (alert_type == "DB") {
+            $("#atbodydb").empty();
+            $.ajax({
+                url: '/users/alertsSetup/',
+                data: {
+                    'app_code': $("#app").val(),
+                    'alert_type': alert_type,
+                    'alert_owner': "user",
+                    'approval_status': "approved",
+                    'operation': 'load_alert_config',
+                },
+                type: "POST",
+                dataType: "json",
+                success: function (data) {
+                    if (Object.keys(data.data).length > 0) {
+                        for (i in data.data) {
+                            let alerts = JSON.parse(data.data[i]["alert_options"])
+                            if (alerts.notification) {
+                                notification_check = `<a class="fa fa-check-circle mx-2"></a>`
+                            }
+                            else {
+                                notification_check = `<i class="fa fa-check-circle" style="color:lightgrey"></i>`
+                            }
+
+                            if (alerts.email) {
+                                email_check = `<a class="fa fa-check-circle mx-2"></a>`
+                            }
+                            else {
+                                email_check = `<i class="fa fa-check-circle" style="color:lightgrey"></i>`
+                            }
+
+                            if (alerts.message) {
+                                message_check = `<a class="fa fa-check-circle mx-2"></a>`
+                            }
+                            else {
+                                message_check = `<i class="fa fa-check-circle" style="color:lightgrey"></i>`
+                            }
+                            $("#atbodydb").append(`<tr data-value='${JSON.stringify(data.data[i])}'>
+                                    <th scope="row">${groups[data.data[i]["usergroup"]]}</th>
+                                    <td>${JSON.parse(data.data[i]["events"]).join(", ")}</td>
+                                    <td>${notification_check}</td>
+                                    <td>${email_check}</td>
+                                    <td>${message_check}</td>
+                                    <td><a onclick="delgroup(this)" class="fa fa-trash mx-2"></a><a onclick="editgroup(this)" class="fa fa-edit"></a></td>
+                                </tr>`)
+                        }
+                    }
+                }
+            });
+        }
+        else if (alert_type == "Application") {
+            $("#atbodyappalert").empty();
+            $.ajax({
+                url: '/users/alertsSetup/',
+                data: {
+                    'app_code': $("#app").val(),
+                    'alert_type': alert_type,
+                    'alert_owner': "user",
+                    'approval_status': "approved",
+                    'operation': 'load_alert_config',
+                },
+                type: "POST",
+                dataType: "json",
+                success: function (data) {
+                    if (Object.keys(data.data).length > 0) {
+                        for (i in data.data) {
+                            let alerts = JSON.parse(data.data[i]["alert_options"])
+                            let events = JSON.parse(data.data[i]["events"]);
+                            if (events[currElement.attr("element_id")] != undefined) {
+                                for (e in events[currElement.attr("element_id")].event) {
+
+                                    let notifkey = currElement.attr("element_id") + "__" + events[currElement.attr("element_id")].event[e]
+
+                                    if (alerts[notifkey].notification) {
+                                        notification_check = `<a class="fa fa-check-circle mx-2"></a>`
+                                    }
+                                    else {
+                                        notification_check = `<i class="fa fa-check-circle" style="color:lightgrey"></i>`
+                                    }
+
+                                    if (alerts[notifkey].email) {
+                                        email_check = `<a class="fa fa-check-circle mx-2"></a>`
+                                    }
+                                    else {
+                                        email_check = `<i class="fa fa-check-circle" style="color:lightgrey"></i>`
+                                    }
+
+                                    if (alerts[notifkey].message) {
+                                        message_check = `<a class="fa fa-check-circle mx-2"></a>`
+                                    }
+                                    else {
+                                        message_check = `<i class="fa fa-check-circle" style="color:lightgrey"></i>`
+                                    }
+                                    $("#atbodyappalert").append(`<tr data-value='${JSON.stringify(data.data[i])}'>
+                                        <th scope="row">${groups[data.data[i]["usergroup"]]}</th>
+                                        <td>${events[currElement.attr("element_id")].element_name}</td>
+                                        <td>${events[currElement.attr("element_id")].event[e]}</td>
+                                        <td>${notification_check}</td>
+                                        <td>${email_check}</td>
+                                        <td>${message_check}</td>
+                                        <td><a onclick="delgroupevent(this)"
+                                            e_id="${currElement.attr("element_id")}"
+                                            usergroup="${data.data[i]["usergroup"]}"
+                                            event_name="${events[currElement.attr("element_id")].event[e]}"
+                                            class="fa fa-trash mx-2">
+                                            </a>
+                                            <a e_id="${currElement.attr("element_id")}"
+                                            usergroup="${data.data[i]["usergroup"]}"
+                                            alert_options='${JSON.stringify(alerts[notifkey])}'
+                                            event_name="${events[currElement.attr("element_id")].event[e]}"
+                                            onclick="editgroup(this)" class="fa fa-edit"></a></td>
+                                        </tr>`)
+                                    }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+        else if (alert_type == "Access alerts") {
+            $("#atbodyscreen").empty();
+            $(".screenhideclass").show();
+            $.ajax({
+                url: '/users/alertsSetup/',
+                data: {
+                    'app_code': $("#app").val(),
+                    'alert_type': alert_type,
+                    'alert_owner': "user",
+                    'approval_status': "approved",
+                    'operation': 'load_alert_config',
+                },
+                type: "POST",
+                dataType: "json",
+                success: function (data) {
+                    if (Object.keys(data.data).length > 0) {
+                        for (i in data.data) {
+                        let alerts = JSON.parse(data.data[i]["alert_options"])
+                        let events = JSON.parse(data.data[i]["events"]);
+                        for (x in events) {
+                            screen_name = events[x].split("__")[1]
+                            alerts_x = alerts[events[x]];
+                            if (alerts_x.notification) {
+                                notification_check = `<a class="fa fa-check-circle mx-2"></a>`
+                            }
+                            else {
+                                notification_check = `<i class="fa fa-check-circle" style="color:lightgrey"></i>`
+                            }
+
+                            if (alerts_x.email) {
+                                email_check = `<a class="fa fa-check-circle mx-2"></a>`
+                            }
+                            else {
+                                email_check = `<i class="fa fa-check-circle" style="color:lightgrey"></i>`
+                            }
+
+                            if (alerts_x.message) {
+                                message_check = `<a class="fa fa-check-circle mx-2"></a>`
+                            }
+                            else {
+                                message_check = `<i class="fa fa-check-circle" style="color:lightgrey"></i>`
+                            }
+                            $("#atbodyscreen").append(`<tr data-value='${JSON.stringify(data.data[i])}'>
+                                    <th scope="row">${groups[data.data[i]["usergroup"]]}</th>
+                                    <td>${screen_name}</td>
+                                    <td>${notification_check}</td>
+                                    <td>${email_check}</td>
+                                    <td>${message_check}</td>
+                                    <td><a key="${events[x]}" onclick="delgroup(this)" class="fa fa-trash mx-2"></a><a key="${events[x]}" onclick="editgroup(this)" class="fa fa-edit"></a></td>
+                                </tr>`)
+                            }
+                        }
+                        }
+                }
+            });
+        }
+        else if (alert_type == "Unauthorized access alert") {
+            $("#atbodyscreen").empty();
+            $(".screenhideclass").hide();
+            $.ajax({
+                url: '/users/alertsSetup/',
+                data: {
+                    'app_code': $("#app").val(),
+                    'alert_type': alert_type,
+                    'alert_owner': "user",
+                    'approval_status': "approved",
+                    'operation': 'load_alert_config',
+                },
+                type: "POST",
+                dataType: "json",
+                success: function (data) {
+                    if (Object.keys(data.data).length > 0) {
+                        for (i in data.data) {
+                            let alerts = JSON.parse(data.data[i]["alert_options"])
+                                if (alerts.notification) {
+                                    notification_check = `<a class="fa fa-check-circle mx-2"></a>`
+                                }
+                                else {
+                                    notification_check = `<i class="fa fa-check-circle" style="color:lightgrey"></i>`
+                                }
+
+                                if (alerts.email) {
+                                    email_check = `<a class="fa fa-check-circle mx-2"></a>`
+                                }
+                                else {
+                                    email_check = `<i class="fa fa-check-circle" style="color:lightgrey"></i>`
+                                }
+
+                                if (alerts.message) {
+                                    message_check = `<a class="fa fa-check-circle mx-2"></a>`
+                                }
+                                else {
+                                    message_check = `<i class="fa fa-check-circle" style="color:lightgrey"></i>`
+                                }
+                                $("#atbodyscreen").append(`<tr data-value='${JSON.stringify(data.data[i])}'>
+                                        <th scope="row">${groups[data.data[i]["usergroup"]]}</th>
+                                        <td>${notification_check}</td>
+                                        <td>${email_check}</td>
+                                        <td>${message_check}</td>
+                                        <td><a onclick="delgroup(this)" class="fa fa-trash mx-2"></a><a onclick="editgroup(this)" class="fa fa-edit"></a></td>
+                                    </tr>`)
+                                }
+                        }
+                }
+            });
+        }
+        else {
+            $("#atbodyunauth").empty();
+            $.ajax({
+                url: '/users/alertsSetup/',
+                data: {
+                    'app_code': $("#app").val(),
+                    'alert_type': alert_type,
+                    'alert_owner': "user",
+                    'approval_status': "approved",
+                    'operation': 'load_alert_config',
+                },
+                type: "POST",
+                dataType: "json",
+                success: function (data) {
+                    if (Object.keys(data.data).length > 0) {
+                        for (i in data.data) {
+                            let alerts = JSON.parse(data.data[i]["alert_options"])
+                            let events = JSON.parse(data.data[i]["events"]);
+                            if (events["unauth"]) {
+                                unauth_check = `<a class="fa fa-check-circle mx-2"></a>`
+                            }
+                            else {
+                                unauth_check = `<i class="fa fa-check-circle" style="color:lightgrey"></i>`
+                            }
+                            if (alerts.notification) {
+                                notification_check = `<a class="fa fa-check-circle mx-2"></a>`
+                            }
+                            else {
+                                notification_check = `<i class="fa fa-check-circle" style="color:lightgrey"></i>`
+                            }
+
+                            if (alerts.email) {
+                                email_check = `<a class="fa fa-check-circle mx-2"></a>`
+                            }
+                            else {
+                                email_check = `<i class="fa fa-check-circle" style="color:lightgrey"></i>`
+                            }
+
+                            if (alerts.message) {
+                                message_check = `<a class="fa fa-check-circle mx-2"></a>`
+                            }
+                            else {
+                                message_check = `<i class="fa fa-check-circle" style="color:lightgrey"></i>`
+                            }
+                            $("#atbodyunauth").append(`<tr data-value='${JSON.stringify(data.data[i])}'>
+                                    <th scope="row">${groups[data.data[i]["usergroup"]]}</th>
+                                    <td>${unauth_check}</td>\
+                                    <td>${notification_check}</td>
+                                    <td>${email_check}</td>
+                                    <td>${message_check}</td>
+                                    <td><a onclick="delgroup(this)" class="fa fa-trash mx-2"></a><a onclick="editgroup(this)" class="fa fa-edit"></a></td>
+                                </tr>`)
+                        }
+                    }
+                }
+            });
+        }
+    }
+    $("#approval-type").on("change", function () {
+        load_approval_alert($(this).val())
+        if($(this).val() == "Access alerts") {
+            $("#approval-access-type-div").show();
+        }
+        else {
+            $("#approval-access-type-div").hide();
+        }
+    });
+
+    $("#app-approval").on("change", function () {
+        if($("#approval-access-type").val() == "Unauthorized access alert") {
+            load_approval_alert("Unauthorized access alert")
+        }
+        else {
+            load_approval_alert("Access alerts")
+        }
+    });
+
+    $("#approval-access-type").on("change", function () {
+        if($("#approval-access-type").val() == "Unauthorized access alert") {
+            load_approval_alert("Unauthorized access alert")
+        }
+        else {
+            load_approval_alert("Access alerts")
+        }
+    });
+
+    function reject(obj) {
+        let data = $(obj).parent().parent().attr("data-value")
+        let configData = {
+                    'app_code': $("#app").val(),
+                    'alert_type': $("#approval-type").val(),
+                    'config_data': data,
+                    'operation': 'reject_alert',
+                }
+        if ($("#approval-type").val() == "Application") {
+            configData["element_id"] = $(obj).parent().attr("key");
+        }
+        else if ($("#approval-type").val() == "Access alerts") {
+            if($("#approval-access-type").val() == "Unauthorized access alert") {
+                configData["alert_type"] = "Unauthorized access alert"
+            }
+            else {
+                configData["alert_type"] = "Access alerts"
+                configData["screen_element"] = $(obj).parent().attr("key");
+            }
+        }
+        $.ajax({
+                url: '/users/alertsSetup/',
+                data: configData,
+                type: "POST",
+                dataType: "json",
+                success: function (data) {
+                    Swal.fire({icon: 'success',text: 'Selected Alert has been deleted successfully!'});
+                }
+            });
+        load_approval_alert($("#approval-type").val())
+    }
+
+    function load_approval_alert(alert_type) {
+        groups = {};
+        for (x in all_groups) {
+            groups[all_groups[x]["id"]] = all_groups[x]["name"]
+        }
+        let approval_status = "pending";
+        reject_btn = `<a onclick="reject(this)" class="fa btn btn-primary fa-times" style="font-size: 12px;color: white;"></a>`
+        if (approval_status != "pending") {
+            approve_btn = ""
+            if (approval_status == "rejected") {
+                reject_btn = ""
+            }
+        }
+        else {
+            approve_btn = `<a onclick="approve(this)" class="fa btn btn-primary fa-check mx-2" style="font-size: 12px;color: white;margin-right: -5px !important;"></a>`
+        }
+        $("#approval-table-head").empty();
+        $("#approval-table-body").empty();
+        if (alert_type == "DB") {
+            $.ajax({
+                url: '/users/alertsSetup/',
+                data: {
+                    'app_code': $("#app-approval").val(),
+                    'alert_type': alert_type,
+                    'alert_owner': "user",
+                    'approval_status': approval_status,
+                    'operation': 'load_alert_config',
+                },
+                type: "POST",
+                dataType: "json",
+                success: function (data) {
+                    if (Object.keys(data.data).length > 0) {
+                        $("#approval-table-head").append(`<tr>
+                            <th scope="col">Database Connection</th>
+                            <th scope="col">Notification</th>
+                            <th scope="col">Email</th>
+                            <th scope="col">Message</th>
+                            <th scope="col">Actions
+                            </th>
+                            </tr>`)
+                        for (i in data.data) {
+                            let alerts = JSON.parse(data.data[i]["alert_options"])
+                            if (alerts.notification) {
+                                notification_check = `<a class="fa fa-check-circle mx-2"></a>`
+                            }
+                            else {
+                                notification_check = `<i class="fa fa-check-circle" style="color:lightgrey"></i>`
+                            }
+
+                            if (alerts.email) {
+                                email_check = `<a class="fa fa-check-circle mx-2"></a>`
+                            }
+                            else {
+                                email_check = `<i class="fa fa-check-circle" style="color:lightgrey"></i>`
+                            }
+
+                            if (alerts.message) {
+                                message_check = `<a class="fa fa-check-circle mx-2"></a>`
+                            }
+                            else {
+                                message_check = `<i class="fa fa-check-circle" style="color:lightgrey"></i>`
+                            }
+                            $("#approval-table-body").append(`<tr data-value='${JSON.stringify(data.data[i])}'>
+                                    <td>${JSON.parse(data.data[i]["events"]).join(", ")}</td>
+                                    <td>${notification_check}</td>
+                                    <td>${email_check}</td>
+                                    <td>${message_check}</td>
+                                    <td>${reject_btn}</a></td>
+                                </tr>`)
+                        }
+                    }
+                }
+            });
+        }
+        else if (alert_type == "Application") {
+            $.ajax({
+                url: '/users/alertsSetup/',
+                data: {
+                    'app_code': $("#app-approval").val(),
+                    'alert_type': alert_type,
+                    'alert_owner': "user",
+                    'approval_status': approval_status,
+                    'operation': 'load_alert_config',
+                },
+                type: "POST",
+                dataType: "json",
+                success: function (data) {
+                    if (Object.keys(data.data).length > 0) {
+                            $("#approval-table-head").append(`<tr>
+                            <th scope="col">Element</th>
+                            <th scope="col">Events</th>
+                            <th scope="col">Notification</th>
+                            <th scope="col">Email</th>
+                            <th scope="col">Message</th>
+                            <th scope="col">Actions
+                            </th>
+                            </tr>`)
+                        for (i in data.data) {
+                            let alerts = JSON.parse(data.data[i]["alert_options"])
+                            let events = JSON.parse(data.data[i]["events"]);
+                            for (currElement in events) {
+                                for (e in events[currElement].event) {
+
+                                    let notifkey = currElement + "__" + events[currElement].event[e]
+
+                                    if (alerts[notifkey].notification) {
+                                        notification_check = `<a class="fa fa-check-circle mx-2"></a>`
+                                    }
+                                    else {
+                                        notification_check = `<i class="fa fa-check-circle" style="color:lightgrey"></i>`
+                                    }
+
+                                    if (alerts[notifkey].email) {
+                                        email_check = `<a class="fa fa-check-circle mx-2"></a>`
+                                    }
+                                    else {
+                                        email_check = `<i class="fa fa-check-circle" style="color:lightgrey"></i>`
+                                    }
+
+                                    if (alerts[notifkey].message) {
+                                        message_check = `<a class="fa fa-check-circle mx-2"></a>`
+                                    }
+                                    else {
+                                        message_check = `<i class="fa fa-check-circle" style="color:lightgrey"></i>`
+                                    }
+                                    $("#approval-table-body").append(`<tr data-value='${JSON.stringify(data.data[i])}'>
+                                        <td>${events[currElement].element_name}</td>
+                                        <td>${events[currElement].event[e]}</td>
+                                        <td>${notification_check}</td>
+                                        <td>${email_check}</td>
+                                        <td>${message_check}</td>
+                                        <td key="${notifkey}">${reject_btn}</a></td>
+                                        </tr>`)
+                                    }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+        else if (alert_type == "Access alerts") {
+            $("#atbodyscreen").empty();
+            $.ajax({
+                url: '/users/alertsSetup/',
+                data: {
+                    'app_code': $("#app-approval").val(),
+                    'alert_type': alert_type,
+                    'alert_owner': "user",
+                    'approval_status': approval_status,
+                    'operation': 'load_alert_config',
+                },
+                type: "POST",
+                dataType: "json",
+                success: function (data) {
+                    if (Object.keys(data.data).length > 0) {
+                        $("#approval-table-head").append(`<tr>
+                            <th scope="col">Screens</th>
+                            <th scope="col">Notification</th>
+                            <th scope="col">Email</th>
+                            <th scope="col">Message</th>
+                            <th scope="col">Actions
+                            </th>
+                        </tr>`)
+                        for (i in data.data) {
+                        let alerts = JSON.parse(data.data[i]["alert_options"])
+                        let events = JSON.parse(data.data[i]["events"]);
+                        for (x in events) {
+                            screen_name = events[x].split("__")[1]
+                            alerts_x = alerts[events[x]];
+                            if (alerts_x.notification) {
+                                notification_check = `<a class="fa fa-check-circle mx-2"></a>`
+                            }
+                            else {
+                                notification_check = `<i class="fa fa-check-circle" style="color:lightgrey"></i>`
+                            }
+
+                            if (alerts_x.email) {
+                                email_check = `<a class="fa fa-check-circle mx-2"></a>`
+                            }
+                            else {
+                                email_check = `<i class="fa fa-check-circle" style="color:lightgrey"></i>`
+                            }
+
+                            if (alerts_x.message) {
+                                message_check = `<a class="fa fa-check-circle mx-2"></a>`
+                            }
+                            else {
+                                message_check = `<i class="fa fa-check-circle" style="color:lightgrey"></i>`
+                            }
+                            $("#approval-table-body").append(`<tr data-value='${JSON.stringify(data.data[i])}'>
+                                    <td>${screen_name}</td>
+                                    <td>${notification_check}</td>
+                                    <td>${email_check}</td>
+                                    <td>${message_check}</td>
+                                    <td key="${events[x]}">${reject_btn}</td>
+                                </tr>`)
+                        }
+                    }
+                    }
+                }
+            });
+        }
+        else if (alert_type == "Unauthorized access alert") {
+            $("#atbodyscreen").empty();
+            $.ajax({
+                url: '/users/alertsSetup/',
+                data: {
+                    'app_code': $("#app-approval").val(),
+                    'alert_type': alert_type,
+                    'alert_owner': "user",
+                    'approval_status': approval_status,
+                    'operation': 'load_alert_config',
+                },
+                type: "POST",
+                dataType: "json",
+                success: function (data) {
+                    if (Object.keys(data.data).length > 0) {
+                        $("#approval-table-head").append(`<tr>
+                            <th scope="col">Notification</th>
+                            <th scope="col">Email</th>
+                            <th scope="col">Message</th>
+                            <th scope="col">Actions
+                            </th>
+                        </tr>`)
+                        for (i in data.data) {
+                            let alerts = JSON.parse(data.data[i]["alert_options"])
+                                if (alerts.notification) {
+                                    notification_check = `<a class="fa fa-check-circle mx-2"></a>`
+                                }
+                                else {
+                                    notification_check = `<i class="fa fa-check-circle" style="color:lightgrey"></i>`
+                                }
+
+                                if (alerts.email) {
+                                    email_check = `<a class="fa fa-check-circle mx-2"></a>`
+                                }
+                                else {
+                                    email_check = `<i class="fa fa-check-circle" style="color:lightgrey"></i>`
+                                }
+
+                                if (alerts.message) {
+                                    message_check = `<a class="fa fa-check-circle mx-2"></a>`
+                                }
+                                else {
+                                    message_check = `<i class="fa fa-check-circle" style="color:lightgrey"></i>`
+                                }
+                            $("#approval-table-body").append(`<tr data-value='${JSON.stringify(data.data[i])}'>
+                                    <td>${notification_check}</td>
+                                    <td>${email_check}</td>
+                                    <td>${message_check}</td>
+                                    <td>${reject_btn}</td>
+                                </tr>`)
+                        }
+                    }
+                }
+            });
+        }
+        else {
+            $("#atbodyunauth").empty();
+            $.ajax({
+                url: '/users/alertsSetup/',
+                data: {
+                    'app_code': $("#app-approval").val(),
+                    'alert_type': alert_type,
+                    'alert_owner': "user",
+                    'approval_status': approval_status,
+                    'operation': 'load_alert_config',
+                },
+                type: "POST",
+                dataType: "json",
+                success: function (data) {
+                    if (Object.keys(data.data).length > 0) {
+                        $("#approval-table-head").append(`<tr>
+                            <th scope="col">Failed logins</th>
+                            <th scope="col">Notification</th>
+                            <th scope="col">Email</th>
+                            <th scope="col">Message</th>
+                            <th scope="col">Actions
+                            </th>
+                        </tr>`)
+                        for (i in data.data) {
+                            let alerts = JSON.parse(data.data[i]["alert_options"])
+                            let events = JSON.parse(data.data[i]["events"]);
+                            if (events["unauth"]) {
+                                unauth_check = `<a class="fa fa-check-circle mx-2"></a>`
+                            }
+                            else {
+                                unauth_check = `<i class="fa fa-check-circle" style="color:lightgrey"></i>`
+                            }
+                            if (alerts.notification) {
+                                notification_check = `<a class="fa fa-check-circle mx-2"></a>`
+                            }
+                            else {
+                                notification_check = `<i class="fa fa-check-circle" style="color:lightgrey"></i>`
+                            }
+
+                            if (alerts.email) {
+                                email_check = `<a class="fa fa-check-circle mx-2"></a>`
+                            }
+                            else {
+                                email_check = `<i class="fa fa-check-circle" style="color:lightgrey"></i>`
+                            }
+
+                            if (alerts.message) {
+                                message_check = `<a class="fa fa-check-circle mx-2"></a>`
+                            }
+                            else {
+                                message_check = `<i class="fa fa-check-circle" style="color:lightgrey"></i>`
+                            }
+                            $("#approval-table-body").append(`<tr data-value='${JSON.stringify(data.data[i])}'>
+                                    <td>${unauth_check}</td>
+                                    <td>${notification_check}</td>
+                                    <td>${email_check}</td>
+                                    <td>${message_check}</td>
+                                    <td>${reject_btn}</td>
+                                </tr>`)
+                        }
+                    }
+                }
+            });
+        }
+    }
+
+    function delgroupevent(obj) {
+        let data = JSON.parse($(obj).parent().parent().attr("data-value"));
+        let alerts = JSON.parse(data.alert_options)
+        let events = JSON.parse(data.events)
+        configDict = {
+            "element_id" : $(obj).attr("e_id"),
+            "app_code": $("#app").val(),
+            "usergroup": $(obj).attr("usergroup"),
+            'alert_owner': "user",
+            "event": $(obj).attr("event_name")
+        }
+        $.ajax({
+            url: '/users/alertsSetup/',
+            data: {
+                'data': JSON.stringify(configDict),
+                'operation': 'delete_alert_event',
+                'alert_owner': 'user',
+            },
+            type: "POST",
+            dataType: "json",
+            success: function (data) {
+                Swal.fire({icon: 'success',text: 'Selected Alert event deleted successfully!'});
+                loadconfig("Application")
+            }
+        });
+    }
+
+    function editgroup(obj) {
+        var currMenu = $("#contenttitle").text().split(/\n/)[0];
+        if (currMenu == 'Application Alerts') {
+            currMenu = 'Application'
+        }
+        else if(currMenu == 'Failed login alerts') {
+            currMenu = 'Unauthorized alerts'
+        }
+
+        let data = JSON.parse($(obj).parent().parent().attr("data-value"));
+        let alerts = JSON.parse(data.alert_options)
+        let events = JSON.parse(data.events)
+        if (currMenu == "DB") {
+            $("#db").val("").trigger('change');
+            $("#dbgroup").val("").trigger('change');
+
+            $("#dbnotification").prop("checked", alerts.notification)
+            $("#dbemail").prop("checked", alerts.email)
+            $("#dbmessage").prop("checked", alerts.message)
+
+            $("#db").val(events).trigger('change');
+            $("#dbgroup").val(JSON.parse(data.usergroup)).trigger('change');
+        }
+        else if (currMenu == "Application") {
+            $("#appalertgroup").val("").trigger('change');
+
+            $.each($("#events").children(), function() {
+                if($(this).attr("event") == $(obj).attr("event_name")) {
+                    $(this).find("a").click()
+                    $("#appalertgroup").val([$(obj).attr("usergroup")]).trigger("change")
+                    let alert_options = JSON.parse($(obj).attr("alert_options"))
+                    $("#appalertnotification").prop("checked", alert_options.notification)
+                    $("#appalertemail").prop("checked", alert_options.email)
+                    $("#appalertmessage").prop("checked", alert_options.message)
+                }
+            })
+        }
+        else if (currMenu == "Access alerts")  {
+            $("#screen_visit").val("").trigger('change');
+            $("#screen_visitgroup").val("").trigger('change');
+            if ($("#access_type").val() == "Screen Visit") {
+                let screen_alerts = $(obj).attr("key");
+                $("#screen_visitnotification").prop("checked", alerts[screen_alerts].notification)
+                $("#screen_visitemail").prop("checked", alerts[screen_alerts].email)
+                $("#screen_visitmessage").prop("checked", alerts[screen_alerts].message)
+                $("#screen_visit").val(screen_alerts).trigger('change');
+            }
+            else {
+                $("#screen_visitnotification").prop("checked", alerts.notification)
+                $("#screen_visitemail").prop("checked", alerts.email)
+                $("#screen_visitmessage").prop("checked", alerts.message)
+            }
+            $("#screen_visitgroup").val(JSON.parse(data.usergroup)).trigger('change');
+        }
+        else {
+            $("#unauthgroup").val("").trigger('change');
+
+            $("#unauth").prop("checked", events["unauth"])
+            $("#unauthnotification").prop("checked", alerts.notification)
+            $("#unauthemail").prop("checked", alerts.email)
+            $("#unauthmessage").prop("checked", alerts.message)
+            $("#unauthgroup").val(JSON.parse(data.usergroup)).trigger('change');
+        }
+    }
+    function saveAppConfig() {
+        var configDict = {
+            "noOfAlerts": $("#alertsNumber").val(),
+        }
+        $.ajax({
+            url: '/users/alertsSetup/',
+            data: {
+                'app_code' : $("#app").val(),
+                'data': JSON.stringify(configDict),
+                'operation': 'save_app_config',
+            },
+            type: "POST",
+            dataType: "json",
+            success: function (data) {
+                Swal.fire({icon: 'success',text: 'Application with alert settings has been successfully saved!'});
+            }
+        });
+    }
+
+    $(document).ready(function () {
+        onappchange();
+    });
+
+</script>
+{% endblock %}

@@ -1,0 +1,30 @@
+executionFrameworkSpec:
+  name: 'spark'
+  segmentGenerationJobRunnerClassName: 'org.apache.pinot.plugin.ingestion.batch.spark.SparkSegmentGenerationJobRunner'
+  segmentTarPushJobRunnerClassName: 'org.apache.pinot.plugin.ingestion.batch.spark.SparkSegmentTarPushJobRunner'
+  segmentUriPushJobRunnerClassName: 'org.apache.pinot.plugin.ingestion.batch.spark.SparkSegmentUriPushJobRunner'
+  segmentMetadataPushJobRunnerClassName: 'org.apache.pinot.plugin.ingestion.batch.standalone.SegmentMetadataPushJobRunner'
+jobType: SegmentCreationAndMetadataPush
+inputDirURI: 'absf://datastoretesting/'
+outputDirURI: 'absf://datastoretesting/'
+overwriteOutput: true
+pinotFSSpecs:
+    - scheme: adl2
+      className: org.apache.pinot.plugin.filesystem.ADLSGen2PinotFS
+      configs:
+        accountName: 'revolutiouatdatastore'
+        accessKey: 'ztIN0J1z+QfNRP+YItGimdULuwqktL7rxS9lcORwD5KyhSQJlXBQ6Ffc6NQtGkfw0E84eM7qYnJHxgFZjngusw=='
+        fileSystemName: 'datastoretesting'
+recordReaderSpec:
+  dataFormat: parquet
+  className: org.apache.pinot.plugin.inputformat.parquet.ParquetRecordReader
+tableSpec:
+  tableName: testdata
+  schemaURI: 'http://localhost:9000/tables/testdata/schema'
+  tableConfigURI: 'http://localhost:9000/tables/testdata'
+pinotClusterSpecs:
+  - controllerURI: 'http://localhost:9000'
+pushJobSpec:
+  pushParallelism: 2
+  pushAttempts: 2
+  pushRetryIntervalMillis: 1000

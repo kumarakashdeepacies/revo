@@ -1,0 +1,14 @@
+[
+  {
+    "parameter": "Application mode",
+    "value": "App + Dev"
+  },
+  {
+    "parameter": "Developer mode",
+    "value": "Edit + Build"
+  },
+  {
+    "parameter": "Allotted Applications",
+    "value": "[]"
+  }
+]

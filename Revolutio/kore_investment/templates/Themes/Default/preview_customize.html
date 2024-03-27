@@ -1,0 +1,866 @@
+<!DOCTYPE html>
+{% load rules %}
+{% load static %}
+
+<html>
+
+    <head>
+        <!--<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">-->
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content=" ">
+        <link rel="icon" href="<<baseFavicon>>">
+
+
+        <title><<webpage-title>></title>
+        <!-- Tell the browser to be responsive to screen width -->
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <!-- DataTables -->
+        <link rel="stylesheet" href="{% static 'vendor/Base_theme/datatables-bs4/css/dataTables.bootstrap4.css' %}">
+        <!-- Theme style -->
+        <link rel="stylesheet" href="{%static 'css/Acies_theme/Stylesheet1.min.css'%}">
+        <<root_vars>>
+        <link rel="stylesheet" href="{%static 'css/Default.css' %}">
+
+        <!-- jQuery -->
+        <script src="{%static 'vendor/Base_theme/jquery/jquery.min.js'%}"></script>
+
+        <script src="{%static 'vendor/Base_theme/bootstrap/js/bootstrap.bundle.min.js'%}"></script>
+        <!--Jquery UI-->
+        <link rel="stylesheet" href="{% static 'vendor/Base_theme/jquery-ui/jquery-ui.min.css' %}">
+        <script src="{%static 'vendor/Base_theme/jquery-ui/jquery-ui.js'%}"></script>
+        <!-- Select2 -->
+        <link rel="stylesheet" href="{% static 'vendor/Base_theme/select2/css/select2.min.css' %}">
+        <link rel="stylesheet" href="{% static 'vendor/Base_theme/select2-bootstrap4-theme/select2-bootstrap4.min.css' %}">
+        <!-- Select2 -->
+        <script src="{% static 'vendor/Base_theme/select2/js/select2.full.min.js' %}"></script>
+
+        <link rel="stylesheet" href="{% static 'vendor/Base_theme/font-awesome/css/all.min.css' %}">
+
+        <!-- Sweet Alert2 -->
+        <script src="{% static 'vendor/sweet_alert/sweetalert2.all.min.js' %}"></script>
+
+        <style>
+          .icon-container {
+            display: none;
+          }
+          @media screen and (min-width: 401px) {
+            .icon-container {
+              display: none !important;
+            }
+          }
+          @media screen and (max-width: 400px) {
+            .icon-container {
+              display: flex;
+              justify-content:center;
+              align-items:center
+            }
+            .customtoggle {
+              display: none !important;
+            }
+          }
+
+          .main-header a.nav-link{
+            color: var(--navbar-font) !important;
+          }
+          [class*=sidebar-dark-] .sidebar a {
+            color: var(--sidebar-font)
+          }
+
+    .swal2-actions {
+      flex-wrap: nowrap;
+    }
+
+    .swal2-title{
+      font-size: 1em !important;
+      font-weight: unset !important;
+    }
+    .swal2-styled.swal2-confirm, .swal2-styled.swal2-deny, .swal2-styled.swal2-cancel{
+  background-color: var(--primary-color) !important;
+  padding: 0.3em 0.8em;
+  flex: 0 0 5em;
+  border: 0  !important;
+  background-image: radial-gradient(rgba(255,255,255,0.1),rgba(255,255,255,0.1))!important;
+}
+.swal2-styled.swal2-confirm:focus, .swal2-styled.swal2-deny:focus, .swal2-styled.swal2-cancel:focus {
+  box-shadow: 0 0 0 2px var(--secondary-color) !important;
+}
+.swal2-styled.swal2-confirm:hover, .swal2-styled.swal2-deny:hover, .swal2-styled.swal2-cancel:hover {
+  background-color: var(--primary-color)!important;
+  color: var(--font-hover-color)!important;
+  border: 0 !important;
+  background-image: linear-gradient(rgba(0,0,0,0),rgba(0,0,0,0)) !important;
+  box-shadow: 0 0 0 2px var(--secondary-color);
+}
+    .user-profile-dropdown, .admin-options-dropdown{
+      height: fit-content;
+      min-width: 16em;
+      border-radius: 1rem;
+      overflow-y: auto;
+      padding:0;
+      overflow: hidden;
+      padding-top: 10%;
+    }
+    .admin-options-dropdown{
+      padding-top: 0;
+    }
+    .user-profile-dropdown .dropdown-divider, .admin-options-dropdown .dropdown-divider{
+      margin: 0;
+    }
+    .user-profile-dropdown.show, .admin-options-dropdown.show{
+      overflow-y: unset;
+    }
+    .user-profile-dropdown a.dropdown-item:hover, .admin-options-dropdown a.dropdown-item:hover{
+      background-color: var(--primary-color);
+      color: var(--font-hover-color) !important;
+    }
+    .user-profile-dropdown a.dropdown-item{
+      font-size: 85%;
+      padding: 8% 10%;
+    }
+    .admin-options-dropdown  a.dropdown-item{
+      font-size: 85%;
+      padding: 8% 6%;
+    }
+
+    .profile-initials{
+      text-transform: uppercase;
+    }
+
+      .main-header{
+        transition: .3s;
+      }
+
+
+      .navlink-img{
+        font-size:160%;
+        color:white;
+        background-color: var(--primary-color) !important;
+        opacity: 1;
+        height: 50px;
+        width: 50px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .main-footer{
+        position: relative !important;
+        color: var(--footer-font) !important;
+        margin-right: 15px;
+        border-radius: 5px;
+      }
+
+    .dropdown1 {
+      float: right;
+    margin-top: 20px;
+    position: relative;
+    display: inline-block;
+    }
+
+    .dropdown-content1 {
+    margin-left: auto;
+    display: none;
+    position: fixed;
+    background-color: #f9f9f9;
+    min-width: auto;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    padding: 12px;
+    margin-bottom: 2px;
+    z-index: 1;
+    background-color: var(--primary-color);
+    margin-left: -18px;
+    border-radius: 10px;
+    }
+
+    .iconClass {
+    margin: auto ;
+    }
+
+    .arrow {
+    border: solid black;
+    border-width: 0 3px 3px 0;
+    display: inline-block;
+    padding: 3px;
+    }
+    .gearClass {
+    margin-left: 2px;
+    }
+    .gearClass1 {
+    margin-right: 10px;
+    }
+    .down {
+    transform: rotate(45deg);
+    -webkit-transform: rotate(45deg);
+    }
+    .dropdown-menu1 {
+    height: 200px;
+    width: 10em;
+    min-width: 20em;
+    overflow-y: scroll;
+    }
+
+    table.dataTable.display tbody tr td{
+    background-color:white;
+    }
+
+    table.dataTable tbody tr td{
+    background-color:white;
+    }
+
+
+    .dtfc-fixed-left{
+        z-index: 999;
+    }
+
+    .cell_selected{
+        background-color:#cfcfcf !important;
+    }
+
+        :focus {
+        outline: transparent;
+        }
+
+        .outerAnchorTag {
+        width: 100%;
+        display: flex;
+        flex-wrap: wrap;
+        align-content: baseline;
+        align-items: baseline;
+        justify-content: flex-start;
+        font-size: 15px;
+        /*padding: 0.5rem 0rem;*/
+        }
+
+        .popoverCardheader{
+        color: var(--primary-color);
+        text-align: center;
+        }
+
+        .outerAnchorTag>p {
+        /*font-size:0.7em;*/
+        font-size: 8.7px;
+        /*padding: 0.1em 0.2em;*/
+        word-break: break-word;
+        white-space: normal;
+        text-align: center;
+        }
+
+        #search {
+        margin-top: 0.1em;
+        height: 2.4em;
+        }
+
+
+        #itag {
+        display: none;
+        float: right;
+        font-size: 15px;
+        }
+
+        .rectangle {
+        height: 56.73px;
+        width: 86.4px;
+        background-color: #fff;
+        border-style: solid;
+        border-color: black;
+        border-width: 2px;
+        margin-top: 18px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        }
+        .rectangle1 {
+        height: 56.73px;
+        width: 66.4px;
+        background-color: #fff;
+        border-style: solid;
+        border-color: black;
+        border-width: 2px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        }
+        .parallelogram {
+        height: 56.73px;
+        width: 86.4px;
+        background-color: #fff;
+        border-style: solid;
+        border-color: black;
+        border-width: 2px;
+        margin-top: 18px;
+        transform: skew(-20deg);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        }
+        .square {
+        height: 56.73px;
+        width: 86.4px;
+        background-color: #fff;
+        border-style: solid;
+        border-color: black;
+        border-width: 2px;
+        margin-top: 18px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        }
+        .circle {
+        height: 56.73px;
+        width: 56.73px;
+        background-color: #fff;
+        border-radius: 50%;
+        border-style: solid;
+        border-color: black;
+        border-width: 2px;
+        margin-top: 18px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        }
+        .common {
+        margin-top: 38px;
+        }
+        .commonArrow {
+        margin-top: 34px;
+
+        font-size: x-large;
+        }
+        .name {
+        cursor: pointer;
+        }
+        .popover {
+        min-width: 250px;
+        }
+        .floating-navbar{
+        margin: 15px;
+        box-shadow: 1px 1px 16px #d3d3d3d6;
+        border-radius: 6px;
+        }
+        .floating-navbar-allapps{
+        margin: 15px;
+        box-shadow: 1px 1px 16px #d3d3d3d6;
+        padding: 27px 10px;
+        border-radius: 6px;
+        }
+        .floating-wrapper{
+        padding: 1px;
+        position: relative;
+        background: #f4f6f9;
+        }
+        .yourapps-dropdown{
+        display: flex;
+        justify-content: space-between;
+        padding: 5px 16px;
+        background: #e4e4e48f;
+        align-items: center;
+        color: black;
+        text-transform: capitalize;
+        font-size: 13px;
+        }
+        .dropdown-search{
+        width: 100%;
+        padding: 5px 7px;
+        border: 1px solid rgba(211, 211, 211, 0.752) !important;
+        border-radius: 5px !important;
+        font-size: 13px;
+        }
+        .apps-dropdownItems{
+        display: flex;
+        flex-wrap: wrap;
+        min-height: auto;
+        max-height: 280px;
+        overflow: auto;
+        }
+        .yourapps-items{
+        width: 50%;
+        padding: 0px;
+        border: 1px solid rgb(211 211 211 / 16%);
+        cursor: pointer;
+        }
+        .appList {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 15px 30px;
+        color: #3c3c3c;
+        }
+        .hideit{
+        bottom: 0;
+        position: absolute;
+        margin-left: auto;
+        margin-right: auto;
+        left: 0;
+        right: 0;
+        text-align: center;
+        cursor: pointer;
+        }
+        .pinit{
+        position: absolute;
+        right: -10px;
+        top: -10px;
+        transform: rotateZ(45deg);
+        font-size: 20px;
+        color: #959191;
+        cursor: pointer;
+        }
+        .color{
+        color: black;
+        right: -7px;
+        top: -7px;
+        }
+        .rotate{
+        transform: rotateZ(180deg);
+        transition: .2s;
+        }
+        .displaynone{
+        display: none !important;
+        transition: 1s;
+        }
+        .fixed{
+        position: sticky;
+        top: 15px;
+        }
+        .user-online{
+        height: 10px;
+        width: 10px;
+        background-color: #28c76f;
+        border-radius: 10em;
+        display: inline-block;
+        position: absolute;
+        bottom: 0px;
+        right: 10%;
+        border: 1px solid white;
+        }
+        .choose-buttons{
+        margin: 10px 20px;
+        width: 70%;
+        background: var(--primary-color);
+        color: white;
+        padding: 10px 7px;
+        border: none;
+        border-radius: 20px;
+        box-shadow: 1px 1px 7px #706f6f;
+        transition: .2s;
+        }
+        .choose-buttons:hover{
+        background-color: white;
+        color: var(--primary-color);
+        }
+        .choose-buttons:active, .choose-buttons:focus{
+        outline: 0;
+        box-shadow: 1px 1px 4px grey;
+        }
+        .yourapps-items:hover{
+        background: #fafafa;
+        }
+        @media screen and (max-width: 991px){
+        #toggleButton .fa-chevron-left,#toggleButton .fa-chevron-right{
+        display: none;
+        }
+        }
+        </style>
+
+        <style>
+
+        @media screen and (min-width: 768px){
+            .user-profile-photo{
+            height: 50px;
+            width: 50px;
+            }
+        }
+
+        @media screen and (min-width: 992px){
+            .sidebar-mini.sidebar-collapse .content-wrapper, .sidebar-mini.sidebar-collapse .main-footer, .sidebar-mini.sidebar-collapse .main-header {
+                margin-left: 5.6rem !important;
+            }
+            .nav-link.profile{
+            padding-top: 0.3rem !important;
+            }
+                .allapps.main-header  {
+                margin-left: 0 !important;
+            }
+        }
+
+        @media screen and (max-width: 768px) {
+        .user-profile-photo{
+            height: 37px;
+            width: 37px;
+        }
+        .main-footer{
+            line-height: 1.3 !important;
+            padding: 15px !important;
+            font-size: 11px !important;
+        }
+        .choose-buttons{
+            margin: 10px 20px;
+            width: 70%;
+        }
+        .user-online{
+            bottom: -1px;
+            right: 12%;
+            height: 8px;
+            width: 8px;
+        }
+        .nav-link.your-apps{
+            font-size: 11px;
+        }
+        .nav-link.profile{
+            padding-top: 0.5rem !important;
+        }
+        .floating-navbar{
+            margin: 15px !important;
+        }
+        .navbar-expand .navbar-nav .nav-link {
+        padding-right: 0.4rem;
+        padding-left: 0.4rem;
+        }
+        .navlink-img{
+        font-size: 113%;
+        color: white;
+        opacity: 0.5;
+        height: 37px;
+        width: 37px;
+        }
+        .nav-link i{
+        font-size: 18px !important;
+        padding-top: 4px !important;
+        }
+        i.nav-link{
+        font-size: 18px !important;
+        padding-top: 11px;
+        }
+        .main-header{
+        max-height: 3rem !important;
+        }
+    }
+        </style>
+
+
+    </head>
+
+    <script>
+        document.onreadystatechange = function(){
+        if(document.readyState.trim() === "complete" && !$("#mainSideNavBar:hover").length){
+            setTimeout(function(){
+                $('.main-sidebar').prop('style','pointer-events:auto')
+                if($("#mainSideNavBar").length != 0) {
+                $('#toggleButton').prop('style','pointer-events:auto')
+                }
+            },50)
+
+            }
+        }
+    </script>
+
+    <body class="sidebar-mini layout-fixed sidebar-collapse">
+
+        <script src="{%static 'js/Base_theme/JS_min.js'%}"></script>
+        <!--DOMJSON - convert html element to json and vice versa-->
+
+        <div class="wrapper floating-wrapper">
+            <nav class="main-header navbar floating-navbar navbar-expand navbar-bg">
+                <div class="nav-wrapper" style="display:flex; justify-content:space-between;width: 100%;transition: 2s;">
+                    <ul class="navbar-nav">
+                        <li class="nav-item m-auto">
+                            <div class="navbar-brand">
+                            <a href="/users/selectApplication/" class="nav-link">
+                                <img src="{% static 'images/Base_theme/Acies_short_logo.png' %}" alt="Acies Logo" align="left" style="float:left;height: 30px;">
+                              </a>
+                            </div>
+                        </li>
+                        <li class="nav-item m-auto">
+                            <a id="toggleButton" class="nav-link" data-widget="pushmenu" href="#" style="pointer-events: none;">
+                              <i class="fa-solid fa-chevron-left" style="display:none;position: absolute;top: 30%;left: 16%;"></i>
+                              <i class="fas fa-bars" style="font-size: 20px;"></i>
+                              <i class="fa-solid fa-chevron-right" style="position: absolute;top: 30%;right:16%;"></i>
+                            </a>
+                        </li>
+                        <li class="nav-item m-auto dropdown">
+                            <a data-toggle="dropdown" class="nav-link your-apps" style="display: flex;align-items: center;font-weight: 600;">Your Apps</a>
+                        </li>
+                    </ul>
+                    <ul class="navbar-nav customtoggle">
+                        <li id="devToolsNavigator" class="nav-item m-auto">
+                            <a class="nav-link"><i class="fa-solid fa-layer-group" style="font-size: 24px;" aria-hidden="true" data-toggle="tooltip" title="Developer Tools"></i></a>
+                        </li>
+                        <li class="nav-item m-auto">
+                          <a href="#" class="update_app nav-link">
+                            <i class="fa-solid fa-retweet" data-toggle="tooltip" style="font-size: 24px;" aria-hidden="true"></i>
+                          </a>
+                        </li>
+                        <li id="dbHealthStatus" class="nav-item m-auto">
+                            <a class="nav-link"><i class="fa fa-heartbeat" style="font-size: 24px;" aria-hidden="true"></i></a>
+                        </li>
+                        <li id="userMode" style="display: none;cursor: pointer;" class="nav-item m-auto">
+                            <i class="fas fa-sign-out-alt"></i> User Mode
+                        </li>
+                        <li id="ExitpreviewProcess" style="display: none;list-style: none;cursor: pointer;margin-left:10%;" class="nav-item m-auto">
+                            <i class="fas fa-sign-out-alt"></i>Return To Dev
+                        </li>
+                        <li class="nav-item m-auto">
+                            <a class="nav-link"><i class="fa-solid fa-house" style="font-size: 24px;" data-toggle="tooltip" title="App Homepage"></i></a>
+                        </li>
+                        <li class="nav-item dropdown m-auto">
+                            <a class="nav-link" data-toggle="dropdown" href="#">
+                              <i class="far fa-bell" style="font-size: 24px;" onclick="diis()"  data-toggle="tooltip" title="Notifications"></i>
+                              <span class="alertcount badge badge-danger navbar-badge"></span>
+                            </a>
+                            <div class="mydropdown dropdown-menu dropdown-menu-lg dropdown-menu-right" style="height: fit-content;min-width: 28em;border-radius: 1rem;overflow-y: auto">
+                              <span class="dropdown-item dropdown-header" style="text-align:left;background-color:#DCDCDC"  onclick="myFunction()">
+                                <b>New notifications</b>
+                                <b class="alertcount badge badge-danger" style="margin-left:19em;font-size:0.8rem;"></b>
+                                <i class="fa fa-angle-down" style="float:right;padding-top:0.3em;"></i></span>
+                              <div id="myDropdown" class="dropdown-content" style="display:none">
+                              <div class="dropdown-divider"></div>
+                              <div class="addalert"></div>
+                              <div class="dropdown-divider"></div>
+                            </div>
+                            </div>
+                        </li>
+                        <li class="nav-item dropdown m-auto">
+                            <a class="nav-link" data-toggle="dropdown">
+                              <i class="fa-solid fa-gear" style="font-size: 24px;" data-toggle="tooltip" title="Settings"></i>
+                            </a>
+                            <div class="dropdown-menu dropdown-menu-sm dropdown-menu-right admin-options-dropdown">
+                              <a href="#" class="dropdown-item" id="refreshTenantDBConnections">
+                                <i class="fas fa-refresh mr-2" aria-hidden="true"></i> Refresh database connectivity
+                              </a>
+                              <div class="dropdown-divider"></div>
+                              <a href="#" class="dropdown-item " id="alertsSetup">
+                                <i class="fa-solid fa-gears mr-2"></i> Manage Alerts
+                              </a>
+                            </div>
+                        </li>
+                        <li class="nav-item dropdown m-auto">
+                            <a class="nav-link" style="margin-top:-0.1em;">
+                              <i class='fas fa-pen-fancy' style="font-size: 20px;" data-toggle="tooltip" title="Design custom homepage"></i>
+                            </a>
+                        </li>
+                        <li class="nav-item dropdown m-auto">
+                            <div class="img-circle elevation-2 navlink-img ">
+                                <div>
+                                  <a class="nav-link" style="margin-top: -0.5em;">
+                                    <b class="profile-initials">AZ</b>
+                                  </a>
+                                </div>
+                            </div>
+                            <div class="user-online"></div>
+                        </li>
+                    </ul>
+                    </ul>
+                  <div class="icon-container" style="margin-top: 1%; display: flex;">
+                    <div class="img-circle elevation-2 navlink-img" style="margin-top: 0.3em;">
+                      <div>
+                        <a class="nav-link" style="margin-top: -0.5em; pointer-events: none;">
+                          <b class="profile-initials">AZ</b>
+                        </a>
+                      </div>
+                    </div>
+                    <div style="margin-top: 1em; margin-right:10%;">
+                      <i class="fa-solid fa-bars" style="color: var(--navbar-font)!important;"></i>
+                    </div>
+                  </div>
+                </div>
+                <i class="fa-solid fa-angle-up hideit" id="hideit"></i>
+                <i class="fa-solid fa-thumbtack pinit" id="pinit" data-toggle="tooltip" title="Pin to screen"></i>
+            </nav>
+
+            <aside class="main-sidebar sidebar-dark-primary sidebar-bg elevation-4" style="pointer-events: none;">
+                <div class=" d-flex">
+                    <a class="brand-link">
+                      <img id="imageAciesLogo" src="<<sidebaricon>>" alt="Acies Logo"
+                        class="brand-image img-responsive" align="left" style="float:left">
+                    </a>
+                </div>
+                <!-- Sidebar -->
+                <div class="sidebar" style="padding:0px 4px;">
+                    <nav class="mt-2" style="height: 82%;width: 105%;" id="mainSideNavBar">
+                        <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false" >
+                            <li class="nav-item">
+                                <a class="nav-link outerAnchorTag" data-home_page_ref="true">
+                                  <i class="fa fa-home static mainicon1" style="margin-left:1.2em;margin-right:0.5em;"></i>
+                                  <p class="mainicon2 fontclass" style="text-align:center; margin: auto;">Home</p>
+                                  <i class="rightelement display1 sortableHandleWithinNavBar fa fa-ellipsis-v" id="itag"></i>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link outerAnchorTag">
+                                  <i class="fa fa-check-circle static mainicon1" style="margin-left:1.2em;margin-right:0.5em;"></i>
+                                  <p class="fontclass textCollapsed" style="text-align:center; margin: auto;">Approval Management</p>
+                                  <i class="rightelement display1 sortableHandleWithinNavBar fa fa-ellipsis-v" id="itag"></i>
+                                </a>
+                            </li>
+
+                            <li class="nav-item">
+                                <a class="nav-link outerAnchorTag">
+                                    <i class="fa fa-chart-pie static mainicon1" style="margin-left:1.2em;margin-right:0.5em;"></i>
+                                    <p class="fontclass textCollapsed" style="text-align:center; margin: auto;">Reports</p>
+                                    <i class="rightelement display1 sortableHandleWithinNavBar fa fa-ellipsis-v" id="itag"></i>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link outerAnchorTag">
+                                    <i class="fa fa-chart-pie static mainicon1" style="margin-left:1.2em;margin-right:0.5em;"></i>
+                                    <p class="fontclass textCollapsed" style="text-align:center; margin: auto;">Application Admin</p>
+                                    <i class="rightelement display1 sortableHandleWithinNavBar fa fa-ellipsis-v" id="itag"></i>
+                                </a>
+                            </li>
+                        </ul>
+                    </nav>
+                </div>
+                <a class="nav-link outerAnchorTag" id="" style=" color: #f2f2f2;padding-top: 0.6rem;height: 3rem;text-align: center;">
+                    <i class="fas fa-plus" onclick="addNavbar.call(this,'','')" style="margin-left: 10%;" data-toggle="tooltip" title="Add flex pages"></i>
+                </a>
+            </aside>
+            <div class="content-wrapper" style="min-height: 100vh;margin-bottom: -40px;">
+                <div id='messages-content'>
+
+                </div>
+            </div>
+            <aside class="control-sidebar control-sidebar-dark">
+                <!-- Control sidebar content goes here -->
+            </aside>
+
+            <footer class="main-footer fixed-bottom footer-bg footer-sticky">
+                <medium><<footertext>></medium>
+            </footer>
+
+        </div>
+    <script>
+      var toggleB = document.getElementById('toggleButton');
+    if (toggleB != null) {
+      toggleB.addEventListener('click', expandCollapse)
+    }
+    function expandCollapse() {
+      var img = document.getElementById('imageAciesLogo');
+      var body = document.getElementsByTagName('BODY')
+      var bodyClasses = body[0].className;
+      if (bodyClasses == "sidebar-mini layout-fixed") {
+        img.src = "<<sidebaricon>>"
+
+      }
+      if (bodyClasses == "sidebar-mini layout-fixed sidebar-collapse") {
+
+        img.src = "<<sidebaricon>>"
+      }
+
+    }
+    $('.main-sidebar').hover(function () {
+      $('#imageAciesLogo').attr("src", "<<sidebaricon>>")
+      $(".fontclass").css("font-size", "14px");
+      $('.fontclass1').css("display","none")
+      $('.fontclass2').css("display","inline-block")
+      $('#saveNavbarConfigAnchorTag').css("margin-left","");
+      $(".mainicon").css("margin-left", "0em");
+      $(".mainicon1").css("margin-left", "0em");
+      $(".mainicon2").css("margin-left", "0em");
+      $(".mainicon3").css("margin-left", "0em");
+      $(".mainicon4").css("padding-left", "0em");
+      $(".mainicon5").css("margin-left", "0em");
+      $(".textCollapsed").css("margin-left", "0em");
+
+      $(".display1").css("display", "block");
+      $(".dropdown-content1").css("display","none");
+      $(".menu-open > .nav-treeview").css("display", "block");
+      $(".outerAnchorTag").css("width", "100%");
+      $(".fa-angle-left").css("display", "block");
+      $(".right").addClass("fa-angle-left");
+
+    },
+      function () {
+        //console.log('hover OUT')
+        if ($('body').attr("class") == "sidebar-mini layout-fixed sidebar-collapse") {
+          $('#imageAciesLogo').attr("src", "<<sidebaricon>>")
+          $(".fontclass").css("font-size", "8.7px");
+          $('.fontclass2').css("display","none")
+          $('.fontclass1').css("display","block")
+          $('.fontclass3').css("display","inline-block")
+          $('#saveNavbarConfigAnchorTag').css("margin-left","-0.5rem")
+          $(".mainicon").css("margin-left", "1.75em");
+          $(".mainicon1").css("margin-left", "1.2em");
+          $(".mainicon2").css("margin-left", "1.5em");
+          $(".mainicon3").css("margin-left", "1.4em");
+          $(".mainicon4").css("padding-left", "1.2em");
+          $(".mainicon5").css("margin-left", "0em");
+          $(".outerAnchorTag").css("text-align", "center");
+          $(".display1").css("display", "none");
+          $(".dropdown-content1").css("display","none");
+          $(".dropdown-content").css("display","none")
+          $(".menu-open > .nav-treeview").css("display", "none");
+          $(".right").removeClass("fa-angle-left")
+        }
+        else {
+          $('#imageAciesLogo').attr("src", "<<sidebaricon>>")
+        }
+      })
+
+      $('#toggleButton').click(function () {
+      var x = $("#outerAnchorTag_p")
+      //console.log('hover OUT')
+      if ($('body').attr("class") == "sidebar-mini layout-fixed sidebar-collapse") {
+        //console.log('hover here')
+        var media = window.matchMedia("(max-width: 991px)")
+        if (media.matches){
+          $("#toggleButton .fa-chevron-left").css("display","none");
+          $("#toggleButton .fa-chevron-right").css("display","none");
+        }
+        else{
+        $("#toggleButton .fa-chevron-left").css("display","block");
+        $("#toggleButton .fa-chevron-right").css("display","none");
+        $(".brand-link").css("width","100%");
+        $(".fontclass").css("font-size", "14px");
+        $('.fontclass2').css("display","none")
+        $('.fontclass1').css("display","block")
+        $('.fontclass3').css("display","inline-block")
+        $('#saveNavbarConfigAnchorTag').css("margin-left","")
+        // $("#saveNavbarConfigAnchorTag").css("background-color","#dab76185");
+        $(".mainicon").css("margin-left", "0em");
+        $(".mainicon1").css("margin-left", "0em");
+        $(".mainicon2").css("margin-left", "0em");
+        $(".mainicon3").css("margin-left", "0em");
+        $(".mainicon4").css("padding-left", "0em");
+        $(".outerAnchorTag").css("width", "100%");
+        $(".display1").css("display", "block");
+        $(".dropdown-content1").css("display","none")
+        $(".menu-open > .nav-treeview").css("display", "block");
+        $(".right").addClass("fa-angle-left");
+        $(".fa-angle-left").css("display", "block");
+        }
+      }
+      else {
+        var media = window.matchMedia("(max-width: 991px)")
+        if (media.matches){
+          $("#toggleButton .fa-chevron-left").css("display","none");
+          $("#toggleButton .fa-chevron-right").css("display","none");
+        }
+        else{
+        //console.log('hover here only')
+        $("#toggleButton .fa-chevron-left").css("display","none");
+        $("#toggleButton .fa-chevron-right").css("display","block");
+        $(".fontclass").css("font-size", "8.7px");
+        // $("#saveNavbarConfigAnchorTag").css("background-color","none");
+
+        $('.fontclass2').css("display","none")
+        $('.fontclass1').css("display","block")
+        $('.fontclass3').css("display","inline-block")
+        $('#saveNavbarConfigAnchorTag').css("margin-left","-0.5rem")
+        $(".mainicon").css("margin-left", "1.75em");
+        $(".mainicon1").css("margin-left", "1.2em");
+        $(".mainicon2").css("margin-left", "1.5em");
+        $(".mainicon3").css("margin-left", "1.4em");
+        $(".mainicon4").css("padding-left", "1.2em");
+        $(".outerAnchorTag").css("text-align", "center");
+        $(".display1").css("display", "none");
+        $(".dropdown-content1").css("display","none")
+        $(".dropdown-content").css("display","none")
+        $(".menu-open > .nav-treeview").css("display", "none");
+        $(".right").removeClass("fa-angle-left")
+        }
+      }
+    });
+
+    </script>
+    </body>
+</html>

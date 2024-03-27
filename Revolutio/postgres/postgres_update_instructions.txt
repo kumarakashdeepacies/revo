@@ -1,0 +1,12 @@
+1. Create a folder called postgresdump in the base folder containing docker-compose files if that folder is not already available
+2. Start application using docker-compose-kubernetes-postgres-update.yml file
+3. Go to powershell or any docker client beung used and use following command to take database backup: docker exec -it revolutio-postgres-1 pg_dump -C -E UTF8 -U revolutio Platform_DB -f /var/dumpfile1.sql
+4. cd into the postgresdump folder in powershell or any docker client being used
+5. Use the following command to copy the database backup into postgresdump folder: docker cp revolutio-postgres-1:/var/dumpfile1.sql ./
+6. Use the following command to exec into postgres 15 container: docker-compose exec postgres-update bash
+7. Use the following command to import the database backup inside postgres 15 conatiner: psql -U revolutio -d Platform_DB < /var/dumpfile1.sql
+8. Shut down the application using docker-compose down
+9. Start application using docker-compose-kubernetes-postgres-updated.yml file
+10. Test application. It should be working on postgres 15.
+11. Once application is tested, delete docker-compose-kubernetes.yml and rename docker-compose-kubernetes-postgres-updated.yml to docker-compose-kubernetes.yml for future use
+12. Congratulations, you have now migrated your postgres DB to postgres 15!

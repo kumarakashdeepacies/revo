@@ -1,0 +1,94 @@
+# This file is auto generated from it's template,
+# see citusdata/tools/packaging_automation/templates/docker/latest/docker-compose.tmpl.yml.
+version: "3"
+
+services:
+  master:
+    container_name: "${COMPOSE_PROJECT_NAME:-citus}_master"
+    image: ${REGISTRY_HOST}/revolutio_kubernetes/citus_master:11.2
+    build:
+      context: "."
+      dockerfile: ./Dockerfile_alpine
+    ports: ["${COORDINATOR_EXTERNAL_PORT:-5432}:5432"]
+    labels: ["com.citusdata.role=Master"]
+    environment:
+      POSTGRES_USER: "${POSTGRES_USER:-postgres}"
+      POSTGRES_PASSWORD: "supersecretpassword"
+      PGUSER: "${POSTGRES_USER:-postgres}"
+      PGPASSWORD: "supersecretpassword"
+      POSTGRES_HOST_AUTH_METHOD: "${POSTGRES_HOST_AUTH_METHOD:-trust}"
+      WALG_AZ_PREFIX: "azure://datastoretesting/walg-folder"
+      ARCHIVE_MODE: "off"
+    volumes:
+      - citus-master-data:/var/lib/postgresql/data
+      - citus-master-data-backup:/pgbackupdata
+
+  worker-1:
+    container_name: "${COMPOSE_PROJECT_NAME:-citus}_worker_1"
+    image: ${REGISTRY_HOST}/revolutio_kubernetes/citus_master:11.2
+    build:
+      context: "."
+      dockerfile: ./Dockerfile_alpine
+    ports: ["${COORDINATOR_EXTERNAL_PORT:-5433}:5432"]
+    labels: ["com.citusdata.role=Master"]
+    environment:
+      POSTGRES_USER: "${POSTGRES_USER:-postgres}"
+      POSTGRES_PASSWORD: "supersecretpassword"
+      PGUSER: "${POSTGRES_USER:-postgres}"
+      PGPASSWORD: "supersecretpassword"
+      POSTGRES_HOST_AUTH_METHOD: "${POSTGRES_HOST_AUTH_METHOD:-trust}"
+      WALG_AZ_PREFIX: "azure://datastoretesting/walg-worker-1"
+      ARCHIVE_MODE: "off"
+    volumes:
+      - citus-worker-1-data:/var/lib/postgresql/data
+      - citus-worker-1-data-backup:/pgbackupdata
+
+  worker-2:
+    container_name: "${COMPOSE_PROJECT_NAME:-citus}_worker_2"
+    image: ${REGISTRY_HOST}/revolutio_kubernetes/citus_master:11.2
+    build:
+      context: "."
+      dockerfile: ./Dockerfile_alpine
+    ports: ["${COORDINATOR_EXTERNAL_PORT:-5434}:5432"]
+    labels: ["com.citusdata.role=Master"]
+    environment:
+      POSTGRES_USER: "${POSTGRES_USER:-postgres}"
+      POSTGRES_PASSWORD: "supersecretpassword"
+      PGUSER: "${POSTGRES_USER:-postgres}"
+      PGPASSWORD: "supersecretpassword"
+      POSTGRES_HOST_AUTH_METHOD: "${POSTGRES_HOST_AUTH_METHOD:-trust}"
+      WALG_AZ_PREFIX: "azure://datastoretesting/walg-worker-2"
+      ARCHIVE_MODE: "off"
+    volumes:
+      - citus-worker-2-data:/var/lib/postgresql/data
+      - citus-worker-2-data-backup:/pgbackupdata
+
+  pyclient:
+    image: revolutio/pykafka-client:latest
+    build:
+      context: "./python-client"
+      dockerfile: ./Dockerfile
+    container_name: pykafka-client
+    command: tail -F /opt/pykafka
+    stdin_open: true
+    ports:
+      - 8181:8181
+    volumes:
+      - ./python-client:/opt/kafkapython/python-client/
+      - ./python-client/data_store:/opt/kafkapython/python-client/data_store/
+      - /var/run/docker.sock:/var/run/docker.sock
+      - citus-master-data:/postgresdata/master/postgresql/data
+      - citus-master-data-backup:/postgresdata/master/pgbackupdata
+      - citus-worker-1-data:/postgresdata/worker_1/postgresql/data
+      - citus-worker-1-data-backup:/postgresdata/worker_1/pgbackupdata
+      - citus-worker-2-data:/postgresdata/worker_2/postgresql/data
+      - citus-worker-2-data-backup:/postgresdata/worker_2/pgbackupdata
+
+volumes:
+  citus-master-data:
+  citus-worker-1-data:
+  citus-worker-2-data:
+  citus-master-data-backup:
+  citus-worker-1-data-backup:
+  citus-worker-2-data-backup:
+  citus-env:

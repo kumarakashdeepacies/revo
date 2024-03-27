@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+
+{% extends extend_template %}
+{% block body_block %}
+<style>
+
+  #delete:active {
+    background-color: #B8860B;
+    border-color: black;
+  }
+  #cancel:active {
+    background-color: #B8860B;
+    border-color: black;
+  }
+</style>
+
+<div class="breadcrumb-holder" style="background-color: #e9ecef; ">
+  <div class="container-fluid">
+    <ul class="breadcrumb">
+      <li class="breadcrumb-item"><a {% if current_application_code != 'App0' %} {% if current_application_code == 'Dev' %} {% if current_dev_mode == 'Edit' %} {% if edit_app_code != 'Not Selected' %} href="{% url 'users:homePage' edit_app_code current_dev_mode %}" {% else %} href="{% url 'users:homePage' 'Dev' current_dev_mode %}" {% endif %} {% elif current_dev_mode == 'Build' %} {% if build_app_code != 'Not Selected' %} href="{% url 'users:homePage' build_app_code current_dev_mode %}" {% else %} href="{% url 'users:select_application' %}"  {% endif %}  {% endif %} {% else %} href="{% url 'users:homePage' current_application_code 'User' %}" {% endif %} {% else %} href="{% url 'users:select_application' %}" {% endif %}>
+        <b> Home </b></a></li>
+      <li class="breadcrumb-item active">{{title_a}} > {{title_b}} > {{title_c}}</li>
+    </ul>
+  </div>
+</div>
+
+<section class="content">
+  <div class="container-fluid">
+    <div class="font-weight-light">
+      <div class="card">
+        <div class="card-header">
+          <h6 class="card-title" style="color:var(--primary-color);">Delete {{title_d}}:</h6>
+          <div class="card-tools">
+
+            <!-- <button type="button" onclick="goBack()" style="background-color:#b58d2b;color:white;" onMouseOver="this.style.color='black'" onMouseOut="this.style.color='#fff'" class="btn btn-tool btn-sm">
+              <i class="fas fa-times"></i>
+            </button> -->
+          </div>
+        </div>
+        <div class="card-body" style="display:block;">
+          <h6>Are you sure you want to delete {{data}}?</h6><br /><br />
+          <form method="post">
+            {%csrf_token%}
+            <input type="submit" class="btn btn-danger" name="del" value="Delete" id="delete">
+            <input type="submit" class="btn btn-primary" name="del" value="Cancel" id="cancel">
+            <input type="hidden" name="pk" value="{{pk}}" />
+          </form>
+        </div>
+      </div>
+      </div>
+</div>
+</section>
+
+
+<script>
+  function goBack() {
+    window.history.back();
+  }
+</script>
+
+
+
+{% endblock %}

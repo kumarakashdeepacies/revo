@@ -1,0 +1,348 @@
+ARG REVOLUTIO_VERSION="1.0.0"
+
+ARG REVOLUTIO_HOME=/opt/revolutio
+ARG REVOLUTIO_UID="70070"
+
+ARG PYTHON_BASE_IMAGE="python:3.8.12-slim-buster"
+
+ARG REVOLUTIO_PIP_VERSION=21.2.4
+
+# By default PIP has progress bar but you can disable it.
+ARG PIP_PROGRESS_BAR="on"
+
+##############################################################################################
+# This is the build image where we build all dependencies
+##############################################################################################
+FROM ${PYTHON_BASE_IMAGE} as revolutio-build-image
+SHELL ["/bin/bash", "-o", "pipefail", "-e", "-u", "-x", "-c"]
+
+ARG PYTHON_BASE_IMAGE
+ENV PYTHON_BASE_IMAGE=${PYTHON_BASE_IMAGE} \
+    DEBIAN_FRONTEND=noninteractive LANGUAGE=C.UTF-8 LANG=C.UTF-8 LC_ALL=C.UTF-8 \
+    LC_CTYPE=C.UTF-8 LC_MESSAGES=C.UTF-8
+
+# Install curl and gnupg2 - needed for many other installation steps
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends \
+           curl \
+           gnupg2 \
+    && apt-get autoremove -yqq --purge \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
+
+ARG DEV_APT_DEPS="\
+     apt-transport-https \
+     apt-utils \
+     curl \
+     git \
+     libboost-all-dev \
+     build-essential \
+     ca-certificates \
+     gnupg \
+     gnupg1 \
+     gnupg2 \
+     dirmngr \
+     ldap-utils \
+     libffi-dev \
+     libkrb5-dev \
+     libldap2-dev \
+     libpq-dev \
+     libsasl2-2 \
+     libsasl2-dev \
+     libsasl2-modules \
+     libssl-dev \
+     locales  \
+     lsb-release \
+     openssh-client \
+     python-selinux \
+     sasl2-bin \
+     software-properties-common \
+     sudo \
+     unixodbc \
+     unixodbc-dev \
+     gcc \
+     g++ \
+     nodejs \
+     make \
+     libgl1-mesa-glx"
+
+ARG ADDITIONAL_DEV_APT_DEPS=""
+ARG DEV_APT_COMMAND="\
+    curl --fail --location https://deb.nodesource.com/setup_14.x | bash - \
+    && curl https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add - > /dev/null \
+    && echo 'deb https://dl.yarnpkg.com/debian/ stable main' > /etc/apt/sources.list.d/yarn.list"
+ARG ADDITIONAL_DEV_APT_COMMAND="echo"
+ARG ADDITIONAL_DEV_APT_ENV=""
+
+ENV DEV_APT_DEPS=${DEV_APT_DEPS} \
+    ADDITIONAL_DEV_APT_DEPS=${ADDITIONAL_DEV_APT_DEPS} \
+    DEV_APT_COMMAND=${DEV_APT_COMMAND} \
+    ADDITIONAL_DEV_APT_COMMAND=${ADDITIONAL_DEV_APT_COMMAND} \
+    ADDITIONAL_DEV_APT_ENV=${ADDITIONAL_DEV_APT_ENV}
+
+# Note missing man directories on debian-buster
+# https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=863199
+# Install basic and additional apt dependencies
+RUN mkdir -pv /usr/share/man/man1 \
+    && mkdir -pv /usr/share/man/man7 \
+    && export ${ADDITIONAL_DEV_APT_ENV?} \
+    && bash -o pipefail -e -u -x -c "${DEV_APT_COMMAND}" \
+    && bash -o pipefail -e -u -x -c "${ADDITIONAL_DEV_APT_COMMAND}" \
+    && apt-get update \
+    && apt-get install -y --no-install-recommends \
+           ${DEV_APT_DEPS} \
+           ${ADDITIONAL_DEV_APT_DEPS} \
+    && apt-get autoremove -yqq --purge \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
+
+ARG INSTALL_MSSQL_CLIENT="true"
+ARG REVOLUTIO_PIP_VERSION
+# By default PIP has progress bar but you can disable it.
+ARG PIP_PROGRESS_BAR
+# By default we do not use pre-cached packages, but in CI/Breeze environment we override this to speed up
+# builds in case setup.py/setup.cfg changed. This is pure optimisation of CI/Breeze builds.
+ARG REVOLUTIO_PRE_CACHED_PIP_PACKAGES="false"
+# This is airflow version that is put in the label of the image build
+ARG REVOLUTIO_VERSION
+# By default we install providers from PyPI but in case of Breeze build we want to install providers
+# from local sources without the need of preparing provider packages upfront. This value is
+# automatically overridden by Breeze scripts.
+ARG INSTALL_PROVIDERS_FROM_SOURCES="false"
+# By default latest released version of airflow is installed (when empty) but this value can be overridden
+# and we can install version according to specification (For example ==2.0.2 or <3.0.0).
+ARG REVOLUTIO_VERSION_SPECIFICATION=""
+# By default we do not upgrade to latest dependencies
+ARG UPGRADE_TO_NEWER_DEPENDENCIES="false"
+# By default we install latest airflow from PyPI so we do not need to copy sources of Airflow
+# but in case of breeze/CI builds we use latest sources and we override those
+# those SOURCES_FROM/TO with "." and "/opt/airflow" respectively
+
+ENV INSTALL_MSSQL_CLIENT=${INSTALL_MSSQL_CLIENT} \
+    PATH=${PATH}:/root/.local/bin \
+    REVOLUTIO_PIP_VERSION=${REVOLUTIO_PIP_VERSION} \
+    PIP_PROGRESS_BAR=${PIP_PROGRESS_BAR} \
+    # Install Airflow with "--user" flag, so that we can copy the whole .local folder to the final image
+    # from the build image and always in non-editable mode
+    REVOLUTIO_INSTALL_USER_FLAG="--user" \
+    REVOLUTIO_INSTALL_EDITABLE_FLAG="" \
+    UPGRADE_TO_NEWER_DEPENDENCIES=${UPGRADE_TO_NEWER_DEPENDENCIES}
+
+COPY /Installation_ref/scripts/*.sh /Installation_ref/scripts/
+RUN bash ./Installation_ref/scripts/install_mssql.sh
+ENV PATH=${PATH}:/opt/mssql-tools/bin
+
+RUN if [[ -f /docker-context-files/.pypirc ]]; then \
+        cp /docker-context-files/.pypirc /root/.pypirc; \
+    fi
+
+ENV REVOLUTIO_VERSION=${REVOLUTIO_VERSION} \
+    REVOLUTIO_VERSION_SPECIFICATION=${REVOLUTIO_VERSION_SPECIFICATION}
+
+# In case of Production build image segment we want to pre-install main version of airflow
+# dependencies from GitHub so that we do not have to always reinstall it from the scratch.
+# The Airflow (and providers in case INSTALL_PROVIDERS_FROM_SOURCES is "false")
+# are uninstalled, only dependencies remain
+# the cache is only used when "upgrade to newer dependencies" is not set to automatically
+# account for removed dependencies (we do not install them in the first place)
+# Upgrade to specific PIP version
+RUN bash /Installation_ref/scripts/install_pip_version.sh;
+
+# Add extra python dependencies
+ARG ADDITIONAL_PYTHON_DEPS=""
+# We can set this value to true in case we want to install .whl .tar.gz packages placed in the
+# docker-context-files folder. This can be done for both - additional packages you want to install
+# and for airflow as well (you have to set INSTALL_FROM_PYPI to false in this case)
+ARG INSTALL_FROM_DOCKER_CONTEXT_FILES=""
+# By default we install latest airflow from PyPI. You can set it to false if you want to install
+# Airflow from the .whl or .tar.gz packages placed in `docker-context-files` folder.
+ARG INSTALL_FROM_PYPI="true"
+
+ENV INSTALL_FROM_DOCKER_CONTEXT_FILES=${INSTALL_FROM_DOCKER_CONTEXT_FILES} \
+    INSTALL_FROM_PYPI=${INSTALL_FROM_PYPI}
+
+WORKDIR /opt/revolutio
+COPY . /opt/revolutio
+
+# hadolint ignore=SC2086, SC2010
+RUN find /root/.local/ -name '*.pyc' -print0 | xargs -0 rm -r || true ; \
+    find /root/.local/ -type d -name '__pycache__' -print0 | xargs -0 rm -r || true ; \
+    # make sure that all directories and files in .local are also group accessible
+    find /root/.local -executable -print0 | xargs --null chmod g+x; \
+    find /root/.local -print0 | xargs --null chmod g+rw
+
+# It is recommended that
+# the requirements.txt contains only dependencies with == version specification
+RUN --mount=type=cache,target=/root/.cache/pip pip install --user -r ./requirements/base.txt
+RUN pip install --user ./Installation_ref/libraries/djangocodemirror-2.1.0-py2.py3-none-any.whl
+WORKDIR /root/.local/lib/python3.8/site-packages/pyarrow
+RUN ln -s libarrow.so.500 libarrow.so
+RUN ln -s libarrow_python.so.500 libarrow_python.so
+RUN pip install --user turbodbc==4.2.1
+
+WORKDIR /opt/revolutio/relation_canvas
+
+#ENV PATH /rev_venv/bin:${PATH}
+
+RUN npm install --save-dev \
+    && npm run build
+
+WORKDIR /opt/revolutio/hierarchy_canvas
+
+RUN npm install --save-dev \
+    && npm run build
+
+
+ARG BUILD_ID
+ARG COMMIT_SHA
+ARG REVOLUTIO_IMAGE_DATE_CREATED
+
+##############################################################################################
+# This is the actual Revolutio image - much smaller than the build one. We copy
+# installed Revolutio and all it's dependencies from the build image to make it smaller.
+##############################################################################################
+FROM ${PYTHON_BASE_IMAGE} as main
+SHELL ["/bin/bash", "-o", "pipefail", "-e", "-u", "-x", "-c"]
+
+ARG REVOLUTIO_UID
+ARG PYTHON_BASE_IMAGE
+ARG REVOLUTIO_PIP_VERSION
+ARG REVOLUTIO_VERSION
+
+ENV PYTHON_BASE_IMAGE=${PYTHON_BASE_IMAGE} \
+    REVOLUTIO_VERSION=${REVOLUTIO_VERSION} \
+    # Make sure noninteractive debian install is used and language variables set
+    DEBIAN_FRONTEND=noninteractive LANGUAGE=C.UTF-8 LANG=C.UTF-8 LC_ALL=C.UTF-8 \
+    LC_CTYPE=C.UTF-8 LC_MESSAGES=C.UTF-8 \
+    REVOLUTIO_PIP_VERSION=${REVOLUTIO_PIP_VERSION}
+
+# Install curl and gnupg2 - needed for many other installation steps
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends \
+           curl \
+           gnupg2 \
+    && apt-get autoremove -yqq --purge \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
+
+ARG RUNTIME_APT_DEPS="\
+        apt-transport-https \
+        apt-utils \
+        #  libboost-all-dev \
+        ca-certificates \
+        gnupg \
+        gosu \
+        ldap-utils \
+        libffi6 \
+        libldap-2.4-2 \
+        libsasl2-2 \
+        libsasl2-modules \
+        libssl1.1 \
+        locales  \
+        lsb-release \
+        netcat \
+        openssh-client \
+        rsync \
+        sasl2-bin \
+        sqlite3 \
+        sudo \
+        unixodbc \
+        vim \
+        build-essential \
+        libgl1-mesa-glx"
+
+ARG ADDITIONAL_RUNTIME_APT_DEPS="r-base r-base-dev"
+ARG RUNTIME_APT_COMMAND="echo"
+ARG ADDITIONAL_RUNTIME_APT_COMMAND=""
+ARG ADDITIONAL_RUNTIME_APT_ENV=""
+ARG INSTALL_MSSQL_CLIENT="true"
+ARG REVOLUTIO_USER_HOME_DIR=/home/revolutio
+ARG REVOLUTIO_HOME
+# Having the variable in final image allows to disable providers manager warnings when
+# production image is prepared from sources rather than from package
+ARG BUILD_ID
+ARG COMMIT_SHA
+ARG REVOLUTIO_IMAGE_DATE_CREATED
+# By default PIP will install everything in ~/.local
+ARG PIP_USER="true"
+
+ENV RUNTIME_APT_DEPS=${RUNTIME_APT_DEPS} \
+    ADDITIONAL_RUNTIME_APT_DEPS=${ADDITIONAL_RUNTIME_APT_DEPS} \
+    RUNTIME_APT_COMMAND=${RUNTIME_APT_COMMAND} \
+    ADDITIONAL_RUNTIME_APT_COMMAND=${ADDITIONAL_RUNTIME_APT_COMMAND} \
+    INSTALL_MSSQL_CLIENT=${INSTALL_MSSQL_CLIENT} \
+    REVOLUTIO_UID=${REVOLUTIO_UID} \
+    REVOLUTIO_USER_HOME_DIR=${REVOLUTIO_USER_HOME_DIR} \
+    REVOLUTIO_HOME=${REVOLUTIO_HOME} \
+    PATH="${REVOLUTIO_USER_HOME_DIR}/.local/bin:${PATH}" \
+    GUNICORN_CMD_ARGS="--worker-tmp-dir /dev/shm" \
+    BUILD_ID=${BUILD_ID} \
+    COMMIT_SHA=${COMMIT_SHA} \
+    PIP_USER=${PIP_USER}
+
+# Note missing man directories on debian-buster
+# https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=863199
+# Install basic and additional apt dependencies
+RUN mkdir -pv /usr/share/man/man1 \
+    && mkdir -pv /usr/share/man/man7 \
+    && export ${ADDITIONAL_RUNTIME_APT_ENV?} \
+    && bash -o pipefail -e -u -x -c "${RUNTIME_APT_COMMAND}" \
+    && bash -o pipefail -e -u -x -c "${ADDITIONAL_RUNTIME_APT_COMMAND}" \
+    && apt-get update \
+    && apt-get install -y --no-install-recommends \
+           ${RUNTIME_APT_DEPS} \
+           ${ADDITIONAL_RUNTIME_APT_DEPS} \
+    && apt-get autoremove -yqq --purge \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
+
+RUN R -e "install.packages(c('betareg','caret','leaps','lmtest','car','forecast','fitdistrplus','logspline','gvlma','tseries','ResourceSelection','survey','pscl','ROCR','LDPD'), repos = 'http://cran.us.r-project.org')"
+
+
+# Only copy install_m(y/s)sql and install_pip_version.sh. We do not need any other scripts in the final image.
+COPY /Installation_ref/scripts/install_mssql.sh /Installation_ref/scripts/install_pip_version.sh \
+   /Installation_ref/scripts/
+
+# fix permission issue in Azure DevOps when running the scripts
+RUN chmod a+x /Installation_ref/scripts/install_mssql.sh && \
+    /Installation_ref/scripts/install_mssql.sh && \
+    adduser --quiet "revolutio" --uid "${REVOLUTIO_UID}" --gid "0" --home "${REVOLUTIO_USER_HOME_DIR}" && \
+# Make Airflow files belong to the root group and are accessible. This is to accommodate the guidelines from
+# OpenShift https://docs.openshift.com/enterprise/3.0/creating_images/guidelines.html
+    mkdir -pv "${REVOLUTIO_HOME}"; \
+    mkdir -pv "${REVOLUTIO_HOME}/logs"; \
+    chown -R "revolutio:root" "${REVOLUTIO_USER_HOME_DIR}" "${REVOLUTIO_HOME}"; \
+    find "${REVOLUTIO_HOME}" -executable -print0 | xargs --null chmod g+x && \
+        find "${REVOLUTIO_HOME}" -print0 | xargs --null chmod g+rw
+
+COPY --chown=revolutio:root --from=revolutio-build-image /root/.local "${REVOLUTIO_USER_HOME_DIR}/.local"
+COPY --chown=revolutio:root . "${REVOLUTIO_HOME}/"
+
+# COPY --chown=revolutio:root scripts/in_container/prod/entrypoint_prod.sh /entrypoint
+# COPY --chown=revolutio:root scripts/in_container/prod/clean-logs.sh /clean-logs
+
+# Make /etc/passwd root-group-writeable so that user can be dynamically added by OpenShift
+# See https://github.com/apache/airflow/issues/9248
+
+# RUN chmod a+x /entrypoint /clean-logs && \
+#     chmod g=u /etc/passwd && \
+#     bash /scripts/docker/install_pip_version.sh
+
+RUN chmod g=u /etc/passwd && \
+    bash Installation_ref/scripts/install_pip_version.sh
+
+WORKDIR ${REVOLUTIO_HOME}
+
+EXPOSE 8000
+
+RUN usermod -g 0 revolutio -G 0
+
+USER ${REVOLUTIO_UID}
+
+# See https://airflow.apache.org/docs/docker-stack/entrypoint.html#signal-propagation
+# to learn more about the way how signals are handled by the image
+ENV DUMB_INIT_SETSID="1"
+
+WORKDIR ${REVOLUTIO_HOME}
+
+#CMD ["gunicorn", "--bind", "0.0.0.0:5000", "--workers", "3", "config.wsgi:application", "--timeout", "10000", "--log-level", "DEBUG", "--limit-request-line", "0"]

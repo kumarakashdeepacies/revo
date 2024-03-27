@@ -1,0 +1,864 @@
+
+      <div class="breadcrumb-holder" style="background-color: #e9ecef; display:flex" >
+        <div class="container-fluid">
+          <ul class="breadcrumb" style="padding: .25rem 1rem; margin-block-end: 0em;" id="dynamic">
+            <li class="breadcrumb-item"><a {% if current_application_code != 'App0' %} {% if current_application_code == 'Dev' %} {% if current_dev_mode == 'Edit' %} {% if edit_app_code != 'Not Selected' %} href="{% url 'users:homePage_developer_edit_mode' edit_app_code %}" {% else %} href='{% url "users:homePage_developer_edit_mode" "Dev" %}' {% endif %} {% elif current_dev_mode == 'Build' %} {% if build_app_code != 'Not Selected' %} href="{% url 'users:homePage_developer_build_mode' build_app_code %}" {% else %} href="{% url 'users:select_application' %}"  {% endif %}  {% endif %} {% else %} href="{% url 'users:homePage' current_application_code %}" {% endif %} {% else %} href="{% url 'users:select_application' %}" {% endif %}>
+              <b> Home </b></a></li>      <li class="breadcrumb-item"> <b> Application_test </b></li>      <li class="breadcrumb-item"> <b> test_sub </b></li> </ul>
+        </div>
+        <i style="font-size: 20px;margin-right: 2%; cursor: pointer;;" data-data_list='{}' onclick="populateTabFuctionalities.call(this)" data-toggle="modal" data-target="#tabsMultiFunc" class="fas"></i><span style="white-space:nowrap; margin-right:2%;">Tab config</span>
+      </div>
+      <datalist id="hosting-plan">
+        <option value="=Count"/>
+        <option value="=Count Distinct"/>
+        <option value="=Sum"/>
+        <option value="=Average"/>
+        <option value="=Minimum"/>
+        <option value="=Maximum"/>
+        <option value="=Standard Deviation"/>
+        <option value="=Variance"/>
+        <option value="=Median"/>
+        <option value="=Skewness"/>
+        <option value="=Kurtosis"/>
+      </datalist>
+
+    <div class="modal fade" id="ckEditorModal" tabindex="-1" role="dialog" aria-labelledby="ckEditorModal" aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title">Text Editor</h5>
+               <button
+                type="button"
+                class="close"
+                data-dismiss="modal"
+                aria-label="Close"
+              >
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+
+            <div class="modal-body">
+              <div class='card'>
+                <div class='card-body tabsMultiFuncBody'>
+                  <form>
+                      <ul class="nav nav-tabs rtf_action_tab" role="tablist">
+                        <li class="nav-item" role="presentation" style="margin-left: 2px;">
+                          <button class="nav-link active" data-bs-toggle="tab" data-bs-target="Text" type="button" role="tab" aria-controls="Text" aria-selected="true">Text Format</button>
+                        </li>
+                        <li class="nav-item" role="presentation" style="margin-left: 2px;">
+                          <button class="nav-link "  data-bs-toggle="tab" data-bs-target="Insert" type="button" role="tab" aria-controls="Insert" aria-selected="false">Insert</button>
+                        </li>
+                        <li class="nav-item" role="presentation" style="margin-left: 2px;">
+                          <button class="nav-link" data-bs-toggle="tab" data-bs-target="Form" type="button" role="tab" aria-controls="Form" aria-selected="false">Form</button>
+                        </li>
+                        <li class="nav-item" role="presentation" style="margin-left: 2px;">
+                          <button class="nav-link" data-bs-toggle="tab" data-bs-target="Page Layout" type="button" role="tab" aria-controls="Page Layout" aria-selected="false">Page Layout</button>
+                        </li>
+                      </ul>
+                      <textarea name="text_editor">&nbsp;</textarea>
+                    </form>
+                </div>
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button onclick="saveCkEditor.call(this)" type="button" class="btn btn-primary">Save</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    <div class="modal fade" id="tabsMultiFunc" tabindex="-1" role="dialog" aria-labelledby="tabsMultiFunc" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Order show hide</h5>
+             <button
+              type="button"
+              class="close"
+              data-dismiss="modal"
+              aria-label="Close"
+            >
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+
+          <div class="modal-body">
+            <div class='card'>
+              <div class='card-body tabsMultiFuncBody'>
+                <table id="tabsMultiFuncBodyTable" class="display" style="width:100%;overflow-x: scroll;overflow-y:scroll;">
+                  <thead style="border-bottom:1px solid #B58d2b" >
+                    <tr style="text-align:center">
+                      <th>Tab name</th>
+                      <th>Tab order</th>
+                      <th>Tab display</th>
+                    </tr>
+                  </thead>
+                  <tbody style="height: 80px;border-bottom:1px solid #B58d2b;">
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button onclick="saveTabsFunc.call(this)" type="button" class="btn btn-primary">Save</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="modal fade" id="viewCompScenario" tabindex="-1" role="dialog" aria-labelledby="viewCompScenario" aria-hidden="true">
+      <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" style="margin-left: auto;color: darkgoldenrod;">View Scenario</h5>
+             <button
+              type="button"
+              class="close"
+              data-dismiss="modal"
+              aria-label="Close"
+            >
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+
+          <div class="modal-body" style="background-color:whitesmoke">
+            <div class='card'>
+              <div class='card-body viewCompScenarioBody'>
+                <div style="background:whitesmoke;border:solid 1.5px black;max-height:30rem;overflow:auto;padding: 0;">
+                  <div id="model_inputs_scenario_" > </div>
+                </div>
+                <br>
+                <div class="form-inline">
+                  <label for="scenario_name_">Scenario Name:</label>
+                  &nbsp;&nbsp;<input type="text" id="scenario_name_" data-element_id="" class="textinput textInput form-control" required="" >
+                </div>
+                <br>
+                <div class="form-inline">
+                  <label for="scenario_configuration_date_">Configuration date:</label>
+                  &nbsp;&nbsp;<input type="text" placeholder="YYYY-MM-DD" id="scenario_configuration_date_" class="form-control datepickerinput" required="" >
+                </div>
+                <br>
+                <div class="custom-control custom-checkbox">
+                    <input type="checkbox" name="runWithBaseModel_" class="checkboxinput custom-control-input" id="runWithBaseModel_" value="Risk_Measures" required="" >
+                    <label for="runWithBaseModel_" class="custom-control-label">
+                    Run with base model
+                    </label>
+                </div>
+                <br>
+                <div class="row" style="overflow: auto;">
+                  <table class="table table-bordered table-hover">
+                    <thead class="thead-dark">
+                      <tr>
+                        <th scope="col" style="text-align: center;">Model input</th>
+                        <th scope="col" style="text-align: center;">Scenario type - Base Data</th>
+                        <th scope="col" style="text-align: center;">Scenario type - Scenario Data</th>
+                        <th scope="col" style="text-align: center;">Action</th>
+                      </tr>
+                    </thead>
+                    <tbody id="element_incremental_data_"></tbody>
+                  </table>
+                </div>
+                <button type="button" id="run_saved_scenario"  class="btn btn-primary btn-xs mx-1 my-1 rounded px-2">Run Scenario &nbsp;<i class="fas fa-play"></i></button>
+                <button type="button" id="save_edited_scenario"  class="btn btn-primary btn-xs mx-1 my-1 rounded px-2">Save &nbsp;<i class="fas fa-save"></i></button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="modal" id="EBDisplayModel">
+        <div>
+            <div style="height:100vh;overflow:auto;background:whitesmoke;z-index:10;position: relative;">
+
+                <div id="EBbody">
+
+                    <div class="overlay" id="overlay" style="display:none;"></div>
+                    <div class="popup" id="popup" style="display:none;">
+                        <div class="popup-inner">
+                            <input type="button" name="Close" class="s3-btn-close" onclick="popupClose();" value="&times;">
+
+                            <h2 id='funcHeading' style="font-size:28px"></h2>
+                            <br />
+                            <div id="funcInput" class='ScrollStyle'>
+                            </div>
+                            <p id='funcDesc' style="font-size:22px;"></p>
+                        </div>
+                    </div>
+
+                    <div class="equation-left">
+                        <div class="fav-functions">
+                            <div class="functions-search">
+                                <h2>Favourite Functions</h2>
+                            </div>
+
+                            <div id="favouriteList">
+
+                            </div>
+                        </div>
+
+                        <div class="eq-functions">
+                            <div class="functions-search">
+                                <h2>Search Functions</h2>
+                                <div class="searchWrapper">
+                                    <input type="text" name="searchBar" id="searchBar"
+                                        placeholder="Search for a function" />
+                                </div>
+                            </div>
+
+                            <div id="functionsList">
+
+                            </div>
+                        </div>
+                    </div>
+                    <div class="equation-right">
+                        <div class="search-table">
+                            <div class="searchWrapper">
+                                <input type="text" name="searchTable" id="searchTable" placeholder="Search for table" />
+                            </div>
+                             <div id="tableList">
+      <div onClick='selectTable(`alertbasetable`)' class="tableItem btn-xs btn">
+          <p class="tableItemP"
+              onClick="selectTable(e.target.value);changeTableandColumns(e.target.value)"
+              value="alertbasetable">alertbasetable</p>
+      </div>
+
+      <div onClick='selectTable(`Application`)' class="tableItem btn-xs btn">
+          <p class="tableItemP"
+              onClick="selectTable(e.target.value);changeTableandColumns(e.target.value)"
+              value="Application">Application</p>
+      </div>
+
+      <div onClick='selectTable(`Approval_Email_Details`)' class="tableItem btn-xs btn">
+          <p class="tableItemP"
+              onClick="selectTable(e.target.value);changeTableandColumns(e.target.value)"
+              value="Approval_Email_Details">Approval_Email_Details</p>
+      </div>
+
+      <div onClick='selectTable(`ApprovalTable`)' class="tableItem btn-xs btn">
+          <p class="tableItemP"
+              onClick="selectTable(e.target.value);changeTableandColumns(e.target.value)"
+              value="ApprovalTable">ApprovalTable</p>
+      </div>
+
+      <div onClick='selectTable(`Business_Models`)' class="tableItem btn-xs btn">
+          <p class="tableItemP"
+              onClick="selectTable(e.target.value);changeTableandColumns(e.target.value)"
+              value="Business_Models">Business_Models</p>
+      </div>
+
+      <div onClick='selectTable(`Category_Subelement`)' class="tableItem btn-xs btn">
+          <p class="tableItemP"
+              onClick="selectTable(e.target.value);changeTableandColumns(e.target.value)"
+              value="Category_Subelement">Category_Subelement</p>
+      </div>
+
+      <div onClick='selectTable(`Category_Subelement_Attributes`)' class="tableItem btn-xs btn">
+          <p class="tableItemP"
+              onClick="selectTable(e.target.value);changeTableandColumns(e.target.value)"
+              value="Category_Subelement_Attributes">Category_Subelement_Attributes</p>
+      </div>
+
+      <div onClick='selectTable(`computation_function_repository`)' class="tableItem btn-xs btn">
+          <p class="tableItemP"
+              onClick="selectTable(e.target.value);changeTableandColumns(e.target.value)"
+              value="computation_function_repository">computation_function_repository</p>
+      </div>
+
+      <div onClick='selectTable(`computation_model_configuration`)' class="tableItem btn-xs btn">
+          <p class="tableItemP"
+              onClick="selectTable(e.target.value);changeTableandColumns(e.target.value)"
+              value="computation_model_configuration">computation_model_configuration</p>
+      </div>
+
+      <div onClick='selectTable(`computation_model_flowchart`)' class="tableItem btn-xs btn">
+          <p class="tableItemP"
+              onClick="selectTable(e.target.value);changeTableandColumns(e.target.value)"
+              value="computation_model_flowchart">computation_model_flowchart</p>
+      </div>
+
+      <div onClick='selectTable(`computation_model_run_history`)' class="tableItem btn-xs btn">
+          <p class="tableItemP"
+              onClick="selectTable(e.target.value);changeTableandColumns(e.target.value)"
+              value="computation_model_run_history">computation_model_run_history</p>
+      </div>
+
+      <div onClick='selectTable(`computation_output_repository`)' class="tableItem btn-xs btn">
+          <p class="tableItemP"
+              onClick="selectTable(e.target.value);changeTableandColumns(e.target.value)"
+              value="computation_output_repository">computation_output_repository</p>
+      </div>
+
+      <div onClick='selectTable(`computation_scenario_repository`)' class="tableItem btn-xs btn">
+          <p class="tableItemP"
+              onClick="selectTable(e.target.value);changeTableandColumns(e.target.value)"
+              value="computation_scenario_repository">computation_scenario_repository</p>
+      </div>
+
+      <div onClick='selectTable(`ConfigTable`)' class="tableItem btn-xs btn">
+          <p class="tableItemP"
+              onClick="selectTable(e.target.value);changeTableandColumns(e.target.value)"
+              value="ConfigTable">ConfigTable</p>
+      </div>
+
+      <div onClick='selectTable(`CountryMaster`)' class="tableItem btn-xs btn">
+          <p class="tableItemP"
+              onClick="selectTable(e.target.value);changeTableandColumns(e.target.value)"
+              value="CountryMaster">CountryMaster</p>
+      </div>
+
+      <div onClick='selectTable(`CreditorOutstandingbalance`)' class="tableItem btn-xs btn">
+          <p class="tableItemP"
+              onClick="selectTable(e.target.value);changeTableandColumns(e.target.value)"
+              value="CreditorOutstandingbalance">CreditorOutstandingbalance</p>
+      </div>
+
+      <div onClick='selectTable(`CurrencyMaster`)' class="tableItem btn-xs btn">
+          <p class="tableItemP"
+              onClick="selectTable(e.target.value);changeTableandColumns(e.target.value)"
+              value="CurrencyMaster">CurrencyMaster</p>
+      </div>
+
+      <div onClick='selectTable(`Curve_Data`)' class="tableItem btn-xs btn">
+          <p class="tableItemP"
+              onClick="selectTable(e.target.value);changeTableandColumns(e.target.value)"
+              value="Curve_Data">Curve_Data</p>
+      </div>
+
+      <div onClick='selectTable(`Curve_Repository`)' class="tableItem btn-xs btn">
+          <p class="tableItemP"
+              onClick="selectTable(e.target.value);changeTableandColumns(e.target.value)"
+              value="Curve_Repository">Curve_Repository</p>
+      </div>
+
+      <div onClick='selectTable(`data_management_computed_fields_config`)' class="tableItem btn-xs btn">
+          <p class="tableItemP"
+              onClick="selectTable(e.target.value);changeTableandColumns(e.target.value)"
+              value="data_management_computed_fields_config">data_management_computed_fields_config</p>
+      </div>
+
+      <div onClick='selectTable(`data_management_computed_fields_flow`)' class="tableItem btn-xs btn">
+          <p class="tableItemP"
+              onClick="selectTable(e.target.value);changeTableandColumns(e.target.value)"
+              value="data_management_computed_fields_flow">data_management_computed_fields_flow</p>
+      </div>
+
+      <div onClick='selectTable(`data_mapping_error_report`)' class="tableItem btn-xs btn">
+          <p class="tableItemP"
+              onClick="selectTable(e.target.value);changeTableandColumns(e.target.value)"
+              value="data_mapping_error_report">data_mapping_error_report</p>
+      </div>
+
+      <div onClick='selectTable(`Draft_FormData`)' class="tableItem btn-xs btn">
+          <p class="tableItemP"
+              onClick="selectTable(e.target.value);changeTableandColumns(e.target.value)"
+              value="Draft_FormData">Draft_FormData</p>
+      </div>
+
+      <div onClick='selectTable(`DraftProcess`)' class="tableItem btn-xs btn">
+          <p class="tableItemP"
+              onClick="selectTable(e.target.value);changeTableandColumns(e.target.value)"
+              value="DraftProcess">DraftProcess</p>
+      </div>
+
+      <div onClick='selectTable(`Error_Master_Table`)' class="tableItem btn-xs btn">
+          <p class="tableItemP"
+              onClick="selectTable(e.target.value);changeTableandColumns(e.target.value)"
+              value="Error_Master_Table">Error_Master_Table</p>
+      </div>
+
+      <div onClick='selectTable(`flow_monitor_error_log`)' class="tableItem btn-xs btn">
+          <p class="tableItemP"
+              onClick="selectTable(e.target.value);changeTableandColumns(e.target.value)"
+              value="flow_monitor_error_log">flow_monitor_error_log</p>
+      </div>
+
+      <div onClick='selectTable(`group_config`)' class="tableItem btn-xs btn">
+          <p class="tableItemP"
+              onClick="selectTable(e.target.value);changeTableandColumns(e.target.value)"
+              value="group_config">group_config</p>
+      </div>
+
+      <div onClick='selectTable(`Hierarchy_groups`)' class="tableItem btn-xs btn">
+          <p class="tableItemP"
+              onClick="selectTable(e.target.value);changeTableandColumns(e.target.value)"
+              value="Hierarchy_groups">Hierarchy_groups</p>
+      </div>
+
+      <div onClick='selectTable(`Hierarchy_levels`)' class="tableItem btn-xs btn">
+          <p class="tableItemP"
+              onClick="selectTable(e.target.value);changeTableandColumns(e.target.value)"
+              value="Hierarchy_levels">Hierarchy_levels</p>
+      </div>
+
+      <div onClick='selectTable(`Hierarchy_table`)' class="tableItem btn-xs btn">
+          <p class="tableItemP"
+              onClick="selectTable(e.target.value);changeTableandColumns(e.target.value)"
+              value="Hierarchy_table">Hierarchy_table</p>
+      </div>
+
+      <div onClick='selectTable(`Holiday_Calendar_Repository`)' class="tableItem btn-xs btn">
+          <p class="tableItemP"
+              onClick="selectTable(e.target.value);changeTableandColumns(e.target.value)"
+              value="Holiday_Calendar_Repository">Holiday_Calendar_Repository</p>
+      </div>
+
+      <div onClick='selectTable(`jobs_scheduled`)' class="tableItem btn-xs btn">
+          <p class="tableItemP"
+              onClick="selectTable(e.target.value);changeTableandColumns(e.target.value)"
+              value="jobs_scheduled">jobs_scheduled</p>
+      </div>
+
+      <div onClick='selectTable(`list_of_scheduling_jobs`)' class="tableItem btn-xs btn">
+          <p class="tableItemP"
+              onClick="selectTable(e.target.value);changeTableandColumns(e.target.value)"
+              value="list_of_scheduling_jobs">list_of_scheduling_jobs</p>
+      </div>
+
+      <div onClick='selectTable(`ml_model_repository`)' class="tableItem btn-xs btn">
+          <p class="tableItemP"
+              onClick="selectTable(e.target.value);changeTableandColumns(e.target.value)"
+              value="ml_model_repository">ml_model_repository</p>
+      </div>
+
+      <div onClick='selectTable(`Mobile`)' class="tableItem btn-xs btn">
+          <p class="tableItemP"
+              onClick="selectTable(e.target.value);changeTableandColumns(e.target.value)"
+              value="Mobile">Mobile</p>
+      </div>
+
+      <div onClick='selectTable(`Model_Repository`)' class="tableItem btn-xs btn">
+          <p class="tableItemP"
+              onClick="selectTable(e.target.value);changeTableandColumns(e.target.value)"
+              value="Model_Repository">Model_Repository</p>
+      </div>
+
+      <div onClick='selectTable(`NavigationSideBar`)' class="tableItem btn-xs btn">
+          <p class="tableItemP"
+              onClick="selectTable(e.target.value);changeTableandColumns(e.target.value)"
+              value="NavigationSideBar">NavigationSideBar</p>
+      </div>
+
+      <div onClick='selectTable(`Ocr_Template`)' class="tableItem btn-xs btn">
+          <p class="tableItemP"
+              onClick="selectTable(e.target.value);changeTableandColumns(e.target.value)"
+              value="Ocr_Template">Ocr_Template</p>
+      </div>
+
+      <div onClick='selectTable(`Person_Web_Socket_Test`)' class="tableItem btn-xs btn">
+          <p class="tableItemP"
+              onClick="selectTable(e.target.value);changeTableandColumns(e.target.value)"
+              value="Person_Web_Socket_Test">Person_Web_Socket_Test</p>
+      </div>
+
+      <div onClick='selectTable(`Plan_Buckets`)' class="tableItem btn-xs btn">
+          <p class="tableItemP"
+              onClick="selectTable(e.target.value);changeTableandColumns(e.target.value)"
+              value="Plan_Buckets">Plan_Buckets</p>
+      </div>
+
+      <div onClick='selectTable(`Plans`)' class="tableItem btn-xs btn">
+          <p class="tableItemP"
+              onClick="selectTable(e.target.value);changeTableandColumns(e.target.value)"
+              value="Plans">Plans</p>
+      </div>
+
+      <div onClick='selectTable(`Process_flow_model`)' class="tableItem btn-xs btn">
+          <p class="tableItemP"
+              onClick="selectTable(e.target.value);changeTableandColumns(e.target.value)"
+              value="Process_flow_model">Process_flow_model</p>
+      </div>
+
+      <div onClick='selectTable(`Process_master`)' class="tableItem btn-xs btn">
+          <p class="tableItemP"
+              onClick="selectTable(e.target.value);changeTableandColumns(e.target.value)"
+              value="Process_master">Process_master</p>
+      </div>
+
+      <div onClick='selectTable(`Process_subprocess_flowchart`)' class="tableItem btn-xs btn">
+          <p class="tableItemP"
+              onClick="selectTable(e.target.value);changeTableandColumns(e.target.value)"
+              value="Process_subprocess_flowchart">Process_subprocess_flowchart</p>
+      </div>
+
+      <div onClick='selectTable(`summary_table`)' class="tableItem btn-xs btn">
+          <p class="tableItemP"
+              onClick="selectTable(e.target.value);changeTableandColumns(e.target.value)"
+              value="summary_table">summary_table</p>
+      </div>
+
+      <div onClick='selectTable(`Tables`)' class="tableItem btn-xs btn">
+          <p class="tableItemP"
+              onClick="selectTable(e.target.value);changeTableandColumns(e.target.value)"
+              value="Tables">Tables</p>
+      </div>
+
+      <div onClick='selectTable(`TabScreens`)' class="tableItem btn-xs btn">
+          <p class="tableItemP"
+              onClick="selectTable(e.target.value);changeTableandColumns(e.target.value)"
+              value="TabScreens">TabScreens</p>
+      </div>
+
+      <div onClick='selectTable(`Tasks_Planner`)' class="tableItem btn-xs btn">
+          <p class="tableItemP"
+              onClick="selectTable(e.target.value);changeTableandColumns(e.target.value)"
+              value="Tasks_Planner">Tasks_Planner</p>
+      </div>
+
+      <div onClick='selectTable(`Templates`)' class="tableItem btn-xs btn">
+          <p class="tableItemP"
+              onClick="selectTable(e.target.value);changeTableandColumns(e.target.value)"
+              value="Templates">Templates</p>
+      </div>
+
+      <div onClick='selectTable(`test_table1`)' class="tableItem btn-xs btn">
+          <p class="tableItemP"
+              onClick="selectTable(e.target.value);changeTableandColumns(e.target.value)"
+              value="test_table1">test_table1</p>
+      </div>
+
+      <div onClick='selectTable(`test_table2`)' class="tableItem btn-xs btn">
+          <p class="tableItemP"
+              onClick="selectTable(e.target.value);changeTableandColumns(e.target.value)"
+              value="test_table2">test_table2</p>
+      </div>
+
+      <div onClick='selectTable(`Upload_Error_History`)' class="tableItem btn-xs btn">
+          <p class="tableItemP"
+              onClick="selectTable(e.target.value);changeTableandColumns(e.target.value)"
+              value="Upload_Error_History">Upload_Error_History</p>
+      </div>
+
+      <div onClick='selectTable(`UserConfig`)' class="tableItem btn-xs btn">
+          <p class="tableItemP"
+              onClick="selectTable(e.target.value);changeTableandColumns(e.target.value)"
+              value="UserConfig">UserConfig</p>
+      </div>
+
+      <div onClick='selectTable(`UserProfile`)' class="tableItem btn-xs btn">
+          <p class="tableItemP"
+              onClick="selectTable(e.target.value);changeTableandColumns(e.target.value)"
+              value="UserProfile">UserProfile</p>
+      </div>
+
+                                </div>
+
+                        </div>
+                        <div id='selectedTablesDiv'>
+
+                        </div>
+                        <div id="table-columns" class="dragAreaPossible"></div>
+                        <div class="eq-workspace">
+                            <div class="workspace-left">
+                                <div class="ebSteps">
+                                    <h2>Steps</h2>
+                                    <div id="stepNumsEb"></div>
+                                </div>
+                                <div class="ebFunctions dragAreaPossible">
+                                    <h2>Functions</h2>
+                                </div>
+                                <div id="dataElementParent" class="ebDataElements">
+                                    <h2>Data Elements</h2>
+                                </div>
+                            </div>
+                            <div class="workspace-right">
+                                <h2>Preview</h2>
+                                <div id="functionPreviews"></div>
+                            </div>
+                        </div>
+                        <div class="eq-preview">
+                                    <div class="modal-content-eq">
+
+                                <!-- Modal body -->
+                                <div class="modal-body" id="viewData1" style="max-height:50rem;overflow:auto;">
+                                    <table id="exampledata1" class="display compact" style="width:100%;" data-parent_group_no="g3">
+                                        <thead>
+                                            <tr>
+                                                <th id="thid1"></th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                        </tbody>
+                                      </table>
+                                </div>
+
+                              </div>
+                            <!-- </div> -->
+                        <!-- </div> -->
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" id="where_condition" class="btn btn-primary btn-xs rounded">Configure where condition</button>
+                    <button type="button" class="btn btn-primary btn-xs mx-2 rounded px-2" id="export_data_equ">Export Data to DB</button>
+                    <button type="button" class="btn btn-primary btn-xs mx-2 rounded px-2 closeEqBuilder" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary btn-xs mx-2 rounded px-2" id="save_workflow_equ">Save</button>
+                </div>
+            </div>
+        </div>
+    </div>
+      <div class="modal" id="exportEquModal">
+            <div class="modal-dialog modal-lg modal-dialog-centered">
+              <div class="modal-content">
+
+                <!-- Modal Header -->
+                <div class="modal-header">
+                  <h6 class="modal-title">Select Configurations</h6>
+                  <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+
+                <!-- Modal body -->
+                <div class="modal-body" id="exportEqData" style="max-height:25rem;overflow:auto;">
+                        <div class="dropdown">
+
+                            <div class="form-group" id="exportTable1">
+                                <label for="exportTable1">Select table to export Data:</label>
+                                <select id="selectExportTable1" class="form-control" name="exportTable1">
+                                <option value="" disabled selected>Select Table Name</option>
+      <option value="alertbasetable">alertbasetable</option>
+      <option value="Application">Application</option>
+      <option value="Approval_Email_Details">Approval_Email_Details</option>
+      <option value="ApprovalTable">ApprovalTable</option>
+      <option value="Business_Models">Business_Models</option>
+      <option value="Category_Subelement">Category_Subelement</option>
+      <option value="Category_Subelement_Attributes">Category_Subelement_Attributes</option>
+      <option value="computation_function_repository">computation_function_repository</option>
+      <option value="computation_model_configuration">computation_model_configuration</option>
+      <option value="computation_model_flowchart">computation_model_flowchart</option>
+      <option value="computation_model_run_history">computation_model_run_history</option>
+      <option value="computation_output_repository">computation_output_repository</option>
+      <option value="computation_scenario_repository">computation_scenario_repository</option>
+      <option value="ConfigTable">ConfigTable</option>
+      <option value="CountryMaster">CountryMaster</option>
+      <option value="CreditorOutstandingbalance">CreditorOutstandingbalance</option>
+      <option value="CurrencyMaster">CurrencyMaster</option>
+      <option value="Curve_Data">Curve_Data</option>
+      <option value="Curve_Repository">Curve_Repository</option>
+      <option value="data_management_computed_fields_config">data_management_computed_fields_config</option>
+      <option value="data_management_computed_fields_flow">data_management_computed_fields_flow</option>
+      <option value="data_mapping_error_report">data_mapping_error_report</option>
+      <option value="Draft_FormData">Draft_FormData</option>
+      <option value="DraftProcess">DraftProcess</option>
+      <option value="Error_Master_Table">Error_Master_Table</option>
+      <option value="flow_monitor_error_log">flow_monitor_error_log</option>
+      <option value="group_config">group_config</option>
+      <option value="Hierarchy_groups">Hierarchy_groups</option>
+      <option value="Hierarchy_levels">Hierarchy_levels</option>
+      <option value="Hierarchy_table">Hierarchy_table</option>
+      <option value="Holiday_Calendar_Repository">Holiday_Calendar_Repository</option>
+      <option value="jobs_scheduled">jobs_scheduled</option>
+      <option value="list_of_scheduling_jobs">list_of_scheduling_jobs</option>
+      <option value="ml_model_repository">ml_model_repository</option>
+      <option value="Mobile">Mobile</option>
+      <option value="Model_Repository">Model_Repository</option>
+      <option value="NavigationSideBar">NavigationSideBar</option>
+      <option value="Ocr_Template">Ocr_Template</option>
+      <option value="Person_Web_Socket_Test">Person_Web_Socket_Test</option>
+      <option value="Plan_Buckets">Plan_Buckets</option>
+      <option value="Plans">Plans</option>
+      <option value="Process_flow_model">Process_flow_model</option>
+      <option value="Process_master">Process_master</option>
+      <option value="Process_subprocess_flowchart">Process_subprocess_flowchart</option>
+      <option value="summary_table">summary_table</option>
+      <option value="Tables">Tables</option>
+      <option value="TabScreens">TabScreens</option>
+      <option value="Tasks_Planner">Tasks_Planner</option>
+      <option value="Templates">Templates</option>
+      <option value="test_table1">test_table1</option>
+      <option value="test_table2">test_table2</option>
+      <option value="Upload_Error_History">Upload_Error_History</option>
+      <option value="UserConfig">UserConfig</option>
+      <option value="UserProfile">UserProfile</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group" id="exportTypeContainer1">
+                                <label for="selectExportDataType1">Export type: </label>
+                                <select class="form-control" name="selectExportDataType1" id="selectExportDataType1">
+                                    <option value='append' selected>Append to existing data</option>
+                                    <option value='update'>Update existing data</option>
+                                    <option value='replace'>Replace the existing data</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group"  id="exportColumn1">
+                                <label for="column1">Column Name:</label>
+                                <select id="exportselectColumn1" class="form-control" name="column1" multiple>
+                                </select>
+                            </div>
+
+                            <div class="form-group" id="updateIdentifierContainer1" style="display: none;">
+                                <label for="selectUpdateIdentifierCol1">Select identifier columns: </label>
+                                <select class="form-control" name="selectUpdateIdentifierCol1" id="selectUpdateIdentifierCol1" multiple>
+                                </select>
+                            </div>
+                            <div class="form-group" id="updateColumnContainer1" style="display: none;">
+                                <label for="selectUpdateCol1">Select columns to update: </label>
+                                <select class="form-control" name="selectUpdateCol1" id="selectUpdateCol1" multiple>
+                                </select>
+                            </div>
+
+                            <br>
+
+                            <div class="form-group" style="text-align: left;">
+                                <button type="button" id="save_buttonExportData1" class="btn btn-primary btn-xs mx-2 rounded px-2">Save</button>
+                                <button type="submit" id="run_stepExportData1" class="btn btn-primary btn-xs mx-2 rounded px-2">Run</button>
+                            </div>
+                        </div>
+
+                        <br>
+                </div>
+
+                <!-- Modal footer -->
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-primary btn-xs mx-2 rounded px-2" data-dismiss="modal">Close</button>
+                </div>
+
+              </div>
+            </div>
+        </div>
+        <div class="modal" id="where_condition_Modal">
+          <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content">
+
+              <!-- Modal Header -->
+              <div class="modal-header">
+                <h6 class="modal-title">Set Condition</h6>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+              </div>
+
+              <!-- Modal body -->
+              <div class="modal-body">
+                  <div class="btn-group">
+                      <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                        {{_("Add Filter")}}
+                        <span class="caret"></span>
+                      </button>
+                      <ul class="dropdown-menu" id="condition_dropdown">
+                      </ul>
+                  </div><br>
+                  <br>
+                  <div style="float: left;"><button type="button" id="filter_condition_import" class="btn btn-primary btn-xs mx-2 rounded px-2" style="display:none; float: right;">Filter Data</button></div><br>
+                  <br>
+                  <div id="select_filter_columns_div" style="display: none;">
+                      <div class="col-4">
+                          <label for="select_parent_column">Select Parent Column</label>
+                          <select name="select_parent_column" id="select_parent_column" class="select2"></select>
+                      </div>
+                      <div class="col-4">
+                          <label for="select_current_column">Select Filter Column</label>
+                          <select name="select_current_column" id="select_current_column" class="select2"></select>
+                      </div>
+                  </div>
+                  <div class="row" id="items">
+                      <table class="table" id="filter-table">
+                      </table>
+                  </div>
+              </div>
+
+              <!-- Modal footer -->
+              <div class="modal-footer">
+                <button type="button" id="btn_search" class="btn btn-primary btn-xs mx-2 rounded px-2" data-dismiss="modal">Save</button>
+                <button type="button" class="btn btn-primary btn-xs mx-2 rounded px-2" data-dismiss="modal">Close</button>
+              </div>
+
+            </div>
+          </div>
+        </div>
+        <div class="modal fade" id="scenarioModal" tabindex="-1" role="dialog" aria-labelledby="tabsMultiFunc" aria-hidden="true">
+          <div class="modal-dialog modal-xl" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title">Scenarios</h5>
+                 <button
+                  type="button"
+                  class="close"
+                  data-dismiss="modal"
+                  aria-label="Close"
+                >
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+
+              <div class="modal-body">
+              </div>
+            </div>
+          </div>
+        </div>
+  <section class='content'><div class='container-fluid'> <form id='form1' method='post'>{% csrf_token %}</form><ul class='nav nav-tabs nav-fill' id='myTab' role='tablist' style='flex-wrap:nowrap;overflow-x: scroll;overflow-y: hidden;'></ul>
+
+    <style>
+      .commentboxcard {
+        height: 400px;
+        width: 500px;
+        flex-wrap:wrap;
+      }
+      strong {
+        font-weight: bold;
+      }
+      .select2-container{
+        width:auto;
+      }
+      .row {
+        flex-wrap: wrap;
+      }
+    </style>
+
+    <style>
+      h2 {
+        font-size: medium;
+      }
+      .ebDataElementsDiv {
+        margin-bottom: 5px;
+      }
+      .popup {
+        height:80%;
+      }
+      .select2-dropdown {
+        z-index:9999
+      }
+    </style>
+
+  <div class="modal fade" id="draftModal" tabindex="-1" role="dialog" aria-labelledby="draftModal"  aria-modal="true" style="z-index:1052 !important;">
+          <div class="modal-dialog  modal-lg modal-dialog-centered"  role="document">
+              <div class="modal-content" style="margin-right: auto;margin-left: auto;max-width:1000px;max-height: 700px;text-align: center;font-size:small">
+
+
+              <div class="modal-header"  style="background:#565a5e;text-align: center;">
+                  <h6 class="modal-title"  style="width:100%;color:white;margin:auto;font-weight:bold;">Draft Versions</h6>
+                  <button type="button" class="close" data-dismiss="modal">&times;</button>
+              </div>
+
+              <div class="modal-body " style="overflow: scroll;">
+                  <table class="table table-striped" id="previewTable">
+
+                  </table>
+              </div>
+
+              <div class="modal-footer">
+                  <button type="button" class="btn btn-primary btn-xs mx-2 rounded px-2" data-dismiss="modal">Close</button>
+              </div>
+
+              </div>
+          </div>
+      </div><div class="modal fade" id="previewCreateViewModal" tabindex="-1" role="dialog" aria-labelledby="previewCreateViewModal"  aria-modal="true" style="z-index:1052 !important;">
+          <div class="modal-dialog  modal-lg modal-dialog-centered"  role="document">
+              <div class="modal-content" style="margin-right: auto;margin-left: auto;max-width:1000px;max-height: 700px;text-align: center;font-size:small">
+
+
+              <div class="modal-header"  style="background:#565a5e;text-align: center;">
+                  <h6 class="modal-title"  style="width:100%;color:white;margin:auto;font-weight:bold;">Create View Preview</h6>
+                  <button type="button" class="close" data-dismiss="modal">&times;</button>
+              </div>
+
+              <div class="modal-body " style="overflow: scroll;" id="previewCreateViewBody">
+
+              </div>
+
+              <div class="modal-footer" id='previewCreateView_footer'>
+                  <button type="button" class="btn btn-primary btn-xs mx-2 rounded px-2" data-dismiss="modal">Close</button>
+              </div>
+
+              </div>
+          </div>
+      </div>
+    <div class='tab-content'>
+            </div></section>

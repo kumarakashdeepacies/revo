@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+
+{% extends extend_template %}
+{% load static %}
+
+{% block body_block %}
+
+<head>
+  <style>
+    input[type="text"] {
+      background: transparent;
+      border: solid thin #D0D0D0;
+      /*border-bottom: 1px solid #000000;*/
+      -webkit-box-shadow: none;
+      box-shadow: none;
+      border-radius: 0;
+    }
+
+    .textinput textInput form-control {
+      background: transparent;
+      border: solid thin #D0D0D0;
+      /*border-bottom: 1px solid #000000;*/
+      -webkit-box-shadow: none;
+      box-shadow: none;
+      border-radius: 0;
+    }
+
+    .numberinput form-control {
+      background: transparent;
+      border: solid thin #D0D0D0;
+      /*border-bottom: 1px solid #000000;*/
+      -webkit-box-shadow: none;
+      box-shadow: none;
+      border-radius: 0;
+    }
+
+
+
+    input[type="number"] {
+      background: transparent;
+      border: solid thin #D0D0D0;
+      /*border-bottom: 1px solid #000000;*/
+      -webkit-box-shadow: none;
+      box-shadow: none;
+      border-radius: 0;
+    }
+
+    #submit-id-submit {
+      position: relative;
+      top: 50%;
+    }
+
+    .content-header {
+      margin-left: 1.5%;
+      padding: 0%;
+    }
+
+    .content {
+      margin-left: -1%;
+      padding: 0%;
+    }
+
+    .buttonalign {
+      margin-left: 1%;
+    }
+  </style>
+</head>
+<section class="content">
+  <div class="container-fluid">
+
+    <div class="card">
+      <div class="card-body">
+        <form id="form1" method="post" class="col-6">
+          {% csrf_token %}
+
+
+          <div class="row">
+
+            <div class="col-4 dynamicForm" id="select_access_level">
+              <div class="form-group">
+                <label class="acies_label col-md-12">Select Access Level:</label>
+                <select class="selectize form-control" id="access_level" name="Access level">
+                  <option value="" disabled selected>Choose access level type</option>
+
+                  <option value="User">User</option>
+                  <option value="User_group">User Group</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="col-4 dynamicForm" id="select_user">
+              <div class="form-group">
+                <label class="acies_label col-md-12">Select User / User Group:</label>
+                <select class="selectize form-control" id="user_object" name="username">
+                  <option value="" disabled selected>Choose username</option>
+
+                </select>
+              </div>
+            </div>
+
+            <div class="col-4 dynamicForm" id="select_permission">
+              <div class="form-group">
+                <label class="acies_label col-md-12">Select Permission:</label>
+                <select class="selectize form-control" id="permissionSelect" name="permissionname">
+                  <option value="" disabled selected>Choose permission</option>
+                  {% for j in permissions_dict %}
+                  <option value="{{j.codename}}">{{j.name}}</option>
+                  {% endfor %}
+                </select>
+              </div>
+            </div>
+
+            <div class="col-4 dynamicForm" id="model_name">
+              <div class="form-group">
+                <label class="acies_label col-md-12">Table Name</label>
+                <input type="text" name="model_name" value="" class="form-control" id="modelName" readonly />
+              </div>
+            </div>
+
+            <div class="col-4 dynamicForm" id="select_column">
+              <div class="form-group">
+                <label class="acies_label col-md-12">Rule Attribute 1:</label>
+                <select class="selectize form-control" id="columnName" name="columnname">
+                  <option value="" disabled selected>Choose column</option>
+                  {% for j in columns %}
+                  <option value="{{j}}">{{j}}</option>
+                  {% endfor %}
+                </select>
+              </div>
+            </div>
+
+            <div class="col-4 dynamicForm" id="Coupon_PaymentRule">
+              <div class="form-group">
+                <label class="acies_label col-md-12">Coupon Payment Rule</label>
+                <select class="selectize form-control" name="operatorname">
+                  <option value="equal">=</option>
+                  <option value="not_equal">!=</option>
+                  <option value="greater_than">></option>
+                  <option value="less_than"><</option>
+                  <option value="greater_than_equal">>=</option>
+                  <option value="less_than_equal"><=</option>
+                  <option value="contains">Contains</option>
+                  <option value="does_not_contain">Does not contain</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="col-4 dynamicForm" id="value">
+              <div class="form-group">
+                <label class="acies_label col-md-12">Value</label>
+                <input type="text" name="filtervalue" value="Actual/Actual" class="form-control" />
+              </div>
+            </div>
+
+          </div>
+          <div class="row buttonalign">
+            <button id="saveButton" type="submit" class="buttonstyling acies_btn acies_btn-primary" style="font-size:10px; color: #B8860B;" name="permissioninputs" value="f2" formaction="{% url 'users:permissioncreate' %}"><i class="fa fa-save"></i>  Save</button>
+
+            &nbsp;&nbsp;&nbsp;
+            <button id="backButton" type="button" class="buttonstyling acies_btn acies_btn-primary" style="font-size:10px"><i class="fa fa-arrow-left"></i></button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+</section>
+
+
+<script type="text/javascript">
+
+  var ctoken = document.getElementById('form1').elements[0].value
+  $.ajaxSetup({
+    beforeSend: function (xhr, settings) {
+      xhr.setRequestHeader("X-CSRFToken", ctoken);
+    }
+  });
+  var selectProductDropdown = document.getElementById('selectProduct')
+  // user/usergroup selection
+  $('#access_level').on('change', accessSelected);
+  function accessSelected(event) {
+    var $select_user_object = $('#user_object').selectize();
+    var selectize_user_object = $select_user_object[0].selectize;
+    var model = event.target.value;
+    var users = {{ users|safe }};
+    var user_groups = {{ user_groups|safe }};
+    if (model == "User") {
+      selectize_user_object.clear();
+      selectize_user_object.clearOptions();
+      for (var i = 0; i < users.length; i++) {
+        selectize_user_object.addOption({value:users[i],text:users[i]});
+      }
+    }
+    else if (model == "User_group") {
+      selectize_user_object.clear();
+      selectize_user_object.clearOptions();
+      for (var i = 0; i < users.length; i++) {
+        selectize_user_object.addOption({value:user_groups[i],text:user_groups[i]});
+      }
+    }
+  }
+
+  //selectProductDropdown.addEventListener('change', productSelected);
+  $('#permissionSelect').on('change', permissionSelected);
+  function permissionSelected(event) {
+    var model = event.target.value;
+
+    var $select_columnName = $('#columnName').selectize();
+    var selectize_columnName = $select_columnName[0].selectize;
+
+
+
+   // var selectedProduct = selectProductDropdown.options[selectProductDropdown.selectedIndex].value
+
+    $.ajax({
+      url: '/users/permissioncreate/',
+      data: { 'permission': model, 'permissioninputs': 'f1' },
+      type: "POST",
+      dataType: "json",
+      success: function (data) {
+        $('#modelName').val(data.data.table_name)
+        selectize_columnName.clear();
+        selectize_columnName.clearOptions();
+        for (var i = 0; i < data.data.columns.length; i++) {
+            selectize_columnName.addOption({value:data.data.columns[i],text:data.data.columns[i]});
+          }
+      },
+      error: function () {
+        Swal.fire({icon: 'error',text: 'Error! Please try again.'});
+      }
+    })
+  }
+
+</script>
+
+  {% endblock %}

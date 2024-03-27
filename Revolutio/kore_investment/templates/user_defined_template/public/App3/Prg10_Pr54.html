@@ -1,0 +1,1075 @@
+
+    <!DOCTYPE html>
+
+    {% extends extend_template %}
+    {% load crispy_forms_tags %}
+    {{ form.media }}
+    {% load static %}
+    {% block body_block %}
+    <link rel="stylesheet" href="{% static 'css/KoreD/jquery.dataTables.min.css' %}">
+    <link rel="stylesheet" href="{% static 'vendor/Base_theme/datatables-responsive/css/responsive.bootstrap4.min.css' %}">
+    <link rel="stylesheet" href="{% static 'vendor/Base_theme/datatables-colreorder/css/colReorder.bootstrap4.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/KoreD/buttons.dataTables.min.css' %}">
+    <link rel="preload" as="style" fetchpriority="low" onload="this.rel='stylesheet'" href="{% static 'css/ebstyle.css' %}">
+    <!-- DataTables -->
+    <script src="{% static 'vendor/Base_theme/datatables/jquery.dataTables.min.js' %}"></script>
+    <script src="{% static 'vendor/Base_theme/datatables-responsive/js/dataTables.responsive.min.js' %}"></script>
+    <script src="{% static 'vendor/Base_theme/datatables-fixedheader/js/dataTables.fixedHeader.min.js' %}"></script>
+    <script src="{% static 'vendor/Base_theme/datatables-colreorder/js/dataTables.colReorder.min.js' %}"></script>
+    <script src="{%static 'vendor/Base_theme/datatables-bs4/js/dataTables.bootstrap4.js'%}"></script>
+    <script src="{%static 'vendor/Base_theme/datatables-fixedcolumns/js/dataTables.fixedColumns.min.js'%}"></script>
+    <link rel="stylesheet" href="{% static 'vendor/Base_theme/datatables-fixedcolumns/css/fixedColumns.dataTables.min.css'%}">
+    <!-- Treant JS -->
+    <link href="{%static 'vendor/treant-js-master/Treant.css'%}" type="text/css" rel="stylesheet" />
+    <script src="{%static 'vendor/treant-js-master/vendor/raphael.js'%}"></script>
+    <script src="{%static 'vendor/treant-js-master/Treant.js'%}"></script>
+    <!-- Timepicker -->
+    <link rel="stylesheet" href="{%static 'bootstrap-datepicker/bootstrap-datetimepicker.min.css'%}">
+    <link rel="stylesheet" href="{%static 'bootstrap_datepicker_plus/css/datepicker-widget.min.css'%}">
+    <script type="text/javascript" src="{%static 'moment/moment-with-locales.min.js'%}"></script>
+    <script type="text/javascript" src="{%static 'bootstrap-datetimepicker/bootstrap-datetimepicker.min.js'%}"></script>
+    <script type="text/javascript" src="{%static 'bootstrap_datepicker_plus/js/datepicker-widget.js'%}"></script>
+
+    <script src="{%static 'vendor/Base_theme/datatables-buttons/js/dataTables.buttons.min.js'%}"></script>
+    <script src="{%static 'vendor/Base_theme/jszip/jszip.min.js'%}"></script>
+    <script src="{%static 'vendor/Base_theme/pdfmake/pdfmake.min.js'%}"></script>
+    <script src="{%static 'vendor/Base_theme/pdfmake/vfs_fonts.js'%}"></script>
+    <script src="{%static 'vendor/Base_theme/datatables-buttons/js/buttons.html5.min.js'%}"></script>
+    <script src="{%static 'vendor/Base_theme/datatables-buttons/js/buttons.colVis.min.js'%}"></script>
+    <script src="{%static 'vendor/Base_theme/datatables-buttons/js/buttons.print.min.js'%}"></script>
+    <script src="{%static 'vendor/Base_theme/datatables-buttons/js/buttons.flash.min.js'%}"></script>
+    <script src="{%static 'vendor/Base_theme/datatables-rowreorder/js/dataTables.rowReorder.min.js'%}"></script>
+    <link rel="stylesheet" href="{% static 'vendor/Base_theme/datatables-rowreorder/css/rowReorder.bootstrap4.min.css' %}">
+    <!-- Pivot Table JS -->
+    <script type="text/javascript" src=" {% static 'vendor/d3/d3.min.js' %}"></script>
+    <script type="text/javascript" src=" {% static 'vendor/c3/c3.min.js' %}"></script>
+
+
+    <script src="{%static 'vendor/Plotly/plotly-basic-latest.min.js'%}"></script>
+
+    <script src=" {% static 'js/pivottable/dist/pivot.min.js' %}"></script>
+    <script src=" {% static 'js/pivottable/dist/c3_renderers.min.js' %}"></script>
+
+    <script src=" {% static 'js/pivottable/dist/d3_renderers.min.js' %}"></script>
+    <script src=" {% static 'js/pivottable/dist/gchart_renderers.min.js' %}"></script>
+    <script src=" {% static 'js/pivottable/dist/googleapis.js' %}"></script>
+    <script src=" {% static 'js/pivottable/dist/plotly_renderers.min.js' %}"></script>
+
+    <!-- Plotly -->
+    <script src="{%static 'vendor/Plotly/plotly-latest.min.js'%}"></script>
+    <link href="{%static 'vendor/Plotly/mapbox-gl.css'%}" rel='stylesheet' />
+    <link href="{%static 'vendor/Tabulator/tabulator.min.css'%}" rel="stylesheet">
+    <script type="text/javascript" src="{%static 'vendor/Tabulator/tabulator.min.js'%}"></script>
+    <!-- jsPDF -->
+    <script src="{%static 'js/jsPDF/dist/jspdf.umd.min.js'%}"></script>
+    <!-- html2Canvas -->
+    <script src="{%static 'js/html2canvas/html2canvas.min.js'%}"></script>
+
+    <!-- Jcrop OCR -->
+    <link rel="stylesheet" href="{% static 'vendor/Jcrop/jquery.Jcrop.css' %}">
+    <script src="{%static 'vendor/Jcrop/popper.min.js'%}"></script>
+    <script src="{%static 'vendor/Jcrop/jquery.Jcrop.js'%}"></script>
+    <script src="{%static 'vendor/Jcrop/console.image.min.js'%}"></script>
+
+  <!-- XLSX/XML Table Export --->
+    <script src="{%static 'js/tableExport/tableExport.min.js'%}" ></script>
+    <script>
+      $('body').css('pointer-events', 'none')
+      var id1 = {{element_id | safe}}
+      const { jsPDF } = window.jspdf;
+    </script>
+
+  
+      <div class="breadcrumb-holder l3-breadcrumb-holder">
+      <div class="row" style="width: 100%;">
+        <div class="col-5 container-fluid breadcrumb-container l3-breadcrumbs">
+          <div>
+            <a {% if current_application_code != 'App0' %} {% if current_application_code == 'Dev' %}
+              {% if current_dev_mode == 'Edit' %} {% if edit_app_code != 'Not Selected' %}
+              href="{% url 'users:homePage' edit_app_code current_dev_mode %}"
+              {% else %}
+              href="{% url 'users:homePage' 'Dev' current_dev_mode %}"
+              {% endif %} {% elif current_dev_mode == 'Build' %} {% if build_app_code != 'Not Selected' %}
+              href="{% url 'users:homePage' build_app_code current_dev_mode %}"
+              {% else %}
+              href="{% url 'users:select_application' %}"
+              {% endif %}  {% endif %}
+              {% else %}
+              href="{% url 'users:homePage' current_application_code 'User' %}"
+              {% endif %}
+              {% else %}
+              href="{% url 'users:select_application' %}"
+              {% endif %} >
+              <i class="fa-solid fa-house" style="font-size: 18px;margin-top:3px;" data-toggle="tooltip" title="App Homepage"></i>
+            </a>
+          </div>
+          <div> <button class="b-btn" style="border-radius:8rem" onclick="window.history.back();"><i class="fa-solid fa-clock-rotate-left mr-1"></i> Back</button> </div>
+
+
+       </div>
+        <div class='col-7 container-fluid tabconfig'>
+          <div>
+            <button class="btn btn-dark tabconfig_button" data-data_list='{}' onclick="populateTabFuctionalities.call(this)" data-toggle="modal" data-target="#tabsMultiFunc" >
+              <i class="fas mr-1"></i> <div style="white-space:nowrap;"> Manage Tabs </div>
+            </button>
+          </div>
+          <div>
+            <button class="b-btn view_breadcrumbs" style="border-radius:8rem">View Path <i class="fa-solid fa-chevron-down ml-1 customtoggle"></i> </button>
+          </div>
+        </div>
+        </div>
+      </div>
+      <style>
+        .breadcrumb_item_mobile{
+          padding: 2px 12px;
+          background: var(--primary-color);
+          border-radius: 8px;
+          width: 90%;
+          text-align: left;
+          color: var(--font-hover-color);
+          min-height: 60px;
+          display: flex;
+          align-items: center;
+        }
+        .mobile_breadcrumbs{
+          display:flex;
+          flex-direction: column;
+          align-items: center;
+        }
+        .mobile_breadcrumbs .down-arrow{
+          color: var(--primary-color);
+        }
+
+
+      </style>
+
+      <div class="modal fade" id="view_breadcrumbs_modal" tabindex="-1" role="dialog" data-focus="false" aria-labelledby="view_breadcrumbs_modal" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document" style="width: 85%;margin: auto;">
+          <div class="modal-content">
+            <div class="modal-header" style="border-bottom:0">
+              <div class="modal-title">Your Path</div>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close" style="background-color: transparent; color: #000; padding: 0; font-size: 28px; margin:unset;">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body" style="padding-bottom: 2.8rem;padding-top: 0rem;">
+
+              <div class="mobile_breadcrumbs">
+
+                <div class="">
+                  <a {% if current_application_code != 'App0' %} {% if current_application_code == 'Dev' %}
+                    {% if current_dev_mode == 'Edit' %} {% if edit_app_code != 'Not Selected' %}
+                    href="{% url 'users:homePage' edit_app_code current_dev_mode %}"
+                    {% else %}
+                    href="{% url 'users:homePage' 'Dev' current_dev_mode %}"
+                    {% endif %} {% elif current_dev_mode == 'Build' %} {% if build_app_code != 'Not Selected' %}
+                    href="{% url 'users:homePage' build_app_code current_dev_mode %}"
+                    {% else %}
+                    href="{% url 'users:select_application' %}"
+                    {% endif %}  {% endif %}
+                    {% else %}
+                    href="{% url 'users:homePage' current_application_code 'User' %}"
+                    {% endif %}
+                    {% else %}
+                    href="{% url 'users:select_application' %}"
+                    {% endif %} >
+                    <i class="fa-solid fa-house" style="font-size: 25px;margin-top:3px;" data-toggle="tooltip" title="App Homepage"></i>
+                  </a>
+                </div>
+              
+                <div class="down-arrow"><i class="fa-solid fa-down-long"></i></div>
+                <div class="breadcrumb_item_mobile">
+                  <span>Balance sheet scenarios</span>
+                </div>
+                <div class="down-arrow"><i class="fa-solid fa-down-long"></i></div>
+                <div class="breadcrumb_item_mobile">
+                  <span>Scenario configuration</span>
+                </div>
+
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+       
+
+          <ul class="breadcrumb breadcrumb-accordion" style="display:none; padding: .25rem 1rem; margin-block-end: 0em;" id="dynamic">
+        <li class="breadcrumb-item"><a {% if current_application_code != 'App0' %} {% if current_application_code == 'Dev' %}
+              {% if current_dev_mode == 'Edit' %} {% if edit_app_code != 'Not Selected' %}
+              href="{% url 'users:homePage' edit_app_code current_dev_mode %}"
+              {% else %}
+              href="{% url 'users:homePage' 'Dev' current_dev_mode %}"
+              {% endif %} {% elif current_dev_mode == 'Build' %} {% if build_app_code != 'Not Selected' %}
+              href="{% url 'users:homePage' build_app_code current_dev_mode %}"
+              {% else %}
+              href="{% url 'users:select_application' %}"
+              {% endif %}  {% endif %}
+              {% else %}
+              href="{% url 'users:homePage' current_application_code 'User' %}"
+              {% endif %}
+              {% else %}
+              href="{% url 'users:select_application' %}"
+              {% endif %} >
+          <b> Home </b></a></li>      <li class="breadcrumb-item"> <b> Balance sheet scenarios </b></li>      <li class="breadcrumb-item"> <b> Scenario configuration </b></li> </ul>
+
+      <script>
+      $(".view_breadcrumbs").click(function(){
+        var media = window.matchMedia("(min-width: 450px)")
+        if (media.matches){
+          $(this).closest(".breadcrumb-holder").siblings(".breadcrumb-accordion").slideToggle()
+          $(this).find("i").toggleClass("toggle_arrow")
+        }
+        else{
+          $("#view_breadcrumbs_modal").modal("show")
+        }
+      })
+      </script>
+      
+      <datalist id="hosting-plan">
+        <option value="=Count"/>
+        <option value="=Count Distinct"/>
+        <option value="=Sum"/>
+        <option value="=Average"/>
+        <option value="=Minimum"/>
+        <option value="=Maximum"/>
+        <option value="=Standard Deviation"/>
+        <option value="=Variance"/>
+        <option value="=Median"/>
+        <option value="=Skewness"/>
+        <option value="=Kurtosis"/>
+      </datalist>
+    
+    <div class="modal fade" id="tabsMultiFunc" tabindex="-1" role="dialog" data-focus="false" aria-labelledby="tabsMultiFunc" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Manage Tabs</h5>
+             <button
+              type="button"
+              class="close"
+              data-dismiss="modal"
+              aria-label="Close"
+              style="
+                  background: unset;
+                  font-size: 1.5rem;
+                  color: black;
+              "
+            >
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+
+          <div class="modal-body">
+            <div class=''>
+              <div class='tabsMultiFuncBody'>
+              <style>
+              #tabsMultiFuncBodyTable thead tr{
+                background: var(--primary-color);
+                color: var(--font-hover-color);
+              }
+              #tabsMultiFuncBodyTable tbody tr{
+                background: #fff !important;
+              }
+              #tabsMultiFuncBodyTable tbody tr:hover{
+                background: rgb(243, 243, 243) !important;
+              }
+              #tabsMultiFuncBodyTable .switch-container {
+                  width: 3.6em;
+                  height: 1.6em;
+              }
+              #tabsMultiFuncBodyTable .switch-color {
+                width: 3.4em;
+                height: 1.4em;
+              }
+              #tabsMultiFuncBodyTable .switch-container label.switch-label {
+                width: 1.2em;
+                height: 1.2em;
+              }
+              #tabsMultiFuncBodyTable td, #tabsMultiFuncBodyTable th {
+                  vertical-align: middle !important;
+              }
+
+              </style>
+                <table id="tabsMultiFuncBodyTable" class="table table-bordered" style="width:100%;overflow-x: scroll;overflow-y:scroll;">
+                  <thead style="border-bottom:1px solid var(--primary-color)" >
+                    <tr style="text-align:center">
+                      <th>Re-order</th>
+                      <th>Display</th>
+                      <th>Tab Name</th>
+                    </tr>
+                  </thead>
+                  <tbody style="border-bottom:1px solid var(--primary-color);">
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button onclick="saveTabsFunc.call(this)" type="button" class="btn btn-primary">Save</button>
+          </div>
+        </div>
+      </div>
+    </div><section class='content' style='opacity: 0;'><div class='container-fluid'> <form id='form1' method='post'>{% csrf_token %}</form><ul class='nav nav-tabs nav-fill l3-desktop-tabs' fetchpriority='high' id='myTab' role='tablist' style='flex-wrap:nowrap;overflow-x: scroll;overflow-y: hidden;margin-top:1%;padding: 12px 0 0 0 !important;'></ul>
+    <div class="dropdown-container l3-mobile-tabs" style="margin: 10px 7px 2px 8px;box-shadow: 0 0 1px rgba(0,0,0,.125), 0 1px 3px rgba(0,0,0,.2);border-radius: 5px;overflow: hidden;"><div class="dropdown-header" id='' data-toggle='tab' href=''><span class="selected_text" style="margin: auto 9px;"></span><i class="fa-lg fa-solid fa-angle-down"></i></div><div class="option-container" style="display:none;"></div></div><script>
+              $(document).ready(function(){
+                var shown_items = 0
+                $(".dropdown-header .selected_text").text($(".option-container").find(".nav-link.l3items").eq(0).text())
+                $(".dropdown-header").attr("style",$(".option-container").find(".mobile-text").eq(0).attr("data-style"))
+
+                $(".option-container").css("width",$(".option-container").closest(".l3-mobile-tabs").width())
+
+                $('.option-container').find(".mobile-text").each(function(){
+                  if($(this).css("display") != "none"){
+                    shown_items++
+                  }
+                })
+
+                if(shown_items >= 2)
+                {
+                  $(".dropdown-header").click(function(){
+                    $(this).siblings(".option-container").toggle()
+                  })
+
+                  $(".option-container").find(".nav-link.l3items").eq(0).addClass("active")
+
+                  $(".option-container").find(".nav-link.l3items").click(function(){
+                    current_nav = $(this)
+                    $(".dropdown-header .selected_text").text($(this).text())
+                    custom_style=$(this).parent().attr("data-style")
+                    $(".dropdown-header").attr("style",custom_style)
+                    $(".option-container").find(".nav-link.l3items").each(function(){
+                        if($(this) != current_nav){
+                          $(this).removeClass("active")
+                        }
+                    })
+                    $(".option-container").toggle()
+                  })
+
+                  $(document).on("click", function(event){
+                    var $trigger = $(".dropdown-container");
+                    if($trigger !== event.target && !$trigger.has(event.target).length){
+                        $(".option-container").css("display","none");
+                    }
+                  });
+
+                }
+                else{
+                  $(".option-container").css("display","none")
+                  $(".dropdown-header i").css("display","none")
+                }
+
+              })
+
+              </script>
+    <style>
+      .commentboxcard {
+        height: 400px;
+        width: 500px;
+        flex-wrap:wrap;
+      }
+      strong {
+        font-weight: bold;
+      }
+      .select2-container{
+        width:auto;
+      }
+      .row {
+        flex-wrap: wrap;
+      }
+      .l3-mobile-tabs{
+        display:none;
+      }
+      .l3-desktop-tabs{
+        display:flex;
+      }
+      .dropdown-header{
+        padding: 0.7rem;
+        background: #e9ecef;
+        width:100%;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        font-size: 16px;
+      }
+      .selected_text{
+        word-break: break-word;
+        white-space: break-spaces;
+        text-align: left;
+      }
+
+      @media screen and (max-width: 426px) {
+        .tab-container{
+          width: 100% !important;
+        }
+        .vertical-tabs{
+          margin-top: 0 !important;
+        }
+        .l3-mobile-tabs{
+          display:block;
+        }
+        .vertical-mobile-tabs{
+          width: 100%;
+        }
+        .l3-desktop-tabs{
+          display:none;
+        }
+        .option-container{
+          position: absolute;
+          z-index: 2000;
+          width: 90%;
+          display: none;
+          box-shadow: 0 0.5rem 1rem rgba(0,0,0,.175);
+          border-radius: 5px;
+          overflow: auto;
+          height: auto;
+          max-height: 16rem;
+        }
+      }
+
+      @media screen and (max-width: 376px){
+        .option-container{
+          width: 89%;
+        }
+      }
+
+      @media screen and (max-width: 321px) {
+        .option-container{
+          width: 87%;
+        }
+      }
+
+      @media screen and (max-width: 281px) {
+        .option-container{
+          width: 85%;
+        }
+      }
+
+    </style>
+  
+    <style>
+      h2 {
+        font-size: medium;
+      }
+      .ebDataElementsDiv {
+        margin-bottom: 5px;
+      }
+      .popup {
+        height:80%;
+      }
+      .select2-dropdown {
+        z-index:9999
+      }
+    </style>
+
+  <div class="modal fade" id="draftModal" tabindex="-1" role="dialog" data-focus="false" aria-labelledby="draftModal"  aria-modal="true" style="z-index:1052 !important;">
+          <div class="modal-dialog modal-xl modal-lg modal-dialog-centered"  role="document">
+              <div class="modal-content">
+
+
+              <div class="modal-header border-0 pl-3 pr-3">
+                  <h6 class="modal-title">Draft Versions</h6>
+                  <i class="fa-solid fa-box-archive fa-3x"></i>
+              </div>
+
+              <div class="modal-body " >
+                  <table class="table table-striped" id="previewTable">
+
+                  </table>
+              </div>
+
+              <div class="modal-footer d-flex justify-content-end border-0">
+                  <button type="button" class="btn btn-primary buttonfooter btn-md mx-2 rounded px-2" data-dismiss="modal">Close</button>
+              </div>
+
+              </div>
+          </div>
+
+      </div>
+<div class="modal fade" id="previewCreateViewModal" tabindex="-1" role="dialog" data-focus="false" aria-labelledby="previewCreateViewModal"  aria-modal="true" style="z-index:1052 !important;">
+          <div class="modal-dialog  modal-lg modal-dialog-centered"  role="document">
+              <div class="modal-content" style="margin-right: auto;margin-left: auto;max-width:1000px;max-height: 700px;text-align: center;font-size:small">
+
+
+             <div class="modal-header" id="previewCreateviewHeader"  style="background:#565a5e;text-align: center;">
+                  <h6 class="modal-title"  style="width:100%;color:white;margin:auto;font-weight:bold;"></h6>
+                  <button type="button" class="close" data-dismiss="modal">&times;</button>
+              </div>
+
+              <div class="modal-body " style="overflow: scroll;" id="previewCreateViewBody">
+
+              </div>
+
+              <div class="modal-footer" id='previewCreateView_footer'>
+                  <button type="button" class="btn btn-primary btn-md mx-2 rounded px-2" data-dismiss="modal">Close</button>
+              </div>
+
+              </div>
+          </div>
+      </div>
+    <div class="modal fade" id="table_field_createView_dialog"  role="dialog" data-focus="false" aria-labelledby="table_field_createView_dialog" aria-hidden="true" style="z-index: 1053; padding-top: 265px;">
+            <div class="modal-dialog modal-xl" role="document">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title" id="">Details</h5>
+                </div>
+                <div class="modal-body" style="padding:50px;">
+                </div>
+                <button type="button" class="btn btn-primary" style="position:absolute; bottom: 0.5rem; right: 0.5rem; width:80px" data-dismiss="modal" onclick="$('#draftModal').modal('show')">Close</button>
+              </div>
+            </div>
+          </div>
+    <div class='tab-content' fetchpriority='high'></div></section>
+      <style>
+        .buttonstyling{
+          margin-bottom:10px;
+        }
+      </style>
+     <script>
+      var dashboardSave_ = true;
+      function editNameIndex(){
+        let id_ = $(this).attr("id").replace("tabHeader","indextab");
+        $(`#${id_}`).find("a").html($(this).text());
+      }
+      const gotoTab = (parent, index) => {
+          let id = '#analysis' + index;
+          $(id).trigger('click');
+        }</script>
+    <script>
+        let activeElement = "no";        var None = 'None';        var listViewTableDict={};        var listViewEditTemplate = {};        var createViewIdList = [];        var elementIDList=[];        var chartConfigDict={};        var crossFilterDict={};        var element_table_IDList = [];        var computationElementIdsArray = [];        var previousRunComputeElementIdArray = [];        var element_page = [];        var names = {};
+        var app_code_home = '';        var user_home = '';        var item_code_list = [];        var grapejs = 1;        var m_col_basefilter = {};        var globalFuncList_scenario = [];        var variableList_scenario = [];        var analysiselementIDList=[];        var mColBasefilter = {};        var chartSaveEleIdList = [];        var chartSaveEleId = "";        var slicerTabConfigDict = {};        var sharedConfig = {"element_id":"", "config":[]};        var editType = "Enable";        var button_ids = ["savebutton_","saveDraftbutton_","customValidationList","calculateComp","viewHistory_","button-id-back","resetDraft_","previewDraft_","rejectedRecords","viewTransactions"];        function enableSaveButton () {        
+ $(this).find('button[value=Save]').prop('disabled',false);      
+};
+
+      function bta_apply() {
+            let lba_data = {{lba_data | safe}};
+            for (var key of Object.keys(lba_data)) {
+              if(Object.keys(lba_data[key]).length != 0) {
+              e_id = key;
+              if (e_id.startsWith("whiteSpacewrap")) {
+                if (!lba_data[key].includes("CreateView - Save")) {
+                  $(`#savebutton_${e_id}`).attr("disabled", "true");
+                  $(`#compare_existing_${e_id}`).attr("disabled", "true");
+                }
+
+                if (!lba_data[key].includes("CreateView - Save as Draft")) {
+                  $(`#saveDraftbutton_${e_id}`).attr("disabled", "true");
+                  $(`#resetDraft_${e_id}`).attr("disabled", "true");
+                  $(`#previewDraft_${e_id}`).attr("disabled", "true");
+                }
+
+                if (!lba_data[key].includes("CreateView - Custom Validation")) {
+                  $(`#customValidationList${e_id}`).attr("disabled", "true");
+                  $(`#customValidation${e_id}`).attr("disabled", "true");
+                }
+
+                if (!lba_data[key].includes("CreateView - Refresh Computation")) {
+                  $(`#calCompVal_${e_id}`).attr("disabled", "true");
+                }
+
+                if (!lba_data[key].includes("CreateView - Back")) {
+                  $(`#button-id-back${e_id}`).attr("disabled", "true");
+                }
+
+                if (!lba_data[key].includes("CreateView - View History")) {
+                  $(`#viewHistory_${e_id}`).attr("disabled", "true");
+                }
+                if (!lba_data[key].includes("CreateView - View Rejected Records")) {
+                  $(`#rejectedRecords${e_id}`).attr("disabled", "true");
+                }
+
+                if (!lba_data[key].includes("CreateView - View Transaction Status")) {
+                  $(`#showTransactions${e_id}`).attr("disabled", "true");
+                  $(`#viewTransactions${e_id}`).attr("disabled", "true");
+                }
+              }
+              if (e_id.startsWith("ellipse")) {
+                if (!lba_data[key].includes("Analysis - Previous Versions")) {
+                  $(`#previousVersion${e_id}`).attr("disabled", "true");
+                }
+                if (!lba_data[key].includes("Analysis - Save and Share")) {
+                  $(`#saveShare${e_id}`).attr("disabled", "true");
+                }
+                if (!lba_data[key].includes("Analysis - Plot charts")) {
+                  $(`#plotCharts${e_id}`).attr("disabled", "true");
+                }
+                if (!lba_data[key].includes("Analysis - PDF")) {
+                  $(`#analysisPDF${e_id}`).attr("disabled", "true");
+                }
+                if (!lba_data[key].includes("Analysis - Save")) {
+                  $(`#saveChartConfigButton${e_id}`).attr("disabled", "true");
+                }
+                if (!lba_data[key].includes("Analysis - Global Settings")) {
+                  $(`#globalButton${e_id}`).attr("disabled", "true");
+                }
+                if (!lba_data[key].includes("Analysis - Add tab")) {
+                  $(`#analysisAddTab${e_id}`).attr("disabled", "true");
+                }
+                if (!lba_data[key].includes("Analysis - Tab config")) {
+                  $(`#TabSettings${e_id}`).attr("disabled", "true");
+                }
+                if (!lba_data[key].includes("Analysis - Import dashboard")) {
+                  $(`#importDashboard${e_id}`).attr("disabled", "true");
+                }
+                if (!lba_data[key].includes("Analysis - Publish")) {
+                  $(`#publishDashboard${e_id}`).attr("disabled", "true");
+                }
+              }
+
+              if (e_id.startsWith("parallelogram")) {
+                if (!lba_data[key].includes("Computation - Run Model")) {
+                  $(`#runModel_${e_id}`).attr("disabled", "true");
+                }
+
+                if (!lba_data[key].includes("Computation - Configure Scenario")) {
+                  $(`#scenarios_${e_id}`).attr("disabled", "true");
+                }
+
+                if (!lba_data[key].includes("Computation - Filter")) {
+                  $(`#filter_button_prev_run_computation${e_id}`).attr(
+                    "disabled",
+                    "true"
+                  );
+                  $(`#freezepane_button_prev_run_computation${e_id}`).attr(
+                    "disabled",
+                    "true"
+                  );
+                }
+              }
+              if (e_id.startsWith("document")) {
+                if (!lba_data[key].includes("UploadView - Upload")) {
+                  $(`#uploadFile${e_id}`).attr("disabled", "true");
+                  $(`#downloadButton${e_id}`).attr("disabled", "true");
+                }
+
+                if (!lba_data[key].includes("UploadView - Map Columns")) {
+                  $(`#columnMapperButton${e_id}`).attr("disabled", "true");
+                }
+                if (!lba_data[key].includes("UploadView - Custom Validation")) {
+                  $(`#customValidationButton${e_id}`).attr("disabled", "true");
+                }
+                if (!lba_data[key].includes("UploadView - Add computation logic")) {
+                  $(`#computedFieldMapperButton${e_id}`).attr("disabled", "true");
+                }
+                if (!lba_data[key].includes("UploadView - Download data")) {
+                  $(`#downloadData${e_id}`).attr("disabled", "true");
+                }
+                if (!lba_data[key].includes("UploadView - Upload history")) {
+                  $(`#downloadHistory${e_id}`).attr("disabled", "true");
+                }
+                if (!lba_data[key].includes("UploadView - Last upload errors")) {
+                  $(`#downloadLastUploadErrors${e_id}`).attr("disabled", "true");
+                }
+                if (!lba_data[key].includes("UploadView - Detailed error log")) {
+                  $(`#downloadErrorLog${e_id}`).attr("disabled", "true");
+                }
+                if (!lba_data[key].includes("UploadView - Transaction status")) {
+                  $(`#showTransactions${e_id}`).attr("disabled", "true");
+                }
+                if (!lba_data[key].includes("UploadView - SFTP connectors")) {
+                  $(`#sftpUploadButton${e_id}`).attr("disabled", "true");
+                }
+              }
+              if (e_id.startsWith("process")) {
+                if (!lba_data[key].includes("ListView - Upload")) {
+                  $(`#uploadButton${e_id}`).attr("disabled", "true");
+                }
+                if (!lba_data[key].includes("ListView - Save template")) {
+                  $(`#saveTemplateButton${e_id}`).attr("disabled", "true");
+                }
+                if (!lba_data[key].includes("ListView - Set Alerts")) {
+                  $(`#displayalert${e_id}`).attr("disabled", "true");
+                }
+                if (!lba_data[key].includes("ListView - Paste Tabular Data")) {
+                  $(`#tablegenerator_${e_id}`).attr("disabled", "true");
+                }
+                if (!lba_data[key].includes("ListView - Edit Mode")) {
+                  $(`#editListView${e_id}`).attr("disabled", "true");
+                }
+                if (!lba_data[key].includes("ListView - Delete all data")) {
+                  $(`#listview_clearall_${e_id}`).attr("disabled", "true");
+                }
+                if (!lba_data[key].includes("ListView - Find and replace")) {
+                  $(`#find_replace_${e_id}`).attr("disabled", "true");
+                }
+                if (!lba_data[key].includes("ListView - Freeze Panes")) {
+                  $(`#freeze_pane_${e_id}`).attr("disabled", "true");
+                }
+                if (!lba_data[key].includes("ListView - Formatters")) {
+                  $(`#formatter_${e_id}`).attr("disabled", "true");
+                }
+                if (!lba_data[key].includes("ListView - Transactions Status")) {
+                  $(`#showTransactions${e_id}`).attr("disabled", "true");
+                }
+                if (!lba_data[key].includes("ListView - Plot Charts")) {
+                  $(`#plotCharts${e_id}`).attr("disabled", "true");
+                }
+                if (!lba_data[key].includes("ListView - Filter")) {
+                  $(`#filter_button_list_view${e_id}`).attr("disabled", "true");
+                }
+                if (!lba_data[key].includes("ListView - Add Computed Fields")) {
+                  $(`#addComp_field_${e_id}`).attr("disabled", "true");
+                }
+                if (!lba_data[key].includes("ListView - Expand")) {
+                  $(`#example1_expand${e_id}`).attr("disabled", "true");
+                }
+                if (!lba_data[key].includes("ListView - Extract Data")) {
+                  $(`#extract_data_${e_id}`).attr("disabled", "true");
+                }
+                if (!lba_data[key].includes("ListView - Bulk Update")) {
+                  $(`#bulk_update_${e_id}`).attr("disabled", "true");
+                }
+                if (!lba_data[key].includes("ListView - Conditional Delete")) {
+                  $(`#conditional_delete_${e_id}`).attr("disabled", "true");
+                }
+                if (!lba_data[key].includes("ListView - Approve all")) {
+                  $(`#approve_all_ApprovalTemplate_${e_id}`).attr("disabled", "true");
+                }
+                if (!lba_data[key].includes("ListView - Reject all")) {
+                  $(`#reject_all_ApprovalTemplate_${e_id}`).attr("disabled", "true");
+                }
+                if (!lba_data[key].includes("ListView - Approve Multiple")) {
+                  $(`#approve_multiple_ApprovalTemplate_${e_id}`).attr("disabled", "true");
+                }
+                if (!lba_data[key].includes("ListView - Reject Multiple")) {
+                  $(`#reject_multiple_ApprovalTemplate_${e_id}`).attr("disabled", "true");
+                }
+              }
+              $("section").addClass('visible-section')
+          }else{
+            $("section").addClass('visible-section')
+          }
+        }
+      }
+      $(document).ready(bta_apply);
+    </script>
+  
+          <script>
+          $('.span_content_editable').each(function () {
+          $(this).on('click', function () {
+            $(this).attr('data-currentName', $(this).text());
+          $(this).attr("contenteditable", "true")
+          $(this).focus()
+          })
+          $(this).focusout(function () {
+          var tab_header = this.innerText
+          tab_header = tab_header.trim()
+          if (tab_header.length == 0){
+              this.innerText = "Set Name"
+              $(this).removeAttr("contenteditable");
+              $(this).addClass("bg-danger")
+              $(this).trigger("click")
+
+          }
+          else{
+          $(this).removeAttr("contenteditable");
+          $(this).removeClass("bg-danger")
+          if (tab_header != $(this).attr('data-currentName')) {
+            $(this).removeAttr("data-currentName");
+            $.ajax({
+                url: `/users/${urlPath}/ajax/tabConfig/`,
+
+                data: {
+                'operation': "update_tab_header_name_populate",
+                'id': $(this).parent().parent().attr('data-tab_pk'),
+                'user_name':'{{ user.get_username }}',
+                'tab_header_name': tab_header,
+
+                },
+                type: "POST",
+                dataType: "json",
+                success: function (data) {
+
+
+                },
+                error: function () {
+                Swal.fire({icon: 'error',text: 'Error! Please try again.'});
+                }
+            });
+          }
+          }
+
+          })
+      })
+      var populateTabFuctionalities = function() {
+      var tab_data = JSON.parse($(this).attr('data-data_list'));
+      var tab_data_ordered = {};
+      var count = 0;
+      for(let [key,value] of Object.entries(tab_data)) {
+        count++;
+        for(let [key1,value1] of Object.entries(tab_data)) {
+          if(count == parseInt(value1["order"])) {
+            tab_data_ordered[key1] = {}
+            tab_data_ordered[key1]["order"] = count
+            tab_data_ordered[key1]["show"] = value1["show"]
+          }
+        }
+      };
+      $('#tabsMultiFuncBodyTable').find('tbody').empty();
+
+      html_tab = ''
+      id_gen = 0
+      for(let [key,value] of Object.entries(tab_data_ordered)) {
+        id_gen++
+        html_tab = html_tab + `<tr style="text-align:center;background:#f3f3f3;cursor: move;" data-element_id='${key}'>`
+        html_tab = html_tab +`<td minimum=1 maximum='${count}' data-value="${value["order"]}"><span class="ui-icon ui-icon-arrowthick-2-n-s mt-1" data-toggle="tooltip" title="Drag Up/ Down to reorder"></span></td>`
+        if(value["show"] == "1") {
+          html_tab = html_tab + `
+          <td>
+            <div class="d-flex">
+              <div class="switch-container">
+                <input class="float-right switch" type="checkbox" id="input${id_gen}" style="margin-right: 20rem;" name="input${id_gen}" value="input${id_gen}" checked>
+                <div class="switch-color"><label class="trigger-label" for="input${id_gen}"></label></div>
+                <label class="switch-label" for="input${id_gen}"></label>
+              </div>
+            </div>
+          </td>`
+        } else {
+          html_tab = html_tab + `
+          <td>
+            <div class="d-flex">
+              <div class="switch-container">
+                <input class="float-right switch" type="checkbox" id="input${id_gen}" style="margin-right: 20rem;" name="input${id_gen}" value="input${id_gen}">
+                <div class="switch-color"><label class="trigger-label" for="input${id_gen}"></label></div>
+                <label class="switch-label" for="input${id_gen}"></label>
+              </div>
+            </div>
+          </td>`
+        }
+        html_tab = html_tab + `<td><span class="tab_name_config" style="word-break:break-word;white-space:break-spaces;text-align:left;display:block;margin-left:10px;">${$('#'+key+'-tab').text()}</span></td></tr>`
+
+
+      }
+      $('#tabsMultiFuncBodyTable').find('tbody').append(html_tab)
+
+      $("#tabsMultiFuncBodyTable tbody").disableSelection();
+
+      $("#tabsMultiFuncBodyTable tbody").sortable({
+        axis: "y",
+        containment: "parent",
+        cursor: "grabbing",
+        handle: "td",
+        helper: "original",
+        opacity: 0.6,
+        update: function(event, ui) {
+          var sortedItems = $(this).find("tr");
+          sortedItems.each(function(index) {
+            $(this).find('td').eq(0).attr("data-value",index + 1);
+          });
+        },
+      });
+
+      $("#tabsMultiFuncBodyTable tbody tr").draggable({
+        connectToSortable: "#tabsMultiFuncBodyTable tbody",
+        helper: "original",
+        revert: "invalid"
+      }).draggable("enable");
+
+    }
+    var validation = function() {
+      if(parseInt($(this).val()) < 1) {
+        $(this).val(1).trigger('change')
+      }
+      if(parseInt($(this).val()) > parseInt($(this).attr('maximum'))) {
+        $(this).val(parseInt($(this).attr('maximum'))).trigger('change')
+      }
+    }
+    var saveTabsFunc = function() {
+      $('#tabsMultiFunc').find('.modal-footer').find('button').html(`<i class="fa fa-circle-notch fa-spin"></i>`)
+      var order_data = {}
+      var validation = 0
+      var len = $('#tabsMultiFuncBodyTable').find('tbody').find('tr').length;
+      for(let j = 0; j < len; j++) {
+        validation = 0
+        var dummy = parseInt($('#tabsMultiFuncBodyTable').find('tbody').find('tr').eq(j).find('td').eq(0).attr('data-value'));
+        for(let i = 0; i < len; i++) {
+          var dummy1 = parseInt($('#tabsMultiFuncBodyTable').find('tbody').find('tr').eq(i).find('td').eq(0).attr('data-value'))
+          if (dummy == dummy1) {
+            validation = validation + 1;
+            if(validation > 1) {
+              break;
+            }
+          }
+        }
+        if(validation > 1) {
+          break;
+        }
+        if(!dummy){
+          validation = 2;
+          break;
+        }
+      }
+      if(validation < 2) {
+        $('#tabsMultiFuncBodyTable').find('tbody').find('tr').each(function() {
+          var ele_ids = $(this).attr('data-element_id')
+          var show
+          if ($(this).find('td').eq(1).find('input').prop('checked')){
+            show = "1"
+          } else {
+            show = "0"
+          }
+          order_data[ele_ids] = {'tab_name':$(this).find('td').eq(2).text(),
+              'data': {
+                'order': String($(this).find('td').eq(0).attr('data-value')),
+                'show': show
+              }
+          }
+        });
+        $.ajax({
+        url: `/users/${urlPath}/processGraphModule/`,
+        data: {
+            'operation': 'saveTabOrder',
+            'order_data': JSON.stringify(order_data),
+            'pr_code':windowLocation.split('/')[4],
+          },
+          type: "POST",
+          dataType:"json",
+          success:function(data){
+            $('#tabsMultiFunc').find('.modal-footer').html(`<button onclick="saveTabsFunc.call(this)" type="button" class="btn btn-primary">Save</button>`)
+            window.location.reload();
+          },
+          error: function () {
+            $('#tabsMultiFunc').find('.modal-footer').html(`<button onclick="saveTabsFunc.call(this)" type="button" class="btn btn-primary">Save</button>`)
+            Swal.fire({icon: 'error',text: 'Error! Please try again.'});
+          }
+        })
+      } else {
+        $('#tabsMultiFunc').find('.modal-footer').html(`<button onclick="saveTabsFunc.call(this)" type="button" class="btn btn-primary">Save</button>`)
+        Swal.fire({icon: 'warning',text: 'Order cannot be left blank or cannot be the same.'});
+      }
+
+    }
+      </script>
+          <script>
+      var justForCheck = 1;
+      hrefOftabs= $('.l3items').eq(0).attr('href');
+      $('.l3items').each(function(){
+        if($(this).parent().css('display') != 'none') {
+          if(justForCheck) {
+            $(this).tab('show');
+            justForCheck = 0
+          }
+        }
+      })
+      textbreadcrumb=$('.l3items').eq(0).text().trim();
+      $('.breadcrumblist').remove();
+      $('.breadcrumblist_mobile').each(function(){          $(this).remove();        });      $('#dynamic').append(`<li class='breadcrumb-item breadcrumblist'><b>${textbreadcrumb}</b></li>`);
+      
+ $('.mobile_breadcrumbs').append(`
+      
+  <div class="down-arrow breadcrumblist_mobile"><i class="fa-solid fa-down-long"></i></div>
+      
+  <div class="breadcrumb_item_mobile breadcrumblist_mobile">
+            <span>${textbreadcrumb}</span>
+          </div>`);
+
+       const queryString = window.location.search;       const urlParams = new URLSearchParams(queryString);      const page_type = urlParams.get('value');      $('.breadcrumblist').remove();      $('.breadcrumblist_mobile').each(function(){          $(this).remove();        });    
+activeElement = '{{element_id_active}}'    
+if (activeElement != 'no'){    
+    $('#'+activeElement+'-tab').trigger('click')    
+}   
+$('.l3-mobile-tabs .l3items,.l3-desktop-tabs .l3items').each(function(){   
+  if(page_type != null){    
+  if($(this).text().trim()==page_type){     
+ hrefOftabs= $(this).attr('href');     
+ hrefATagId = $(this).attr('id')
+     
+if(! id1.includes(hrefATagId.split('-tab')[0])) {
+
+        if (activeElement == "no"){
+    
+    $(`.nav-item a[href='${hrefOftabs}']`).tab('show');        }
+     
+   textbreadcrumb=$(this).text().trim();     
+   $('#dynamic').append(`<li class='breadcrumb-item breadcrumblist'><b>${textbreadcrumb}</b></li>`);     
+ $('.mobile_breadcrumbs').append(`      
+  <div class="down-arrow breadcrumblist_mobile"><i class="fa-solid fa-down-long"></i></div>      
+  <div class="breadcrumb_item_mobile breadcrumblist_mobile">              <span>${textbreadcrumb}</span>          </div>`);     
+ } else {$(this).css('display', 'none')}     
+}     
+}   
+ else{     
+ hrefATagId = $(this).attr('id')   
+  if (!id1.includes(hrefATagId.split('-tab')[0])) {   
+ if($(this).attr('class')=='nav-link l3items l3tabs active'){   
+  linkbreadcrumbs=$(this).attr('href');   
+  textbreadcrumb=$(this).text().trim();   
+  $('#dynamic').append(`<li class='breadcrumb-item breadcrumblist'><b>${textbreadcrumb}</b></li>`);   
+       
+ $('.mobile_breadcrumbs').append(`      
+  <div class="down-arrow breadcrumblist_mobile"><i class="fa-solid fa-down-long"></i></div>      
+  <div class="breadcrumb_item_mobile breadcrumblist_mobile">              <span>${textbreadcrumb}</span>          </div>`);   
+ }   
+ } else {$(this).css('display', 'none')}   
+};   });  
+    
+      $(document).ready(function(){
+        flowTabChange();
+        $('body').css('pointer-events', 'all')
+      });
+          </script>    <script>;      $('.l3items').click(function(){        linkbreadcrumbs=$(this).attr('href');        textbreadcrumb=$(this).text();        $('.breadcrumblist').each(function(){          $(this).remove();        });        $('.breadcrumblist_mobile').each(function(){          $(this).remove();      
+  });      
+  $('#dynamic').append(`<li class='breadcrumb-item breadcrumblist'><b>${textbreadcrumb}</b></li>`);       
+  
+ $('.mobile_breadcrumbs').append(`      
+  <div class='down-arrow breadcrumblist_mobile'><i class='fa-solid fa-down-long'></i></div>      
+  <div class='breadcrumb_item_mobile breadcrumblist_mobile'>              <span>${textbreadcrumb}</span>          </div>`);     
+ }    
+  )    
+</script></div>
+
+        <script>
+        </script>
+        <script>
+        // Initialisation of variables to be used in multiple script tags
+        var PATHNAME = windowLocation
+        var PATHNAME_SPLIT_ARRAY = PATHNAME.split("/")
+
+        // Initialise popover
+        $('[data-toggle="popover"]').popover({ trigger: 'hover' });
+          // Initialise select elements
+          $('.select2bs4').select2({
+          dropdownParent:$('.select2bs4').parent()
+          });
+
+          $('select.select2:not(.modal select.select2)').each(function(){
+              parent = $(this).parent()
+              $(this).select2({dropdownParent:parent})
+          })
+          $('.modal select.select2').each(function(){
+              $(this).select2()
+          })
+          $('[data-toggle="tooltip"]').tooltip({
+            placement: 'top'
+          });
+        //CHANGE THIS CODE
+
+            function showpopOver(){
+              let flag = $(this).attr("data-to_show")
+              if(flag == undefined){
+                $(this).attr("data-to_show",1)
+                flag = 1
+              }else if(flag == 1){
+                $(this).attr("data-to_show",0)
+              } else{
+                $(this).attr("data-to_show",1)
+              }
+              if(flag == 1){
+                $(this).popover('show')
+              }
+
+            }
+
+          //Create view init
+          $(".systemvaluedropdown").select2({
+            tags: true
+          });
+          function goBack() {
+            window.history.back();
+          }
+        </script><script type="text/javascript" src="{% static 'js/creditcard_js/src/creditcard.js' %}" defer></script> 
+      <!-- Date Range Picker -->
+      <script type="text/javascript" src="{%static 'moment/moment.min.js'%}"></script>
+      <script type="text/javascript" src="{%static 'daterangepicker/js/daterangepicker.min.js'%}"></script>
+      <link rel="stylesheet" href="{%static 'daterangepicker/css/daterangepicker.css'%}">
+      <script fetchpriority="low" type="text/javascript" src="{% static 'js/Kore_TI_js/htmlGeneratorScript.min.js' defer %}"></script>
+    {%endblock%}

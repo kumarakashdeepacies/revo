@@ -1,0 +1,1365 @@
+{% extends extend_template %}
+{% load crispy_forms_tags %}
+{{ form.media }}
+{% load static %}
+{% block body_block %}
+
+
+<!-- DataTables -->
+<link rel="stylesheet" href="{% static 'css/KoreD/jquery.dataTables.css' %}">
+<link rel="stylesheet" href="{% static 'vendor/Base_theme/datatables-responsive/css/responsive.bootstrap4.min.css' %}">
+<link rel="stylesheet" href="{% static 'vendor/Base_theme/datatables-colreorder/css/colReorder.bootstrap4.min.css' %}">
+<link rel="stylesheet" href="{% static 'css/KoreD/buttons.dataTables.min.css' %}">
+
+<!-- DataTables -->
+<script src="{% static 'vendor/Base_theme/datatables/jquery.dataTables.js' %}"></script>
+<script src="{% static 'vendor/Base_theme/datatables-responsive/js/dataTables.responsive.min.js' %}"></script>
+<script src="{% static 'vendor/Base_theme/datatables-fixedheader/js/dataTables.fixedHeader.min.js' %}"></script>
+<script src="{% static 'vendor/Base_theme/datatables-colreorder/js/dataTables.colReorder.min.js' %}"></script>
+<script src="{%static 'vendor/Base_theme/datatables-bs4/js/dataTables.bootstrap4.js'%}"></script>
+
+<script src="{%static 'vendor/Base_theme/datatables-buttons/js/dataTables.buttons.min.js'%}"></script>
+<script src="{%static 'vendor/Base_theme/jszip/jszip.min.js'%}"></script>
+<script src="{%static 'vendor/Base_theme/pdfmake/pdfmake.min.js'%}"></script>
+<script src="{%static 'vendor/Base_theme/pdfmake/vfs_fonts.js'%}"></script>
+<script src="{%static 'vendor/Base_theme/datatables-buttons/js/buttons.html5.min.js'%}"></script>
+<script src="{%static 'vendor/Base_theme/datatables-buttons/js/buttons.colVis.min.js'%}"></script>
+
+<!-- Breadcrumb-->
+<div class="breadcrumb-holder" style="background-color: #e9ecef; ">
+  <div class="container-fluid" id="dynamicTabs">
+    <ul class="breadcrumb" id="dynamicbreadcrumbs">
+      <li class="breadcrumb-item"><a {% if current_application_code != 'App0' %} {% if current_application_code == 'Dev' %} {% if current_dev_mode == 'Edit' %} {% if edit_app_code != 'Not Selected' %} href="{% url 'users:homePage' edit_app_code current_dev_mode %}" {% else %} href="{% url 'users:homePage' 'Dev' current_dev_mode %}" {% endif %} {% elif current_dev_mode == 'Build' %} {% if build_process_type != 'Not Selected' %} href="{% url 'users:homePage' build_process_type current_dev_mode %}" {% else %} href="{% url 'users:homePage' 'Dev' current_dev_mode %}" {% endif %} {% endif %} {% else %} href="{% url 'users:homePage' current_application_code 'User' %}" {% endif %} {% else %} href="{% url 'users:select_application' %}" {% endif %}>
+        <b> Home </b></a></li>
+      <li class="breadcrumb-item "><b>Application Admin</b></li>
+      <li class="breadcrumb-item "><b>Permission Access</b></li>
+    </ul>
+  </div>
+</div>
+<section class="content">
+    <div class="container-fluid">
+      <ul class="nav nav-tabs nav-fill" id="myTab" role="tablist">
+        <li class="nav-item">
+          <a class="nav-link l3items active l3items" id="list_view-tab2" data-toggle="tab" href="#username_approval" role="tab" aria-controls="list_view" aria-selected="true">User Approval</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" id="list_view-tab" data-toggle="tab" href="#user_approval" role="tab" aria-controls="list_view" aria-selected="False">User Group Approval</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link l3items" id="list_view-tab" data-toggle="tab" href="#permission_approval" role="tab" aria-controls="list_view" aria-selected="False"> Group Permission Approval</a>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent">
+        <div class="tab-pane fade " id="permission_approval" role="tabpanel" aria-labelledby="permission_approval-tab">
+          <div class="card col-12">
+            <!-- /.card-header -->
+            <div class="card-body">
+              <table id="exampleprofile_2" class="display compact" style="width:100%;word-wrap:break-word;">
+                  <thead>
+                    <tr>
+                      <th>Group Name</th>
+                      <th>Number of approval pending</th>
+                      <th>Permission Level</th>
+                      <th>Application Name</th>
+                      <th>Approve</th>
+
+                    </tr>
+                  </thead>
+                  <tbody>
+
+                  {% for  p in permission_approval%}
+
+
+                    <tr>
+
+                      <td>{{p.usergroup}}</td>
+
+                      <td>{{p.count_of_approval}}</td>
+
+                      {% if p.administrative == "0" %}
+                      {%if p.permission_level == "2" %}
+                        <td data-level="{{p.permission_level}}">Sub-Process Component</td>
+                      {% elif p.permission_level == "1" %}
+                        <td data-level="{{p.permission_level}}">Sub-Process</td>
+                      {% elif p.permission_level == "3" %}
+                        <td data-level="{{p.permission_level}}">Sub-Process Component Button Access</td>
+                      {% elif p.permission_level == "Data hierarchy" %}
+                        <td data-level="{{p.permission_level}}">Data hierarchy</td>
+                      {% else %}
+                        <td data-level="{{p.permission_level}}">Process</td>
+                      {% endif %}
+                      {% endif %}
+                      {% if p.administrative == "1" %}
+                      <td data-level="{{p.permission_level}}">Administrative access</td>
+                      {% endif %}
+                      <td>{{p.app_name}}</td>
+                      <td>
+                      {% if p.group_approval_edit_permission == "yes" %}
+                        <button type="button" id="permission_button" data-app_code="{{p.app_code}}" data-toggle="tooltip" title="Approve Group Permission" class="permission_button btn btn-primary btn-xs rounded " style="color:var(--primary-color);background-color:unset !important;border-color:white;"   ><i class="fas fa-check-circle" style="font-size: large;"></i></button>
+                      {% else %}
+                        <button type="button" disabled id="permission_button" data-app_code="{{p.app_code}}" data-toggle="tooltip" title="Approve Group Permission" class="permission_button btn btn-primary btn-xs rounded " style="color:var(--primary-color);background-color:unset !important;border-color:white;"   ><i class="fas fa-check-circle" style="font-size: large;"></i></button>
+                      {% endif %}
+                      </td>
+
+                    </tr>
+                  {% endfor %}
+
+                  </tbody>
+                </table>
+
+            </div>
+          </div>
+        </div>
+
+
+      <div class="tab-pane fade" id="user_approval" role="tabpanel" aria-labelledby="user_approval-tab">
+        <div class="card col-12">
+          <!-- /.card-header -->
+          <div class="card-body">
+            <table id="exampleprofile_1" class="display compact" style="width:100%;word-wrap:break-word;">
+                <thead>
+                  <tr>
+                    <th>User Name</th>
+                    <th>Number of approval pending</th>
+                    <th>Approve</th>
+
+                  </tr>
+                </thead>
+                <tbody>
+
+                {% for  g in group_approval%}
+
+
+                  <tr>
+
+                    <td>{{g.user_name}}</td>
+
+                    <td>{{g.count_of_approval}}</td>
+
+                    {% if g.group_edit_permission == "yes"%}
+                      <td><button type="button" id="approve_button" data-toggle="tooltip" title="Approve User Group" class="approve_button btn btn-primary btn-xs rounded " style="color:var(--primary-color);background-color:unset !important;border-color:white;"  ><i class="fas fa-check-circle" style="font-size: large;"></i></button>
+                      </td>
+                    {% else %}
+                    <td><button type="button" disabled id="approve_button" data-toggle="tooltip" title="Approve User Group" class="approve_button btn btn-primary btn-xs rounded " style="color:var(--primary-color);background-color:unset !important;border-color:white;"><i class="fas fa-check-circle" style="font-size: large;"></i></button>
+                    </td>
+                    {% endif %}
+                  </tr>
+                {% endfor %}
+
+                </tbody>
+              </table>
+
+          </div>
+        </div>
+      </div>
+      <div class="tab-pane fade show active" id="username_approval" role="tabpanel" aria-labelledby="username_approval-tab">
+        <div class="card col-12">
+          <!-- /.card-header -->
+          <div class="card-body">
+            <table id="exampleprofile_3" class="display compact" style="width:100%;word-wrap:break-word;">
+              <thead>
+                <tr>
+                  <th>User Name</th>
+                  <th>Email</th>
+                  <th>Action</th>
+                  <th>Approve/Reject</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for u in user_approval %}
+              <tr>
+                <td data-password="{{u.password}}" data-type="{{u.authentication_type}}" data-developer="{{u.is_developer}}" >{{u.username}}</td>
+                <td>{{u.email}}</td>
+                <td>{{u.action_requested}}</td>
+                {% if u.edit_permission == "yes"%}
+                  <td><button type="button"  data-toggle="tooltip" title="Approve User Permission" class="userpermission_approve btn btn-primary btn-xs rounded mb-1 px-2" style="color:var(--primary-color);background-color:unset !important;border-color:white;"   ><i class="fas fa-check-circle" style="font-size: large;"></i></button>
+                    <button type="button" data-toggle="tooltip" title="Reject User Permission" class="userpermission_reject btn btn-primary btn-xs rounded mb-1 px-2" style="color:var(--primary-color);background-color:unset !important;border-color:white;"><i class="fa-solid fa-circle-xmark" style="font-size: large;"></i></button>
+                  </td>
+                {% else %}
+                  <td><button type="button"  data-toggle="tooltip" title="Pending for approval" disabled  class="userpermission_approve btn btn-primary btn-xs rounded mb-1 px-2" style="color:var(--primary-color);background-color:unset !important;border-color:white;"   ><i class="fas fa-check-circle" style="font-size: large;"></i></button>
+                    <button type="button" data-toggle="tooltip" title="Pending for Rejection" disabled class="userpermission_reject btn btn-primary btn-xs rounded mb-1 px-2" style="color:var(--primary-color);background-color:unset !important;border-color:white;"><i class="fa-solid fa-circle-xmark" style="font-size: large;"></i></button>
+                  </td>
+                {% endif %}
+              </tr>
+              {% endfor %}
+              </tbody>
+              </table>
+          </div>
+        </div>
+      </div>
+
+      </div>
+    <div class="modal fade" id="accessmodal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
+      aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+            <div class="modal-content" style="border:none;">
+                <div class="modal-header" style="background:#565a5e; color:white; text-align:center;">
+                    <h5 class="modal-title text-center w-100" style="margin:0 auto;">Assign Group</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                <div>
+                    Username:<input type="text" class="pl-1" style="border-bottom:0px;" id="uname" disabled>
+                </div>
+                <div id="userid"></div>
+                <div id="l0"></div>
+                <div id="l1"></div>
+                <div id="l2"></div>
+                <div id="rname"></div>
+                <div class="pt-3">
+                    <div class="row">
+                        <div class="col-2">
+                            Groups:
+                        </div>
+                        <div class="col-5">
+                             <select class="js-example-basic-single selectize" id="selectBox">
+                              </select>
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    <button type="button" id="access-button" class="btn btn-primary btn-xs rounded mb-1 px-2 mt-3" onclick="groupermission()">Assign Group</button>
+                </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="approvaldownmodal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+      <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+          <div class="modal-header" style='background:#565a5e; color:white;'>
+            <h5 class="modal-title" style="margin-left: 40%;">Approvals Pending
+              <span id='approvalmodal_heading'></span></h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body" style="overflow-y: scroll ;max-height: 40rem;">
+            <label for="approve_all" style="float:right; right: 95px; top:4px;">Approve All </label>
+            <button id="approve_all" type="button" data-dismiss="modal" aria-label="Approve" class="btn btn-floating btn-lg" style="color:var(--primary-color);padding:0;float: right;">
+              <span aria-hidden="true"><i class="fa fa-check-square"></i></span>
+            </button>
+            <label for="reject_all" style="float:right; right: 230px;position:absolute; top:20px">Reject All </label>
+            <button id="reject_all" type="button" data-dismiss="modal" aria-label="Reject All" class="btn btn-floating btn-lg" style="color:#ee0000;position: absolute; padding:0; float:right;right: 200px;top:15px;">
+              <span aria-hidden="true"><i class="fa fa-window-close"  style="color:#000000;"></i></span>
+            </button>
+
+            <table id="approval_table" class="display compact" style="width:100%;">
+              <thead id="modalTable">
+                <tr id="modal-table-header">
+
+                </tr>
+              </thead>
+              <tbody id="modal-table-body">
+
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="modal fade" id="permissiondownmodal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+      <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+          <div class="modal-header" style='background:#565a5e; color:white;'>
+            <h5 class="modal-title" style="margin-left: 40%;">Approvals Pending
+              <span id='permissionmodal_heading'></span><span id='permissionmodal_level' style="display:none;"></span></h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true" >&times;</span>
+            </button>
+          </div>
+          <div class="modal-body" style="overflow-y: scroll ;max-height: 40rem;">
+            <label for="approve_all" style="float:right; right: 95px; top:4px;">Approve All </label>
+            <button id="approve_all_permission" type="button" data-dismiss="modal" aria-label="Approve" class="btn btn-floating btn-lg" style="color:var(--primary-color);padding:0;float: right;">
+              <span aria-hidden="true"><i class="fa fa-check-square"></i></span>
+            </button>
+            <label for="reject_all" style="float:right; right: 230px;position:absolute; top:20px">Reject All </label>
+            <button id="reject_all_permission" type="button" data-dismiss="modal" aria-label="Reject All" class="btn btn-floating btn-lg" style="color:#ee0000;position: absolute; padding:0; float:right;right: 200px;top:15px;">
+              <span aria-hidden="true"><i class="fa fa-window-close"  style="color:#000000;"></i></span>
+            </button>
+
+            <table id="permission_table" class="display compact" style="width:100%;">
+              <thead id="modalTable">
+                <tr id="modal-table-header-permission">
+
+                </tr>
+              </thead>
+              <tbody id="modal-table-body-permission">
+
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+   </div>
+      <script>
+
+$(document).ready(function() {
+    $('.js-example-basic-single').select2();
+
+});
+          function groupermission(){
+            var id = $('#userid').val()
+            var group = $('#selectBox').val()
+            var uname = $('#uname').val()
+            var l0 = $('#l0').val()
+            var l1 = $('#l1').val()
+            var l2 = $('#l2').val()
+            var rname = $('#rname').val()
+            let url_string = window.location.pathname
+            let f_occ = url_string.indexOf('/', url_string.indexOf('/') + 1)
+            let s_occ = url_string.indexOf('/', url_string.indexOf('/') + f_occ +1)
+            let t_occ = url_string.indexOf('/', url_string.indexOf('/') + s_occ +1)
+            let app_code2 = url_string.substring(f_occ+1,s_occ)
+            let current_dev_mode2 = url_string.substring(s_occ+1,t_occ)
+            let modes = ["Build","Edit"]
+            let url = ""
+            if(current_dev_mode2 != "Build" && current_dev_mode2 != "Edit"){
+              current_dev_mode2 = "User"
+            }
+            $.ajax({
+                    url: `/users/${app_code2}/${current_dev_mode2}/permissionapproval/`,
+
+                    data: {
+                    'operation': "groupapproval",
+                    'id': id,
+                    'group':group,
+                    'uname':uname,
+                    'l0':l0,
+                    'l1':l1,
+                    'l2':l2,
+                    'rname':rname,
+                    },
+                    type: "POST",
+                    dataType: "json",
+                    success: function (data) {
+                      Swal.fire({icon: 'success',text: 'Permission assigned successfully!'});
+                    },
+                    error: function () {
+                    Swal.fire({icon: 'error',text: 'Error! Failure in assigning permission. Please try again.'});
+                    }
+                })
+
+          }
+          function rejectmodal(uname,uid,process,subprocess,category,perm,glist,thisid)
+          {
+            var newid = "#" + thisid;
+            var id = uid
+            var uname = uname.trim()
+            var l0 = process.trim()
+            var l1 = subprocess.trim()
+            var l2 = category.trim()
+            var rname = perm.trim()
+            let url_string = window.location.pathname
+            let f_occ = url_string.indexOf('/', url_string.indexOf('/') + 1)
+            let s_occ = url_string.indexOf('/', url_string.indexOf('/') + f_occ +1)
+            let t_occ = url_string.indexOf('/', url_string.indexOf('/') + s_occ +1)
+            let app_code2 = url_string.substring(f_occ+1,s_occ)
+            let current_dev_mode2 = url_string.substring(s_occ+1,t_occ)
+            let modes = ["Build","Edit"]
+            let url = ""
+            if(current_dev_mode2 != "Build" && current_dev_mode2 != "Edit"){
+              current_dev_mode2 = "User"
+            }
+            $.ajax({
+                    url: `/users/${app_code2}/${current_dev_mode2}/permissionapproval/`,
+
+                    data: {
+                    'operation': "groupreject",
+                    'id': uid,
+                    'uname':uname,
+                    'l0':process.trim(),
+                    'l1':subprocess.trim(),
+                    'l2':category.trim(),
+                    'rname':perm.trim(),
+                    },
+                    type: "POST",
+                    dataType: "json",
+                    success: function (data) {
+                      Swal.fire({icon: 'success',text: 'Permission rejected successfully!'});
+                    },
+                    error: function () {
+                    Swal.fire({icon: 'error',text: 'Error! Failure in rejecting permission. Please try again.'});
+                    }
+                })
+
+          }
+          function openmodal(uname,uid,process,subprocess,category,perm,glist,thisid)
+          {
+              $('#selectBox').empty()
+              $("#accessmodal").modal("show");
+              $('#uname').val(uname)
+              $('#userid').val(uid)
+              llist=[]
+              $('#rname').val(perm)
+              $('#l0').val(process.trim())
+              $('#l1').val(subprocess.trim())
+              $('#l2').val(category.trim())
+
+              var llist= glist
+              var listi = llist.substring(1, llist.length-1);
+              var ar = (listi.split(','))
+              for (i = 0; i < ar.length; i++) {
+                    var atr1 = ar[i].trim()
+                    var stringval = atr1.substring(1, atr1.length-1);
+                    $('#selectBox').append(ar[i])
+                    opt = ar[i].substring(1, ar[i].length-1);
+                    $('#selectBox').append(`<option>` +
+                                    stringval  +
+                                  `</option>`);
+                }
+          }
+          function buttonshift(uname,process,subprocess,category,perm)
+          {
+            var dictbtn = new Array;
+              var dict = {
+                username: uname,
+                process:process,
+                subprocess:subprocess,
+                category:category,
+                perm:perm,
+                };
+                dictbtn.push(dict)
+                let url_string = window.location.pathname
+                let f_occ = url_string.indexOf('/', url_string.indexOf('/') + 1)
+                let s_occ = url_string.indexOf('/', url_string.indexOf('/') + f_occ +1)
+                let t_occ = url_string.indexOf('/', url_string.indexOf('/') + s_occ +1)
+                let app_code2 = url_string.substring(f_occ+1,s_occ)
+                let current_dev_mode2 = url_string.substring(s_occ+1,t_occ)
+                let modes = ["Build","Edit"]
+                let url = ""
+                if(current_dev_mode2 != "Build" && current_dev_mode2 != "Edit"){
+                  current_dev_mode2 = "User"
+                }
+                $.ajax({
+                    url: `/users/${app_code2}/${current_dev_mode2}/permissionapproval/`,
+
+                    data: {
+                    'operation': "approval",
+                    'btn_list': JSON.stringify(dictbtn),
+                    },
+                    type: "POST",
+                    dataType: "json",
+                    success: function (data) {
+                      Swal.fire({icon: 'success',text: 'Approved successfully!'});
+                    },
+                    error: function () {
+                      Swal.fire({icon: 'error',text: 'Error! Please try again.'});
+                    }
+                })
+          }
+      </script>
+      <script>
+          $('#exampleprofile thead tr').eq(0).clone(true).appendTo('#exampleprofile thead');
+  $('#exampleprofile thead tr').eq(0).find('th').eq(0).css('cursor', 'default');
+  $('#exampleprofile thead tr').eq(0).find('th').eq(0).css('background-image', 'none');
+  $('#exampleprofile thead tr').eq(1).find('th').css('padding', '5px');
+  $('#exampleprofile thead tr').eq(1).find('th').each(function (i) {
+    $(this).addClass('dt-center')
+    var title = $(this).text();
+    $(this).html('<input type="text" value="" data-input_value="" style="text-align:center;border-bottom:none;border:1px solid #ced4da;width:190px;"placeholder="Search ' + title + '" />');
+  });
+    var profiletable = $('#exampleprofile').DataTable( {
+    "autoWidth": false,
+    "scrollY": 200,
+    "scrollX": 500,
+    "scrollCollapse": true,
+    "sScrollXInner": "100%",
+    orderCellsTop: true,
+    responsive: true,
+    colReorder: {
+      fixedColumnsLeft: 1
+    },
+    stateSave: true,
+    "deferRender": true,
+    "paging": true,
+    "lengthMenu": [[1, 5, 50, -1], [1, 5, 50, "All"]],
+    stripeClasses: false,
+    "pageLength": 50,
+    dom: 'lfBrtip',
+    buttons: [
+        {
+           extend: 'collection',
+           text: 'Export',
+           buttons: [
+             {
+               extend: 'copy', title: '', exportOptions: {
+                 columns: ':visible:not(.noVis)'
+               }
+             },
+             {
+               extend: 'excel', title: '', exportOptions: {
+                 columns: ':visible:not(.noVis)'
+               }
+             },
+             {
+               extend: 'csv', title: '', exportOptions: {
+                 columns: ':visible:not(.noVis)'
+              }
+             },
+             {
+               extend: 'pdf', title: '', exportOptions: {
+                 columns: ':visible:not(.noVis)'
+               }
+             },
+           ],
+         },
+         {
+           extend: 'colvis',
+           className: "scroller",
+        }
+        ],
+        columnDefs: [
+      {
+        targets: "_all",
+        className: 'dt-center allColumnClass all'
+      },
+    ],
+    } );
+      </script>
+    <!-- for user group approval -->
+      <script>
+
+    $('.approve_button').on('click', function() {
+
+
+    $("#modal-table-header").empty()
+    $("#modal-table-body").empty()
+    $("#approvaldownmodal").modal("show");
+    var username=($(this).closest('tr').find('td:nth-child(1)').text())
+
+    let url_string = window.location.pathname
+    let f_occ = url_string.indexOf('/', url_string.indexOf('/') + 1)
+    let s_occ = url_string.indexOf('/', url_string.indexOf('/') + f_occ +1)
+    let t_occ = url_string.indexOf('/', url_string.indexOf('/') + s_occ +1)
+    let app_code2 = url_string.substring(f_occ+1,s_occ)
+    let current_dev_mode2 = url_string.substring(s_occ+1,t_occ)
+    let modes = ["Build","Edit"]
+    let url = ""
+    if(current_dev_mode2 != "Build" && current_dev_mode2 != "Edit"){
+      current_dev_mode2 = "User"
+    }
+    $.ajax({
+      url: `/users/${app_code2}/${current_dev_mode2}/permissionapproval/`,
+      data: {
+        'user_name': username,
+        'operation': 'approval_table',
+      },
+      type: "POST",
+      dataType: "json",
+      success: function (data) {
+        $('#approvalmodal_heading').text(username);
+
+        for (const column_name of data.columns) {
+          $("#modal-table-header").append(`<th>${column_name}</th>`);
+        }
+        $("#modal-table-header").append('<th>Approve</th>');
+        var counter=0;
+        for (const ind_dict of data.data) {
+          html = "";
+          for (const column_name of data.columns) {
+          html += `<th>${ind_dict[column_name]}</th>`;
+          };
+          html += `<td><button id="approve_${data.approve_id[counter]}" type="button" class="approve_ind btn btn-floating btn-lg" style="color:var(--primary-color);"><i class="fa fa-check-square" aria-hidden="true"></i></button><button id="reject_${data.approve_id[counter]}" type="button" class="reject_ind btn btn-floating btn-lg" style="color:#000000;"><i class="fa fa-window-close" aria-hidden="true"></i></button></td>`;
+          $("#modal-table-body").append("<tr>" + html + "</tr>");
+          counter++;
+        }
+         $(".approve_ind").on('click', approve_ind);
+         $(".reject_ind").on('click', reject_ind);
+        if ( !($.fn.dataTable.isDataTable( '#approval_table' )) ) {
+
+         var tablemodal1= $('#approval_table').DataTable( {
+            "autoWidth": true,
+            "scrollCollapse": true,
+            orderCellsTop: true,
+            responsive: true,
+            colReorder: {
+              fixedColumnsLeft: 1
+            },
+            stateSave: true,
+            "deferRender": true,
+            "paging": true,
+            "lengthMenu": [[1, 5, 50, -1], [1, 5, 50, "All"]],
+            stripeClasses: false,
+            "pageLength": 50,
+            dom: 'lfBrtip',
+            buttons: [
+                {
+                  extend: 'collection',
+                  text: 'Export',
+                  buttons: [
+                    {
+                      extend: 'copy', title: '', exportOptions: {
+                        columns: ':visible:not(.noVis)'
+                      }
+                    },
+                    {
+                      extend: 'excel', title: '', exportOptions: {
+                        columns: ':visible:not(.noVis)'
+                      }
+                    },
+                    {
+                      extend: 'csv', title: '', exportOptions: {
+                        columns: ':visible:not(.noVis)'
+                      }
+                    },
+                    {
+                      extend: 'pdf', title: '', exportOptions: {
+                        columns: ':visible:not(.noVis)'
+                      }
+                    },
+                  ],
+                },
+                {
+                  extend: 'colvis',
+                  className: "scroller",
+                }
+                ],
+                columnDefs: [
+              {
+                targets: "_all",
+                className: 'dt-center allColumnClass all'
+              },
+              {
+                targets: 0,
+                width: "20%",
+                className: 'noVis'
+              }
+
+            ],
+            } );
+
+          };
+
+
+        },
+      error: function () {
+        Swal.fire({icon: 'error',text: 'Error! Failure in exporting data. Please try again.'});
+      }
+    });
+  })
+
+  function approve_ind() {
+      $(this).prop('disabled', true);
+      $(this).attr('disabled','disabled');
+     var groupname = $(this).closest('tr').children()[1].innerText
+     let user_name = ($("#approvalmodal_heading").text().replace(": ", ""));
+
+    let approval_table_id = Number($(this).attr("id").split("_")[1]);
+    let reject_row_id='reject_' + approval_table_id
+
+    $('#' + reject_row_id).prop('disabled', true);
+    $('#' + reject_row_id).attr('disabled','disabled');
+    let url_string = window.location.pathname
+    let f_occ = url_string.indexOf('/', url_string.indexOf('/') + 1)
+    let s_occ = url_string.indexOf('/', url_string.indexOf('/') + f_occ +1)
+    let t_occ = url_string.indexOf('/', url_string.indexOf('/') + s_occ +1)
+    let app_code2 = url_string.substring(f_occ+1,s_occ)
+    let current_dev_mode2 = url_string.substring(s_occ+1,t_occ)
+    let modes = ["Build","Edit"]
+    let url = ""
+    if(current_dev_mode2 != "Build" && current_dev_mode2 != "Edit"){
+      current_dev_mode2 = "User"
+    }
+    $.ajax({
+      url: `/users/${app_code2}/${current_dev_mode2}/permissionapproval/`,
+      data: {
+        'userName': user_name,
+        'groupName': groupname,
+        "approval_id": approval_table_id,
+        'operation': 'approve_ind',
+      },
+      type: "POST",
+      dataType: "json",
+      success: function (data) {
+        Swal.fire({icon: 'info',text: "Approved group " + groupname + " for user " + user_name + ". Permissions for users are getting updated. Please check the Notifications bell for further updates."});
+      },
+      error: function () {
+        Swal.fire({icon: 'error',text: 'Error! Failure in updating permissions. Please try again.'});
+      }
+    });
+
+  }
+  function reject_ind() {
+      $(this).prop('disabled', true);
+      $(this).attr('disabled','disabled');
+      var groupname = $(this).closest('tr').children()[1].innerText
+
+     let user_name = ($("#approvalmodal_heading").text().replace(": ", ""));
+
+    let approval_table_id = Number($(this).attr("id").split("_")[1]);
+
+    let approve_row_id='approve_' + approval_table_id
+
+    $('#' + approve_row_id).prop('disabled', true);
+    $('#' + approve_row_id).attr('disabled','disabled');
+
+    let url_string = window.location.pathname
+    let f_occ = url_string.indexOf('/', url_string.indexOf('/') + 1)
+    let s_occ = url_string.indexOf('/', url_string.indexOf('/') + f_occ +1)
+    let t_occ = url_string.indexOf('/', url_string.indexOf('/') + s_occ +1)
+    let app_code2 = url_string.substring(f_occ+1,s_occ)
+    let current_dev_mode2 = url_string.substring(s_occ+1,t_occ)
+    let modes = ["Build","Edit"]
+    let url = ""
+    if(current_dev_mode2 != "Build" && current_dev_mode2 != "Edit"){
+      current_dev_mode2 = "User"
+    }
+
+     $.ajax({
+       url: `/users/${app_code2}/${current_dev_mode2}/permissionapproval/`,
+       data: {
+         'userName': user_name,
+         "approval_id": approval_table_id,
+         'operation': 'reject_ind',
+       },
+       type: "POST",
+       dataType: "json",
+       success: function (data) {
+        Swal.fire({icon: 'success',text: "Rejected group " + groupname + " for user " + user_name + " successfully!"});
+       },
+       error: function () {
+        Swal.fire({icon: 'error',text: 'Error! Failure in executing rejection. Please try again.'});
+       }
+     });
+
+  }
+  $("#approve_all").on('click', approve_all)
+  $("#reject_all").on('click', reject_all)
+  function approve_all() {
+    let user_name = ($("#approvalmodal_heading").text().replace(": ", ""));
+    let url_string = window.location.pathname
+    let f_occ = url_string.indexOf('/', url_string.indexOf('/') + 1)
+    let s_occ = url_string.indexOf('/', url_string.indexOf('/') + f_occ +1)
+    let t_occ = url_string.indexOf('/', url_string.indexOf('/') + s_occ +1)
+    let app_code2 = url_string.substring(f_occ+1,s_occ)
+    let current_dev_mode2 = url_string.substring(s_occ+1,t_occ)
+    let modes = ["Build","Edit"]
+    let url = ""
+    if(current_dev_mode2 != "Build" && current_dev_mode2 != "Edit"){
+      current_dev_mode2 = "User"
+    }
+    $.ajax({
+      url: `/users/${app_code2}/${current_dev_mode2}/permissionapproval/`,
+      data: {
+        'userName': user_name ,
+        'operation': 'approve_all',
+      },
+      type: "POST",
+      dataType: "json",
+      success: function (data) {
+        Swal.fire({icon: 'info',text: 'Approved successfully! Permissions for users are getting updated. Please check the Notifications bell for further updates.'});
+        location.reload();
+        },
+      error: function () {
+        Swal.fire({icon: 'error',text: 'Error! Failure in executing approvals. Please try again.'});
+      }
+    });
+    }
+    function reject_all() {
+    let user_name = ($("#approvalmodal_heading").text().replace(": ", ""));
+    let url_string = window.location.pathname
+    let f_occ = url_string.indexOf('/', url_string.indexOf('/') + 1)
+    let s_occ = url_string.indexOf('/', url_string.indexOf('/') + f_occ +1)
+    let t_occ = url_string.indexOf('/', url_string.indexOf('/') + s_occ +1)
+    let app_code2 = url_string.substring(f_occ+1,s_occ)
+    let current_dev_mode2 = url_string.substring(s_occ+1,t_occ)
+    let modes = ["Build","Edit"]
+    let url = ""
+    if(current_dev_mode2 != "Build" && current_dev_mode2 != "Edit"){
+      current_dev_mode2 = "User"
+    }
+    $.ajax({
+      url: `/users/${app_code2}/${current_dev_mode2}/permissionapproval/`,
+      data: {
+        'userName': user_name ,
+        'operation': 'reject_all',
+      },
+      type: "POST",
+      dataType: "json",
+      success: function (data) {
+        Swal.fire({icon: 'success',text: 'Rejected approvals successfully!'});
+        location.reload();
+        },
+      error: function () {
+        Swal.fire({icon: 'error',text: 'Error! Failure in executing rejection of approvals. Please try again.'});
+      }
+    });
+    }
+
+  var tableusergroup= $('#exampleprofile_1').DataTable( {
+    "autoWidth": true,
+    "scrollY": 200,
+    "scrollX": 500,
+    "ordering":false,
+    "scrollCollapse": true,
+    "sScrollXInner": "100%",
+    orderCellsTop: true,
+    responsive: true,
+    colReorder: {
+
+    },
+    stateSave: true,
+    "deferRender": true,
+    "paging": true,
+    "lengthMenu": [[1, 5, 50, -1], [1, 5, 50, "All"]],
+    stripeClasses: false,
+    "pageLength": 50,
+    dom: 'lfBrtip',
+    buttons: [
+        {
+           extend: 'collection',
+           text: 'Export',
+           buttons: [
+             {
+               extend: 'copy', title: '', exportOptions: {
+                 columns: ':visible:not(.noVis)'
+               }
+             },
+             {
+               extend: 'excel', title: '', exportOptions: {
+                 columns: ':visible:not(.noVis)'
+               }
+             },
+             {
+               extend: 'csv', title: '', exportOptions: {
+                 columns: ':visible:not(.noVis)'
+              }
+             },
+             {
+               extend: 'pdf', title: '', exportOptions: {
+                 columns: ':visible:not(.noVis)'
+               }
+             },
+           ],
+         },
+         {
+           extend: 'colvis',
+           className: "scroller",
+        }
+        ],
+        columnDefs: [
+      {
+        targets: "_all",
+        className: 'dt-center allColumnClass all'
+      },
+    ],
+    } );
+    tableusergroup.columns.adjust()
+
+    $('a[data-toggle="tab"]').on('shown.bs.tab', function(e){
+      $($.fn.dataTable.tables(true)).DataTable()
+          .columns.adjust();
+    });
+
+
+      </script>
+      <script>
+
+
+
+        $("#approve_all_permission").on('click', approve_all_permission)
+        $("#reject_all_permission").on('click', reject_all_permission)
+    function approve_all_permission() {
+     let groupname = ($("#permissionmodal_heading").text().replace(": ", ""));
+      let level = ($("#permissionmodal_level").text());
+      var app_code_approval = $(".approve_ind_permission").eq(0).attr('data-app_code')
+      let url_string = window.location.pathname
+      let f_occ = url_string.indexOf('/', url_string.indexOf('/') + 1)
+      let s_occ = url_string.indexOf('/', url_string.indexOf('/') + f_occ +1)
+      let t_occ = url_string.indexOf('/', url_string.indexOf('/') + s_occ +1)
+      let app_code2 = url_string.substring(f_occ+1,s_occ)
+      let current_dev_mode2 = url_string.substring(s_occ+1,t_occ)
+      let modes = ["Build","Edit"]
+      let url = ""
+      if(current_dev_mode2 != "Build" && current_dev_mode2 != "Edit"){
+        current_dev_mode2 = "User"
+      }
+      $.ajax({
+        url: `/users/${app_code2}/${current_dev_mode2}/userpermissionapproval/`,
+        data: {
+          'groupName': groupname ,
+          'level':level,
+          'operation': 'approve_all_permission',
+          'app_code':app_code_approval,
+        },
+        type: "POST",
+        dataType: "json",
+        success: function (data) {
+          Swal.fire({icon: 'info',text: 'Approved successfully! Permissions for users are getting updated. Please check the Notifications bell for further updates.'});
+          location.reload();
+          },
+        error: function () {
+          Swal.fire({icon: 'error',text: 'Error! Failure in executing approvals. Please try again.'});
+        }
+      });
+      }
+   function reject_all_permission() {
+    let groupname = ($("#permissionmodal_heading").text().replace(": ", ""));
+    let level = ($("#permissionmodal_level").text());
+    var app_code_approval = $(".approve_ind_permission").eq(0).attr('data-app_code')
+      let url_string = window.location.pathname
+      let f_occ = url_string.indexOf('/', url_string.indexOf('/') + 1)
+      let s_occ = url_string.indexOf('/', url_string.indexOf('/') + f_occ +1)
+      let t_occ = url_string.indexOf('/', url_string.indexOf('/') + s_occ +1)
+      let app_code2 = url_string.substring(f_occ+1,s_occ)
+      let current_dev_mode2 = url_string.substring(s_occ+1,t_occ)
+      let modes = ["Build","Edit"]
+      let url = ""
+      if(current_dev_mode2 != "Build" && current_dev_mode2 != "Edit"){
+        current_dev_mode2 = "User"
+      }
+    $.ajax({
+        url: `/users/${app_code2}/${current_dev_mode2}/userpermissionrejection/`,
+        data: {
+          'groupName': groupname ,
+          'perm_level':level,
+          'operation': 'reject_all_permission',
+          'app_code':app_code_approval
+        },
+        type: "POST",
+        dataType: "json",
+        success: function (data) {
+          Swal.fire({icon: 'success',text: 'Rejected approvals successfully'});
+          location.reload();
+          },
+        error: function () {
+          Swal.fire({icon: 'error',text: 'Error! Failure in executing rejection of approvals. Please try again.'});
+        }
+      });
+      }
+
+    var tableusergroup1= $('#exampleprofile_2').DataTable( {
+    "autoWidth": true,
+    "scrollY": 200,
+    "scrollX": 500,
+    "ordering":false,
+    "scrollCollapse": true,
+    "sScrollXInner": "100%",
+    orderCellsTop: true,
+    responsive: true,
+    colReorder: {
+
+    },
+    stateSave: true,
+    "deferRender": true,
+    "paging": true,
+    "lengthMenu": [[1, 5, 50, -1], [1, 5, 50, "All"]],
+    stripeClasses: false,
+    "pageLength": 50,
+    dom: 'lfBrtip',
+    buttons: [
+        {
+           extend: 'collection',
+           text: 'Export',
+           buttons: [
+             {
+               extend: 'copy', title: '', exportOptions: {
+                 columns: ':visible:not(.noVis)'
+               }
+             },
+             {
+               extend: 'excel', title: '', exportOptions: {
+                 columns: ':visible:not(.noVis)'
+               }
+             },
+             {
+               extend: 'csv', title: '', exportOptions: {
+                 columns: ':visible:not(.noVis)'
+              }
+             },
+             {
+               extend: 'pdf', title: '', exportOptions: {
+                 columns: ':visible:not(.noVis)'
+               }
+             },
+           ],
+         },
+         {
+           extend: 'colvis',
+           className: "scroller",
+        }
+        ],
+        columnDefs: [
+      {
+        targets: "_all",
+        className: 'dt-center allColumnClass all'
+      },
+    ],
+    } );
+    var tableuser= $('#exampleprofile_3').DataTable( {
+    "autoWidth": true,
+    "scrollY": 200,
+    "scrollX": 500,
+    "ordering":false,
+    "scrollCollapse": true,
+    "sScrollXInner": "100%",
+    orderCellsTop: true,
+    responsive: true,
+    colReorder: {
+
+    },
+    stateSave: true,
+    "deferRender": true,
+    "paging": true,
+    "lengthMenu": [[1, 5, 50, -1], [1, 5, 50, "All"]],
+    stripeClasses: false,
+    "pageLength": 50,
+    dom: 'lfBrtip',
+    buttons: [
+        {
+           extend: 'collection',
+           text: 'Export',
+           buttons: [
+             {
+               extend: 'copy', title: '', exportOptions: {
+                 columns: ':visible:not(.noVis)'
+               }
+             },
+             {
+               extend: 'excel', title: '', exportOptions: {
+                 columns: ':visible:not(.noVis)'
+               }
+             },
+             {
+               extend: 'csv', title: '', exportOptions: {
+                 columns: ':visible:not(.noVis)'
+              }
+             },
+             {
+               extend: 'pdf', title: '', exportOptions: {
+                 columns: ':visible:not(.noVis)'
+               }
+             },
+           ],
+         },
+         {
+           extend: 'colvis',
+           className: "scroller",
+        }
+        ],
+        columnDefs: [
+      {
+        targets: "_all",
+        className: 'dt-center allColumnClass all'
+      },
+    ],
+    } );
+    tableuser.columns.adjust().draw()
+    tableusergroup1.columns.adjust().draw()
+
+    profiletable.columns.adjust().draw();
+
+
+
+      </script>
+
+      <script>
+        $(".userpermission_approve").click(function(){
+          var refer = $(this)
+          var username = $(this).closest("tr").find("td:first-child")[0].innerHTML
+          var password = $(this).closest("tr").find("td:first-child").attr("data-password")
+          var type = $(this).closest("tr").find("td:first-child").attr("data-type")
+          var is_developer = $(this).closest("tr").find("td:first-child").attr("data-developer")
+          var email = $(this).closest("tr").find("td:nth-child(2)")[0].innerHTML
+          var action = $(this).closest("tr").find("td:nth-child(3)")[0].innerHTML
+          let url_string = window.location.pathname
+          let f_occ = url_string.indexOf('/', url_string.indexOf('/') + 1)
+          let s_occ = url_string.indexOf('/', url_string.indexOf('/') + f_occ +1)
+          let t_occ = url_string.indexOf('/', url_string.indexOf('/') + s_occ +1)
+          let app_code2 = url_string.substring(f_occ+1,s_occ)
+          let current_dev_mode2 = url_string.substring(s_occ+1,t_occ)
+          if(current_dev_mode2 != "Build" && current_dev_mode2 != "Edit"){
+            current_dev_mode2 = "User"
+          }
+          $.ajax({
+                    url: `/users/${app_code2}/${current_dev_mode2}/permissionapproval/`,
+
+                    data: {
+                    'operation': "userapproval",
+                    'username':username,
+                    'password':password,
+                    'email':email,
+                    'action':action,
+                    'type':type,
+                    'is_developer':is_developer,
+                    },
+                    type: "POST",
+                    dataType: "json",
+                    success: function (data) {
+                      if(data.icon == "warning"){
+                        Swal.fire({icon: 'warning',text: data.response});
+                      }
+                      else{
+                        Swal.fire({icon: 'success',text: 'Approved successfully'});
+                        refer.closest("tr").remove()
+                        if(data.data == "error"){
+                          Swal.fire({icon: 'error',text: data.msg});
+                        }
+                      }
+
+
+                    },
+                    error: function () {
+                    Swal.fire({icon: 'error',text: 'Error! Please try again.'});
+                    }
+                })
+        })
+
+        $(".userpermission_reject").click(function(){
+          var refer = $(this)
+          var username = $(this).closest("tr").find("td:first-child")[0].innerHTML
+          var password = $(this).closest("tr").find("td:first-child").attr("data-password")
+          var email = $(this).closest("tr").find("td:nth-child(2)")[0].innerHTML
+          let url_string = window.location.pathname
+          let f_occ = url_string.indexOf('/', url_string.indexOf('/') + 1)
+          let s_occ = url_string.indexOf('/', url_string.indexOf('/') + f_occ +1)
+          let t_occ = url_string.indexOf('/', url_string.indexOf('/') + s_occ +1)
+          let app_code2 = url_string.substring(f_occ+1,s_occ)
+          let current_dev_mode2 = url_string.substring(s_occ+1,t_occ)
+          let modes = ["Build","Edit"]
+          let url = ""
+          if(current_dev_mode2 != "Build" && current_dev_mode2 != "Edit"){
+            current_dev_mode2 = "User"
+          }
+          $.ajax({
+                    url: `/users/${app_code2}/${current_dev_mode2}/permissionapproval/`,
+                    data: {
+                    'operation': "userrejection",
+                    'username':username,
+                    'password':password,
+                    'email':email,
+                    },
+                    type: "POST",
+                    dataType: "json",
+                    success: function (data) {
+                      Swal.fire({icon: 'success',text: 'Rejected successfully'});
+                    refer.closest("tr").remove()
+                    },
+                    error: function () {
+                    Swal.fire({icon: 'error',text: 'Error! Please try again.'});
+                    }
+                })
+        })
+
+      </script>
+      <script>
+               $('.permission_button').on('click', function() {
+
+
+          $("#modal-table-header-permission").empty()
+          $("#modal-table-body-permission").empty()
+          $("#permissiondownmodal").modal("show");
+          var groupname=($(this).closest('tr').find('td:nth-child(1)').text())
+          var level = ($(this).closest('tr').find('td:nth-child(3)').attr("data-level"))
+
+          let url_string = window.location.pathname
+          let f_occ = url_string.indexOf('/', url_string.indexOf('/') + 1)
+          let s_occ = url_string.indexOf('/', url_string.indexOf('/') + f_occ +1)
+          let t_occ = url_string.indexOf('/', url_string.indexOf('/') + s_occ +1)
+          let app_code2 = url_string.substring(f_occ+1,s_occ)
+          let current_dev_mode2 = url_string.substring(s_occ+1,t_occ)
+          let modes = ["Build","Edit"]
+          let url = ""
+          if(current_dev_mode2 != "Build" && current_dev_mode2 != "Edit"){
+            current_dev_mode2 = "User"
+          }
+          $.ajax({
+            url: `/users/${app_code2}/${current_dev_mode2}/permissionapproval/`,
+            data: {
+              'groupname': groupname,
+              'level_of_permission': level,
+              'operation': 'permissionapproval_table',
+              'app_code':$(this).attr('data-app_code')
+            },
+            type: "POST",
+            dataType: "json",
+            success: function (data) {
+
+              $('#permissionmodal_heading').text(groupname);
+              $('#permissionmodal_level').text(level)
+
+
+              for (const column_name of data.columns) {
+                $("#modal-table-header-permission").append(`<th>${column_name}</th>`);
+              }
+              $("#modal-table-header-permission").append('<th>Approve</th>');
+              var counter=0;
+              for (const ind_dict of data.data) {
+                html = "";
+                for (const column_name of data.columns) {
+                html += `<th>${ind_dict[column_name]}</th>`;
+                };
+                html += `<td><button id="approve_${data.count_id[counter]}" data-app_code="${ind_dict["app_code"]}" type="button" class="approve_ind_permission btn btn-floating btn-lg" style="color:var(--primary-color);"><i class="fa fa-check-square" aria-hidden="true"></i></button><button id="reject_${data.count_id[counter]}" data-app_code="${ind_dict["app_code"]}" type="button" class="reject_ind_permission btn btn-floating btn-lg" style="color:#000000;"><i class="fa fa-window-close" aria-hidden="true"></i></button></td>`;
+                $("#modal-table-body-permission").append("<tr>" + html + "</tr>");
+                counter++;
+              }
+              if($(".approve_ind_permission").eq(0).attr("id") == "approve_Administrative access") {
+                $("#approve_all_permission").prop('disabled',true);
+                $("#reject_all_permission").prop('disabled',true);
+              } else {
+                $("#approve_all_permission").prop('disabled',false);
+                $("#reject_all_permission").prop('disabled',false);
+              }
+              $(".approve_ind_permission").on('click', approve_ind_permission);
+              $(".reject_ind_permission").on('click', reject_ind_permission);
+              if ( !($.fn.dataTable.isDataTable( '#permission_table' )) ) {
+
+                var tablemodal1=$('#permission_table').DataTable( {
+                  "autoWidth": true,
+                  "scrollCollapse": true,
+                  orderCellsTop: true,
+                  responsive: true,
+                  colReorder: {
+                    fixedColumnsLeft: 1
+                  },
+                  stateSave: true,
+                  "deferRender": true,
+                  "paging": true,
+                  "lengthMenu": [[1, 5, 50, -1], [1, 5, 50, "All"]],
+                  stripeClasses: false,
+                  "pageLength": 50,
+                  dom: 'lfBrtip',
+                  buttons: [
+                      {
+                        extend: 'collection',
+                        text: 'Export',
+                        buttons: [
+                          {
+                            extend: 'copy', title: '', exportOptions: {
+                              columns: ':visible:not(.noVis)'
+                            }
+                          },
+                          {
+                            extend: 'excel', title: '', exportOptions: {
+                              columns: ':visible:not(.noVis)'
+                            }
+                          },
+                          {
+                            extend: 'csv', title: '', exportOptions: {
+                              columns: ':visible:not(.noVis)'
+                            }
+                          },
+                          {
+                            extend: 'pdf', title: '', exportOptions: {
+                              columns: ':visible:not(.noVis)'
+                            }
+                          },
+                        ],
+                      },
+                      {
+                        extend: 'colvis',
+                        className: "scroller",
+                      }
+                      ],
+                      columnDefs: [
+                    {
+                      targets: "_all",
+                      className: 'dt-center allColumnClass all'
+                    },
+                    {
+                      targets: 0,
+                      width: "20%",
+                      className: 'noVis'
+                    }
+                    //{ 'visible': false, 'targets': [1,3] }
+                  ],
+                  } );
+                };
+              },
+            error: function () {
+              Swal.fire({icon: 'error',text: 'Error! Failure in exporting data. Please try again.'});
+            }
+          });
+        })
+
+        function approve_ind_permission() {
+        $(this).prop('disabled', true);
+        $(this).attr('disabled','disabled');
+     let groupname = ($("#permissionmodal_heading").text().replace(": ", ""));
+     let permission_level = ($("#permissionmodal_level").text());
+
+    let approval_table_id = Number($(this).attr("id").split("_")[1]);
+    let reject_row_id='reject_' + approval_table_id
+    $('#' + reject_row_id).prop('disabled', true);
+    $('#' + reject_row_id).attr('disabled','disabled');
+    let url_string = window.location.pathname
+    let f_occ = url_string.indexOf('/', url_string.indexOf('/') + 1)
+    let s_occ = url_string.indexOf('/', url_string.indexOf('/') + f_occ +1)
+    let t_occ = url_string.indexOf('/', url_string.indexOf('/') + s_occ +1)
+    let app_code2 = url_string.substring(f_occ+1,s_occ)
+    let current_dev_mode2 = url_string.substring(s_occ+1,t_occ)
+    let modes = ["Build","Edit"]
+    let url = ""
+    if(current_dev_mode2 != "Build" && current_dev_mode2 != "Edit"){
+      current_dev_mode2 = "User"
+    }
+    $.ajax({
+      url: `/users/${app_code2}/${current_dev_mode2}/userpermissionapproval/`,
+      data: {
+        'groupName': groupname,
+        'level': permission_level,
+        "approval_id": approval_table_id,
+        'operation': 'approve_ind_permission',
+        'app_code': $(this).attr('data-app_code'),
+      },
+      type: "POST",
+      dataType: "json",
+      success: function (data) {
+        Swal.fire({icon: 'success',text: 'Approved successfully! Permissions for users are getting updated. Please check the Notifications bell for further updates.'});
+      },
+      error: function () {
+        Swal.fire({icon: 'error',text: 'Error! Failure in approving permission. Please try again.'});
+      }
+    });
+
+  }
+  function reject_ind_permission() {
+        $(this).prop('disabled', true);
+        $(this).attr('disabled','disabled');
+     let groupname = ($("#permissionmodal_heading").text().replace(": ", ""));
+
+    let approval_table_id = Number($(this).attr("id").split("_")[1]);
+    let approve_row_id='approve_' + approval_table_id
+    let level = ($("#permissionmodal_level").text());
+
+    $('#' + approve_row_id).prop('disabled', true);
+    $('#' + approve_row_id).attr('disabled','disabled');
+    let url_string = window.location.pathname
+    let f_occ = url_string.indexOf('/', url_string.indexOf('/') + 1)
+    let s_occ = url_string.indexOf('/', url_string.indexOf('/') + f_occ +1)
+    let t_occ = url_string.indexOf('/', url_string.indexOf('/') + s_occ +1)
+    let app_code2 = url_string.substring(f_occ+1,s_occ)
+    let current_dev_mode2 = url_string.substring(s_occ+1,t_occ)
+    let modes = ["Build","Edit"]
+    let url = ""
+    if(current_dev_mode2 != "Build" && current_dev_mode2 != "Edit"){
+      current_dev_mode2 = "User"
+    }
+    $.ajax({
+      url: `/users/${app_code2}/${current_dev_mode2}/userpermissionrejection/`,
+      data: {
+        'groupName': groupname,
+        'level':level,
+        "approval_id": approval_table_id,
+        'operation': 'reject_ind_permission',
+        "app_code": $(this).attr('data-app_code')
+      },
+      type: "POST",
+      dataType: "json",
+      success: function (data) {
+        Swal.fire({icon: 'success',text: 'Permission successfully rejected!.'});
+      },
+      error: function () {
+        Swal.fire({icon: 'error',text: 'Error! Failure in rejecting permission. Please try again.'});
+      }
+    });
+
+  }
+
+     </script>
+{% endblock %}

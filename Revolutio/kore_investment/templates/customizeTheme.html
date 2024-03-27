@@ -1,0 +1,1018 @@
+{% extends "base_all.html" %}
+{% load crispy_forms_tags %}
+{% load static %}
+
+{% block body_block %}
+
+
+<div class="modal modal fade" id="allTemplateModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="modal-title"></h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="container-fluid">
+          <div class="row">
+            <div class="col-2 mt-2">
+              <select class="form-control" id="sectionTemplate" data-theme="">
+              </select>
+            </div>
+            <img class="col mt-2 card p-3" style="height: auto;width: auto;" alt="Template preview image" id="sectionPreview">
+            </img>
+          </div>
+         <div id="ModalContentItems"></div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button onclick="ModalContentItemsSave()" type="button" class="btn btn-primary">Save changes</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<section class="content pt-4">
+    <div class="card mx-4" style="width: auto;">
+      <div class="card-body">
+        <h3 class="">Theme Management</h3>
+        <hr>
+        <p class="lead mpl-1">Application theme</p>
+        <div class="mb-3 row">
+          <label for="appName" class="col-sm-2 col-form-label">Choose application</label>
+          <select style="width:250px" class="select2 form-control mr-2" id="appName">
+            {% for i in applications %}
+            <option value="{{i.application_code}}">{{i.application_name}}</option>
+            {% endfor %}
+          </select>
+        </div>
+        <hr>
+
+        <div class="card card-default collapsed-card global-card">
+          <div class="card-header">
+            <div class="card-tools float-right">
+              <button onclick="showTheme('Global')" id="showThemeGlobal" type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-plus"
+                  style="color:var(--primary-color);"></i></button>
+            </div>
+            <div class="card-title">Global Theme</div>
+          </div>
+          <div class="card-body">
+            <form action="/users/customizeTheme/" method="post">
+              {% csrf_token %}
+
+              <p class="lead pl-1">Root styling properties</p>
+
+              <div class="row form-root">
+
+                <div class="mb-3 col-6">
+                  <label for="primaryColor" class="labelx">Primary color</label>
+                  <input style="width:100px" type="color" class="form-control valx mr-2" value="var(--primary-color)" default-value="var(--primary-color)">
+                </div>
+
+                <div class="mb-3 col-6">
+                  <label for="fontColor" class="labelx">Font color</label>
+                  <input style="width:100px" type="color" class="form-control valx mr-2">
+                </div>
+
+                <div class="mb-3 col-6">
+                  <label for="secondaryColor" class="labelx">Secondary color</label>
+                  <input style="width:100px" type="color" class="form-control valx mr-2" value="#565a5e" default-value="#565a5e">
+                </div>
+                <div class="mb-3 col-6">
+                  <label for="font-hover-color" class="labelx">Font Hover Color</label>
+                  <input style="width:100px" type="color" class="form-control valx mr-2" value="#fff" default-value="#fff">
+                </div>
+
+                <div class="mb-3 col-6">
+                  <label for="fontStyle" class="labelx">Font style</label>
+                  <select style="width:100px" class="select2 form-control valx mr-2" default-value="Arial">
+                    <option value="Arial" selected>Arial</option>
+                    <option value="sans-serif">Sans Serif</option>
+                    <option value="serif">Serif</option>
+                    <option value="monospace">Monospace</option>
+                    <option value="cursive">Cursive</option>
+                    <option value="fantasy">Fantasy</option>
+                    <option value="georgia">Georgia</option>
+                    <option value="fantsong">Fangsong</option>
+                  </select>
+                </div>
+                <div class="mb-3 col-6">
+                  <label for="webpage-title" class="labelx">Webpage Title</label>
+                  <input name="webpage-title" type="text" class="form-control textInput mr-2 col-3 valx">
+                </div>
+                <div class="mb-3 col-3 custom-file">
+                  <input id="Global-baseFavicon" name="favicon" type="file" accept=".ico" class="custom-file-input mr-2">
+                  <label for="Global-baseFavicon" class="custom-file-label labelx">Choose Favicon</label>
+                </div>
+              </div>
+              <hr>
+              <p class="lead mpl-1">Navbar</p>
+
+              <div class="row form-navbar">
+                <div class="mb-3 col-12">
+                  <label for="navbarCheck" class="labelx mr-2">Do you want navbar? </label>
+                  <input type="checkbox" class="navbarCheck" onchange="checkboxChange(this)" checked>
+                </div>
+                <div class="mb-3 col-12 form-inline">
+                  <label for="navbarTheme" class="labelx">Choose template</label>
+                  <button id="Global-navbar-add" data="{}" onclick="allTemplateModalClick('Global', 'navbar', this)" type="button" class="btn btn-tool"><i class="fas fa-edit" style="color:var(--primary-color);"></i></button>
+                </div>
+                <div class="mb-3 col-6">
+                  <label for="bgColor" class="labelx">Background color</label>
+                  <input style="width:100px" type="color" class="form-control valx mr-2" value="#f8f9fa" default-value="#f8f9fa">
+                </div>
+                <div class="mb-3 col-6">
+                  <label for="fontColorNavbar" class="labelx">Font color</label>
+                  <input style="width:100px" type="color" class="form-control valx mr-2" value="#000" default-value="#000">
+                </div>
+                <div class="mb-3 col-6">
+                  <label for="position" class="labelx">Position</label>
+                  <select style="width:250px" class="select2 form-control valx mr-2" default-value="Sticky">
+                    <option value="Sticky" selected>Sticky</option>
+                    <option value="Floating">Floating</option>
+                  </select>
+                </div>
+              </div>
+
+
+              <hr>
+              <p class="lead mpl-1">Sidebar</p>
+              <div class="row form-sidebar">
+                <div class="mb-3 col-12">
+                  <label for="sidebarCheck" class="labelx mr-2">Do you want sidebar?</label>
+                  <input type="checkbox" class="sidebarCheck" onchange="checkboxChange(this)" checked>
+                </div>
+
+                <div class="mb-3 col-12 form-inline">
+                  <label for="sidebarTheme" class="labelx">Choose template</label>
+                  <button id="Global-sidebar-add" data="{}" onclick="allTemplateModalClick('Global', 'sidebar', this)" type="button" class="btn btn-tool"><i class="fas fa-edit" style="color:var(--primary-color);"></i></button>
+                </div>
+
+
+                <div class="mb-3 col-6">
+                  <label for="bgColor" class="labelx">Background color</label>
+                  <input style="width:100px" type="color" class="form-control valx mr-2" value="#343a40" default-value="#343a40">
+                </div>
+
+                <div class="mb-3 col-6">
+                  <label for="fontColorSidebar" class="labelx">Font color</label>
+                  <input style="width:100px" type="color" class="form-control valx mr-2" value="#000" default-value="#000">
+                </div>
+
+                <div class="mb-3 col-6">
+                  <label for="position" class="labelx">Position</label>
+                  <select style="width:250px" class="select2 form-control valx mr-2" disabled default-value="Left">
+                    <option value="Left" selected>Left</option>
+                    <option value="Right">Right</option>
+                  </select>
+                </div>
+              </div>
+
+
+              <hr>
+              <p class="lead mpl-1">Footer</p>
+              <div class="row form-footer">
+                <div class="mb-3 col-12">
+                  <label for="footerCheck" class="labelx mr-2">Do you want footer? </label>
+                  <input type="checkbox" class="footerCheck" onchange="checkboxChange(this)" checked>
+                </div>
+
+                <div class="mb-3 col-12 form-inline">
+                  <label for="footerTheme" class="labelx">Choose template</label>
+                  <button id="Global-footer-add" data="{}" onclick="allTemplateModalClick('Global', 'footer', this)" type="button" class="btn btn-tool"><i class="fas fa-edit" style="color:var(--primary-color);"></i></button>
+                </div>
+
+
+                <div class="mb-3 col-6">
+                  <label for="bgColor" class="labelx">Background color</label>
+                  <input style="width:100px" type="color" class="form-control valx mr-2" value="#f4f6f9" default-value="#f4f6f9">
+                </div>
+
+                <div class="mb-3 col-6">
+                  <label for="fontColorFooter" class="labelx">Font color</label>
+                  <input style="width:100px" type="color" class="form-control valx mr-2" value="#000" default-value="#000">
+                </div>
+
+                <div class="mb-3 col-6">
+                  <label for="position" class="labelx">Position</label>
+                  <select style="width:250px" class="select2 form-control valx mr-2" default-value="Floating">
+                    <option value="Floating" selected>Floating</option>
+                    <option value="Sticky">Sticky</option>
+                  </select>
+                </div>
+              </div>
+              <input onclick="saveTheme('Global')" type="button" value="Save theme" class="btn btn-primary">
+              <input onclick="applyThemeBtn('Global')" type="button" value="Apply theme" class="btn btn-primary">
+              <input onclick="previewTheme('Global')" type="button" value="Preview" class="btn btn-primary">
+            </form>
+          </div>
+        </div>
+        <div class="card card-default collapsed-card section-card">
+          <div class="card-header">
+            <div class="card-tools float-right">
+              <button onclick="showTheme('Section')" id="showThemeSection" type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-plus"
+                  style="color:var(--primary-color);"></i></button>
+            </div>
+            <div class="card-title">Section Theme</div>
+          </div>
+          <div class="card-body">
+            <form action="/users/customizeTheme/" method="post">
+              {% csrf_token %}
+              <label>Theme name</label>
+              <div class="col-3 mb-4" style="margin-left: -10px">
+                <select type="text" name="themeName" id="themeName">
+                </select>
+              </div>
+              <p class="lead pl-1">Root styling properties</p>
+
+              <div class="row form-root">
+
+                <div class="mb-3 col-6">
+                  <label for="primaryColor" class="labelx">Primary color</label>
+                  <input style="width:100px" type="color" class="form-control valx mr-2" value="var(--primary-color)" default-value="var(--primary-color)">
+                </div>
+
+                <div class="mb-3 col-6">
+                  <label for="fontColor" class="labelx">Font color</label>
+                  <input style="width:100px" type="color" class="form-control valx mr-2">
+                </div>
+
+                <div class="mb-3 col-6">
+                  <label for="secondaryColor" class="labelx">Secondary color</label>
+                  <input style="width:100px" type="color" class="form-control valx mr-2" value="#565a5e" default-value="#565a5e">
+                </div>
+                <div class="mb-3 col-6">
+                  <label for="font-hover-color" class="labelx">Font Hover Color</label>
+                  <input style="width:100px" type="color" class="form-control valx mr-2" value="#fff" default-value="#fff">
+                </div>
+                <div class="mb-3 col-6">
+                  <label for="fontStyle" class="labelx">Font style</label>
+                  <select style="width:100px" class="select2 form-control valx mr-2" default-value="Arial">
+                    <option value="Arial" selected>Arial</option>
+                    <option value="sans-serif">Sans Serif</option>
+                    <option value="serif">Serif</option>
+                    <option value="monospace">Monospace</option>
+                    <option value="cursive">Cursive</option>
+                    <option value="fantasy">Fantasy</option>
+                    <option value="georgia">Georgia</option>
+                    <option value="fantsong">Fangsong</option>
+                  </select>
+                </div>
+                <div class="mb-3 col-6">
+                  <label for="webpage-title" class="labelx">Webpage Title</label>
+                  <input name="webpage-title" type="text" class="form-control mr-2 col-3 valx">
+                </div>
+                <div class="mb-3 col-3 custom-file">
+                  <input id="Section-baseFavicon" name="favicon" type="file" accept=".ico" class="custom-file-input mr-2">
+                  <label for="Section-baseFavicon" class="custom-file-label labelx">Choose favicon</label>
+                </div>
+              </div>
+              <hr>
+              <p class="lead mpl-1">Navbar</p>
+
+              <div class="row form-navbar">
+                <div class="mb-3 col-12">
+                  <label for="navbarCheck" class="labelx mr-2">Do you want navbar? </label>
+                  <input type="checkbox" class="navbarCheck" onchange="checkboxChange(this)" checked>
+                </div>
+
+                <div class="mb-3 col-12 form-inline">
+                  <label for="navbarTheme" class="labelx">Choose template</label>
+                  <button id="Section-navbar-add" data="{}" onclick="allTemplateModalClick('Section', 'navbar', this)" type="button" class="btn btn-tool"><i class="fas fa-edit" style="color:var(--primary-color);"></i></button>
+                </div>
+
+
+                <div class="mb-3 col-6">
+                  <label for="bgColor" class="labelx">Background color</label>
+                  <input style="width:100px" type="color" class="form-control valx mr-2" value="#f8f9fa" default-value="#f8f9fa">
+                </div>
+                <div class="mb-3 col-6">
+                  <label for="fontColorNavbar" class="labelx">Font color</label>
+                  <input style="width:100px" type="color" class="form-control valx mr-2" value="#000" default-value="#000">
+                </div>
+                <div class="mb-3 col-6">
+                  <label for="position" class="labelx">Position</label>
+                  <select style="width:250px" class="select2 form-control valx mr-2" default-value="Sticky">
+                    <option value="Sticky" selected>Sticky</option>
+                    <option value="Floating">Floating</option>
+                  </select>
+                </div>
+              </div>
+
+
+              <hr>
+              <p class="lead mpl-1">Sidebar</p>
+              <div class="row form-sidebar">
+                <div class="mb-3 col-12">
+                  <label for="sidebarCheck" class="labelx mr-2">Do you want sidebar?</label>
+                  <input type="checkbox" class="sidebarCheck" onchange="checkboxChange(this)" checked>
+                </div>
+
+                <div class="mb-3 col-12 form-inline">
+                  <label for="sidebarTheme" class="labelx">Choose template</label>
+                  <button id="Section-sidebar-add" data="{}" onclick="allTemplateModalClick('Section', 'sidebar', this)" type="button" class="btn btn-tool"><i class="fas fa-edit" style="color:var(--primary-color);"></i></button>
+                </div>
+
+
+                <div class="mb-3 col-6">
+                  <label for="bgColor" class="labelx">Background color</label>
+                  <input style="width:100px" type="color" class="form-control valx mr-2" value="#343a40" default-value="#343a40">
+                </div>
+
+                <div class="mb-3 col-6">
+                  <label for="fontColorSidebar" class="labelx">Font color</label>
+                  <input style="width:100px" type="color" class="form-control valx mr-2" value="#000" default-value="#000">
+                </div>
+
+                <div class="mb-3 col-6">
+                  <label for="position" class="labelx">Position</label>
+                  <select style="width:250px" class="select2 form-control valx mr-2" disabled default-value="Left">
+                    <option value="Left" selected>Left</option>
+                    <option value="Right">Right</option>
+                  </select>
+                </div>
+              </div>
+
+
+              <hr>
+              <p class="lead mpl-1">Footer</p>
+              <div class="row form-footer">
+                <div class="mb-3 col-12">
+                  <label for="footerCheck" class="labelx mr-2">Do you want footer? </label>
+                  <input type="checkbox" class="footerCheck" onchange="checkboxChange(this)" checked>
+                </div>
+
+                <div class="mb-3 col-12 form-inline">
+                  <label for="footerTheme" class="labelx">Choose template</label>
+                  <button id="Section-footer-add" data="{}" onclick="allTemplateModalClick('Section', 'footer', this)" type="button" class="btn btn-tool"><i class="fas fa-edit" style="color:var(--primary-color);"></i></button>
+                </div>
+
+
+                <div class="mb-3 col-6">
+                  <label for="bgColor" class="labelx">Background color</label>
+                  <input style="width:100px" type="color" class="form-control valx mr-2" value="#565a5e" default-value="#565a5e">
+                </div>
+
+                <div class="mb-3 col-6">
+                  <label for="fontColorFooter" class="labelx">Font color</label>
+                  <input style="width:100px" type="color" class="form-control valx mr-2" value="#000" default-value="#000">
+                </div>
+
+                <div class="mb-3 col-6">
+                  <label for="position" class="labelx">Position</label>
+                  <select style="width:250px" class="select2 form-control valx mr-2" default-value="Floating">
+                    <option value="Floating" selected>Floating</option>
+                    <option value="Sticky">Sticky</option>
+                  </select>
+                </div>
+              </div>
+              <input onclick="saveTheme('Section')" type="button" value="Save theme" class="btn btn-primary">
+              <input onclick="applyThemeBtn('Section')" type="button" value="Apply theme" class="btn btn-primary">
+              <input onclick="previewTheme('Section')" type="button" value="Preview" class="btn btn-primary">
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+</section>
+
+<script>
+  $('select.select2').each(function(){
+    parent = $(this).parent()
+    $(this).select2({dropdownParent:parent})
+  })
+  function saveTheme(theme_type, preview=false) {
+    let card;
+    let theme_name = "";
+    let navbarTemplate = JSON.parse($(`#${theme_type}-navbar-add`).attr("data"));
+    let sidebarTemplate =  JSON.parse($(`#${theme_type}-sidebar-add`).attr("data"))
+    let footerTemplate = JSON.parse($(`#${theme_type}-footer-add`).attr("data"))
+    if (
+      Object.keys(navbarTemplate).length == 0
+    || Object.keys(sidebarTemplate).length == 0
+    || Object.keys(footerTemplate).length == 0)
+    {
+      Swal.fire({icon: 'warning',text: 'Choose and save template!'});
+    }
+    else {
+    if (theme_type == "Global") {
+      card = $(".global-card")
+      if($(`#Global-baseFavicon`)[0].files[0] != undefined) {
+      formdata = new FormData();
+      formdata.append("app_code", $('#appName').val());
+      formdata.append("theme_type", theme_type);
+      if (formdata) {
+        formdata.append("image", $(`#Global-baseFavicon`)[0].files[0]);
+        formdata.append("image_name", $(`#Global-baseFavicon`).attr("name"));
+        formdata.append("operation", "upload_theme_image");
+        jQuery.ajax({
+          url: '/users/customizeTheme/',
+          type: "POST",
+          data: formdata,
+          processData: false,
+          contentType: false,
+          success:function(){}
+        });
+      }
+
+      }
+
+    }
+    else if (theme_type == "Section") {
+      card = $(".section-card")
+      theme_name = $("#themeName").val();
+      if (["",null].includes(theme_name)) {
+        Swal.fire({icon: 'warning',text: 'Enter or select section theme!'});
+        return;
+      }
+      if($(`#Section-baseFavicon`)[0].files[0] != undefined) {
+      formdata = new FormData();
+      formdata.append("app_code", $('#appName').val());
+      formdata.append("theme_type", theme_type);
+      if (formdata) {
+        formdata.append("image", $(`#Section-baseFavicon`)[0].files[0]);
+        formdata.append("image_name", $(`#Section-baseFavicon`).attr("name"));
+        formdata.append("theme_name", $("#themeName").val());
+        formdata.append("operation", "upload_theme_image");
+        jQuery.ajax({
+          url: '/users/customizeTheme/',
+          type: "POST",
+          data: formdata,
+          processData: false,
+          contentType: false,
+          success:function(){}
+        });
+      }
+      }
+    }
+    finalThemeDict = {}
+    themeDict = {}
+    card.find(".form-root").find(".valx").each(function (index) {
+      themeDict[$(this).parent().find(".labelx").attr("for")] = $(this).val()
+    });
+    finalThemeDict["root"] = themeDict
+
+    themeDict = {}
+    card.find(".form-navbar").find(".valx").each(function (index) {
+      themeDict[$(this).parent().find(".labelx").attr("for")] = $(this).val()
+    });
+    themeDict["navbarCheck"] = card.find(".navbarCheck").is(":checked")
+    themeDict["template_config"] = navbarTemplate
+    finalThemeDict["navbar"] = themeDict
+
+    themeDict = {}
+    card.find(".form-sidebar").find(".valx").each(function (index) {
+      themeDict[$(this).parent().find(".labelx").attr("for")] = $(this).val()
+    });
+    themeDict["sidebarCheck"] = card.find(".sidebarCheck").is(":checked")
+    themeDict["template_config"] = sidebarTemplate
+    finalThemeDict["sidebar"] = themeDict
+
+    themeDict = {}
+    card.find(".form-footer").find(".valx").each(function (index) {
+      themeDict[$(this).parent().find(".labelx").attr("for")] = $(this).val()
+    });
+    themeDict["footerCheck"] = card.find(".footerCheck").is(":checked")
+    themeDict["template_config"] = footerTemplate
+    finalThemeDict["footer"] = themeDict
+    if (!preview) {
+      $.ajax({
+        url: '/users/customizeTheme/',
+        data: { 'app_code': $('#appName').val(), 'theme_type': theme_type, 'theme_name': theme_name, 'data': JSON.stringify(finalThemeDict), 'operation': 'save_theme_data' },
+        type: "POST",
+        dataType: "json",
+        success: function (data) {
+          Swal.fire({icon: 'success',text: data.message});
+        },
+        error: function () {
+          Swal.fire({icon: 'error',text: 'Error! Failure in saving theme. Please try again'});
+        }
+      });
+
+      if (theme_type == "Section") {
+        let tname = $("#themeName").val();
+        $("#themeName").empty()
+        $.ajax({
+        url: '/users/customizeTheme/',
+        data: { 'app_code': $("#appName").val(), 'theme_type': "Section", 'operation': 'load_section_data' },
+        type: "POST",
+        dataType: "json",
+        success: function (data) {
+          if (Object.keys(data).length > 0) {
+            $('#themeName').append($("<option></option>")
+            .attr("value", "")
+            .prop("disabled", "true")
+            .prop("selected", "true")
+            .text("Select theme"));
+            for (i in data.section_data) {
+              if(data.section_data[i] != "Global") {
+              $('#themeName').append($("<option></option>")
+              .attr("value", data.section_data[i])
+              .text(data.section_data[i]));
+              }
+            }
+            $("#themeName").val(tname).trigger('change');
+          }
+        }});
+      }
+    } else {
+      return finalThemeDict
+    }
+  }
+  }
+
+  function previewTheme(theme_type) {
+    let theme_config = saveTheme(theme_type, true);
+    let theme_name = "";
+
+    if (theme_type == "Section") {
+      theme_name = $("#themeName").val()
+      if (["",null].includes(theme_name)) {
+        Swal.fire({icon: 'warning',text: "Enter or select section theme!"});
+      }
+    }
+    $.ajax({
+      url: '/users/customizeTheme/',
+      data: { 'app_code': $('#appName').val(), 'preview': true, 'theme_config': JSON.stringify(theme_config), 'theme_type': theme_type, 'theme_name': theme_name, 'operation': 'apply_theme_data' },
+      type: "POST",
+      dataType: "json",
+      success: function (data) {
+        window.open(`/users/${$('#appName').val()}/previewTheme/${theme_type}/`, '_blank').focus();
+      },
+      error: function () {
+        Swal.fire({icon: 'error',text: 'Error! Unable to preview theme. Please save your theme and try again'});
+      }
+    });
+  }
+
+  function applyThemeBtn(theme_type) {
+    let theme_name = "";
+    if (theme_type == "Section") {
+      theme_name = $("#themeName").val()
+      if (["",null].includes(theme_name)) {
+        Swal.fire({icon: 'warning',text: "Enter or select section theme!"});
+      }
+    }
+    $.ajax({
+      url: '/users/customizeTheme/',
+      data: { 'app_code': $('#appName').val(), 'theme_name': theme_name,'theme_type': theme_type, 'operation': 'apply_theme_data' },
+      type: "POST",
+      dataType: "json",
+      success: function (data) {
+        Swal.fire({icon: 'success',text: data.message});
+
+      },
+      error: function () {
+        Swal.fire({icon: 'error',text: 'Error! Failure in applying saved theme. With this failure, your custom theme will not be applied in your app. Please try saving and applying your theme again'});
+      }
+    });
+  }
+
+  function clearFields(theme_type) {
+    $(".custom-file-label").text("Choose Favicon")
+    if(theme_type == "Section"){
+      card = $(".section-card")
+    } else {
+      card = $(".global-card")
+    }
+    card.find(".form-root").find(".valx").each(function (index) {
+      if ($(this).attr("default-value") != undefined) {
+        $(this).val($(this).attr("default-value"));
+      }
+      else {
+        $(this).val("");
+      }
+    });
+
+    card.find(".form-navbar").find(".valx").each(function (index) {
+      if ($(this).attr("default-value") != undefined) {
+        $(this).val($(this).attr("default-value"));
+      }
+      else {
+        $(this).val("");
+      }
+    });
+
+    card.find(".form-sidebar").find(".valx").each(function (index) {
+      if ($(this).attr("default-value") != undefined) {
+        $(this).val($(this).attr("default-value"));
+      }
+      else {
+        $(this).val("");
+      }
+    });
+
+    card.find(".form-footer").find(".valx").each(function (index) {
+      if ($(this).attr("default-value") != undefined) {
+        $(this).val($(this).attr("default-value"));
+      }
+      else {
+        $(this).val("");
+      }
+    });
+    $(`#${theme_type}-navbar-add`).attr("data", JSON.stringify({"name":"Default","vars":{}}))
+    $(`#${theme_type}-sidebar-add`).attr("data", JSON.stringify({"name":"Default", "sidebarSize":"4.6rem","vars":{}}))
+    $(`#${theme_type}-footer-add`).attr("data", JSON.stringify({"name":"Default","vars":{}}))
+  }
+
+  function showTheme(theme_type) {
+    clearFields(theme_type);
+    let card;
+    if (theme_type == "Section") {
+      card = $(".section-card")
+      $("#themeName").empty()
+      $.ajax({
+      url: '/users/customizeTheme/',
+      data: { 'app_code': $("#appName").val(), 'theme_type': "Section", 'operation': 'load_section_data' },
+      type: "POST",
+      dataType: "json",
+      success: function (data) {
+        if (Object.keys(data).length > 0) {
+          $('#themeName').append($("<option></option>")
+          .attr("value", "")
+          .prop("disabled", "true")
+          .prop("selected", "true")
+          .text("Select theme"));
+          for (i in data.section_data) {
+            if(data.section_data[i] != "Global") {
+            $('#themeName').append($("<option></option>")
+            .attr("value", data.section_data[i])
+            .text(data.section_data[i]));
+            }
+          }
+        }
+      }});
+    }
+    else {
+      card = $(".global-card")
+    }
+    $.ajax({
+      url: '/users/customizeTheme/',
+      data: { 'app_code': $('#appName').val(), 'theme_type': theme_type, 'theme_name':'', 'operation': 'load_theme_data' },
+      type: "POST",
+      dataType: "json",
+      success: function (data) {
+        if(Object.keys(data).length != 0) {
+        if (theme_type == "Section") {
+          $("#themeName").val(data.theme_name)
+        }
+        data = data.theme_config
+        for (i in data.root){
+          card.find(".form-root").find(".labelx").each(function (index) {
+            $(this).parent().find(".valx").val(data.root[$(this).attr("for")]).change();
+          });
+        }
+
+        for (i in data.navbar){
+          card.find(".form-navbar").find(".labelx").each(function (index) {
+            $(this).parent().find(".valx").val(data.navbar[$(this).attr("for")]).change();
+          });
+        }
+        card.find(".navbarCheck").prop("checked", data.navbar.navbarCheck).change()
+        $(`#${theme_type}-navbar-add`).attr("data", JSON.stringify(data.navbar.template_config))
+
+        for (i in data.sidebar){
+          card.find(".form-sidebar").find(".labelx").each(function (index) {
+            $(this).parent().find(".valx").val(data.sidebar[$(this).attr("for")]).change();
+          });
+        }
+        card.find(".sidebarCheck").prop("checked", data.sidebar.sidebarCheck).change()
+        $(`#${theme_type}-sidebar-add`).attr("data", JSON.stringify(data.sidebar.template_config))
+
+        for (i in data.footer){
+          card.find(".form-footer").find(".labelx").each(function (index) {
+            $(this).parent().find(".valx").val(data.footer[$(this).attr("for")]).change();
+          });
+
+        }
+        card.find(".footerCheck").prop("checked", data.footer.footerCheck).change()
+        $(`#${theme_type}-footer-add`).attr("data", JSON.stringify(data.footer.template_config))
+      }
+      },
+      error: function () {
+        Swal.fire({icon: 'error',text: 'Error! Unable to load custom theme settings. Please try again'});
+      }
+    });
+  }
+
+  function ModalContentItemsSave() {
+    let fDict = JSON.parse($("#sectionTemplate").attr("data-config"));
+    fDict["name"] = $("#sectionTemplate").val()
+    delete fDict["preview_image"]
+    let theme_type = $("#modal-title").attr("data-theme");
+    let section = $("#modal-title").text().toLowerCase();
+    varDict = {}
+    $("#ModalContentItems").find(".mvalx").each(function (index) {
+      if($(this).attr("name") != undefined) {
+        if($(this).attr("type") == "file") {
+          formdata = new FormData();
+          formdata.append("app_code", $('#appName').val());
+          formdata.append("theme_type", theme_type);
+
+          if ($("#modal-title").attr("data-theme") == "Global") {
+            if ($(this)[0].files[0] != undefined) {
+            varDict[$(this).attr("name")] = `{{MEDIA_URL}}{{tenant}}/${$('#appName').val()}/Themefiles/${theme_type}/${$(this).attr("name")}.${$(this)[0].files[0].name.split('.').pop()}`
+            }
+            else {
+              varDict[$(this).attr("name")] = ""
+            }
+            if (formdata) {
+              formdata.append("image", $(this)[0].files[0]);
+              formdata.append("image_name", $(this).attr("name"));
+              formdata.append("operation", "upload_theme_image");
+              jQuery.ajax({
+                url: '/users/customizeTheme/',
+                type: "POST",
+                data: formdata,
+                processData: false,
+                contentType: false,
+                success:function(){}
+              });
+            }
+          }
+          else {
+            if(!["",null].includes($("#themeName").val())) {
+            if ($(this)[0].files[0] != undefined) {
+              varDict[$(this).attr("name")] = `{{MEDIA_URL}}{{tenant}}/${$('#appName').val()}/Themefiles/${theme_type}/${$("#themeName").val()}/${$(this).attr("name")}.${$(this)[0].files[0].name.split('.').pop()}`
+            }
+            else {
+              varDict[$(this).attr("name")] = ""
+            }
+            if (formdata) {
+              formdata.append("image", $(this)[0].files[0]);
+              formdata.append("image_name", $(this).attr("name"));
+              let theme_name = $("#themeName").val();
+              formdata.append("theme_name", theme_name);
+              formdata.append("operation", "upload_theme_image");
+              jQuery.ajax({
+                url: '/users/customizeTheme/',
+                type: "POST",
+                data: formdata,
+                processData: false,
+                contentType: false,
+                success:function(){}
+              });
+            }
+            }
+            else {
+              Swal.fire({icon: 'warning',text: 'Enter or select theme name!'});
+            }
+          }
+        }
+        else {
+        varDict[$(this).attr("name")] = $(this).val()
+        }
+      }
+    });
+    fDict["vars"] = varDict
+    if (section == "footer") {
+      $(`#${theme_type}-footer-add`).attr("data", JSON.stringify(fDict))
+    }
+    else if(section == "navbar") {
+      $(`#${theme_type}-navbar-add`).attr("data", JSON.stringify(fDict))
+    }
+    else if(section == "sidebar") {
+      $(`#${theme_type}-sidebar-add`).attr("data", JSON.stringify(fDict))
+    }
+    $("#allTemplateModal").modal("hide");
+  }
+
+    function allTemplateModalClick(theme_type, section, obj) {
+    $("#ModalContentItems").empty();
+    $("#sectionTemplate").empty();
+    $("#modal-title").attr("data-theme", theme_type)
+    $("#modal-title").text(section.charAt(0).toUpperCase() + section.slice(1))
+    let tdata = JSON.parse($(obj).attr('data'));
+    let template_name;
+
+    $.ajax({
+      url: '/users/customizeTheme/',
+      data: { 'app_code': $('#appName').val(), 'template_type': section, 'operation': 'load_template_selection_data' },
+      type: "POST",
+      dataType: "json",
+      success: function (data) {
+        if (Object.keys(data).length > 0) {
+        if (Object.keys(data.template_selection).length > 0) {
+          for (i in Object.keys(data.template_selection)) {
+            let template_option = data.template_selection[i];
+            $('#sectionTemplate').append($("<option></option>")
+            .attr("value", template_option)
+            .text(template_option)
+            );
+          }
+        }}
+        else {
+          $('#sectionTemplate').append($("<option></option>")
+            .attr("value", "Default")
+            .text("Default")
+            );
+        }
+      },
+      error: function () {
+        Swal.fire({icon: 'error',text: 'Error! Please try again'});
+      }
+    }).done(function() {
+      if (Object.keys(tdata).length > 0) {
+      template_name = tdata["name"]
+      $("#sectionTemplate").val(template_name);
+    } else {
+      template_name = $("#sectionTemplate").val();
+    }
+    if(template_name == null) {
+      template_name = "Default"
+    }
+    $.ajax({
+      url: '/users/customizeTheme/',
+      data: { 'app_code': $('#appName').val(), 'template_name': template_name, 'template_type': section, 'operation': 'load_template_data' },
+      type: "POST",
+      dataType: "json",
+      success: function (data) {
+        $("#sectionTemplate").attr("data-config", JSON.stringify(data));
+        if (data.preview_image != undefined) {
+          $("#sectionPreview").attr('src', `data:image/png;base64,` + data["preview_image"]);
+          $("#sectionPreview").css('display', '');
+          $("#sectionPreview").removeAttr('onerror');
+        } else {
+          $("#sectionPreview").attr('src', "");
+          $("#sectionPreview").attr('onerror', "this.style.display='none'");
+          $("#sectionPreview").attr('alt', "No preview available.")
+        }
+        for (i in data.vars) {
+          let lb = data.vars[i].label
+          let ty = data.vars[i].type
+          let cls = "form-control mx-2";
+          let vl;
+          let accpt = "";
+          if (Object.keys(tdata).length > 0) {
+            vl = tdata.vars[i];
+            if(!vl) {
+              vl = ""
+            }
+          } else {
+            vl = "";
+          }
+          if (ty == "file") {
+            cls = ""
+            accpt = `accept="image/png, image/jpeg"`
+          }
+          $("#ModalContentItems").append(`
+          <div class="row mt-3">
+            <div class="col-2">
+              <label class="mlabelx" for="${lb}">${lb}</label>
+              </div>
+              <div class="col-6">
+                <input name="${i}" type="${ty}" value="${vl}" class="mvalx ${cls}" ${accpt}>
+                </div>
+                </div>
+                `);
+              }
+            },
+            error: function () {
+              Swal.fire({icon: 'error',text: 'Error! Please try again'});
+            }
+          });
+    $("#allTemplateModal").modal("show");
+    });
+
+    }
+
+    $("#sectionTemplate").on('change', function() {
+      $("#ModalContentItems").empty();
+      $.ajax({
+      url: '/users/customizeTheme/',
+      data: { 'app_code': $('#appName').val(), 'template_name': $("#sectionTemplate").val(), 'template_type': $("#modal-title").text().toLowerCase(), 'operation': 'load_template_data' },
+      type: "POST",
+      dataType: "json",
+      success: function (data) {
+        $("#sectionTemplate").attr("data-config", JSON.stringify(data));
+        if (data.preview_image != undefined) {
+          $("#sectionPreview").attr('src', `data:image/png;base64,` + data["preview_image"]);
+          $("#sectionPreview").css('display', '');
+          $("#sectionPreview").removeAttr('onerror');
+        } else {
+          $("#sectionPreview").attr('src', "");
+          $("#sectionPreview").attr('onerror', "this.style.display='none'");
+          $("#sectionPreview").attr('alt', "No preview available.")
+        }
+        for (i in data.vars) {
+          let lb = data.vars[i].label
+          let ty = data.vars[i].type
+          let cls = "form-control mx-2";
+          let vl = "";
+          let accpt = "";
+          if (ty == "file") {
+            cls = ""
+            accpt = `accept="image/png, image/jpeg"`
+          }
+          $("#ModalContentItems").append(`
+          <div class="row mt-3">
+            <div class="col-2">
+              <label class="mlabelx" for="${lb}">${lb}</label>
+              </div>
+              <div class="col-6">
+                <input name="${i}" type="${ty}" value="${vl}" class="mvalx ${cls}" ${accpt}>
+                </div>
+                </div>
+                `);
+              }
+            },
+            error: function () {
+              Swal.fire({icon: 'error',text: 'Error! Please try again'});
+            }
+          });
+    });
+
+    $("#themeName").on('change', function() {
+      clearFields('Section');
+      let card = $(".section-card")
+      let theme_type = "Section"
+      $.ajax({
+      url: '/users/customizeTheme/',
+      data: { 'app_code': $("#appName").val(), 'theme_type': "Section", 'operation': 'load_section_data' },
+      type: "POST",
+      dataType: "json",
+      success: function (data) {
+        if (Object.keys(data).length > 0) {
+          for (i in data.section_data) {
+            if (data.section_data[i] == $("#themeName").val()) {
+              $.ajax({
+                  url: '/users/customizeTheme/',
+                  data: { 'app_code': $('#appName').val(), 'theme_type': theme_type,'theme_name': $("#themeName").val(), 'operation': 'load_theme_data' },
+                  type: "POST",
+                  dataType: "json",
+                  success: function (data) {
+                    if(Object.keys(data).length != 0) {
+                    data = data.theme_config
+                    for (i in data.root){
+                      card.find(".form-root").find(".labelx").each(function (index) {
+                        $(this).parent().find(".valx").val(data.root[$(this).attr("for")]).change();
+                      });
+                    }
+
+                    for (i in data.navbar){
+                      card.find(".form-navbar").find(".labelx").each(function (index) {
+                        $(this).parent().find(".valx").val(data.navbar[$(this).attr("for")]).change();
+                      });
+                    }
+                    card.find(".navbarCheck").prop("checked", data.navbar.navbarCheck).change()
+                    $(`#${theme_type}-navbar-add`).attr("data", JSON.stringify(data.navbar.template_config))
+
+                    for (i in data.sidebar){
+                      card.find(".form-sidebar").find(".labelx").each(function (index) {
+                        $(this).parent().find(".valx").val(data.sidebar[$(this).attr("for")]).change();
+                      });
+                    }
+                    card.find(".sidebarCheck").prop("checked", data.sidebar.sidebarCheck).change()
+                    $(`#${theme_type}-sidebar-add`).attr("data", JSON.stringify(data.sidebar.template_config))
+
+                    for (i in data.footer){
+                      card.find(".form-footer").find(".labelx").each(function (index) {
+                        $(this).parent().find(".valx").val(data.footer[$(this).attr("for")]).change();
+                      });
+
+                    }
+                    card.find(".footerCheck").prop("checked", data.footer.footerCheck).change()
+                    $(`#${theme_type}-footer-add`).attr("data", JSON.stringify(data.footer.template_config))
+                  }
+                  },
+                  error: function () {
+                    Swal.fire({icon: 'error',text: 'Error! Please try again'});
+                  }
+                });
+                return;
+            }
+          }
+        }
+      }});
+    })
+
+    $("#showThemeSection").one('click', function() {
+      $("#themeName").select2();
+      $("#themeName").select2({tags:true});
+    });
+    $("#appName").on('change', function() {
+      if(! $("#showThemeGlobal").parent().parent().parent().hasClass("collapsed-card")) {
+        $("#showThemeGlobal").trigger('click');
+      }
+      if(! $("#showThemeSection").parent().parent().parent().hasClass("collapsed-card")) {
+        $("#showThemeSection").trigger('click');
+      }
+    })
+    function checkboxChange(obj) {
+      if (!$(obj).is(":checked")) {
+      $(obj).parent().parent().children().eq(1).css("display", "none")
+      $(obj).parent().parent().children().eq(2).css("display", "none")
+      $(obj).parent().parent().children().eq(3).css("display", "none")
+      }
+      else {
+      $(obj).parent().parent().children().eq(1).css("display", "")
+      $(obj).parent().parent().children().eq(2).css("display", "")
+      $(obj).parent().parent().children().eq(3).css("display", "")
+      }
+    }
+</script>
+
+{% endblock %}

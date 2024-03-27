@@ -1,0 +1,10 @@
+aiosseclient==0.0.1
+numpy
+pandas
+psycopg2-binary==2.9.3
+pyarrow==8.0.*
+pyarrow
+python-dotenv
+python-dotenv
+socketIO-client==0.7.2
+sseclient

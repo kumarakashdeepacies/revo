@@ -1,0 +1,354 @@
+version: "3.8"
+
+services:
+  redis:
+    env_file:
+      - ".env"
+    image: ${REGISTRY_HOST}/revolutio_kubernetes/redis:5.0.4-stretch
+    build: ./redis
+    restart: always
+    stop_grace_period: 3s
+    command: '--requirepass ${REDIS_PASSWORD}'
+    volumes:
+      - "redis:/data"
+    ports:
+      - "6379:6379"
+
+  redis-scheduler:
+    env_file:
+      - ".env"
+    image: ${REGISTRY_HOST}/revolutio_kubernetes/redis:5.0.4-stretch
+    build: ./redis
+    restart: always
+    stop_grace_period: 3s
+    command: '--requirepass ${REDIS_PASSWORD_SCHEDULER}'
+    volumes:
+      - "redis-scheduler:/data"
+    ports:
+      - "6479:6379"
+
+  keydb:
+    env_file:
+      - ".env_prod"
+    image: ${REGISTRY_HOST}/revolutio_kubernetes/keydb:latest
+    command: keydb-server --server-threads 4 --requirepass ${KEYDB_PASSWORD}
+    build: ./keydb
+    restart: always
+    stop_grace_period: 3s
+    volumes:
+      - "keydb:/data"
+    ports:
+      - "6478:6379"
+
+  postgres:
+    image: ${REGISTRY_HOST}/revolutio_kubernetes/postgres:10-alpine
+    build: ./postgres
+    environment:
+      - POSTGRES_DB=Platform_DB
+      - POSTGRES_USER=revolutio
+      - POSTGRES_PASSWORD=supersecretpassword
+      - ALLOW_EMPTY_PASSWORD=yes
+    volumes:
+      - postgresql-data:/var/lib/postgresql/data
+      - postgresql-backup:/backups
+    # ports:
+    #  - "5432:5432"
+    restart: always
+
+  pgbouncer1:
+    image: edoburu/pgbouncer:1.15.0
+    ports:
+      - 5432:5432
+    environment:
+      - POSTGRESQL_HOST=postgres
+      - PGBOUNCER_AUTH_TYPE=trust
+      - DB_HOST=postgres
+      - DB_USER=revolutio
+      - DB_PASSWORD=supersecretpassword
+      - POOL_MODE=session
+      - SERVER_RESET_QUERY=DISCARD ALL
+      - IGNORE_STARTUP_PARAMETERS="options"
+      - MAX_CLIENT_CONN=500
+    depends_on:
+    - "postgres"
+    restart: always
+
+  web:
+    image: ${REGISTRY_HOST}/revolutio_kubernetes/revolutio:latest
+    build:
+      context: "."
+      dockerfile: ./Dockerfile-updated-python
+    # command: bash -c 'uvicorn config.asgi:application --port 5000 --host 0.0.0.0'
+    command: bash -c 'while !</dev/tcp/postgres/5432; do sleep 1; done; python3 manage.py collectstatic --no-input; python3 manage.py migrate_schemas; python3 tenant_context_manage.py createsuperuser --noinput --username $DJANGO_SUPERUSER_USERNAME --email $DJANGO_SUPERUSER_EMAIL ; uvicorn config.asgi:application --port 5000 --host 0.0.0.0 '
+    depends_on:
+      - "redis"
+      - "pgbouncer1"
+      - "redis-scheduler"
+      - "keydb"
+    env_file:
+      - ".env"
+    healthcheck:
+      test: "${DOCKER_HEALTHCHECK_TEST:-curl localhost:8000/login}"
+      interval: "60s"
+      timeout: "3s"
+      start_period: "5s"
+      retries: 3
+    ports:
+      - "${DOCKER_WEB_PORT:-127.0.0.1:5000}:5000"
+    restart: always
+    stop_grace_period: 3s
+    volumes:
+      - "${DOCKER_WEB_VOLUME:-./revolutio.conf:/opt/revolutio/revolutio.conf}"
+      - static:/opt/revolutio/static
+      - media:/opt/revolutio/kore_investment/media
+      - user_defined_template:/opt/revolutio/kore_investment/templates/user_defined_template
+      - ./Platform_Configs:/opt/revolutio/Platform_Configs
+      - computation_storage:/opt/revolutio/Computation_Temp_Storage
+
+  worker:
+    image: ${REGISTRY_HOST}/revolutio_kubernetes/worker:latest
+    build:
+      context: "."
+      dockerfile: ./rqworker/Dockerfile-updated-python
+    command: /rqworker/start
+    restart: always
+    env_file:
+        - ".env"
+    depends_on:
+      - "redis"
+      - "web"
+    volumes:
+      - "${DOCKER_WEB_VOLUME:-./revolutio.conf:/opt/revolutio/revolutio.conf}"
+      - static:/opt/revolutio/static
+      - media:/opt/revolutio/kore_investment/media
+      - user_defined_template:/opt/revolutio/kore_investment/templates/user_defined_template
+      - ./Platform_Configs:/opt/revolutio/Platform_Configs
+      - computation_storage:/opt/revolutio/Computation_Temp_Storage
+    init: true
+
+  worker-scheduler:
+    image: ${REGISTRY_HOST}/revolutio_kubernetes/worker:latest
+    build:
+      context: "."
+      dockerfile: ./rqworker/Dockerfile-updated-python
+    command: /rqworker/start-scheduler
+    restart: always
+    env_file:
+        - ".env"
+    depends_on:
+      - "redis-scheduler"
+      - "redis"
+      - "web"
+      - "pgbouncer1"
+    volumes:
+      - "${DOCKER_WEB_VOLUME:-./revolutio.conf:/opt/revolutio/revolutio.conf}"
+      - static:/opt/revolutio/static
+      - media:/opt/revolutio/kore_investment/media
+      - user_defined_template:/opt/revolutio/kore_investment/templates/user_defined_template
+      - ./Platform_Configs:/opt/revolutio/Platform_Configs
+      - computation_storage:/opt/revolutio/Computation_Temp_Storage
+    init: true
+
+  worker-tenant:
+    image: ${REGISTRY_HOST}/revolutio_kubernetes/worker:latest
+    build:
+      context: "."
+      dockerfile: ./rqworker/Dockerfile-updated-python
+    command: /rqworker/start-tenant
+    restart: always
+    env_file:
+        - ".env"
+    depends_on:
+      - "redis"
+      - "web"
+    volumes:
+      - "${DOCKER_WEB_VOLUME:-./revolutio.conf:/opt/revolutio/revolutio.conf}"
+      - static:/opt/revolutio/static
+      - media:/opt/revolutio/kore_investment/media
+      - user_defined_template:/opt/revolutio/kore_investment/templates/user_defined_template
+      - ./Platform_Configs:/opt/revolutio/Platform_Configs
+      - computation_storage:/opt/revolutio/Computation_Temp_Storage
+    init: true
+
+  worker-navbar:
+    image: ${REGISTRY_HOST}/revolutio_kubernetes/worker:latest
+    build:
+      context: "."
+      dockerfile: ./rqworker/Dockerfile-updated-python
+    command: /rqworker/start-navbar
+    restart: always
+    env_file:
+        - ".env"
+    depends_on:
+      - "redis"
+      - "web"
+    volumes:
+      - "${DOCKER_WEB_VOLUME:-./revolutio.conf:/opt/revolutio/revolutio.conf}"
+      - static:/opt/revolutio/static
+      - media:/opt/revolutio/kore_investment/media
+      - user_defined_template:/opt/revolutio/kore_investment/templates/user_defined_template
+      - ./Platform_Configs:/opt/revolutio/Platform_Configs
+      - computation_storage:/opt/revolutio/Computation_Temp_Storage
+    init: true
+
+  worker-data-upload-0:
+    image: ${REGISTRY_HOST}/revolutio_kubernetes/worker:latest
+    build:
+      context: "."
+      dockerfile: ./rqworker/Dockerfile-updated-python
+    command: /rqworker/start-data-upload-0
+    restart: always
+    env_file:
+        - ".env"
+    depends_on:
+      - "redis"
+      - "web"
+    volumes:
+      - "${DOCKER_WEB_VOLUME:-./revolutio.conf:/opt/revolutio/revolutio.conf}"
+      - static:/opt/revolutio/static
+      - media:/opt/revolutio/kore_investment/media
+      - user_defined_template:/opt/revolutio/kore_investment/templates/user_defined_template
+      - ./Platform_Configs:/opt/revolutio/Platform_Configs
+      - computation_storage:/opt/revolutio/Computation_Temp_Storage
+    init: true
+
+  worker-computation-1:
+    image: ${REGISTRY_HOST}/revolutio_kubernetes/worker:latest
+    build:
+      context: "."
+      dockerfile: ./rqworker/Dockerfile-updated-python
+    command: /rqworker/start-computation-1
+    restart: always
+    env_file:
+        - ".env"
+    depends_on:
+      - "redis"
+      - "web"
+    volumes:
+      - "${DOCKER_WEB_VOLUME:-./revolutio.conf:/opt/revolutio/revolutio.conf}"
+      - static:/opt/revolutio/static
+      - media:/opt/revolutio/kore_investment/media
+      - user_defined_template:/opt/revolutio/kore_investment/templates/user_defined_template
+      - ./Platform_Configs:/opt/revolutio/Platform_Configs
+      - computation_storage:/opt/revolutio/Computation_Temp_Storage
+    init: true
+
+  worker-computation-0:
+    image: ${REGISTRY_HOST}/revolutio_kubernetes/worker:latest
+    build:
+      context: "."
+      dockerfile: ./rqworker/Dockerfile-updated-python
+    command: /rqworker/start-computation-0
+    restart: always
+    env_file:
+        - ".env"
+    depends_on:
+      - "redis"
+      - "web"
+    volumes:
+      - "${DOCKER_WEB_VOLUME:-./revolutio.conf:/opt/revolutio/revolutio.conf}"
+      - static:/opt/revolutio/static
+      - media:/opt/revolutio/kore_investment/media
+      - user_defined_template:/opt/revolutio/kore_investment/templates/user_defined_template
+      - ./Platform_Configs:/opt/revolutio/Platform_Configs
+      - computation_storage:/opt/revolutio/Computation_Temp_Storage
+    init: true
+
+  worker-alerts:
+    image: ${REGISTRY_HOST}/revolutio_kubernetes/worker:latest
+    build:
+      context: "."
+      dockerfile: ./rqworker/Dockerfile-updated-python
+    command: /rqworker/start-alerts
+    restart: always
+    env_file:
+        - ".env"
+    depends_on:
+      - "redis"
+      - "web"
+    volumes:
+      - "${DOCKER_WEB_VOLUME:-./revolutio.conf:/opt/revolutio/revolutio.conf}"
+      - static:/opt/revolutio/static
+      - media:/opt/revolutio/kore_investment/media
+      - user_defined_template:/opt/revolutio/kore_investment/templates/user_defined_template
+      - ./Platform_Configs:/opt/revolutio/Platform_Configs
+      - computation_storage:/opt/revolutio/Computation_Temp_Storage
+    init: true
+
+  monitor:
+    image: ${REGISTRY_HOST}/revolutio_kubernetes/monitor:latest
+    build: ./rqmonitor
+    command: /start
+    restart: always
+    volumes:
+      - "${DOCKER_WEB_VOLUME:-./revolutio.conf:/opt/revolutio/revolutio.conf}"
+    ports:
+      - "8899:8899"
+    env_file:
+        - ".env"
+    depends_on:
+      - "redis"
+      - "web"
+    init: true
+
+  rqscheduler:
+    image: ${REGISTRY_HOST}/revolutio_kubernetes/rqscheduler:latest
+    build: ./rqscheduler
+    command: /start
+    restart: always
+    volumes:
+      - "${DOCKER_WEB_VOLUME:-./revolutio.conf:/opt/revolutio/revolutio.conf}"
+    env_file:
+        - ".env"
+    depends_on:
+      - "redis-scheduler"
+      - "web"
+      - "worker-scheduler"
+    init: true
+
+  nginx:
+    image: ${REGISTRY_HOST}/revolutio_kubernetes/nginx:latest
+    build: ./nginx
+    command: nginx -g "daemon off;"
+    ports:
+      - 8080:8080
+      - 443:443
+    restart: always
+    depends_on:
+      - web
+    volumes:
+      - "./nginx/nginx_dev.conf:/etc/nginx/nginx.conf"
+      - static:/var/www/revolutio/static
+      - media:/var/www/revolutio/media
+      - "${DOCKER_SSL_CERT:-./nginx/xxx.in.cer:/etc/ssl/xxx.in.cer}"
+      - "${DOCKER_SSL_KEY:-./nginx/var.key:/etc/ssl/var.key}"
+
+  arrowflight:
+    env_file:
+      - ".env"
+    image: ${REGISTRY_HOST}/revolutio/arrowflight
+    build: ./arrowflight
+    restart: always
+    stop_grace_period: 3s
+    volumes:
+      - "data_store:/opt/data_store"
+    ports:
+      - "8880:8815"
+
+volumes:
+  redis:
+  redis-scheduler:
+  keydb:
+  postgresql-data:
+  postgresql-backup:
+  postgresql-data-14.5:
+  postgresql-backup-14.5:
+  static:
+  user_defined_template:
+  user_migration:
+  revolutioconf:
+  platform_configs:
+  media:
+  platform_data:
+  computation_storage:
+  data_store:

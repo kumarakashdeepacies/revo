@@ -1,0 +1,1753 @@
+<!DOCTYPE html>
+
+{% extends extend_template %}
+{% load render_bundle from webpack_loader %}
+{% load static %}
+
+{% block body_block %}
+<!-- Bootstrap4 Duallistbox -->
+<link rel="stylesheet" href="{% static 'vendor/Base_theme/bootstrap4-duallistbox/bootstrap-duallistbox.min.css' %}">
+<!--Official dataTables default  CSS FILE-->
+<link rel="stylesheet" href="{% static 'css/KoreD/jquery.dataTables.css' %}">
+<link rel="stylesheet" href="{% static 'css/KoreD/buttons.dataTables.min.css' %}">
+
+
+
+<!-- Bootstrap4 Duallistbox -->
+<script src="{% static 'vendor/Base_theme/bootstrap4-duallistbox/jquery.bootstrap-duallistbox.min.js' %}"></script>
+
+<!--Official dataTables default  CSS FILE-->
+<link rel="stylesheet" href="{% static 'css/KoreD/jquery.dataTables.css' %}">
+<link rel="stylesheet" href="{% static 'css/KoreD/buttons.dataTables.min.css' %}">
+<link rel="stylesheet" href="{% static 'vendor/Base_theme/datatables-responsive/css/responsive.bootstrap4.min.css' %}">
+<link rel="stylesheet" href="{% static 'vendor/Base_theme/datatables-colreorder/css/colReorder.bootstrap4.min.css' %}">
+
+<!-- DataTables -->
+<script src="{% static 'vendor/Base_theme/datatables/jquery.dataTables.js' %}"></script>
+<script src="{% static 'vendor/Base_theme/datatables-responsive/js/dataTables.responsive.min.js' %}"></script>
+<script src="{% static 'vendor/Base_theme/datatables-fixedheader/js/dataTables.fixedHeader.min.js' %}"></script>
+<script src="{% static 'vendor/Base_theme/datatables-colreorder/js/dataTables.colReorder.min.js' %}"></script>
+<script src="{%static 'vendor/Base_theme/datatables-bs4/js/dataTables.bootstrap4.js'%}"></script>
+
+<!--Ploting Graph-->
+<script src="/static/vendor/Plotly/plotly-latest.min.js"></script>
+<link href="/static/vendor/Plotly/mapbox-gl.css" rel="stylesheet">
+
+ <!-- Date Range Picker -->
+ <script type="text/javascript" src="{%static 'moment/moment.min.js'%}"></script>
+ <script type="text/javascript" src="{%static 'daterangepicker/js/daterangepicker.min.js'%}"></script>
+ <link rel="stylesheet" href="{%static 'daterangepicker/css/daterangepicker.css'%}">
+
+<script src="{%static 'vendor/Base_theme/datatables-buttons/js/dataTables.buttons.min.js'%}"></script>
+<script src="{%static 'vendor/Base_theme/jszip/jszip.min.js'%}"></script>
+<script src="{%static 'vendor/Base_theme/pdfmake/pdfmake.min.js'%}"></script>
+<script src="{%static 'vendor/Base_theme/pdfmake/vfs_fonts.js'%}"></script>
+<script src="{%static 'vendor/Base_theme/datatables-buttons/js/buttons.html5.min.js'%}"></script>
+<script src="{%static 'vendor/Base_theme/datatables-buttons/js/buttons.colVis.min.js'%}"></script>
+<script src="{%static 'vendor/Base_theme/datatables-buttons/js/buttons.print.min.js'%}"></script>
+
+
+
+<style>
+  .main-div-container{
+    max-height: 80vh;
+    height: 72vh;
+  }
+  #examplereportDiv::-webkit-scrollbar, #examplereport2div::-webkit-scrollbar {
+    height: 5px;
+  }
+  #examplereportDiv::-webkit-scrollbar-thumb, #examplereport2div::-webkit-scrollbar-thumb {
+    background-color: darkgrey;
+  }
+  #examplereportDiv::-webkit-scrollbar-thumb:hover ,#examplereport2div::-webkit-scrollbar-thumb:hover {
+    background: grey;
+  }
+  #averageSessionTimeDiv,
+  #averageSessionTimeDiv_Filtered,
+  #totalSessionTimeDiv,
+  #totalSessionTimeDiv_Filtered,
+  #activeSessionTimeDiv,
+  #activeSessionTimeDiv_Filtered,
+  #IPsdiv,
+  #IPsdiv_Filtered,
+  #NumOfActiveSessions,
+  #NumOfActiveSessions_Filtered{
+    height:40vh;
+    padding-left:1rem;
+    overflow-y: hidden;
+  }
+  .custom_button {
+    border: 2px solid transparent;
+    border-radius: 30px;
+  }
+  .dataTables_scrollBody::-webkit-scrollbar {
+    height: 0;
+  }
+  .selectize-control {
+    margin-left: 0.3rem;
+  }
+  .custom_thead_report{
+    display: flex;
+    justify-content: center;
+  }
+  #user-info, #user-info1, #user-info2, #user-info3, #user-info4, #user-info5{
+    margin-top: 0.5rem;
+    width: 100%;
+    max-height: 15rem;
+    -ms-overflow-style: none;
+    scrollbar-width: thin;
+    overflow-y: scroll;
+  }
+  #user-info::-webkit-scrollbar, #user-info1::-webkit-scrollbar, #user-info2::-webkit-scrollbar, #user-info3::-webkit-scrollbar{
+    display: none;
+  }
+  #user-info4::-webkit-scrollbar-track, #user-info5::-webkit-scrollbar-track {
+    background-color: rgba(0,0,0,.03);
+    border-radius: 10px;
+  }
+  #user-info4::-webkit-scrollbar, #user-info5::-webkit-scrollbar {
+    width: 0.5rem;
+  }
+  .custom_thtd{
+    max-width: 10rem;
+    word-wrap: break-word;
+    white-space: normal;
+    text-align:center;
+  }
+  .custom_thtd1{
+    max-width: 11rem;
+    word-wrap: break-word;
+    white-space: normal;
+    text-align:center;
+  }
+  .custom_tables #examplereport_filter, .custom_tables #examplereport2_filter, #examplereport3_filter{
+    padding-right: 1rem;
+  }
+  @media (max-width: 1199px) {
+    .adjust_views_option {
+        justify-content: space-between;
+    }
+    .views_option:nth-child(1) {
+        flex: 1;
+    }
+    .adjustcss{
+      padding-left: 1rem;
+    }
+    .adjustcss1{
+      padding-left: 0 !important;
+    }
+  }
+  .adjustcss2{
+    scrollbar-width: thin;
+    scrollbar-color: rgba(155, 155, 155, 0.7) transparent;
+  }
+ .adjustcss2::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+  .adjustcss2::-webkit-scrollbar-thumb {
+      background: rgba(155, 155, 155, 0.7);
+      border-radius: 3px;
+  }
+  .adjustcss2::-webkit-scrollbar-track {
+      background: transparent;
+  }
+  .sliding-table td, .sliding-table th {
+    padding-left: 1.8rem;
+    padding-right: 1.8rem;
+    padding-top: 0.3rem;
+    padding-bottom: 0.3rem;
+  }
+  .sliding-table1 td, .sliding-table1 th {
+    padding-left: 1.8rem;
+    padding-right: 1.8rem;
+    padding-top: 0.3rem;
+    padding-bottom: 0.3rem;
+  }
+  .sliding-table2 td, .sliding-table2 th {
+    padding-left: 0.3rem;
+    padding-right: 0.3rem;
+    padding-top: 0.3rem;
+    padding-bottom: 0.3rem;
+  }
+  .sliding-table3 td, .sliding-table3 th {
+    padding-left: 0.3rem;
+    padding-right: 0.3rem;
+    padding-top: 0.3rem;
+    padding-bottom: 0.3rem;
+  }
+  .sliding-table4 td, .sliding-table4 th {
+    padding-left: 0.3rem;
+    padding-right: 0.3rem;
+    padding-top: 0.3rem;
+    padding-bottom: 0.3rem;
+  }
+  .sliding-table5 td, .sliding-table5 th {
+    padding-left: 0.3rem;
+    padding-right: 0.3rem;
+    padding-top: 0.3rem;
+    padding-bottom: 0.3rem;
+  }
+  .sliding-table6 td, .sliding-table6 th {
+    padding-left: 0.8rem;
+    padding-right: 0.8rem;
+    padding-top: 0.3rem;
+    padding-bottom: 0.3rem;
+  }
+  .sliding-table7 td, .sliding-table7 th {
+    padding-left: 0.3rem;
+    padding-right: 0.3rem;
+    padding-top: 0.3rem;
+    padding-bottom: 0.3rem;
+  }
+  .sliding-table7.custom_inactive, .sliding-table6.custom_inactive, .sliding-table5.custom_inactive, .sliding-table4.custom_inactive, .sliding-table3.custom_inactive, .sliding-table2.custom_inactive, .sliding-table1.custom_inactive , .sliding-table.custom_inactive {
+    overflow: hidden;
+    height: 0;
+    transition: height 0.8s;
+    box-sizing: border-box;
+  }
+  .sliding-table7.custom_active, .sliding-table6.custom_active, .sliding-table5.custom_active, .sliding-table4.custom_active, .sliding-table3.custom_active, .sliding-table2.custom_active, .sliding-table1.custom_active , .sliding-table.custom_active {
+    overflow: auto;
+    height: 20rem;
+    transition: height 0.8s;
+    box-sizing: border-box;
+  }
+  .section-1 .row {
+    margin-bottom: 0.2rem;
+  }
+  .th_icon_thead_default, .th_icon_thead_default1 {
+    display: flex;
+    justify-content: center;
+    background-color: var(--primary-color);
+    color:var(--font-hover-color) !important;
+    border-radius: 50px;
+    position: relative;
+    margin-bottom: 1rem;
+  }
+  .th_icon_thead_rollup, .th_icon_thead_rollup1, .th_icon_thead_rollup2, .th_icon_thead_rollup4 {
+    display: flex;
+    justify-content: center;
+    background-color: var(--primary-color);
+    color: white;
+    border-radius: 50px;
+    position: relative;
+    margin-top: 2%;
+    margin-bottom: 1rem;
+    width: 90%;
+  }
+  .th_icon_rollup_sub, th_icon_rollup1_sub, th_icon_rollup2_sub, th_icon_rollup4_sub {
+    display: flex;
+    justify-content: center;
+    background-color: var(--primary-color);
+    color: white;
+    border-radius: 50px;
+    position: relative;
+    align-items: center;
+    width: 90%;
+    background-image: linear-gradient(90deg, var(--primary-color) 20%, rgba(255, 255, 255, 0.4) 20%);
+  }
+  .th_icon_rollup_sub_col, .th_icon_rollup1_sub_col, .th_icon_rollup2_sub_col, .th_icon_rollup4_sub_col {
+    display: flex;
+    justify-content: center;
+    background-color: var(--primary-color);
+    color: white;
+    border-radius: 50px;
+    position: relative;
+    align-items: center;
+    width: 90%;
+    background-image: linear-gradient(90deg, var(--primary-color) 0%, rgba(255, 255, 255, 0.4) 0%);
+  }
+
+  .th_icon_thead_default .triangle_icon, .th_icon_thead_rollup .triangle_icon, .th_icon_thead_default1 .triangle_icon, .th_icon_thead_rollup1 .triangle_icon, .th_icon_thead_rollup2 .triangle_icon, .th_icon_thead_rollup4 .triangle_icon{
+    width: 0;
+    height: 0;
+    border-left: 8px solid transparent;
+    border-right: 8px solid transparent;
+    border-top: 8px solid var(--primary-color);
+    position: absolute;
+    bottom: -8px;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+  .custom_class{
+    width:5rem;
+    background-color:white;
+  }
+  .icon-background{
+    background-color: var(--primary-color);
+    border-radius: 50%;
+    padding: 1.2rem;
+    color: #fff;
+  }
+  .views_option:hover {
+    transform: scale(1.05);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+
+  }
+  .views_option .card-body {
+    transition: all 0.3s ease-out;
+  }
+  .views_option .btn-primary {
+    transition: all 0.3s ease-in-out;
+  }
+  .views_option .btn-primary:hover {
+    transform: scale(1.1);
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+  }
+  .custom_download .dropdown {
+    display: flex;
+    width: 7.5rem;
+    align-items: center;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    overflow: hidden;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+    transition: box-shadow 0.3s ease;
+  }
+  .custom_download .dropdown:hover {
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.8);
+  }
+  .custom_download .section-1 {
+    flex: 0 0 92% !important;
+  }
+  .custom_download .row {
+    padding-left: 0.8rem;
+    padding-top: 0.2rem;
+    cursor: pointer;
+    height: 2rem;
+  }
+  .custom_download .row:hover {
+    background-color: var(--primary-color);
+    color: #fff;
+  }
+  .custom_download .highlighted {
+    background-color: var(--primary-color);
+    color: #fff;
+  }
+  .custom_download .section-2 {
+    height: 8.5rem;
+    width: 5rem;
+    background-color: #f5f5f5;
+    border: 2px solid var(--primary-color);
+  }
+  .custom_download .slider1 {
+    height: 60%;
+    background-color: var(--primary-color);
+    position: relative;
+    transform: translateY(-30%);
+    cursor: grab;
+  }
+  .custom_download .slider1:active {
+    cursor: grabbing;
+  }
+  .custom_tables .dt-button-collection .dt-button:hover {
+    background-color: var(--primary-color);
+  }
+  .custom_download{
+    position: relative;
+  }
+  .custom_tables .dataTables_paginate{
+    float: right;
+  }
+  #averageSessionTimeDiv:not(.custom_charts),
+  #averageSessionTimeDiv_Filtered:not(.custom_charts),
+  #totalSessionTimeDiv:not(.custom_charts),
+  #totalSessionTimeDiv_Filtered:not(.custom_charts),
+  #activeSessionTimeDiv:not(.custom_charts),
+  #activeSessionTimeDiv_Filtered:not(.custom_charts),
+  #IPsdiv:not(.custom_charts),
+  #IPsdiv_Filtered:not(.custom_charts),
+  #NumOfActiveSessions:not(.custom_charts),
+  #NumOfActiveSessions_Filtered:not(.custom_charts) {
+    margin-right: 0;
+  }
+
+  .dataTables_filter input {
+    height: 2.8em;
+    padding: 0.5rem !important;
+    font-size: inherit;
+    font-weight: 300;
+  }
+</style>
+
+{% csrf_token %}
+<!-- Breadcrumb-->
+<div class="breadcrumb-holder" style="background-color: #e9ecef; ">
+  <div class="container-fluid" id="dynamicTabs">
+    <ul class="breadcrumb" id="dynamicbreadcrumbs">
+      <li class="breadcrumb-item"><a {% if current_application_code != 'App0' %} {% if current_application_code == 'Dev' %} {% if current_dev_mode == 'Edit' %} {% if edit_app_code != 'Not Selected' %} href="{% url 'users:homePage' edit_app_code current_dev_mode %}" {% else %} href="{% url 'users:homePage' 'Dev' current_dev_mode %}" {% endif %} {% elif current_dev_mode == 'Build' %} {% if build_app_code != 'Not Selected' %} href="{% url 'users:homePage' build_app_code current_dev_mode %}" {% else %} href="{% url 'users:select_application' %}"  {% endif %}  {% endif %} {% else %} href="{% url 'users:homePage' current_application_code 'User' %}" {% endif %} {% else %} href="{% url 'users:select_application' %}" {% endif %}>
+        <b> Home </b></a></li>
+      <li class="breadcrumb-item "><b>Permission Setup</b></li>
+      <li class="breadcrumb-item "><b>User Insights</b></li>
+    </ul>
+  </div>
+</div>
+
+<section class="content">
+  <div class="container-fluid">
+    <ul class="nav nav-tabs nav-justified md-tabs indigo" id="myTabJust" role="tablist">
+      <li class="nav-item">
+
+        <a class="nav-link l3items active" id="validate-tab-just" data-toggle="tab" href="#Audit_trailtab" role="tab"
+          aria-controls="Audit_trailtab" aria-selected="true" style="border-top-right-radius: 15rem;">
+          <center>Login Details</center>
+        </a>
+      <li class="nav-item">
+
+        <a class="nav-link l3items" id="validate-tab-just" data-toggle="tab" href="#validate-just" role="tab"
+          aria-controls="validate-just" aria-selected="true" style="border-top-left-radius: 15rem;border-top-right-radius: 15rem; ">
+          <center>Activity Trail</center>
+        </a>
+      </li>
+      <li class="nav-item">
+
+        <a class="nav-link l3items" id="validate-tab-just" data-toggle="tab" href="#validate-just2" role="tab"
+          aria-controls="validate-just2" aria-selected="true" style="border-top-left-radius: 15rem;">
+          <center>Data Operations Activity Trail</center>
+        </a>
+      </li>
+
+    </ul>
+    <div class="tab-content" id="myTabContent">
+
+      <div class="tab-pane fade show active" id="Audit_trailtab" role="tabpanel" aria-labelledby="list_view-tab">
+        <div class="card col-12">
+          <!-- /.card-header -->
+          <div class="card-body" id="login_report_card">
+            <div style="display: flex; flex-wrap: wrap; justify-content: space-between;">
+              <div class="login_report_card_head" style="display: flex; justify-content: space-between;">
+                <div style="display: flex; justify-content: space-between;align-items: center;width:16rem">
+                  <button id="login_report_filter" type="button" class="custom_button btn btn-primary" data-toggle="modal"
+                    data-target="#reportmodal2" onclick="viewreport()" style="border-radius:30px;">
+                    Customized Report
+                  </button>
+                </div>
+              </div>
+              <div style="display: flex;align-items: center;padding-right:4rem;margin-top: -1%;margin-bottom: -1%;">
+                <div class="icon-background" style="padding-top: 0;padding-bottom: 0;background-color: unset;display:flex; justify-content:center; align-items:center;">
+                  <img style="width: 2rem;height: 2rem;transform: scale(1.2);" src="/static/images/icons/average_icon.png" alt="Average icon" align="left">
+                </div>
+                <p class="font-weight-bold m-0 adjustcss" style="white-space: nowrap;display: flex;flex-direction: column;font-size:large;">Average Session Time<span class="avg_session_time" style="margin-top: -2%;font-weight: initial; font-size: 14px; display: block;"></span></p>
+              </div>
+            </div>
+            <hr style="border-color:var(--primary-color)">
+            <div class="modal fade" id="reportmodal2" tabindex="-1" role="dialog"
+              aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+              <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+                <div class="modal-content" style="border:none;">
+                  <div class="modal-header" style="background:#565a5e; color:white; text-align:center;">
+                    <h5 class="modal-title text-center w-100" style="margin:0 auto;">Customised Report</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                      <span aria-hidden="true">&times;</span>
+                    </button>
+                  </div>
+                  <div class="modal-body">
+                    <div>
+                      <div class="row">
+                        <div class="col-1.5" style="margin-top:0.25rem;margin-left:0.5rem">
+                          <b style="font-weight:500;">Date Range:</b>
+                        </div>
+                        <div class="col-5">
+                          <select class="selectize" id="reportdate2">
+                            <option selected>Last 7 Days</option>
+                            <option>This Week</option>
+                            <option>Latest</option>
+                            <option>Today</option>
+                            <option>Yesterday</option>
+                            <option>This Month</option>
+                            <option>This Quarter</option>
+                            <option>This Year</option>
+                            <option>Previous Week</option>
+                            <option>Previous Month</option>
+                            <option>Previous Quarter</option>
+                            <option>Previous Year</option>
+                            <option>Custom</option>
+                            <option>Advanced</option>
+                          </select>
+                        </div>
+                      </div>
+                      <div id="startandenddate2" style="display:none" class="col-8 mt-4">
+                        <div class="row" style="margin-left:-1.2em;">
+                          <div class="col-5">
+                            <label style="margin-right:1em;font-weight:500;">Select Date Range:</label>
+                            <input type='text' class="form-control p-2 dtrangepicker logindetails"
+                              style="border: 1px solid grey;border-radius: 0.3rem;">
+                          </div>
+                        </div>
+                      </div>
+                      <br>
+                      <div id="login_advanced" style="display:none">
+                        <div class="form-group">
+                          <label for="recpattern">Recurrence pattern: </label>
+                          <select class="selectize form-control recpattern" name="recpattern">
+                            <option value="" disabled="" selected="">Choose One</option>
+                            <option value="Daily">Daily</option>
+                            <option value="Weekly">Weekly</option>
+                            <option value="Monthly">Monthly</option>
+                            <option value="Yearly">Yearly</option>
+                          </select>
+                        </div>
+                        <div class="form-group daily_div" style="display:none;">
+                          <div class="custom-control custom-radio">
+                            <input type="radio" id="daily_input_every" class="custom-control-input recdaily_choice"
+                              name="data_choice1" value="Everyday">
+                            <label for="daily_input_every" class="custom-control-label black">Every Day(s)</label>
+                          </div>
+                          <div class="custom-control custom-radio">
+                            <input type="radio" id="dail_input_weekday" class="custom-control-input recdaily_choice"
+                              name="data_choice1" value="Everyweekday">
+                            <label for="dail_input_weekday" class="custom-control-label black">Every weekday</label>
+                          </div>
+                          <div style="padding-top: 1rem;">
+                            <input type="number" class="form-control rec_daily_days_no"
+                              placeholder="Enter Number of Day(s)">
+                          </div>
+                        </div>
+                        <div class="form-group weekly_div" style="display:none;">
+                          <div class="row" style="align-items: center;">
+                            <span>Recur every </span>
+                            <div class="col-1">
+                              <input type="number" class="form-control rec_weekly_days_no">
+                            </div>
+                            <span> week(s) on: </span>
+                          </div>
+                          <div style="padding-top: 1rem;">
+                            <label for="column">Following days:</label>
+                            <select class="selectize form-control rec_weekly_days" name="column" multiple="">
+                              <option value="Monday">Monday</option>
+                              <option value="Tuesday">Tuesday</option>
+                              <option value="Wednesday">Wednesday</option>
+                              <option value="Thursday">Thursday</option>
+                              <option value="Friday">Friday</option>
+                              <option value="Saturday">Saturday</option>
+                              <option value="Sunday">Sunday</option>
+                            </select>
+                          </div>
+                        </div>
+                        <div class="form-group monthly_div" style="display:none;">
+                          <div class="row" style="align-items:center;">
+                            <span>Day </span>
+                            <div class="col-1">
+                              <input type="number" class="form-control rec_monthly_days_no">
+                            </div>
+                            <span> of every </span>
+                            <div class="col-1">
+                              <input type="number" class="form-control rec_monthly_months_no">
+                            </div>
+                            <span> month(s) </span>
+                          </div>
+                        </div>
+                        <div class="form-group yearly_div" style="display:none;">
+                          <div class="row" style="align-items: center;">
+                            <span>Recur every </span>
+                            <div class="col-1">
+                              <input type="number" class="form-control rec_yearly_year_no">
+                            </div>
+                            <span> years(s) on </span>
+                            <div class="col-3">
+                              <select class="selectize form-control rec_yearly_month_no">
+                                <option value="Jan">Jan</option>
+                                <option value="Feb">Feb</option>
+                                <option value="Mar">Mar</option>
+                                <option value="Apr">Apr</option>
+                                <option value="May">May</option>
+                                <option value="Jun">Jun</option>
+                                <option value="Jul">Jul</option>
+                                <option value="Aug">Aug</option>
+                                <option value="Sept">Sept</option>
+                                <option value="Oct">Oct</option>
+                                <option value="Nov">Nov</option>
+                                <option value="Dec">Dec</option>
+                              </select>
+                            </div>
+                            <div class="col-1">
+                              <input type="number" class="form-control rec_yearly_day_no">
+                            </div>
+                          </div>
+                        </div>
+                        <div class="form-group range_div">
+                          <div class="row">
+                            <div class="col-3">
+                              <label>Select Date range:</label>
+                              <input type="text" class="form-control p-2 dtrangepicker logindtpicker">
+                            </div>
+                          </div>
+                          <div class="row" style="padding-top: 2rem;">
+                            <div class="custom-control custom-radio col-3">
+                              <input type="radio" id="end_recc" class="custom-control-input rec_range_choice"
+                                name="data_choice2" value="endafter">
+                              <label for="end_recc" class="custom-control-label black">End after no.of occurrences:
+                              </label>
+                              <input type="number" class="form-control rec_occurr">
+                            </div>
+                            <div class="custom-control custom-radio col-3">
+                              <input type="radio" id="no_end_date" class="custom-control-input rec_range_choice"
+                                name="data_choice2" value="noenddate">
+                              <label for="no_end_date" class="custom-control-label black">No end date</label>
+                            </div>
+                            <div class="custom-control custom-radio col-3">
+                              <input type="radio" id="on_end_date" class="custom-control-input rec_range_choice"
+                                name="data_choice2" value="onenddate">
+                              <label for="on_end_date" class="custom-control-label black">On end date</label>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <br>
+                    <form id="filter_form2" class="form-search" method="get">
+                      {% csrf_token %}
+
+
+                      <div class="row" id="items">
+                        <table class="table reporttable reportfilter-table">
+                        </table>
+                      </div>
+                      <br>
+                      <button type="button" class="btn btn-primary" id="reportbtn_search_login" data-dismiss="modal">
+                        {{_("Run report")}}
+                        <i class="fa fa-filter"></i>
+                      </button>
+                      <button type="button" class="btn btn-primary" data-dismiss="modal">
+                        Close
+                      </button>
+                    </form>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="custom_section row d-flex">
+              <!--Table views-->
+              <div class="custom_tables col-12 col-xl-9" style="margin-bottom: 3%;">
+                <!-- <p>Default View</p> -->
+                <div id="examplereportDiv">
+                  <table id="examplereport" class="display compact" style="width:100%;border: 1rem var(--primary-color);">
+                    <thead style="font-weight: 700;font-size: 1rem;line-height:3rem;">
+                      <tr>
+                        <th class="custom_thtd" id="id" aria-sort="descending"><span style="width: 8rem;" class="th_icon_thead_default">ID <span class="triangle_icon" style="bottom: -6px;"></span></span></th>
+                        <th class="custom_thtd"><span style="width: 9rem; margin-left: -2%;" class="th_icon_thead_default">Session ID <span class="triangle_icon"></span></span></th>
+                        <th class="custom_thtd"><span style="width: 8rem;" class="th_icon_thead_default">Username <span class="triangle_icon"></span></span></th>
+                        <th class="custom_thtd"><span style="width: 8rem;" class="th_icon_thead_default">Login time <span class="triangle_icon"></span></span></th>
+                        <th class="custom_thtd"><span style="width: 8rem;" class="th_icon_thead_default">Logout time <span class="triangle_icon"></span></span></th>
+                        <th class="custom_thtd"><span style="width: 8rem;" class="th_icon_thead_default">Logout type <span class="triangle_icon"></span></span></th>
+                        <th class="custom_thtd"><span style="width: 8rem;" class="th_icon_thead_default">IP <span class="triangle_icon"></span></span></th>
+                        <th class="custom_thtd"><span style="width: 8rem;" class="th_icon_thead_default">Inactivity time <span class="triangle_icon"></span></span></th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                  </table>
+                  <div id="custom-download-btn1" class="custom_download">
+                    <button class="custom_button buttonfooter btn btn-primary my-2" style="border-radius: 5rem; width: 7.5rem;" onclick="toggleDropdown('#custom-download-btn1')">Download&nbsp;&nbsp;<i class="fas fa-download" style="display:none"></i></button>
+                    <div class="dropdown" style="display: none;">
+                      <div class="section-1">
+                        <div id="copy" class="row">Copy</div>
+                        <div id="excel" class="row">Excel</div>
+                        <div id="csv" class="row">CSV</div>
+                        <div id="pdf" class="row">PDF</div>
+                        <div id="print" class="row">Print</div>
+                      </div>
+                      <div class="section-2">
+                        <div class="slider1"></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <!-- <p>Rollup View</p> -->
+                <table id="examplereportRollUp" class="display compact" style="width:100%;" style="display: none;">
+                  <thead style="font-weight: 700;font-size: 1rem;line-height:3rem;">
+                    <tr>
+                      <th style="padding-left: 130px;"><span style="width: 8rem;" class="th_icon_thead_default">User Name <span class="triangle_icon"></span></span></th>
+                      <th style="padding-left: 130px;"><span style="width: 9rem;" class="th_icon_thead_default">Total Time Spent <span class="triangle_icon"></span></span></th>
+                      <th style="padding: 0px 60px 0px 130px"><span style="width: 9rem;" class="th_icon_thead_default">Count of Sessions  <span class="triangle_icon"></span></span></th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                  </tbody>
+                </table>
+              </div>
+
+              <!--Charts-->
+              <div class="custom_charts col-12 col-xl-3 flex-shrink-0" style="height: 82vh; overflow-y: auto; gap: 1px;">
+                <div class="adjust_views_option row" style="margin-top: 3%; margin-left: 5%;margin-right: 10%;">
+                  <!-- <p>Default option</p> -->
+                  <div class="views_option mx-2 card col-12 col-md-6 col-xl-12" style="margin-bottom:1rem; border-radius: 1rem;padding: 0;">
+                    <div class="card-body" style="border-radius: 1rem;background-color: rgba(0,0,0,.125);padding: 0.5rem;">
+                      <div class="row" style="margin-top: 0.8rem;">
+                        <div class="col-3 d-flex align-items-center justify-content-start" style="padding-left: 1rem;">
+                          <div class="icon-background" style="display:flex; justify-content:center; align-items:center;">
+                            <img style="width: 2rem;height: 2rem;transform: scale(1.2);" src="/static/images/icons/default_icon.png" alt="Default icon" align="left">
+                          </div>
+                        </div>
+                        <div class="col-9">
+                          <div class="row">
+                            <div class="col-12" style="padding-left:2rem;">
+                              <p class="font-weight-bold m-0" style="font-size:large;">Default View</p>
+                            </div>
+                          </div>
+                          <div class="row">
+                            <div style="padding-left:2rem;">
+                              <button class="btn btn-primary" onclick="viewLoginTrailDetails('Default')" style="border-radius: 5rem;">View Details</button>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="row">
+                        <div id="user-info"></div>
+                      </div>
+                    </div>
+                  </div>
+                  <!-- <p>Roll_Up_View option</p> -->
+                  <div class="views_option mx-2 card col-12 col-md-6 col-xl-12" style="margin-bottom:0rem; border-radius: 1rem;padding: 0;">
+                    <div class="card-body" style="border-radius: 1rem;background-color: rgba(0,0,0,.125);padding: 0.5rem;">
+                      <div class="row" style="margin-top: 0.8rem;">
+                        <div class="col-3 d-flex align-items-center justify-content-start"style="padding-left: 1rem;">
+                          <div class="icon-background" style="display:flex; justify-content:center; align-items:center;">
+                            <img style="width: 2rem;height: 2rem;transform: scale(1.2);" src="/static/images/icons/rollup_icon.png" alt="Roll icon" align="left">
+                          </div>
+                        </div>
+                        <div class="col-9">
+                          <div class="row">
+                            <div class="col-12" style="padding-left:2rem;">
+                              <p class="font-weight-bold m-0" style="font-size:large;">Rollup View</p>
+                            </div>
+                          </div>
+                          <div class="row">
+                            <div style="padding-left:2rem;">
+                              <button class="btn btn-primary" onclick="viewLoginTrailDetails('Roll_Up_View')" style="border-radius: 5rem;">View Details</button>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="row">
+                        <div id="user-info1"></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <!-- <p>Graph View</p> -->
+                <!--Unfilerted charts-->
+                <div class="unfilerted_charts show active">
+                  <div id="loginDetailsGraph1" class="row" style="margin-left: 5%;margin-right: 5%;">
+                    <div class="col-12 col-md-6 col-xl-12" style="padding-top: 5%;">
+                      <div id="totalSessionTimeDiv" class="w-100" style="border-radius: 1rem;">
+                        <h6 class="font-weight-bold" style="font-size:large;text-align: center;padding-right: 1rem; margin-top: 1.8rem; margin-bottom: 0;">Top 5 Users by Total Session Time</h6>
+                        <div id="totalSessionTimeDiv1" class="plotly-div-unfilter"></div>
+                      </div>
+                    </div>
+                    <div class="col-12 col-md-6 col-xl-12" style="padding-top: 5%;">
+                      <div id="activeSessionTimeDiv" class="w-100" style="border-radius: 1rem;">
+                        <h6 class="font-weight-bold" style="font-size:large;text-align: center;padding-right: 1rem; margin-top: 1.8rem; margin-bottom: 0;">Top 5 Users by Active Session Time</h6>
+                        <div id="activeSessionTimeDiv1" class="plotly-div-unfilter"></div>
+                      </div>
+                    </div>
+                  </div>
+                  <div id="loginDetailsGraph2" class="row" style="margin-left: 5%;margin-right: 5%;margin-bottom: 5%;">
+                    <div class="col-12 col-md-6 col-xl-12" style="padding-top: 5%;">
+                      <div id="IPsdiv" class="w-100" style="border-radius: 1rem;">
+                        <h6 class="font-weight-bold" style="font-size:large;text-align: center;padding-right: 1rem; margin-top: 1.8rem; margin-bottom: 0;">Top 10 IPs by Number of Sessions</h6>
+                        <div id="IPsdiv1" class="plotly-div-unfilter"></div>
+                      </div>
+                    </div>
+                    <div class="col-12 col-md-6 col-xl-12" style="padding-top: 5%;">
+                      <div id="NumOfActiveSessions" class="w-100" style="border-radius: 1rem;">
+                        <h6 class="font-weight-bold" style="font-size:large;text-align: center;padding-right: 1rem; margin-top: 1.8rem; margin-bottom: 0;">Top 5 Users by Number of Active Sessions</h6>
+                        <div id="NumOfActiveSessions1" class="plotly-div-unfilter"></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <!--Filterted charts-->
+                <div class="filtered_charts" style="display:none;">
+                  <div id="loginDetailsGraph1_Filtered" class="row" style="margin-left: 5%;margin-right: 5%;">
+                    <div class="col-12 col-md-6 col-xl-12" style="padding-top: 5%;">
+                      <div id="totalSessionTimeDiv_Filtered" class="w-100" style="border-radius: 1rem;">
+                        <h6 class="font-weight-bold" style="font-size:large;text-align: center;padding-right: 1rem; margin-top: 1.8rem; margin-bottom: 0;">Top 5 Users by Total Session Time</h6>
+                        <div id="totalSessionTimeDiv_Filtered1" class="plotly-div-filter"></div>
+                      </div>
+                    </div>
+                    <div class="col-12 col-md-6 col-xl-12" style="padding-top: 5%;">
+                      <div id="activeSessionTimeDiv_Filtered" class="w-100" style="border-radius: 1rem;">
+                        <h6 class="font-weight-bold" style="font-size:large;text-align: center;padding-right: 1rem; margin-top: 1.8rem; margin-bottom: 0;">Top 5 Users by Active Session Time</h6>
+                        <div id="activeSessionTimeDiv_Filtered1" class="plotly-div-filter"></div>
+                      </div>
+                    </div>
+                  </div>
+                  <div id="loginDetailsGraph2_Filtered" class="row" style="margin-left: 5%;margin-right: 5%;margin-bottom: 5%;">
+                    <div class="col-12 col-md-6 col-xl-12" style="padding-top: 5%;">
+                      <div id="IPsdiv_Filtered" class="w-100" style="border-radius: 1rem;">
+                        <h6 class="font-weight-bold" style="font-size:large;text-align: center;padding-right: 1rem; margin-top: 1.8rem; margin-bottom: 0;">Top 10 IPs by Number of Sessions</h6>
+                        <div id="IPsdiv_Filtered1" class="plotly-div-filter"></div>
+                      </div>
+                    </div>
+                    <div class="col-12 col-md-6 col-xl-12" style="padding-top: 5%;">
+                      <div id="NumOfActiveSessions_Filtered" class="w-100" style="border-radius: 1rem;">
+                        <h6 class="font-weight-bold" style="font-size:large;text-align: center;padding-right: 1rem; margin-top: 1.8rem; margin-bottom: 0;">Top 5 Users by Number of Active Sessions</h6>
+                        <div id="NumOfActiveSessions_Filtered1" class="plotly-div-filter"></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="tab-pane fade " id="validate-just" role="tabpanel" aria-labelledby="validate-just">
+        <div class="card col-12">
+          <!-- /.card-header -->
+          <div class="card-body" id="act_trail_card">
+            <div style="display: flex; justify-content: space-between;align-items: center">
+              <div style="display: flex; justify-content: space-between;align-items: center;width:16rem">
+                <button style="border-radius: 30px;" type="button" class="custom_button btn btn-primary" data-toggle="modal" data-target="#reportmoda2" onclick="viewreportt()">
+                  Customised Report
+                </button>
+              </div>
+            </div>
+            <hr style="border-color:var(--primary-color)">
+            <div class="modal fade" id="reportmoda2" tabindex="-1" role="dialog"
+              aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+              <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+                <div class="modal-content" style="border:none;">
+                  <div class="modal-header" style="background:#565a5e; color:white; text-align:center;">
+                    <h5 class="modal-title text-center w-100" style="margin:0 auto;">Customised Report</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                      <span aria-hidden="true">&times;</span>
+                    </button>
+                  </div>
+                  <div class="modal-body">
+                    <div>
+                      <div class="row">
+                        <div class="col-1.5" style="margin-top:0.25rem;margin-left:0.5rem">
+                          <b style="font-weight:500;">Date Range:</b>
+                        </div>
+                        <div class="col-5">
+                          <select class="selectize" id="reportdate5">
+                            <option selected>Last 7 Days</option>
+                            <option>This Week</option>
+                            <option>Latest</option>
+                            <option>Today</option>
+                            <option>Yesterday</option>
+                            <option>This Month</option>
+                            <option>This Quarter</option>
+                            <option>This Year</option>
+                            <option>Previous Week</option>
+                            <option>Previous Month</option>
+                            <option>Previous Quarter</option>
+                            <option>Previous Year</option>
+                            <option>Custom</option>
+                            <option>Advanced</option>
+                          </select>
+                        </div>
+                      </div>
+                      <div id="startandenddate1" style="display:none" class="col-8 mt-4">
+                        <div class="row" style="margin-left:-1.2em;">
+                          <div class="col-5">
+                            <label style="margin-right:1em;font-weight:500;">Select Date Range:</label>
+                            <input type='text' class="form-control p-2 dtrangepicker actdetails"
+                              style="border: 1px solid grey;border-radius: 0.3rem;">
+                          </div>
+                        </div>
+                      </div>
+                      <br>
+                      <div id="activity_advanced" style="display:none">
+                        <div class="form-group">
+                          <label for="recpattern_act">Recurrence pattern: </label>
+                          <select class="selectize form-control recpattern_act recpattern_act" name="recpattern">
+                            <option value="" disabled="" selected="">Choose One</option>
+                            <option value="Daily">Daily</option>
+                            <option value="Weekly">Weekly</option>
+                            <option value="Monthly">Monthly</option>
+                            <option value="Yearly">Yearly</option>
+                          </select>
+                        </div>
+                        <div class="form-group daily_div_act" style="display:none;">
+                          <div class="custom-control custom-radio">
+                            <input type="radio" id="daily_input_every_activity"
+                              class="custom-control-input recdaily_choice_act" name="data_choice1" value="Everyday">
+                            <label for="daily_input_every_activity" class="custom-control-label black">Every
+                              Day(s)</label>
+                          </div>
+                          <div class="custom-control custom-radio">
+                            <input type="radio" id="dail_input_weekday_activity"
+                              class="custom-control-input recdaily_choice_act" name="data_choice1" value="Everyweekday">
+                            <label for="dail_input_weekday_activity" class="custom-control-label black">Every
+                              weekday</label>
+                          </div>
+                          <div style="padding-top: 1rem;">
+                            <input type="number" class="form-control rec_daily_days_no_act"
+                              placeholder="Enter Number of Day(s)">
+                          </div>
+                        </div>
+                        <div class="form-group weekly_div_act" style="display:none;">
+                          <div class="row" style="align-items: center;">
+                            <span>Recur every </span>
+                            <div class="col-1">
+                              <input type="number" class="form-control rec_weekly_days_no_act">
+                            </div>
+                            <span> week(s) on: </span>
+                          </div>
+                          <div style="padding-top: 1rem;">
+                            <label for="column">Following days:</label>
+                            <select class="selectize form-control rec_weekly_days_act" name="column" multiple="">
+                              <option value="Monday">Monday</option>
+                              <option value="Tuesday">Tuesday</option>
+                              <option value="Wednesday">Wednesday</option>
+                              <option value="Thursday">Thursday</option>
+                              <option value="Friday">Friday</option>
+                              <option value="Saturday">Saturday</option>
+                              <option value="Sunday">Sunday</option>
+                            </select>
+                          </div>
+                        </div>
+                        <div class="form-group monthly_div_act" style="display:none;">
+                          <div class="row" style="align-items:center;">
+                            <span>Day </span>
+                            <div class="col-1">
+                              <input type="number" class="form-control rec_monthly_days_no_act">
+                            </div>
+                            <span> of every </span>
+                            <div class="col-1">
+                              <input type="number" class="form-control rec_monthly_months_no_act">
+                            </div>
+                            <span> month(s) </span>
+                          </div>
+                        </div>
+                        <div class="form-group yearly_div_act" style="display:none;">
+                          <div class="row" style="align-items: center;">
+                            <span>Recur every </span>
+                            <div class="col-1">
+                              <input type="number" class="form-control rec_yearly_year_no_act">
+                            </div>
+                            <span> years(s) on </span>
+                            <div class="col-3">
+                              <select class="selectize form-control rec_yearly_month_no_act">
+                                <option value="Jan">Jan</option>
+                                <option value="Feb">Feb</option>
+                                <option value="Mar">Mar</option>
+                                <option value="Apr">Apr</option>
+                                <option value="May">May</option>
+                                <option value="Jun">Jun</option>
+                                <option value="Jul">Jul</option>
+                                <option value="Aug">Aug</option>
+                                <option value="Sept">Sept</option>
+                                <option value="Oct">Oct</option>
+                                <option value="Nov">Nov</option>
+                                <option value="Dec">Dec</option>
+                              </select>
+                            </div>
+                            <div class="col-1">
+                              <input type="number" class="form-control rec_yearly_day_no_act">
+                            </div>
+                          </div>
+                        </div>
+                        <div class="form-group range_div_act">
+                          <div class="row">
+                            <div class="col-3">
+                              <label>Select Date range:</label>
+                              <input type="text" class="form-control p-2 dtrangepicker actdtpicker">
+                            </div>
+                          </div>
+                          <div class="row" style="padding-top: 2rem;">
+                            <div class="custom-control custom-radio col-3">
+                              <input type="radio" id="end_recc_activity"
+                                class="custom-control-input rec_range_choice_act" name="data_choice2" value="endafter">
+                              <label for="end_recc_activity" class="custom-control-label black">End after no.of
+                                occurrences: </label>
+                              <input type="number" class="form-control rec_occurr_act">
+                            </div>
+                            <div class="custom-control custom-radio col-3">
+                              <input type="radio" id="no_end_date_activity"
+                                class="custom-control-input rec_range_choice_act" name="data_choice2" value="noenddate">
+                              <label for="no_end_date_activity" class="custom-control-label black">No end date</label>
+                            </div>
+                            <div class="custom-control custom-radio col-3">
+                              <input type="radio" id="on_end_date_activity"
+                                class="custom-control-input rec_range_choice_act" name="data_choice2" value="onenddate">
+                              <label for="on_end_date_activity" class="custom-control-label black">On end date</label>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <br>
+                    <form id="filter_form2" class="form-search" method="get">
+                      {% csrf_token %}
+
+
+                      <div class="row" id="items">
+                        <table class="table reporttable reportfilter-table">
+                        </table>
+                      </div>
+                      <br>
+                      <button type="button" class="btn btn-primary" id="reportbtn_search2" data-dismiss="modal"
+                        style="font-size:inherit;">
+                        {{_("Run report")}}
+                        <i class="fa fa-filter"></i>
+                      </button>
+                      <button type="button" class="btn btn-primary" style="font-size:inherit;" data-dismiss="modal">
+                        Close
+                      </button>
+                    </form>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="custom_section1 row d-flex">
+              <div class="custom_tables col-12 col-xl-9" style="margin-bottom: 3%;">
+                <!-- <p>Table View</p> -->
+                <div id="examplereport2div">
+                  <table id="examplereport2" class="display compact" style="width:100%;">
+                    <thead style="font-weight: 700;font-size: 1rem;line-height:3rem;">
+                      <tr>
+                        <th><span style="width: 8rem;" class="th_icon_thead_default">ID <span class="triangle_icon"></span></span></th>
+                        <th><div class="custom_thead_report"><span style="width: 8rem;" class="th_icon_thead_default">Session ID <span class="triangle_icon"></span></span></div></th>
+                        <th><span style="width: 8rem;" class="th_icon_thead_default">IP <span class="triangle_icon"></span></span></th>
+                        <th><span style="width: 8rem;" class="th_icon_thead_default">Username <span class="triangle_icon"></span></span></th>
+                        <th><span style="width: 8rem;" class="th_icon_thead_default">Application <span class="triangle_icon"></span></span></th>
+                        <th><div class="custom_thead_report"><span style="width: 8rem;" class="th_icon_thead_default">URL Request <span class="triangle_icon"></span></span></div></th>
+                        <th><div class="custom_thead_report"><span style="width: 8rem;" class="th_icon_thead_default">URL From <span class="triangle_icon"></span></span></div></th>
+                        <th><span style="width: 8rem;" class="th_icon_thead_default">Screen <span class="triangle_icon"></span></span></th>
+                        <th><span style="width: 8rem;" class="th_icon_thead_default">Date <span class="triangle_icon"></span></span></th>
+                        <th><span style="width: 8rem;" class="th_icon_thead_default">Time <span class="triangle_icon"></span></span></th>
+                        <th><span style="width: 8rem;" class="th_icon_thead_default">Time spent <span class="triangle_icon"></span></span></th>
+                      </tr>
+                    </thead>
+                    <tbody id="activity_audit_report">
+                    </tbody>
+                  </table>
+                  <div id="custom-download-btn2" class="custom_download">
+                    <button class="custom_button buttonfooter btn btn-primary my-2" style="border-radius: 5rem; width: 7.5rem;" onclick="toggleDropdown('#custom-download-btn2')">Download&nbsp;&nbsp;<i class="fas fa-download" style="display:none"></i></button>
+                    <div class="dropdown" style="display: none;">
+                      <div class="section-1">
+                        <div id="copy" class="row">Copy</div>
+                        <div id="excel" class="row">Excel</div>
+                        <div id="csv" class="row">CSV</div>
+                        <div id="pdf" class="row">PDF</div>
+                        <div id="print" class="row">Print</div>
+                      </div>
+                      <div class="section-2">
+                        <div class="slider1"></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <!-- <p>Rollup View</p> -->
+                <table id="examplereportRollUp1" class="display compact" style="width:100%;" style="display: none;">
+                  <thead style="font-weight: 700;font-size: 1rem;line-height:3rem;">
+                    <tr>
+                      <th style="padding-left: 90px;"><span style="width: 8rem;" class="th_icon_thead_default">User Name <span class="triangle_icon"></span></span></th>
+                      <th style="padding-left: 90px;"><span style="width: 9rem;" class="th_icon_thead_default">Total Time Spent <span class="triangle_icon"></span></span></th>
+                      <th style="padding-left: 90px;"><span style="width: 10rem;" class="th_icon_thead_default">Count of Activities  <span class="triangle_icon"></span></span></th>
+                    </tr>
+                  </thead>
+                  <tbody></tbody>
+                </table>
+                <table id="examplereportRollUp2" class="display compact" style="width:100%;" style="display: none;">
+                  <thead style="font-weight: 700;font-size: 1rem;line-height:3rem;">
+                    <tr>
+                      <th style="padding-left: 100px;"><span style="width: 8rem;" class="th_icon_thead_default">Session ID<span class="triangle_icon"></span></span></th>
+                      <th style="padding-left: 100px;"><span style="width: 9rem;" class="th_icon_thead_default">Total Time Spent <span class="triangle_icon"></span></span></th>
+                      <th style="padding-left: 100px;"><span style="width: 9rem;" class="th_icon_thead_default">Count of Activity  <span class="triangle_icon"></span></span></th>
+                    </tr>
+                  </thead>
+                  <tbody></tbody>
+                </table>
+                <table id="examplereportRollUp4" class="display compact" style="width:100%;" style="display: none;">
+                  <thead style="font-weight: 700;font-size: 1rem;line-height:3rem;">
+                    <tr>
+                      <th style="padding-left: 120px;"><span style="width: 8rem;" class="th_icon_thead_default">Activity Name <span class="triangle_icon"></span></span></th>
+                      <th style="padding-left: 120px;"><span style="width: 9rem;" class="th_icon_thead_default">Total Time Spent <span class="triangle_icon"></span></span></th>
+                      <th style="padding: 0px 60px 0px 120px"><span style="width: 9rem;" class="th_icon_thead_default">Count of Activity  <span class="triangle_icon"></span></span></th>
+                    </tr>
+                  </thead>
+                  <tbody></tbody>
+                </table>
+                </div>
+                <div class="custom_charts col-12 col-xl-3 flex-shrink-0" style="height: 82vh; overflow-y: auto; gap: 1px;">
+                  <div class="adjust_views_option row" style="margin-left: 5%;margin-right: 10%;">
+                    <!-- <p>Default option</p> -->
+                    <div class="views_option mx-2 card col-12 col-sm-6 col-xl-12" style="border-radius: 1rem;padding: 0;">
+                      <div class="card-body" style="border-radius: 1rem;background-color: rgba(0,0,0,.125);padding: 0.5rem;">
+                        <div class="row" style="margin-top: 0.8rem;">
+                          <div class="col-3 d-flex align-items-center justify-content-start"style="padding-left: 1rem;">
+                            <div class="icon-background" style="display:flex; justify-content:center; align-items:center;">
+                              <img style="width: 2rem;height: 2rem;transform: scale(1.2);" src="/static/images/icons/default_icon.png" alt="Default icon" align="left">
+                            </div>
+                          </div>
+                          <div class="col-9">
+                            <div class="row">
+                              <div class="col-12" style="padding-left:2rem;">
+                                <p class="font-weight-bold m-0" style="font-size:large;">Default View</p>
+                              </div>
+                            </div>
+                            <div class="row">
+                              <div style="padding-left:2rem;">
+                                <button class="btn btn-primary" onclick="viewActivityTrailDetails('Default')" style="border-radius: 5rem;">View Details</button>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="row">
+                          <div id="user-info2"></div>
+                        </div>
+                      </div>
+                    </div>
+                    <!-- <p>Username_View option</p> -->
+                    <div class="views_option mx-2 card col-12 col-sm-6 col-xl-12" style="border-radius: 1rem;padding: 0;">
+                      <div class="card-body" style="border-radius: 1rem;background-color: rgba(0,0,0,.125);padding: 0.5rem;">
+                        <div class="row" style="margin-top: 0.8rem;">
+                          <div class="col-3 d-flex align-items-center justify-content-start"style="padding-left: 1rem;">
+                            <div class="icon-background" style="display:flex; justify-content:center; align-items:center;">
+                              <img style="width: 2rem;height: 2rem;transform: scale(1.3);" src="/static/images/icons/username_icon.png" alt="Username icon" align="left">
+                            </div>
+                          </div>
+                          <div class="col-9">
+                            <div class="row">
+                              <div class="col-12" style="padding-left:2rem;">
+                                <p class="font-weight-bold m-0" style="font-size:large;">Username View</p>
+                              </div>
+                            </div>
+                            <div class="row">
+                              <div style="padding-left:2rem;">
+                                <button class="btn btn-primary" onclick="viewActivityTrailDetails('examplereportRollUp1')" style="border-radius: 5rem;">View Details</button>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="row">
+                          <div id="user-info3"></div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="adjust_views_option row" style="margin-left: 5%;margin-right: 10%;">
+                    <!-- <p>Session_ID_View option</p> -->
+                    <div class="views_option mx-2 card col-12 col-sm-6 col-xl-12" style="border-radius: 1rem;padding: 0;">
+                      <div class="card-body" style="border-radius: 1rem;background-color: rgba(0,0,0,.125);padding: 0.5rem;">
+                        <div class="row" style="margin-top: 0.8rem;">
+                          <div class="col-3 d-flex align-items-center justify-content-start"style="padding-left: 1rem;">
+                            <div class="icon-background" style="display:flex; justify-content:center; align-items:center;">
+                              <img style="width: 2rem;height: 2rem;transform: scale(1.3);" src="/static/images/icons/session_icon.png" alt="Session icon" align="left">
+                            </div>
+                          </div>
+                          <div class="col-9 adjustcss1">
+                            <div class="row">
+                              <div class="col-12" style="padding-left:2rem;">
+                                <p class="font-weight-bold m-0" style="font-size:large;">Session ID View</p>
+                              </div>
+                            </div>
+                            <div class="row">
+                              <div style="padding-left:2rem;">
+                                <button class="btn btn-primary" onclick="viewActivityTrailDetails('examplereportRollUp2')" style="border-radius: 5rem;">View Details</button>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="row adjustcss2">
+                          <div id="user-info4"></div>
+                        </div>
+                      </div>
+                    </div>
+                    <!-- <p>URL_View option</p> -->
+                    <div class="views_option mx-2 card col-12 col-sm-6 col-xl-12" style="border-radius: 1rem;padding: 0;">
+                      <div class="card-body" style="border-radius: 1rem;background-color: rgba(0,0,0,.125);padding: 0.5rem;">
+                        <div class="row" style="margin-top: 0.8rem;">
+                          <div class="col-3 d-flex align-items-center justify-content-start"style="padding-left: 1rem;">
+                            <div class="icon-background" style="display:flex; justify-content:center; align-items:center;">
+                              <img style="width: 2rem;height: 2rem;transform: scale(1.3);" src="/static/images/icons/url_icon.png" alt="Url icon" align="left">
+                            </div>
+                          </div>
+                          <div class="col-9 adjustcss1">
+                            <div class="row">
+                              <div class="col-12" style="padding-left:2rem;">
+                                <p class="font-weight-bold m-0" style="font-size:large;">URL View</p>
+                              </div>
+                            </div>
+                            <div class="row">
+                              <div style="padding-left:2rem;">
+                                <button class="btn btn-primary" onclick="viewActivityTrailDetails('examplereportRollUp4')" style="border-radius: 5rem;">View Details</button>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="row adjustcss2">
+                          <div id="user-info5"></div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+        </div>
+      </div>
+      <div class="tab-pane fade " id="validate-just2" role="tabpanel" aria-labelledby="validate-just2">
+        <div class="card col-12">
+          <!-- /.card-header -->
+          <div class="card-body" id="act_trail_card2">
+            <div class="d-flex justify-content-between align-items-center">
+              <button style="border-radius: 30px;" type="button" class="custom_button btn btn-primary" data-toggle="modal" data-target="#reportmoda3" onclick="viewreportt()">
+                Customised Report
+              </button>
+            </div>
+            <hr style="border-color:var(--primary-color)">
+            <div class="modal fade" id="reportmoda3" tabindex="-1" role="dialog"
+              aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+              <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+                <div class="modal-content" style="border:none;">
+                  <div class="modal-header" style="background:#565a5e; color:white; text-align:center;">
+                    <h5 class="modal-title text-center w-100" style="margin:0 auto;">Customised Report</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                      <span aria-hidden="true">&times;</span>
+                    </button>
+                  </div>
+                  <div class="modal-body">
+                    <div>
+                      <div class="row">
+                        <div class="col-1.5" style="margin-top:0.25rem;margin-left:0.5rem">
+                          <b style="font-weight:500;">Date Range:</b>
+                        </div>
+                        <div class="col-5">
+                          <select class="selectize" id="reportdate3">
+                            <option selected>Last 7 Days</option>
+                            <option>This Week</option>
+                            <option>Latest</option>
+                            <option>Today</option>
+                            <option>Yesterday</option>
+                            <option>This Month</option>
+                            <option>This Quarter</option>
+                            <option>This Year</option>
+                            <option>Previous Week</option>
+                            <option>Previous Month</option>
+                            <option>Previous Quarter</option>
+                            <option>Previous Year</option>
+                            <option>Custom</option>
+                            <option>Advanced</option>
+                          </select>
+                        </div>
+                      </div>
+                      <div id="startandenddate3" style="display:none" class="col-8 mt-4">
+                        <div class="row" style="margin-left:-1.2em;">
+                          <div class="col-5">
+                            <label style="margin-right:1em;font-weight:500;">Select Date Range:</label>
+                            <input type='text' class="form-control p-2 dtrangepicker opactdetails"
+                              style="border: 1px solid grey;border-radius: 0.3rem;">
+                          </div>
+                        </div>
+                      </div>
+                      <br>
+                      <div id="ops_activity_advanced" style="display:none">
+                        <div class="form-group">
+                          <label for="recpattern_ops">Recurrence pattern: </label>
+                          <select class="selectize form-control recpattern_ops" name="recpattern">
+                            <option value="" disabled="" selected="">Choose One</option>
+                            <option value="Daily">Daily</option>
+                            <option value="Weekly">Weekly</option>
+                            <option value="Monthly">Monthly</option>
+                            <option value="Yearly">Yearly</option>
+                          </select>
+                        </div>
+                        <div class="form-group daily_div_ops" style="display:none;">
+                          <div class="custom-control custom-radio">
+                            <input type="radio" id="daily_input_every_ops"
+                              class="custom-control-input recdaily_choice_ops" name="data_choice1" value="Everyday">
+                            <label for="daily_input_every_ops" class="custom-control-label black">Every Day(s)</label>
+                          </div>
+                          <div class="custom-control custom-radio">
+                            <input type="radio" id="dail_input_weekday_ops"
+                              class="custom-control-input recdaily_choice_ops" name="data_choice1" value="Everyweekday">
+                            <label for="dail_input_weekday_ops" class="custom-control-label black">Every weekday</label>
+                          </div>
+                          <div style="padding-top: 1rem;">
+                            <input type="number" class="form-control rec_daily_days_no_ops"
+                              placeholder="Enter Number of Day(s)">
+                          </div>
+                        </div>
+                        <div class="form-group weekly_div_ops" style="display:none;">
+                          <div class="row" style="align-items: center;">
+                            <span>Recur every </span>
+                            <div class="col-1">
+                              <input type="number" class="form-control rec_weekly_days_no_ops">
+                            </div>
+                            <span> week(s) on: </span>
+                          </div>
+                          <div style="padding-top: 1rem;">
+                            <label for="column">Following days:</label>
+                            <select class="selectize form-control rec_weekly_days_ops" name="column" multiple="">
+                              <option value="Monday">Monday</option>
+                              <option value="Tuesday">Tuesday</option>
+                              <option value="Wednesday">Wednesday</option>
+                              <option value="Thursday">Thursday</option>
+                              <option value="Friday">Friday</option>
+                              <option value="Saturday">Saturday</option>
+                              <option value="Sunday">Sunday</option>
+                            </select>
+                          </div>
+                        </div>
+                        <div class="form-group monthly_div_ops" style="display:none;">
+                          <div class="row" style="align-items:center;">
+                            <span>Day </span>
+                            <div class="col-1">
+                              <input type="number" class="form-control rec_monthly_days_no_ops">
+                            </div>
+                            <span> of every </span>
+                            <div class="col-1">
+                              <input type="number" class="form-control rec_monthly_months_no_ops">
+                            </div>
+                            <span> month(s) </span>
+                          </div>
+                        </div>
+                        <div class="form-group yearly_div_ops" style="display:none;">
+                          <div class="row" style="align-items: center;">
+                            <span>Recur every </span>
+                            <div class="col-1">
+                              <input type="number" class="form-control rec_yearly_year_no_ops">
+                            </div>
+                            <span> years(s) on </span>
+                            <div class="col-3">
+                              <select class="selectize form-control rec_yearly_month_no_ops">
+                                <option value="Jan">Jan</option>
+                                <option value="Feb">Feb</option>
+                                <option value="Mar">Mar</option>
+                                <option value="Apr">Apr</option>
+                                <option value="May">May</option>
+                                <option value="Jun">Jun</option>
+                                <option value="Jul">Jul</option>
+                                <option value="Aug">Aug</option>
+                                <option value="Sept">Sept</option>
+                                <option value="Oct">Oct</option>
+                                <option value="Nov">Nov</option>
+                                <option value="Dec">Dec</option>
+                              </select>
+                            </div>
+                            <div class="col-1">
+                              <input type="number" class="form-control rec_yearly_day_no_ops">
+                            </div>
+                          </div>
+                        </div>
+                        <div class="form-group range_div_ops">
+                          <div class="row">
+                            <div class="col-3">
+                              <label>Select Date range:</label>
+                              <input type="text" class="form-control p-2 dtrangepicker ops_actdtpicker">
+                            </div>
+                          </div>
+                          <div class="row" style="padding-top: 2rem;">
+                            <div class="custom-control custom-radio col-3">
+                              <input type="radio" id="end_recc_ops" class="custom-control-input rec_range_choice_ops"
+                                name="data_choice2" value="endafter">
+                              <label for="end_recc_ops" class="custom-control-label black">End after no.of occurrences:
+                              </label>
+                              <input type="number" class="form-control rec_occurr_ops">
+                            </div>
+                            <div class="custom-control custom-radio col-3">
+                              <input type="radio" id="no_end_date_ops" class="custom-control-input rec_range_choice_ops"
+                                name="data_choice2" value="noenddate">
+                              <label for="no_end_date_ops" class="custom-control-label black">No end date</label>
+                            </div>
+                            <div class="custom-control custom-radio col-3">
+                              <input type="radio" id="on_end_date_ops" class="custom-control-input rec_range_choice_ops"
+                                name="data_choice2" value="onenddate">
+                              <label for="on_end_date_ops" class="custom-control-label black">On end date</label>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <br>
+                    <form id="filter_form2" class="form-search" method="get">
+                      {% csrf_token %}
+
+
+                      <div class="row" id="items">
+                        <table class="table reporttable reportfilter-table">
+                        </table>
+                      </div>
+                      <br>
+                      <button type="button" class="btn btn-primary" id="reportbtn_search3" data-dismiss="modal"
+                        style="font-size:inherit;">
+                        {{_("Run report")}}
+                        <i class="fa fa-filter"></i>
+                      </button>
+                      <button type="button" class="btn btn-primary" style="font-size:inherit;" data-dismiss="modal">
+                        Close
+                      </button>
+                    </form>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!-- <p>Table View</p> -->
+            <table id="examplereport3" class="display compact" style="width:100%;">
+              <thead style="font-weight: 700;font-size: 1rem;line-height:3rem;">
+                <tr>
+
+
+                  <th id="date" ><div class="custom_thead_report"><span style="width: 12rem;" class="th_icon_thead_default">ID <span class="triangle_icon"></span></span></div></th>
+                  <th><div class="custom_thead_report"><span style="width: 12rem;" class="th_icon_thead_default">URL <span class="triangle_icon"></span></span></div></th>
+                  <th><div class="custom_thead_report"><span style="width: 12rem;" class="th_icon_thead_default">Operation <span class="triangle_icon"></span></span></div></th>
+                  <th><div class="custom_thead_report"><span style="width: 12rem;" class="th_icon_thead_default">Message <span class="triangle_icon"></span></span></div></th>
+                  <th id="check"><div class="custom_thead_report"><span style="width: 12rem;" class="th_icon_thead_default">Date Time <span class="triangle_icon"></span></span></div></th>
+                  <th><div class="custom_thead_report"><span style="width: 12rem;" class="th_icon_thead_default">User <span class="triangle_icon"></span></span></div></th>
+
+
+
+                </tr>
+              </thead>
+              <tbody id="activity_audit_report2">
+              </tbody>
+            </table>
+            <div id="custom-download-btn3" class="custom_download">
+              <button class="custom_button buttonfooter btn btn-primary my-2" style="border-radius: 5rem; width: 7.5rem;" onclick="toggleDropdown('#custom-download-btn3')">Download&nbsp;&nbsp;<i class="fas fa-download" style="display:none"></i></button>
+              <div class="dropdown" style="display: none;">
+                <div class="section-1">
+                  <div id="copy" class="row">Copy</div>
+                  <div id="excel" class="row">Excel</div>
+                  <div id="csv" class="row">CSV</div>
+                  <div id="pdf" class="row">PDF</div>
+                  <div id="print" class="row">Print</div>
+                </div>
+                <div class="section-2">
+                  <div class="slider1"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script src="{% static 'js/user_insights.min.js' %}"></script>
+
+<script>
+  var ctoken = document.getElementById('dummyFormForAjaxCall').elements[0].value;
+  $.ajaxSetup({
+    beforeSend: function (xhr, settings) {
+      xhr.setRequestHeader("X-CSRFToken", ctoken);
+    }
+  });
+
+
+  function adjustDimensions(parentId, childId) {
+    const parentHeight = $(`#${parentId}`).height();
+    const parentWidth = $(`#${parentId}`).width();
+    $(`#${childId}`).height(parentHeight * 0.8);
+    $(`#${childId}`).width(parentWidth);
+    const childHeight = $(`#${childId}`).height();
+    const childWidth = $(`#${childId}`).width();
+  }
+  $(document).ready(function () {
+    adjustDimensions('totalSessionTimeDiv', 'totalSessionTimeDiv1');
+    adjustDimensions('NumOfActiveSessions', 'NumOfActiveSessions1');
+    adjustDimensions('activeSessionTimeDiv', 'activeSessionTimeDiv1');
+    adjustDimensions('IPsdiv', 'IPsdiv1');
+    function hexToRgba(hex, opacity) {
+      let bigint = parseInt(hex.slice(1), 16);
+      return `rgba(${(bigint >> 16) & 255}, ${(bigint >> 8) & 255}, ${bigint & 255}, ${opacity})`;
+    }
+    let rootStyle = getComputedStyle(document.documentElement);
+    let primaryColorValue = rootStyle.getPropertyValue('--primary-color');
+    custom_primary_color = primaryColorValue.trim()
+    let styleElem = document.createElement("style");
+    document.head.appendChild(styleElem);
+    styleElem.textContent = `
+      // .btn-primary:hover{
+      //   background: ${hexToRgba(custom_primary_color, 0.5)};
+      // }
+      .custom_button:hover {
+        background-color: var(--buttonBgHoverColor, var(--secondary-color));
+        color: black;
+        border-radius: 0.5rem;
+        // border: 0px solid var(--secondary-color);
+      }
+      .views_option:hover {
+        background-color: ${hexToRgba(custom_primary_color, 0.2)};
+      }
+      #user-info4::-webkit-scrollbar-thumb, #user-info5::-webkit-scrollbar-thumb {
+        border-radius: 10px;
+        background-color: ${hexToRgba(custom_primary_color, 0.8)};
+      }
+      .sliding-table7.custom_active,
+      .sliding-table6.custom_active,
+      .sliding-table5.custom_active,
+      .sliding-table4.custom_active,
+      .sliding-table3.custom_active,
+      .sliding-table2.custom_active,
+      .sliding-table1.custom_active,
+      .sliding-table.custom_active {
+        background: ${hexToRgba(custom_primary_color, 0.1)};
+      }
+    `;
+      $('.custom_tables .dt-buttons').click(function() {
+        $('.dt-button-background').remove();
+      });
+      $('.custom_tables .dt-buttons').hide();
+      $('#act_trail_card2 .dt-buttons').hide();
+
+      $('.dtrangepicker').daterangepicker({
+        locale: {
+          format: 'YYYY-MM-DD',
+        }
+      });
+      $('.dtrangepicker').val('')
+
+      const $rows1 = $('#custom-download-btn1 .row');
+      const $rows2 = $('#custom-download-btn2 .row');
+      const $rows3 = $('#custom-download-btn3 .row');
+      $rows1.on('click', function () {
+        triggerfuntion(this.id,'#examplereport');
+      });
+      $rows2.on('click', function () {
+        triggerfuntion(this.id,'#examplereport2');
+      });
+      $rows3.on('click', function () {
+        triggerfuntion(this.id,'#examplereport3');
+      });
+
+    })
+  function toggleDropdown(buttonId) {
+    $(buttonId + ' .dropdown').css('display', $(buttonId + ' .dropdown').css('display') === 'none' ? 'flex' : 'none');
+    var $icon = $(buttonId + ' .fas.fa-download');
+    $icon.toggle();
+  }
+
+    function triggerfuntion(id,selectedtable){
+      switch (id) {
+        case 'copy':$(selectedtable).DataTable().button('.buttons-copy').trigger();
+        break;
+        case 'excel':$(selectedtable).DataTable().button('.buttons-excel').trigger();
+        break;
+        case 'csv':$(selectedtable).DataTable().button('.buttons-csv').trigger();
+        break;
+        case 'pdf':$(selectedtable).DataTable().button('.buttons-pdf').trigger();
+        break;
+        case 'print':$(selectedtable).DataTable().button('.buttons-print').trigger();
+        break;
+      }
+    }
+
+  function viewreport(){
+  var carddisplay = $('#card2').css('display')
+  if(carddisplay == "none")
+  {
+      $('#card2').css("display","block")
+  }
+  else{
+    $('#card2').css("display","none")
+  }
+}
+  function viewreportt(){
+    var carddisplay = $('#card2').css('display')
+    if(carddisplay == "none")
+    {
+        $('#card2').css("display","block")
+    }
+    else{
+      $('#card2').css("display","none")
+    }
+  }
+
+  $(`#reportdate2`).on('change', function() {
+    loginDetailsFilter = true
+    loginDetailsFirstViewChange = false
+    if(this.value == "Custom")
+    {
+      $(`#startandenddate2`).css("display","block")
+    }
+    else{
+      $(`#startandenddate2`).css("display","none")
+    }
+
+    if(this.value == "Advanced")
+    {
+      $(`#login_advanced`).css("display","block")
+    }
+    else{
+      $(`#login_advanced`).css("display","none")
+    }
+  });
+  $(`#reportdate3`).on('change', function() {
+    if(this.value == "Custom")
+    {
+      $(`#startandenddate3`).css("display","block")
+    }
+    else{
+      $(`#startandenddate3`).css("display","none")
+    }
+
+    if(this.value == "Advanced")
+    {
+      $(`#ops_activity_advanced`).css("display","block")
+    }
+    else{
+      $(`#ops_activity_advanced`).css("display","none")
+    }
+  });
+
+  $(`#reportdate5`).on('change', function() {
+    activityTrailFilter = true
+    activityTrailFirstViewChange = false
+    if(this.value == "Custom")
+    {
+      $(`#startandenddate1`).css("display","block")
+    }
+    else{
+      $(`#startandenddate1`).css("display","none")
+    }
+
+    if(this.value == "Advanced")
+    {
+      $(`#activity_advanced`).css("display","block")
+    }
+    else{
+      $(`#activity_advanced`).css("display","none")
+    }
+  });
+
+  $('a[data-toggle="tab"]').on('shown.bs.tab', function(e){
+      $($.fn.dataTable.tables(true)).DataTable()
+        .columns.adjust();
+  });
+
+  viewLoginTrailDetails();
+  viewActivityTrailDetails();
+  viewDataOpsTrailDetails();
+
+  $('.recpattern').on('change',function(){
+    if($(this).val() == "Daily"){
+      $('.daily_div').css('display',"block")
+      $('.weekly_div').css('display',"none")
+      $('.monthly_div').css('display',"none")
+      $('.yearly_div').css('display',"none")
+    }else if($(this).val() == "Weekly"){
+      $('.daily_div').css('display',"none")
+      $('.weekly_div').css('display',"block")
+      $('.monthly_div').css('display',"none")
+      $('.yearly_div').css('display',"none")
+    }else if($(this).val() == "Monthly"){
+      $('.daily_div').css('display',"none")
+      $('.weekly_div').css('display',"none")
+      $('.monthly_div').css('display',"block")
+      $('.yearly_div').css('display',"none")
+    }else if($(this).val() == "Yearly"){
+      $('.daily_div').css('display',"none")
+      $('.weekly_div').css('display',"none")
+      $('.monthly_div').css('display',"none")
+      $('.yearly_div').css('display',"block")
+    }
+  })
+
+  $('.recpattern_act').on('change',function(){
+    if($(this).val() == "Daily"){
+      $('.daily_div_act').css('display',"block")
+      $('.weekly_div_act').css('display',"none")
+      $('.monthly_div_act').css('display',"none")
+      $('.yearly_div_act').css('display',"none")
+    }else if($(this).val() == "Weekly"){
+      $('.daily_div_act').css('display',"none")
+      $('.weekly_div_act').css('display',"block")
+      $('.monthly_div_act').css('display',"none")
+      $('.yearly_div_act').css('display',"none")
+    }else if($(this).val() == "Monthly"){
+      $('.daily_div_act').css('display',"none")
+      $('.weekly_div_act').css('display',"none")
+      $('.monthly_div_act').css('display',"block")
+      $('.yearly_div_act').css('display',"none")
+    }else if($(this).val() == "Yearly"){
+      $('.daily_div_act').css('display',"none")
+      $('.weekly_div_act').css('display',"none")
+      $('.monthly_div_act').css('display',"none")
+      $('.yearly_div_act').css('display',"block")
+    }
+  })
+
+  $('.recpattern_ops').on('change',function(){
+    if($(this).val() == "Daily"){
+      $('.daily_div_ops').css('display',"block")
+      $('.weekly_div_ops').css('display',"none")
+      $('.monthly_div_ops').css('display',"none")
+      $('.yearly_div_ops').css('display',"none")
+    }else if($(this).val() == "Weekly"){
+      $('.daily_div_ops').css('display',"none")
+      $('.weekly_div_ops').css('display',"block")
+      $('.monthly_div_ops').css('display',"none")
+      $('.yearly_div_ops').css('display',"none")
+    }else if($(this).val() == "Monthly"){
+      $('.daily_div_ops').css('display',"none")
+      $('.weekly_div_ops').css('display',"none")
+      $('.monthly_div_ops').css('display',"block")
+      $('.yearly_div_ops').css('display',"none")
+    }else if($(this).val() == "Yearly"){
+      $('.daily_div_ops').css('display',"none")
+      $('.weekly_div_ops').css('display',"none")
+      $('.monthly_div_ops').css('display',"none")
+      $('.yearly_div_ops').css('display',"block")
+    }
+  })
+
+  $('.daily_div input[name=data_choice1]').on('change', function() {
+    checked_val = $('input[name=data_choice1]:checked', '.daily_div').val()
+
+    if(checked_val != "Everyday"){
+      $('.rec_daily_days_no').attr('disabled',true)
+    }else{
+      $('.rec_daily_days_no').attr('disabled',false)
+    }
+  });
+
+  $('.daily_div_act input[name=data_choice1]').on('change', function() {
+    checked_val = $('input[name=data_choice1]:checked', '.daily_div_act').val()
+
+    if(checked_val != "Everyday"){
+      $('.rec_daily_days_no_act').attr('disabled',true)
+    }else{
+      $('.rec_daily_days_no_act').attr('disabled',false)
+    }
+  });
+
+  $('.daily_div_ops input[name=data_choice1]').on('change', function() {
+    checked_val = $('input[name=data_choice1]:checked', '.daily_div_ops').val()
+
+    if(checked_val != "Everyday"){
+      $('.rec_daily_days_no_ops').attr('disabled',true)
+    }else{
+      $('.rec_daily_days_no_ops').attr('disabled',false)
+    }
+  });
+
+  $('.range_div input[name=data_choice2]').on('change', function() {
+    checked_val = $('input[name=data_choice2]:checked', '.range_div').val()
+
+    if(checked_val != "endafter"){
+      $('.rec_occurr').attr('disabled',true)
+    }else{
+      $('.rec_occurr').attr('disabled',false)
+    }
+  });
+
+  $('.range_div_act input[name=data_choice2]').on('change', function() {
+    checked_val = $('input[name=data_choice2]:checked', '.range_div_act').val()
+
+    if(checked_val != "endafter"){
+      $('.rec_occurr_act').attr('disabled',true)
+    }else{
+      $('.rec_occurr_act').attr('disabled',false)
+    }
+  });
+
+  $('.range_div_ops input[name=data_choice2]').on('change', function() {
+    checked_val = $('input[name=data_choice2]:checked', '.range_div_ops').val()
+
+    if(checked_val != "endafter"){
+      $('.rec_occurr_ops').attr('disabled',true)
+    }else{
+      $('.rec_occurr_ops').attr('disabled',false)
+    }
+  });
+
+</script>
+
+ {% endblock %}

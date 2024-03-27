@@ -1,0 +1,18 @@
+{
+  "status": "done",
+  "assets": {
+    "main-454aa91974439014805b.js": {
+      "name": "main-454aa91974439014805b.js",
+      "path": "C:\\Users\\HaripriyaRavindran\\source\\repos\\Revolutio\\kore_investment\\static\\webpack_bundles3\\main-454aa91974439014805b.js"
+    },
+    "main-454aa91974439014805b.js.LICENSE.txt": {
+      "name": "main-454aa91974439014805b.js.LICENSE.txt",
+      "path": "C:\\Users\\HaripriyaRavindran\\source\\repos\\Revolutio\\kore_investment\\static\\webpack_bundles3\\main-454aa91974439014805b.js.LICENSE.txt"
+    }
+  },
+  "chunks": {
+    "main": [
+      "main-454aa91974439014805b.js"
+    ]
+  }
+}

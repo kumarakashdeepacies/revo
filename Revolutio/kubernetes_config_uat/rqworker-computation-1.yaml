@@ -1,0 +1,60 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    service: worker-computation-1
+  namespace: uat
+  name: worker-computation-1
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      service: worker-computation-1
+  template:
+    metadata:
+      labels:
+        service: worker-computation-1
+    spec:
+      containers:
+      - args:
+        - /rqworker/start-computation-1
+        image: revolutiodev.azurecr.io/revolutio_kubernetes/worker:20230112.1
+        name: worker-computation-1
+        envFrom:
+          - configMapRef:
+              name: envs-production-django
+          - configMapRef:
+              name: envs-production-postgres
+          - secretRef:
+              name: secrets-production-django
+          - secretRef:
+              name: secrets-production-postgres
+        env:
+          - name: DATABASE_URL
+            value: postgres://$(POSTGRES_USER):$(POSTGRES_PASSWORD)@$(POSTGRES_HOST):$(POSTGRES_PORT)/$(POSTGRES_DB)
+          - name: REDIS_URL
+            value: $(REDIS_URL)
+        volumeMounts:
+          - mountPath: /opt/revolutio/static
+            name: static-azurefile
+          - mountPath: /opt/revolutio/kore_investment/templates/user_defined_template
+            name: templates-azurefile
+          - mountPath: /opt/revolutio/Platform_Configs
+            name: platformconfig-azurefile
+          - mountPath: /opt/revolutio/Computation_Temp_Storage
+            name: computation-storage-azurefile
+      restartPolicy: Always
+      volumes:
+        - name: static-azurefile
+          persistentVolumeClaim:
+            claimName: static-azurefile
+        - name: templates-azurefile
+          persistentVolumeClaim:
+            claimName: templates-azurefile
+        - name: platformconfig-azurefile
+          persistentVolumeClaim:
+            claimName: platformconfig-azurefile
+        - name: computation-storage-azurefile
+          persistentVolumeClaim:
+            claimName: computation-storage-azurefile
+

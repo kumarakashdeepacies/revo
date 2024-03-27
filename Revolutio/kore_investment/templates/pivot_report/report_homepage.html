@@ -1,0 +1,237 @@
+{% extends extend_template %}
+{% load crispy_forms_tags %}
+{{ form.media }}
+{% load static %}
+{% block body_block %}
+
+
+<!-- DataTables -->
+<!--<link rel="stylesheet" href="{% static 'vendor/Base_theme/datatables-bs4/css/dataTables.bootstrap4.css' %}">
+<link rel="stylesheet" href="{% static 'vendor/Base_theme/datatables-buttons/css/buttons.bootstrap4.min.css' %}">-->
+<!--Official dataTables default  CSS FILE-->
+
+<link rel="stylesheet" href="{% static 'css/KoreD/jquery.dataTables.css' %}">
+<link rel="stylesheet" href="{% static 'vendor/Base_theme/datatables-responsive/css/responsive.bootstrap4.min.css' %}">
+<link rel="stylesheet" href="{% static 'vendor/Base_theme/datatables-colreorder/css/colReorder.bootstrap4.min.css' %}">
+<link rel="stylesheet" href="{% static 'css/KoreD/buttons.dataTables.min.css' %}">
+
+<!-- DataTables -->
+<script src="{% static 'vendor/Base_theme/datatables/jquery.dataTables.js' %}"></script>
+<script src="{% static 'vendor/Base_theme/datatables-responsive/js/dataTables.responsive.min.js' %}"></script>
+<script src="{% static 'vendor/Base_theme/datatables-fixedheader/js/dataTables.fixedHeader.min.js' %}"></script>
+<script src="{% static 'vendor/Base_theme/datatables-colreorder/js/dataTables.colReorder.min.js' %}"></script>
+<script src="{%static 'vendor/Base_theme/datatables-bs4/js/dataTables.bootstrap4.js'%}"></script>
+
+<script src="{%static 'vendor/Base_theme/datatables-buttons/js/dataTables.buttons.min.js'%}"></script>
+<script src="{%static 'vendor/Base_theme/jszip/jszip.min.js'%}"></script>
+<script src="{%static 'vendor/Base_theme/pdfmake/pdfmake.min.js'%}"></script>
+<script src="{%static 'vendor/Base_theme/pdfmake/vfs_fonts.js'%}"></script>
+<script src="{%static 'vendor/Base_theme/datatables-buttons/js/buttons.html5.min.js'%}"></script>
+<script src="{%static 'vendor/Base_theme/datatables-buttons/js/buttons.colVis.min.js'%}"></script>
+
+<!-- Bootstrap4 Duallistbox -->
+<link rel="stylesheet" href="{% static 'vendor/Base_theme/bootstrap4-duallistbox/bootstrap-duallistbox.min.css' %}">
+
+<!-- Bootstrap4 Duallistbox -->
+<script src="{% static 'vendor/Base_theme/bootstrap4-duallistbox/jquery.bootstrap-duallistbox.min.js' %}"></script>
+<!-- Pivot Table JS -->
+<script src=" {% static 'js/pivottable/dist/pivot.min.js' %}"></script>
+<script src=" {% static 'js/pivottable/dist/c3_renderers.min.js' %}"></script>
+<script src=" {% static 'js/pivottable/dist/d3_renderers.min.js' %}"></script>
+<script src=" {% static 'js/pivottable/dist/gchart_renderers.min.js' %}"></script>
+
+
+
+<style>
+      .reportname,
+      .reportname:visited {
+        font-weight: 400;
+        color: black;
+      }
+
+      .reportname:hover {
+        color: var(--primary-color);
+      }
+      .reportcardbody {
+        min-height: 185px;
+        max-height: 185px;
+        overflow-y: auto;
+      }
+      .report_main_card:hover{
+        border: 2px solid var(--primary-color);
+        transition:border 0.1s ease-in-out;
+      }
+      .createnewreportbtn a,.newallreportsbtn a,.allreportsbtn a{
+        color: unset !important;
+      }
+      .createnewreportbtn a:hover,.newallreportsbtn a:hover,.allreportsbtn a:hover{
+        color: unset !important;
+      }
+</style>
+
+
+<!-- Breadcrumb-->
+<div class="breadcrumb-holder" style="background-color: #e9ecef; ">
+  <div class="container-fluid" id="dynamicTabs">
+    <ul class="breadcrumb" id="dynamicbreadcrumbs">
+      <li class="breadcrumb-item"><a {% if current_application_code != 'App0' %} {% if current_application_code == 'Dev' %} {% if current_dev_mode == 'Edit' %} {% if edit_app_code != 'Not Selected' %} href="{% url 'users:homePage' edit_app_code current_dev_mode %}" {% else %} href="{% url 'users:homePage' 'Dev' current_dev_mode %}" {% endif %} {% elif current_dev_mode == 'Build' %} href="{% url 'users:homePage' build_app_code current_dev_mode %}"  {% endif %} {% else %} href="{% url 'users:homePage' current_application_code 'User' %}" {% endif %} {% else %} href="{% url 'users:select_application' %}" {% endif %}>
+        <b> Home </b></a></li>
+      <li class="breadcrumb-item "><b>Pivot Report</b></li>
+    </ul>
+  </div>
+</div>
+
+<div class="card contentcontainer" style="border-bottom: 0px">
+  <div class="topnav" style="padding: 10px;">
+
+    <div class="form-group row">
+
+      <div class="col-6" style="align-self: flex-end;">
+        <div class="col-6">
+          <span class="font-weight-bold">Search Report: </span>
+        </div>
+
+        <div class="col-6">
+          <input
+          class="reportsearch ml-2"
+          name="reportsearch"
+          type="text"
+          style="width:100%;padding-top: 10px;"
+        />
+        </div>
+
+      </div>
+
+      <div class="col-6" style="text-align-last: right;">
+        <button class="btn btn-primary createnewreportbtn mr-3 mt-3">
+          {% if build_app_code != 'Not Selected' %}
+          <a href="{%url 'users:create_new_pivot_report' build_app_code current_dev_mode %}">
+            Create new report</a
+          >
+          {% elif edit_app_code != 'Not Selected' %}
+          <a href="{%url 'users:create_new_pivot_report' edit_app_code current_dev_mode %}">
+            Create new report</a
+          >
+          {% endif %}
+        </button>
+      </div>
+
+    </div>
+
+  </div>
+
+  <div class="card-body" style="background-color: whitesmoke;border-top: 2px solid lightgrey;">
+
+    <div class="reportrow row"></div>
+  </div>
+</div>
+
+
+
+
+<script>
+  let uniquecategories = []; //set of categories
+  let categorieswithreports = {}; //report config array mapped to category
+  let reports = [];
+  $.ajax({
+    url:  window.location.pathname,
+    data :{operation : 'get_all_report'},
+    type: "POST",
+    dataType: "json",
+    success: function (data) {
+      data = JSON.parse(data['field_data'])
+      categories = [];
+
+      data.forEach((report, idx) => {
+        reports.push(report);
+        categories.push(report.categoryname);
+      });
+
+
+      uniquecategoriesset = new Set(categories);
+
+      uniquecategories = [...uniquecategoriesset];
+      uniquecategories.forEach((category) => {
+        let categorywithreport = reports.map((rep) => {
+
+          if (rep.categoryname === category) {
+            return rep;
+          }
+        });
+        categorywithreport = categorywithreport.filter(
+          (ele) => ele !== undefined
+        );
+        categorieswithreports[`${category}`] = categorywithreport;
+      });
+
+      for (category in categorieswithreports) {
+        $(".reportrow").append(
+          `<div class="col-3 mt-3">
+            <div class="card report_main_card shadow" style="box-shadow: 1px 1px 5px rgba(0,0,0,0.09);width: 270px;height: 200px;">
+                <div class="card-header mb-0" style="text-align: left;/* padding-left: 2px; */vertical-align: middle;"><span class="categoryname" style="font-weight: bold;ont-size: medium;">${category}
+                </span></div>
+            <div class="reportcardbody" style="margin-top:3px;"><ul style='margin-top:3px;'>${categorieswithreports[
+              category
+            ]
+              .map((report) => {
+                let report_name = report.reportname.replace(/\s/g, "").toLowerCase()
+                {% if build_app_code != 'Not Selected' %}
+                let url =  "{% url 'users:current_pivot_report' app_code=build_app_code mode=current_dev_mode pk=12345 %}".replace(/12345/, report.id.toString());
+                {% elif edit_app_code != 'Not Selected' %}
+                let url =  "{% url 'users:current_pivot_report' app_code=edit_app_code mode=current_dev_mode pk=12345 %}".replace(/12345/, report.id.toString());
+                {% endif %}
+                return `
+                <li class="${report_name} reportpara"  style='list-style: square;padding:2px;'>
+                  <a class="reportname reportlink${report.id}" name='element_id' value='${report.element_id}'  style='font-weight:bold;' form = 'report_form_info'  href='#'>${
+                  report.reportname
+                }</a>
+                </li>
+
+
+                `;
+
+              })
+              .join("")}</ul></div>  </div>
+
+          </div>`
+        );
+
+        categorieswithreports[category].forEach((report) => {
+          let report_id = report.id
+          {% if build_app_code != 'Not Selected' %}
+            let url =  "{% url 'users:current_pivot_report' app_code=build_app_code mode=current_dev_mode pk=12345 %}".replace(/12345/, report_id.toString());
+          {% elif edit_app_code != 'Not Selected' %}
+            let url =  "{% url 'users:current_pivot_report' app_code=edit_app_code mode=current_dev_mode pk=12345 %}".replace(/12345/, report_id.toString());
+          {% endif %}
+          $(`.reportlink${report_id}`).attr("href",url);
+          $('#report_form_info').attr("action",url);
+        });
+      }
+    },
+    error: function () {
+      Swal.fire({icon: 'error',text: 'Error! Please try again.'});
+    },
+  });
+
+
+  // Search on the Basis of  Report Name
+  $(".reportsearch").on("keyup", () => {
+    const searchinput = $(".reportsearch").val().toLowerCase();
+    $(".reportname").each(function (idx, ele) {
+      $(this).parent().css({
+        display: "none",
+      });
+      if ($(this).text().toLowerCase().includes(searchinput)) {
+          $(this).parent().css({
+            display: "block",
+          })
+      }
+    });
+  });
+
+
+</script>
+
+
+{% endblock %}
+

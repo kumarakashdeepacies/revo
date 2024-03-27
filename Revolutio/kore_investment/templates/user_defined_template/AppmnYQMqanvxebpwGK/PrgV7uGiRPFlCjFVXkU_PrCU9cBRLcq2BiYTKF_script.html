@@ -1,0 +1,1918 @@
+
+     <script>
+      function cases(cases_,element_id) {
+          var check_case = 0
+          $("#createview"+element_id).find("input[data-cases], select[data-cases], textarea[data-cases]").each(function(){
+            case_attr = JSON.parse($(this).attr("data-cases"))
+            for(let i_ = 0; i_ < cases_.length; i_++) {
+              if(case_attr.hasOwnProperty(cases_[i_])){
+                var val_ = $("id_"+case_attr[cases_[i_]]["column"]+"_"+element_id).val()
+                if(case_attr[cases_[i_]]["condition"] == "Equal to"){
+                  if($("#id_"+case_attr[cases_[i_]]["column"]+"_"+element_id).val() == case_attr[cases_[i_]]["value"]){
+                    check_case = check_case + 1
+                  }
+                } else if(case_attr[cases_[i_]]["condition"] == "Not Equal to"){
+                  if($("#id_"+case_attr[cases_[i_]]["column"]+"_"+element_id).val() != case_attr[cases_[i_]]["value"]){
+                    check_case = check_case + 1
+                  }
+                } else if(case_attr[cases_[i_]]["condition"] == "Greater than"){
+                  if(case_attr[cases_[i_]]["data_type"] == "DateField" || case_attr[cases_[i_]]["data_type"] == "DateTimeField"){
+                    var date1_ = new Date($("#id_"+case_attr[cases_[i_]]["column"]+"_"+element_id).val())
+                    var date2_ = new Date(case_attr[cases_[i_]]["value"])
+                    if(date1_ > date2_){
+                      check_case = check_case + 1
+                    }
+                  }else{
+                    if(parseFloat($("#id_"+case_attr[cases_[i_]]["column"]+"_"+element_id).val()) > parseFloat(case_attr[cases_[i_]]["value"])){
+                      check_case = check_case + 1
+                    }
+                  }
+                } else if(case_attr[cases_[i_]]["condition"] == "Smaller than"){
+                  if(case_attr[cases_[i_]]["data_type"] == "DateField" || case_attr[cases_[i_]]["data_type"] == "DateTimeField"){
+                    var date1_ = new Date($("#id_"+case_attr[cases_[i_]]["column"]+"_"+element_id).val())
+                    var date2_ = new Date(case_attr[cases_[i_]]["value"])
+                    if(date1_ < date2_){
+                      check_case = check_case + 1
+                    }
+                  }else{
+                    if(parseFloat($("#id_"+case_attr[cases_[i_]]["column"]+"_"+element_id).val()) < parseFloat(case_attr[cases_[i_]]["value"])){
+                      check_case = check_case + 1
+                    }
+                  }
+                } else if(case_attr[cases_[i_]]["condition"] == "In"){
+                  if(case_attr[cases_[i_]]["data_type"] == "DateField" || case_attr[cases_[i_]]["data_type"] == "DateTimeField"){
+                    var identifier_ = false
+                    for(let l = 0; l < case_attr[cases_[i_]]["value"].length; l++){
+                      var date1_ = new Date($("#id_"+case_attr[cases_[i_]]["column"]+"_"+element_id).val())
+                      var date2_ = new Date(case_attr[cases_[i_]]["value"][l])
+                      if(String(date1_) == String(date2_)){
+                        identifier_ = true;
+                        break;
+                      }
+                    }
+                    if(identifier_){
+                      check_case = check_case + 1
+                    }
+                  } else{
+                    if(case_attr[cases_[i_]]["value"].includes($("#id_"+case_attr[cases_[i_]]["column"]+"_"+element_id).val())){
+                      check_case = check_case + 1
+                    }
+                  }
+                } else if(case_attr[cases_[i_]]["condition"] == "Not In"){
+                  if(case_attr[cases_[i_]]["data_type"] == "DateField" || case_attr[cases_[i_]]["data_type"] == "DateTimeField"){
+                    var identifier_ = false
+                    for(let l = 0; l < case_attr[cases_[i_]]["value"].length; l++){
+                      var date1_ = new Date($("#id_"+case_attr[cases_[i_]]["column"]+"_"+element_id).val())
+                      var date2_ = new Date(case_attr[cases_[i_]]["value"][l])
+                      if(String(date1_) != String(date2_)){
+                        identifier_ = true;
+                        break;
+                      }
+                    }
+                    if(identifier_){
+                      check_case = check_case + 1
+                    }
+                  } else{
+                    if(!case_attr[cases_[i_]]["value"].includes($("#id_"+case_attr[cases_[i_]]["column"]+"_"+element_id).val())){
+                      check_case = check_case + 1
+                    }
+                  }
+                }
+              }
+            }
+          })
+          if(cases_ == undefined){
+            return false
+          }
+          if(check_case == cases_.length) {
+            return true
+          } else {
+            return false
+          }
+
+        }
+
+      function InOperationTag(){
+
+      }
+
+      $(document).ready(function() {
+      $('.form-row').find('select').on('change',function() {
+        $(this).parent().find('input').val($(this).val()).trigger('change');
+      });
+      $('#ckEditorModal').on('shown.bs.modal', function() {
+          $(document).off('focusin.modal');
+      });
+
+      var f_data = {}
+      var globalVariableID = []
+      populateFK();
+      $('.gVarDropDown').each(function() {
+        var id = $(this).closest('.form-row').attr('data-parent_element_id');
+        globalVariableID.push(id);
+      })
+      $.ajax({
+        url:'/users/dynamicVal/',
+          data: {
+            'operation':'popuplateGlobalVariable',
+            'element_id_list': JSON.stringify(globalVariableID),
+          },
+          type: 'POST',
+          dataType: "json",
+          success: function (data) {
+            $('.gVarDropDown').each(function() {
+              var idGV = $(this).attr('name').split('gVar_')[1];
+              var listGV = data[idGV]
+              $(this).find('select').empty();
+              for(let i = 0; i < listGV.length; i++) {
+                $(this).find('select').append(`<option value="${listGV[i]}">${listGV[i]}</option>`);
+              }
+            })
+          },
+          error: ()=>{
+              alert("Error");
+          }
+        });
+        $('.form-row').find('input, select, textarea').each(function() {
+         jsFunc_.call(this);
+        })
+
+    })
+    function jsChange() {
+          var a = $(this).attr('data-jsattr')
+          if(a) {
+            var element_id1 = $(this).attr('id').split('whiteSpacewrap')[1]
+            element_id1 = 'whiteSpacewrap'+element_id1
+            $('#savebutton_'+ element_id1).prop('disabled',false);
+            a = JSON.parse(a);
+            for(let key = 0; key < a.length; key++) {
+              if(!a[key].hasOwnProperty("cases")){
+                a[key]["cases"] = []
+              }
+              var masterTable
+              var masterCol
+              var correspondingCol
+              var element_id = $(this).attr('id').split('whiteSpacewrap')[1]
+              element_id = 'whiteSpacewrap'+element_id
+              if(a[key]['parentvalue'] == "Auto-populate") {
+                masterTable = a[key]['finaljsattr'][1][0]['value']
+                masterCol = a[key]['finaljsattr'][2][0]['value']
+                correspondingCol = a[key]['finaljsattr'][0][0]['value']['depMapper']
+                copy_class_to_apply = ""
+                paste_class_to_apply = ""
+                if(cases(a[key]['cases'],element_id)) {
+                  for(let i = 0; i < correspondingCol.length; i++) {
+                    $('#id_'+a[key]['finaljsattr'][0][0]['value']['depField'][i]+'_'+element_id).css('display','none');
+                    let placeholder = $('#id_'+a[key]['finaljsattr'][0][0]['value']['depField'][i]+'_'+element_id).attr("placeholder")
+                    $('#id_'+a[key]['finaljsattr'][0][0]['value']['depField'][i]+'_'+element_id+'_').remove()
+                    if ($('#id_'+a[key]['finaljsattr'][0][0]['value']['depField'][i]+'_'+element_id).hasClass("copy_class_to_apply")){
+                      copy_class_to_apply = "copy_class_to_apply"
+                    }
+                    if ($('#id_'+a[key]['finaljsattr'][0][0]['value']['depField'][i]+'_'+element_id).hasClass("paste_class_to_apply")){
+                      paste_class_to_apply = "paste_class_to_apply"
+                    }
+                    $('#id_'+a[key]['finaljsattr'][0][0]['value']['depField'][i]+'_'+element_id).parent().append(`<input type="text" maxlength="256" id="${'id_'+a[key]['finaljsattr'][0][0]['value']['depField'][i]+'_'+element_id+'_'}" datatype="CharField"  class="textinput textInput form-control ${copy_class_to_apply} ${paste_class_to_apply}">`)
+                    $('.copy_class_to_apply').bind({
+                      copy : function(){
+                        return false
+                      }
+                    });
+
+                    $('.paste_class_to_apply').bind({
+                      paste : function(){
+                        return false
+                      }
+                    });
+                    $('#id_'+a[key]['finaljsattr'][0][0]['value']['depField'][i]+'_'+element_id+'_').prop('disabled','true');
+                    $('#id_'+a[key]['finaljsattr'][0][0]['value']['depField'][i]+'_'+element_id+'_').attr('placeholder',placeholder);
+                  }
+                  autopopulate.call(this,a,key,element_id)
+                } else {
+                  for(let i = 0; i < correspondingCol.length; i++) {
+                    $('#id_'+a[key]['finaljsattr'][0][0]['value']['depField'][i]+'_'+element_id).css('display','block');
+                    $('#id_'+a[key]['finaljsattr'][0][0]['value']['depField'][i]+'_'+element_id).val('').trigger("change");
+                    $('#id_'+a[key]['finaljsattr'][0][0]['value']['depField'][i]+'_'+element_id+'_').css('display','none');
+                  }
+                }
+              } if(a[key]['parentvalue'] == "Cascading") {
+                if(cases(a[key]['cases'],element_id)) {
+                  cascadingJs.call(this,a,key,element_id)
+                }
+              } if(a[key]['parentvalue'] == "Show-hide" || a[key]['parentvalue'] == "Show-hide_link" || a[key]['parentvalue'] == "Styling attribute") {
+                b1 = a[key]['finaljsattr'][2][0]["value"];
+                if (a[key]['parentvalue'] == "Styling attribute") {
+                  if(b1['styleValidation'].length > 0) {
+                    b1 = b1['styleValidation']
+                  } else {
+                    b1 = []
+                  }
+                } else {
+                  b1 = a[key]['finaljsattr'][2][0]["value"];
+                }
+                for(let i = 0; i < b1.length; i++) {
+                  var b = b1[i];
+                  var element_id = $(this).attr('id').split('whiteSpacewrap')[1]
+                  element_id = 'whiteSpacewrap'+element_id
+                  if(b['condition'] == 'In') {
+                    if(cases(a[key]['cases'],"whiteSpacewrap"+$(this).attr("id").split('whiteSpacewrap')[1])){
+                      if(b['value'].includes($(this).val())) {
+                        commonFieldTrue(b,element_id)
+                      } else {
+                      }
+                    } else{
+                   }
+                  } else if (b['condition'] == 'Equal to') {
+                    if(cases(a[key]['cases'],"whiteSpacewrap"+$(this).attr("id").split('whiteSpacewrap')[1])){
+                      if($(this).val() == b['value']) {
+                        commonFieldTrue(b,element_id)
+                      } else {
+                        commonFieldFalse('Equal to',b1,element_id);
+                      }
+                    } else {
+                      commonFieldFalse("Equal to",b1,true,element_id)
+                    }
+                  } else if (b['condition'] == 'Greater then') {
+                    var date
+                    var date1
+                    if ($(this).attr('type') == "date") {
+                      date = new Date($(this).val())
+                      if(b["value"].includes("-")) {
+                        date1 = new Date(b['value'])
+                      } else {
+                        date1 = new Date("01-01-2299")
+                      }
+                    } else {
+                      date = parseInt($(this).val())
+                      date1 = parseInt(b['value'])
+                    }
+                    if(cases(a[key]['cases'],"whiteSpacewrap"+$(this).attr("id").split('whiteSpacewrap')[1])){
+                      if(date > date1) {
+                        commonFieldTrue(b,element_id)
+                      } else {
+                        commonFieldFalse('Greater then',b1,element_id);
+                      }
+                    } else{
+                      commonFieldFalse("Greater then",b1,element_id,true)
+                    }
+                  } else if (b['condition'] == 'Smaller then') {
+                    var date
+                    var date1
+                    if ($(this).attr('type') == "date") {
+                      date = new Date($(this).val())
+                      if(b["value"].includes("-")) {
+                        date1 = new Date(b['value'])
+                      } else {
+                        date1 = new Date("01-01-1000")
+                      }
+                    } else {
+                      date = parseInt($(this).val())
+                      date1 = parseInt(b['value'])
+                    }
+                    if(cases(a[key]['cases'],"whiteSpacewrap"+$(this).attr("id").split('whiteSpacewrap')[1])){
+                      if(date < date1) {
+                        commonFieldTrue(b,element_id)
+                      } else {
+                        commonFieldFalse('Smaller then',b1,element_id);
+                      }
+                    } else {
+                      commonFieldFalse("Smaller then",b1,element_id,true)
+                    }
+                  }
+                  function commonFieldFalse(condition,val,element_id,cases_=false) {
+                        var b = val
+                        if(b) {
+                          var b1 = b;
+                          for(let i1 = 0; i1 < b1.length; i1++) {
+                            var b = b1[i1]
+                            for(let i = 0; i < b['selectedColumn'].length; i++) {
+                              if(!($('#id_'+b['selectedColumn'][i]+'_'+element_id).prop('required'))) {
+                                if(! b.hasOwnProperty('color')){
+                                  if(!cases_){
+                                    $('#id_'+b['selectedColumn'][i]+'_'+element_id).parent().parent().parent().css('display','none')
+                                  } else {
+                                    $('#id_'+b['selectedColumn'][i]+'_'+element_id).parent().parent().parent().css('display','block')
+                                  }
+                                }
+                              }
+                              if(b['selectedColumn'][i].includes("__cbbutton") || button_ids.includes(b['selectedColumn'][i])){
+                                if(! b.hasOwnProperty('color')){
+                                  if(!cases_){
+                                    $('#'+b['selectedColumn'][i]+element_id).css('display','none')
+                                  } else {
+                                    $('#id_'+b['selectedColumn'][i]+'_'+element_id).css('display','inline-block')
+                                  }
+                                }
+                              }
+                              if(b.hasOwnProperty('color')){
+                                if(b['selectedColumn'][i].includes("__cbbutton") || button_ids.includes(b['selectedColumn'][i])){
+                                  $('#'+b['selectedColumn'][i]+element_id).css('background-color',`${$('#'+b['selectedColumn'][i]+element_id).attr("data-color")}`);
+
+                                  $('#'+b['selectedColumn'][i]+element_id).css('border-radius',`5px`);
+                                  $('#'+b['selectedColumn'][i]+element_id).css('border-radius',`5px`);
+                                  if($('#'+b['selectedColumn'][i]+element_id).hasClass('select2')){
+                                    $('#'+b['selectedColumn'][i]+element_id).parent().find('.select2-selection').css('background-color',`${$('#'+b['selectedColumn'][i]+element_id).attr("data-color")}`);
+                                  }
+                                  $('#'+b['selectedColumn'][i]+element_id).css('background-color',`${$('#'+b['selectedColumn'][i]+element_id).attr("data-color")}`)
+                                  if($('#'+b['selectedColumn'][i]+element_id).attr('type') == 'file' || $('#'+b['selectedColumn'][i]+element_id) == 'image'){
+                                    $('#'+b['selectedColumn'][i]+element_id).parent().find('label').css('background-color',`${$('#'+b['selectedColumn'][i]+element_id).attr("data-color")}`);
+                                  }
+                                } else {
+                                  $('#id_'+b['selectedColumn'][i]+'_'+element_id).parent().css('background-color','transparent');
+
+                                  $('#id_'+b['selectedColumn'][i]+'_'+element_id).parent().css('border-radius',`0px`);
+                                  $('#id_'+b['selectedColumn'][i]+'_'+element_id).css('border-radius',`0px`);
+                                  if($('#id_'+b['selectedColumn'][i]+'_'+element_id).hasClass('select2')){
+                                    $('#id_'+b['selectedColumn'][i]+'_'+element_id).parent().find('.select2-selection').css('background-color',`transparent`);
+                                  }
+                                  $('#id_'+b['selectedColumn'][i]+'_'+element_id).css('background-color','transparent')
+                                  if($('#id_'+b['selectedColumn'][i]+'_'+element_id).attr('type') == 'file' || $('#id_'+b['selectedColumn'][i]+'_'+element_id) == 'image'){
+                                    $('#id_'+b['selectedColumn'][i]+'_'+element_id).parent().find('label').css('background-color',`transparent`);
+                                  }
+                                }
+                              }
+                            }
+                          }
+                        }
+                    $('#createview'+element_id).find('input, select').each(function() {
+                      var c = $(this).attr('data-jsattr')
+                      if(c) {
+                        c = JSON.parse(c);
+                        for(let keyc = 0; keyc < c.length; keyc++) {
+                          if (c[keyc]['parentvalue'] == "Show-hide"  || c[keyc]['parentvalue'] == "Show-hide_link" || c[keyc]['parentvalue'] == "Styling attribute") {
+                            if((c[keyc]['cases'],"whiteSpacewrap"+$(this).attr("id").split('whiteSpacewrap')[1])){
+                              c1 = c[keyc]['finaljsattr'][2][0]["value"];
+                              if (c[keyc]['parentvalue'] == "Styling attribute") {
+                                if(c1['styleValidation'].length > 0) {
+                                  c1 = c1['styleValidation']
+                                } else {
+                                  c1 = []
+                                }
+                              } else {
+                                c1 = c[keyc]['finaljsattr'][2][0]["value"];
+                              }
+                              for(let i1 = 0; i1 < c1.length; i1++) {
+                                var b = c1[i1]
+                                if(b['condition'] == 'In') {
+                                  var ele_id = $(this).attr('id').split('whiteSpacewrap')[1]
+                                  ele_id = 'whiteSpacewrap'+ele_id
+                                    if(b['value'].includes($(this).val()) ) {
+                                      for(let i = 0; i < b['selectedColumn'].length; i++) {
+                                        if(ele_id == element_id) {
+                                          if(b['selectedColumn'][i].includes("__cbbutton") || button_ids.includes(b['selectedColumn'][i])){
+                                            if(c1[i1].hasOwnProperty('color')) {
+                                              $('#'+b['selectedColumn'][i]+element_id).css('background-color',`${c1[i1]['color']}`);
+                                              if($('#'+b['selectedColumn'][i]+element_id).hasClass('select2')){
+                                                $('#'+b['selectedColumn'][i]+element_id).parent().find('.select2-selection').css('background-color',`${c1[i1]['color']}`);
+                                              }
+                                              $('#'+b['selectedColumn'][i]+element_id).css('background-color',`${c1[i1]['color']}`)
+                                              $('#'+b['selectedColumn'][i]+element_id).parent().css('border-radius',`5px`);
+                                              $('#'+b['selectedColumn'][i]+element_id).css('border-radius',`5px`);
+                                            } else {
+                                              $('#'+b['selectedColumn'][i]+element_id).css('display','block');
+                                              $('#'+b['selectedColumn'][i]+element_id).css('background-color',`${$('#'+b['selectedColumn'][i]+element_id).attr("data-color")}`);
+                                              if($('#'+b['selectedColumn'][i]+element_id).hasClass('select2')){
+                                                $('#'+b['selectedColumn'][i]+element_id).parent().find('.select2-selection').css('background-color',`${$('#'+b['selectedColumn'][i]+element_id).attr("data-color")}`);
+                                              }
+                                              $('#'+b['selectedColumn'][i]+element_id).css('background-color',`${$('#'+b['selectedColumn'][i]+element_id).attr("data-color")}`);
+                                              if($('#'+b['selectedColumn'][i]+element_id).attr('type') == 'file' || $('#'+b['selectedColumn'][i]+element_id) == 'image'){
+                                                $('#'+b['selectedColumn'][i]+element_id).parent().find('label').css('background-color',`${$('#'+b['selectedColumn'][i]+element_id).attr("data-color")}`);
+                                              }
+                                              $('#'+b['selectedColumn'][i]+element_id).parent().css('border-radius',`5px`);
+                                              $('#'+b['selectedColumn'][i]+element_id).css('border-radius',`5px`);
+                                            }
+                                          } else {
+                                            if(c1[i1].hasOwnProperty('color')) {
+                                              $('#id_'+b['selectedColumn'][i]+'_'+element_id).parent().css('background-color',`${c1[i1]['color']}`);
+                                              if($('#id_'+b['selectedColumn'][i]+'_'+element_id).hasClass('select2')){
+                                                $('#id_'+b['selectedColumn'][i]+'_'+element_id).parent().find('.select2-selection').css('background-color',`${c1[i1]['color']}`);
+                                              }
+                                              $('#id_'+b['selectedColumn'][i]+'_'+element_id).css('background-color',`${c1[i1]['color']}`)
+                                              $('#id_'+b['selectedColumn'][i]+'_'+element_id).parent().css('border-radius',`5px`);
+                                              $('#id_'+b['selectedColumn'][i]+'_'+element_id).css('border-radius',`5px`);
+                                            } else {
+                                              $('#id_'+b['selectedColumn'][i]+'_'+element_id).parent().parent().parent().css('display','block');
+                                              $('#id_'+b['selectedColumn'][i]+'_'+element_id).parent().css('background-color',`transparent`);
+                                              if($('#id_'+b['selectedColumn'][i]+'_'+element_id).hasClass('select2')){
+                                                $('#id_'+b['selectedColumn'][i]+'_'+element_id).parent().find('.select2-selection').css('background-color',`transparent`);
+                                              }
+                                              $('#id_'+b['selectedColumn'][i]+'_'+element_id).css('background-color',`transparent`);
+                                              if($('#id_'+b['selectedColumn'][i]+'_'+element_id).attr('type') == 'file' || $('#id_'+b['selectedColumn'][i]+'_'+element_id) == 'image'){
+                                                $('#id_'+b['selectedColumn'][i]+'_'+element_id).parent().find('label').css('background-color',`transparent`);
+                                              }
+                                              $('#id_'+b['selectedColumn'][i]+'_'+element_id).parent().css('border-radius',`0px`);
+                                              $('#id_'+b['selectedColumn'][i]+'_'+element_id).css('border-radius',`0px`);
+                                            }
+                                          }
+                                        }
+                                      }
+                                    }
+                                } else if (b['condition'] == 'Equal to') {
+                                  var ele_id = $(this).attr('id').split('whiteSpacewrap')[1]
+                                  ele_id = 'whiteSpacewrap'+ele_id
+                                  if($(this).val() == b['value']) {
+                                    for(let i = 0; i < b['selectedColumn'].length; i++) {
+                                      if(ele_id == element_id) {
+                                        if(b['selectedColumn'][i].includes("__cbbutton") || button_ids.includes(b['selectedColumn'][i])){
+                                          if(c1[i1].hasOwnProperty('color')) {
+                                            $('#'+b['selectedColumn'][i]+element_id).css('background-color',`${c1[i1]['color']}`);
+                                            if($('#'+b['selectedColumn'][i]+element_id).hasClass('select2')){
+                                              $('#'+b['selectedColumn'][i]+element_id).parent().find('.select2-selection').css('background-color',`${c1[i1]['color']}`);
+                                            }
+                                            $('#'+b['selectedColumn'][i]+element_id).css('background-color',`${c1[i1]['color']}`)
+                                            $('#'+b['selectedColumn'][i]+element_id).parent().css('border-radius',`5px`);
+                                            $('#'+b['selectedColumn'][i]+element_id).css('border-radius',`5px`);
+                                          } else {
+                                            $('#'+b['selectedColumn'][i]+element_id).css('display','inline-block');
+                                            $('#'+b['selectedColumn'][i]+element_id).css('background-color',`${$('#'+b['selectedColumn'][i]+element_id).attr("data-color")}`);
+                                            if($('#'+b['selectedColumn'][i]+element_id).hasClass('select2')){
+                                              $('#'+b['selectedColumn'][i]+element_id).parent().find('.select2-selection').css('background-color',`${$('#'+b['selectedColumn'][i]+element_id).attr("data-color")}`);
+                                            }
+                                            $('#'+b['selectedColumn'][i]+element_id).css('background-color',`${$('#'+b['selectedColumn'][i]+element_id).attr("data-color")}`);
+                                            if($('#'+b['selectedColumn'][i]+element_id).attr('type') == 'file' || $('#'+b['selectedColumn'][i]+element_id) == 'image'){
+                                              $('#'+b['selectedColumn'][i]+element_id).find('label').css('background-color',`${$('#'+b['selectedColumn'][i]+element_id).attr("data-color")}`);
+                                            }
+                                            $('#'+b['selectedColumn'][i]+element_id).css('border-radius',`5px`);
+                                            $('#'+b['selectedColumn'][i]+element_id).css('border-radius',`5px`);
+                                          }
+                                        } else {
+                                          if(c1[i1].hasOwnProperty('color')) {
+                                            $('#id_'+b['selectedColumn'][i]+'_'+element_id).parent().css('background-color',`${c1[i1]['color']}`);
+                                            if($('#id_'+b['selectedColumn'][i]+'_'+element_id).hasClass('select2')){
+                                              $('#id_'+b['selectedColumn'][i]+'_'+element_id).parent().find('.select2-selection').css('background-color',`${c1[i1]['color']}`);
+                                            }
+                                            $('#id_'+b['selectedColumn'][i]+'_'+element_id).css('background-color',`${c1[i1]['color']}`)
+                                            $('#id_'+b['selectedColumn'][i]+'_'+element_id).parent().css('border-radius',`5px`);
+                                            $('#id_'+b['selectedColumn'][i]+'_'+element_id).css('border-radius',`5px`);
+                                          } else {
+                                            $('#id_'+b['selectedColumn'][i]+'_'+element_id).parent().parent().parent().css('display','block');
+                                            $('#id_'+b['selectedColumn'][i]+'_'+element_id).parent().css('background-color',`transparent`);
+                                            if($('#id_'+b['selectedColumn'][i]+'_'+element_id).hasClass('select2')){
+                                              $('#id_'+b['selectedColumn'][i]+'_'+element_id).parent().find('.select2-selection').css('background-color',`transparent`);
+                                            }
+                                            $('#id_'+b['selectedColumn'][i]+'_'+element_id).css('background-color',`transparent`);
+                                            if($('#id_'+b['selectedColumn'][i]+'_'+element_id).attr('type') == 'file' || $('#id_'+b['selectedColumn'][i]+'_'+element_id) == 'image'){
+                                              $('#id_'+b['selectedColumn'][i]+'_'+element_id).parent().find('label').css('background-color',`transparent`);
+                                            }
+                                            $('#id_'+b['selectedColumn'][i]+'_'+element_id).parent().css('border-radius',`0px`);
+                                            $('#id_'+b['selectedColumn'][i]+'_'+element_id).css('border-radius',`0px`);
+                                          }
+                                        }
+                                      }
+                                    }
+                                  }
+                                } else if (b['condition'] == "Greater then") {
+                                  var ele_id = $(this).attr('id').split('whiteSpacewrap')[1]
+                                  ele_id = 'whiteSpacewrap'+ele_id
+                                  var date
+                                  var date1
+                                  if ($(this).attr('type') == "date") {
+                                    date = new Date($(this).val())
+                                    if(b["value"].includes("-")) {
+                                      date1 = new Date(b['value'])
+                                    } else {
+                                      date1 = new Date("01-01-2299")
+                                    }
+                                  } else {
+                                    date = parseInt($(this).val())
+                                    date1 = parseInt(b['value'])
+                                  }
+                                  if(date > date1) {
+                                    for(let i = 0; i < b['selectedColumn'].length; i++) {
+                                      if(ele_id == element_id) {
+                                        if(b['selectedColumn'][i].includes("__cbbutton") || button_ids.includes(b['selectedColumn'][i])){
+                                            if(c1[i1].hasOwnProperty('color')) {
+                                            $('#'+b['selectedColumn'][i]+element_id).css('background-color',`${c1[i1]['color']}`);
+                                            if($('#'+b['selectedColumn'][i]+element_id).hasClass('select2')){
+                                              $('#'+b['selectedColumn'][i]+element_id).parent().find('.select2-selection').css('background-color',`${c1[i1]['color']}`);
+                                            }
+                                            $('#'+b['selectedColumn'][i]+element_id).css('background-color',`${c1[i1]['color']}`)
+                                            $('#'+b['selectedColumn'][i]+element_id).css('border-radius',`5px`);
+                                            $('#'+b['selectedColumn'][i]+element_id).css('border-radius',`5px`);
+                                          } else {
+                                            $('#'+b['selectedColumn'][i]+element_id).css('display','inline-block');
+                                            $('#'+b['selectedColumn'][i]+element_id).css('background-color',`${$('#'+b['selectedColumn'][i]+element_id).attr("data-color")}`);
+                                            if($('#'+b['selectedColumn'][i]+element_id).hasClass('select2')){
+                                              $('#'+b['selectedColumn'][i]+element_id).parent().find('.select2-selection').css('background-color',`${$('#'+b['selectedColumn'][i]+element_id).attr("data-color")}`);
+                                            }
+                                            $('#'+b['selectedColumn'][i]+element_id).css('background-color',`${$('#'+b['selectedColumn'][i]+element_id).attr("data-color")}`);
+                                            if($('#'+b['selectedColumn'][i]+element_id).attr('type') == 'file' || $('#'+b['selectedColumn'][i]+element_id) == 'image'){
+                                              $('#'+b['selectedColumn'][i]+element_id).find('label').css('background-color',`${$('#'+b['selectedColumn'][i]+element_id).attr("data-color")}`);
+                                            }
+                                            $('#'+b['selectedColumn'][i]+element_id).css('border-radius',`5px`);
+                                            $('#'+b['selectedColumn'][i]+element_id).css('border-radius',`5px`);
+                                          }
+                                        } else {
+                                          if(c1[i1].hasOwnProperty('color')) {
+                                            $('#id_'+b['selectedColumn'][i]+'_'+element_id).parent().css('background-color',`${c1[i1]['color']}`);
+                                            if($('#id_'+b['selectedColumn'][i]+'_'+element_id).hasClass('select2')){
+                                              $('#id_'+b['selectedColumn'][i]+'_'+element_id).parent().find('.select2-selection').css('background-color',`${c1[i1]['color']}`);
+                                            }
+                                            $('#id_'+b['selectedColumn'][i]+'_'+element_id).css('background-color',`${c1[i1]['color']}`)
+                                            $('#id_'+b['selectedColumn'][i]+'_'+element_id).parent().css('border-radius',`5px`);
+                                            $('#id_'+b['selectedColumn'][i]+'_'+element_id).css('border-radius',`5px`);
+                                          } else {
+                                            $('#id_'+b['selectedColumn'][i]+'_'+element_id).parent().parent().parent().css('display','block');
+                                            $('#id_'+b['selectedColumn'][i]+'_'+element_id).parent().css('background-color',`transparent`);
+                                            if($('#id_'+b['selectedColumn'][i]+'_'+element_id).hasClass('select2')){
+                                              $('#id_'+b['selectedColumn'][i]+'_'+element_id).parent().find('.select2-selection').css('background-color',`transparent`);
+                                            }
+                                            $('#id_'+b['selectedColumn'][i]+'_'+element_id).css('background-color',`transparent`);
+                                            if($('#id_'+b['selectedColumn'][i]+'_'+element_id).attr('type') == 'file' || $('#id_'+b['selectedColumn'][i]+'_'+element_id) == 'image'){
+                                              $('#id_'+b['selectedColumn'][i]+'_'+element_id).parent().find('label').css('background-color',`transparent`);
+                                            }
+                                            $('#id_'+b['selectedColumn'][i]+'_'+element_id).parent().css('border-radius',`0px`);
+                                            $('#id_'+b['selectedColumn'][i]+'_'+element_id).css('border-radius',`0px`);
+                                          }
+                                        }
+                                      }
+                                    }
+                                  }
+                                } else if (b['condition'] == "Smaller then") {
+                                  var ele_id = $(this).attr('id').split('whiteSpacewrap')[1]
+                                  ele_id = 'whiteSpacewrap'+ele_id
+                                  var date
+                                  var date1
+                                  if ($(this).attr('type') == "date") {
+                                    date = new Date($(this).val())
+                                    if(b["value"].includes("-")) {
+                                      date1 = new Date(b['value'])
+                                    } else {
+                                      date1 = new Date("01-01-1000")
+                                    }
+                                  } else {
+                                    date = parseInt($(this).val())
+                                    date1 = parseInt(b['value'])
+                                  }
+                                  if(date < date1) {
+                                    for(let i = 0; i < b['selectedColumn'].length; i++) {
+                                      if(ele_id == element_id) {
+                                        if(b['selectedColumn'][i].includes("__cbbutton") || button_ids.includes(b['selectedColumn'][i])){
+                                          if(c1[i1].hasOwnProperty('color')) {
+                                            $('#'+b['selectedColumn'][i]+element_id).css('background-color',`${c1[i1]['color']}`);
+                                            if($('#'+b['selectedColumn'][i]+element_id).hasClass('select2')){
+                                              $('#'+b['selectedColumn'][i]+element_id).parent().find('.select2-selection').css('background-color',`${c1[i1]['color']}`);
+                                            }
+                                            $('#'+b['selectedColumn'][i]+element_id).css('background-color',`${c1[i1]['color']}`)
+                                            $('#'+b['selectedColumn'][i]+element_id).css('border-radius',`5px`);
+                                            $('#'+b['selectedColumn'][i]+element_id).css('border-radius',`5px`);
+                                          } else {
+                                            $('#'+b['selectedColumn'][i]+element_id).css('display','inline-block');
+                                            $('#'+b['selectedColumn'][i]+element_id).css('background-color',`${$('#'+b['selectedColumn'][i]+element_id).attr("data-color")}`);
+                                            if($('#'+b['selectedColumn'][i]+element_id).hasClass('select2')){
+                                              $('#'+b['selectedColumn'][i]+element_id).parent().find('.select2-selection').css('background-color',`${$('#'+b['selectedColumn'][i]+element_id).attr("data-color")}`);
+                                            }
+                                            $('#'+b['selectedColumn'][i]+element_id).css('background-color',`${$('#'+b['selectedColumn'][i]+element_id).attr("data-color")}`);
+                                            if($('#'+b['selectedColumn'][i]+element_id).attr('type') == 'file' || $('#'+b['selectedColumn'][i]+element_id) == 'image'){
+                                              $('#'+b['selectedColumn'][i]+element_id).find('label').css('background-color',`${$('#'+b['selectedColumn'][i]+element_id).attr("data-color")}`);
+                                            }
+                                            $('#'+b['selectedColumn'][i]+element_id).css('border-radius',`5px`);
+                                            $('#'+b['selectedColumn'][i]+element_id).css('border-radius',`5px`);
+                                          }
+                                        } else {
+                                          if(c1[i1].hasOwnProperty('color')) {
+                                            $('#id_'+b['selectedColumn'][i]+'_'+element_id).parent().css('background-color',`${c1[i1]['color']}`);
+                                            if($('#id_'+b['selectedColumn'][i]+'_'+element_id).hasClass('select2')){
+                                              $('#id_'+b['selectedColumn'][i]+'_'+element_id).parent().find('.select2-selection').css('background-color',`${c1[i1]['color']}`);
+                                            }
+                                            $('#id_'+b['selectedColumn'][i]+'_'+element_id).css('background-color',`${c1[i1]['color']}`)
+                                            $('#id_'+b['selectedColumn'][i]+'_'+element_id).parent().css('border-radius',`5px`);
+                                            $('#id_'+b['selectedColumn'][i]+'_'+element_id).css('border-radius',`5px`);
+                                          } else {
+                                            $('#id_'+b['selectedColumn'][i]+'_'+element_id).parent().parent().parent().css('display','block');
+                                            $('#id_'+b['selectedColumn'][i]+'_'+element_id).parent().css('background-color',`transparent`);
+                                            if($('#id_'+b['selectedColumn'][i]+'_'+element_id).hasClass('select2')){
+                                              $('#id_'+b['selectedColumn'][i]+'_'+element_id).parent().find('.select2-selection').css('background-color',`transparent`);
+                                            }
+                                            $('#id_'+b['selectedColumn'][i]+'_'+element_id).css('background-color',`transparent`);
+                                            if($('#id_'+b['selectedColumn'][i]+'_'+element_id).attr('type') == 'file' || $('#id_'+b['selectedColumn'][i]+'_'+element_id) == 'image'){
+                                              $('#id_'+b['selectedColumn'][i]+'_'+element_id).parent().find('label').css('background-color',`transparent`);
+                                            }
+                                            $('#id_'+b['selectedColumn'][i]+'_'+element_id).parent().css('border-radius',`0px`);
+                                            $('#id_'+b['selectedColumn'][i]+'_'+element_id).css('border-radius',`0px`);
+                                          }
+                                        }
+                                      }
+                                    }
+                                  }
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    })
+                  }
+                }
+              }
+            }
+          }
+        }
+    var table = []
+    var column = []
+    var condition = []
+    var id_foreignKey = []
+    var condColumn = []
+    var condValue = []
+    var element_id_list_ = []
+    var model_name_list_ = []
+    var column_name_list_ = []
+    function populateFK(){
+      $('.form-row').find("[data-type='ForeignKey']").each(function() {
+        if($(this).attr('id').includes("whiteSpace")) {
+          element_id_list_.push($(this).attr('id').split("whiteSpacewrap")[1])
+          model_name_list_.push($(this).attr('data-tablename'))
+          column_name_list_.push($(this).attr('name'))
+        }
+      })
+      $.ajax({
+        url:'/users/dynamicVal/',
+          data: {
+            'operation':'popuplateForeignKeys',
+            'element_id_list': JSON.stringify(element_id_list_),
+            'model_name_list': JSON.stringify(model_name_list_),
+            'column_name_list':JSON.stringify(column_name_list_),
+          },
+          type: 'POST',
+          dataType: "json",
+          success: function (data) {
+            $('.form-row').find("[data-type='ForeignKey']").each(function() {
+              var tableFK = $(this).attr('data-tablename');
+              var columnFK = $(this).attr('name')
+              var listFK = data[tableFK][columnFK]
+              $(this).empty();
+              let placeholder = $(this).attr("placeholder")
+                      if(![undefined,""].includes(placeholder)){
+                        $(this).append(`<option value='---' disabled selected>${placeholder}</option>`)
+                      } else{
+                      $(this).append(`<option value="">---</option>`);
+                      }
+              for(let i = 0; i < listFK.length; i++) {
+                $(this).append(`<option value="${listFK[i]}">${listFK[i]}</option>`);
+              }
+            })
+          },
+          error: ()=>{
+              alert("Error");
+          }
+        });
+    }
+    function foreignKeyJs(data_js_attr){
+      var call_ajax = true;
+      for(let i = 0; i < $('.form-row').find('[data-jsattr]').length; i++) {
+        demo_table = $('.form-row').find('[data-jsattr]').eq(i).attr('data-table');
+        demo_column = $('.form-row').find('[data-jsattr]').eq(i).attr('data-column');
+        demo_id = $('.form-row').find('[data-jsattr]').eq(i).attr('id');
+        var element_id_demo = $('.form-row').find('[data-jsattr]').eq(i).attr('id').split('whiteSpacewrap')[1]
+        element_id_demo = 'whiteSpacewrap'+element_id_demo
+        if (demo_table) {
+          var data_js_attr = $('.form-row').find('[data-jsattr]').eq(i).attr('data-jsattr');
+          if (data_js_attr) {
+            data_js_attr = JSON.parse(data_js_attr)
+            for(let i = 0; i < data_js_attr.length; i++) {
+                if(!data_js_attr[i].hasOwnProperty("cases")){
+                  data_js_attr[i]['cases'] = []
+                }
+                if(data_js_attr[i]["parentvalue"] == "Foreign-key-relation") {
+                  if(cases((data_js_attr[i]['cases']),element_id_demo)) {
+                    var curr_fk = $('.form-row').find(`#${demo_id}`).parent();
+                    var attributes_ = $('.form-row').find(`#${demo_id}`);
+                    var color_validation = $('.form-row').find(`#${demo_id}`).attr("style")
+                    if($('.form-row').find(`#${demo_id}`).hasClass("select2-hidden-accessible")){
+                      $('.form-row').find(`#${demo_id}`).select2("destroy")
+                    }
+                    if(!$('.form-row').find(`#${demo_id}`).hasClass("select2")){
+                      $('.form-row').find(`#${demo_id}`).remove()
+                      curr_fk.append(`<select id="${demo_id}" class="form-control select2"></select>`);
+                      $(attributes_[0].attributes).each(function() {
+                        if(!["id","data-select2-id","tab-index","class"].includes(this.nodeName)){
+                          $('.form-row').find(`#${demo_id}`).attr(this.nodeName,this.nodeValue)
+                        }
+                      })
+                    }
+                    $('.form-row').find(`#${demo_id}`).select2();
+                    $('.form-row').find(`#${demo_id}`).attr('style',`${color_validation}`);
+                    $('.form-row').find(`#${demo_id}`).parent().find('.select2-selection').attr('style',`${color_validation}`);
+                    if (data_js_attr[i]['finaljsattr'][2][0].hasOwnProperty('condition')) {
+                      condition.push(data_js_attr[i]['finaljsattr'][2][0]['condition']['cond'])
+                      condColumn.push(data_js_attr[i]['finaljsattr'][2][0]['condition']['column'])
+                      condValue.push(data_js_attr[i]['finaljsattr'][2][0]['condition']['value'])
+                    } else {
+                      condition.push([])
+                      condColumn.push([])
+                      condValue.push([])
+                    }
+
+                table.push(demo_table)
+                column.push(demo_column);
+                id_foreignKey.push(demo_id);
+              } else {
+                call_ajax = false
+                var curr_fk = $('.form-row').find(`#${demo_id}`).parent();
+                var attributes_ = $('.form-row').find(`#${demo_id}`);
+                var color_validation = $('.form-row').find(`#${demo_id}`).attr("style")
+                if($('.form-row').find(`#${demo_id}`).hasClass("select2-hidden-accessible")){
+                  $('.form-row').find(`#${demo_id}`).select2("destroy")
+                }
+                if(!$('.form-row').find(`#${demo_id}`).hasClass("text_input")){
+                  $('.form-row').find(`#${demo_id}`).remove()
+                  curr_fk.append(`<input id="${demo_id}" class="form-control text_input">`);
+                  $(attributes_[0].attributes).each(function() {
+                    if(!["id","data-select2-id","tab-index","class"].includes(this.nodeName)){
+                      $('.form-row').find(`#${demo_id}`).attr(this.nodeName,this.nodeValue)
+                    }
+                  })
+                }
+                $('.form-row').find(`#${demo_id}`).attr('style',`${color_validation}`);
+              }
+            }
+          }
+        }
+      }
+    }
+    if (table.length > 0) {
+        $.ajax({
+            url:'/users/dynamicVal/',
+            data: {
+              'operation':'foreign',
+              'table': JSON.stringify(table),
+              'column': JSON.stringify(column),
+              'condition':JSON.stringify(condition),
+              'condColumn': JSON.stringify(condColumn),
+              'condValue': JSON.stringify(condValue),
+            },
+            type: 'POST',
+            dataType: "json",
+            success: function (data) {
+                for(let i = 0; i < data.data.length; i++) {
+                  if($('.form-row').find(`#${id_foreignKey[i]}`).find("option").length <= 1) {
+
+                    let placeholder = $('.form-row').find(`#${id_foreignKey[i]}`).attr("placeholder")
+                    if(![undefined,""].includes(placeholder)){
+                        var html = `<option value='---' disabled selected>${placeholder}</option>`
+                        } else{
+                        var html = "<option value=''>---</option>"
+                        }
+                      for(let j = 0; j < data.data[i].length; j++) {
+                      html = html + `<option value='${data.data[i][j]}'>${data.data[i][j]}</option>`
+                    }
+                    $('.form-row').find(`#${id_foreignKey[i]}`).empty()
+                    $('.form-row').find(`#${id_foreignKey[i]}`).append(html);
+                  } else {
+                  }
+                }
+            },
+            error: ()=>{
+                alert("Error");
+            }
+          });
+        } else {
+
+        }
+      }
+    function autopopulate(a,key,element_id){
+      masterTable = a[key]['finaljsattr'][1][0]['value']
+      masterCol = a[key]['finaljsattr'][2][0]['value']
+      correspondingCol = a[key]['finaljsattr'][0][0]['value']['depMapper']
+      var value = $(this).val()
+      $.ajax({
+        url:'/users/dynamicVal/',
+        data: {
+          'operation':'autopopulate',
+          'masterTable': masterTable,
+          'masterCol': masterCol,
+          'column': JSON.stringify(correspondingCol),
+          'value':value
+        },
+        type: 'POST',
+        dataType: "json",
+        success: function (data) {
+          if (data.data.length > 0){
+            for(let i = 0; i < data.data[0].length; i++) {
+
+              $('#id_'+a[key]['finaljsattr'][0][0]['value']['depField'][i]+'_'+element_id+'_').val(data.data[0][i]).trigger('change')
+              $('#id_'+a[key]['finaljsattr'][0][0]['value']['depField'][i]+'_'+element_id).val(data.data[0][i]).trigger('change')
+            }
+          } else {
+            for(let i = 0; i < a[key]['finaljsattr'][0][0]['value']['depField'].length; i++) {
+              $('#id_'+a[key]['finaljsattr'][0][0]['value']['depField'][i]+'_'+element_id).empty()
+              $('#id_'+a[key]['finaljsattr'][0][0]['value']['depField'][i]+'_'+element_id+'_').val('').trigger('change')
+            }
+          }
+
+        },
+        error: ()=>{
+            alert("Error");
+        }
+      })
+    }
+    function autopopulateConstant(a,key,element_id){
+      masterTable_ = a[key]['finaljsattr'][0][0]['table_name']
+      masterCol_ = a[key]['finaljsattr'][0][0]['table_column']
+      correspondingCol_ = a[key]['finaljsattr'][0][0]['column_value']
+      dropdown_value = a[key]['finaljsattr'][0][0]['dropdown_value']
+      copy_class_to_apply = ""
+      paste_class_to_apply = ""
+      if(cases(a[key]['cases'],element_id)) {
+        if(dropdown_value == "Yes"){
+          $('#id_'+a[key]['finaljsattr'][0][0]['table_column'] +'_'+element_id+'_').remove()
+          $('#id_'+a[key]['finaljsattr'][0][0]['table_column'] +'_'+element_id).css('display','none');
+          $('#id_'+a[key]['finaljsattr'][0][0]['table_column'] +'_'+element_id).removeClass("select2")
+          if ($('#id_'+a[key]['finaljsattr'][0][0]['table_column'] +'_'+element_id).hasClass("copy_class_to_apply")){
+            copy_class_to_apply = "copy_class_to_apply"
+          }
+          if ($('#id_'+a[key]['finaljsattr'][0][0]['table_column'] +'_'+element_id).hasClass("paste_class_to_apply")){
+            paste_class_to_apply = "paste_class_to_apply"
+          }
+          $('#id_'+a[key]['finaljsattr'][0][0]['table_column'] +'_'+element_id).parent().append(`<input type="text" maxlength="256" id="${'id_'+a[key]['finaljsattr'][0][0]['table_column'] +'_'+element_id+'_'}" datatype="CharField"  class="textinput textInput form-control ${copy_class_to_apply} ${paste_class_to_apply}">`)
+          $('.copy_class_to_apply').bind({
+            copy : function(){
+              return false
+            }
+          });
+
+          $('.paste_class_to_apply').bind({
+            paste : function(){
+              return false
+            }
+          });
+          $('#id_'+a[key]['finaljsattr'][0][0]['table_column'] +'_'+element_id+'_').prop('disabled','true');
+          setTimeout(() => {
+            $('#'+a[key]['finaljsattr'][0][0]['table_column'] +'_'+element_id+'_div').find('span').css('display','none')
+          },400)
+        }
+        else
+        {
+          $('#id_'+a[key]['finaljsattr'][0][0]['table_column'] +'_'+element_id).css('display','none');
+          $('#id_'+a[key]['finaljsattr'][0][0]['table_column'] +'_'+element_id+'_').remove()
+          if ($('#id_'+a[key]['finaljsattr'][0][0]['table_column'] +'_'+element_id).hasClass("copy_class_to_apply")){
+            copy_class_to_apply = "copy_class_to_apply"
+          }
+          if ($('#id_'+a[key]['finaljsattr'][0][0]['table_column'] +'_'+element_id).hasClass("paste_class_to_apply")){
+            paste_class_to_apply = "paste_class_to_apply"
+          }
+          $('#id_'+a[key]['finaljsattr'][0][0]['table_column'] +'_'+element_id).parent().append(`<input type="text" maxlength="256" id="${'id_'+a[key]['finaljsattr'][0][0]['table_column'] +'_'+element_id+'_'}" datatype="CharField"  class="textinput textInput form-control ${copy_class_to_apply} ${paste_class_to_apply}">`)
+          $('.copy_class_to_apply').bind({
+            copy : function(){
+              return false
+            }
+          });
+
+          $('.paste_class_to_apply').bind({
+            paste : function(){
+              return false
+            }
+          });
+          $('#id_'+a[key]['finaljsattr'][0][0]['table_column'] +'_'+element_id+'_').prop('disabled','true');
+        }
+      } else {
+        $('#id_'+a[key]['finaljsattr'][0][0]['table_column'] +'_'+element_id+'_').css("display","none");
+        $('#id_'+a[key]['finaljsattr'][0][0]['table_column'] +'_'+element_id).css("display","block");
+        $('#id_'+a[key]['finaljsattr'][0][0]['table_column'] +'_'+element_id).val("").trigger("change");
+        if ($('#id_'+a[key]['finaljsattr'][0][0]['table_column'] +'_'+element_id).hasClass("copy_class_to_apply")){
+            copy_class_to_apply = "copy_class_to_apply"
+          }
+          if ($('#id_'+a[key]['finaljsattr'][0][0]['table_column'] +'_'+element_id).hasClass("paste_class_to_apply")){
+            paste_class_to_apply = "paste_class_to_apply"
+          }
+        if(dropdown_value == "Yes"){
+          var attributes_ = $('#id_'+a[key]['finaljsattr'][0][0]['table_column'] +'_'+element_id);
+          var curr_ap = $('#id_'+a[key]['finaljsattr'][0][0]['table_column'] +'_'+element_id).parent();
+          $('#id_'+a[key]['finaljsattr'][0][0]['table_column'] +'_'+element_id).remove();
+          curr_ap.append(`<select id="id_${a[key]['finaljsattr'][0][0]['table_column']}_${element_id}" class="form-control select2 ${copy_class_to_apply} ${paste_class_to_apply}"></select>`);
+          $('.copy_class_to_apply').bind({
+            copy : function(){
+              return false
+            }
+          });
+
+          $('.paste_class_to_apply').bind({
+            paste : function(){
+              return false
+            }
+          });
+          $(attributes_[0].attributes).each(function() {
+            if(!["id","data-select2-id","tab-index","class"].includes(this.nodeName)){
+              $('#id_'+a[key]['finaljsattr'][0][0]['table_column'] +'_'+element_id).attr(this.nodeName,this.nodeValue)
+            }
+          })
+          $('#id_'+a[key]['finaljsattr'][0][0]['table_column'] +'_'+element_id).css("display","block");
+          $('#id_'+a[key]['finaljsattr'][0][0]['table_column'] +'_'+element_id).select2();
+          $('#id_'+a[key]['finaljsattr'][0][0]['table_column'] +'_'+element_id+"_").css("display","none");
+          populateFK()
+        }
+      }
+      if(cases(a[key]['cases'],element_id)) {
+        $.ajax({
+          url:'/users/dynamicVal/',
+          data: {
+              'operation':'pre_autopopulate',
+              'masterTable': masterTable_,
+              'masterCol': masterCol_,
+              'column': correspondingCol_,
+            },
+            type: 'POST',
+            dataType: "json",
+            success: function (data) {
+              if (data.data.length > 0){
+                for(let i = 0; i < data.data[0].length; i++) {
+                  if($('#id_'+a[key]['finaljsattr'][0][0]['table_column'] +'_'+element_id).hasClass("select2")){
+                    $('#id_'+a[key]['finaljsattr'][0][0]['table_column'] +'_'+element_id).find('option').each(function(){
+                    if($(this).val() == data.data[0][i]){
+                      $('#id_'+a[key]['finaljsattr'][0][0]['table_column'] +'_'+element_id).val(data.data[0][i]).trigger('change')
+                    }
+                  })
+                  } else{
+                    $('#id_'+a[key]['finaljsattr'][0][0]['table_column'] +'_'+element_id).val(data.data[0][i]).trigger('change')
+                  }
+                  $('#id_'+a[key]['finaljsattr'][0][0]['table_column'] +'_'+element_id +'_').val(data.data[0][i]).trigger('change')
+                }
+              }
+            },
+            error: ()=>{
+                alert("Error");
+            }
+        })
+      }
+    }
+    function cascadingJs(a,key,element_id){
+      masterTable = a[key]['finaljsattr'][1][0]['value'][0]
+      masterCol = a[key]['finaljsattr'][2][0]['value'][0]
+      correspondingCol = a[key]['finaljsattr'][0][0]['value'][0]['depMapper']
+      var value = $(this).val()
+      $.ajax({
+        url:'/users/dynamicVal/',
+        data: {
+          'operation':'autopopulate',
+          'masterTable': masterTable,
+          'masterCol': masterCol,
+          'column': JSON.stringify(correspondingCol),
+          'value':value
+        },
+        type: 'POST',
+        dataType: "json",
+        success: function (data) {
+          if (data.data.length > 0){
+            for(let j = 0; j < a[key]['finaljsattr'][0][0]['value'].length; j++) {
+              for(let i = 0; i < a[key]['finaljsattr'][0][0]['value'][j]['depField'].length; i++) {
+                $('#id_'+a[key]['finaljsattr'][0][0]['value'][j]['depField'][j]+'_'+element_id).empty()
+
+                let placeholder = $('#id_'+a[key]['finaljsattr'][0][0]['value'][j]['depField'][j]+'_'+element_id).attr("placeholder")
+                if(![undefined,"",null].includes(placeholder)){
+                  $('#id_'+a[key]['finaljsattr'][0][0]['value'][j]['depField'][j]+'_'+element_id).append(`<option value='---' disabled selected>${placeholder}</option>`)
+                } else{
+                  $('#id_'+a[key]['finaljsattr'][0][0]['value'][j]['depField'][j]+'_'+element_id).append(`<option value='---'>---</option>`)
+                }
+                  $('#id_'+a[key]['finaljsattr'][0][0]['value'][j]['depField'][j]+'_'+element_id).val('---').trigger('change')
+              }
+            }
+            for(let i = 0; i < data.data.length; i++) {
+              for(let j = 0; j < data.data[i].length; j++) {
+                $('#id_'+a[key]['finaljsattr'][0][0]['value'][0]['depField'][j]+'_'+element_id).empty()
+                let placeholder = $('#id_'+a[key]['finaljsattr'][0][0]['value'][j]['depField'][j]+'_'+element_id).attr("placeholder")
+                if(![undefined,"",null].includes(placeholder)){
+                  $('#id_'+a[key]['finaljsattr'][0][0]['value'][j]['depField'][j]+'_'+element_id).append(`<option value='---' disabled selected>${placeholder}</option>`)
+                } else{
+                  $('#id_'+a[key]['finaljsattr'][0][0]['value'][j]['depField'][j]+'_'+element_id).append(`<option value='---'>---</option>`)
+                }
+              }
+            }
+            for(let i = 0; i < data.data.length; i++) {
+              for(let j = 0; j < data.data[i].length; j++) {
+                $('#id_'+a[key]['finaljsattr'][0][0]['value'][0]['depField'][j]+'_'+element_id).append(`<option value='${data.data[i][j]}'>${data.data[i][j]}</option>`)
+              }
+            }
+          } else {
+            for(let j = 0; j < a[key]['finaljsattr'][0][0]['value'].length; j++) {
+              for(let i = 0; i < a[key]['finaljsattr'][0][0]['value'][j]['depField'].length; i++) {
+                let placeholder = $('#id_'+a[key]['finaljsattr'][0][0]['value'][j]['depField'][j]+'_'+element_id).attr("placeholder")
+                $('#id_'+a[key]['finaljsattr'][0][0]['value'][j]['depField'][j]+'_'+element_id).empty()
+                if(![undefined,"",null].includes(placeholder)){
+                  $('#id_'+a[key]['finaljsattr'][0][0]['value'][j]['depField'][j]+'_'+element_id).append(`<option value='---' disabled selected>${placeholder}</option>`)
+                } else{
+                  $('#id_'+a[key]['finaljsattr'][0][0]['value'][j]['depField'][j]+'_'+element_id).append(`<option value='---'>---</option>`)
+                }
+              }
+            }
+          }
+
+        },
+        error: ()=>{
+            alert("Error");
+        }
+      })
+    }
+    function cascadingLv2() {
+      var element_id = $(this).attr('id').split('whiteSpacewrap')[1]
+      element_id = 'whiteSpacewrap'+element_id
+      var data_name = ''
+      if($(this).attr('data-name')) {
+        if($(this).attr('data-name').includes('__')) {
+          data_name = $(this).attr('data-name').split('__')[1]
+        } else {
+          data_name = $(this).attr('data-name')
+        }
+      }
+      var a = $('#id_'+data_name+'_'+element_id).attr('data-jsattr');
+      a = JSON.parse(a)
+      var a1 = a
+      if(a) {
+        for(let key = 0; key < a.length; key++) {
+          if(!a[key].hasOwnProperty("cases")){
+            a[key]["cases"] = []
+          }
+          if(a[key]['parentvalue'] == "Cascading") {
+            masterTable = $(this).attr('data-table')
+            masterCol =  $(this).attr('data-mapperCol')
+            correspondingCol = JSON.parse($(this).attr('data-js'))['depMapper']
+            a = JSON.parse($(this).attr('data-js'))
+            var value = $(this).val()
+            $.ajax({
+              url:'/users/dynamicVal/',
+              data: {
+                'operation':'autopopulate',
+                'masterTable': masterTable,
+                'masterCol': masterCol,
+                'column': JSON.stringify(correspondingCol),
+                'value':value
+              },
+              type: 'POST',
+              dataType: "json",
+              success: function (data) {
+                if (data.data.length > 0){
+                  for(let i = 0; i < data.data.length; i++) {
+                    for(let j = 0; j < data.data[i].length; j++) {
+                      $('#id_'+a['depField'][j]+'_'+element_id).empty()
+                      let placeholder = $('#id_'+a['depField'][j]+'_'+element_id).attr("placeholder")
+                      if(![undefined,""].includes(placeholder)){
+                        $('#id_'+a['depField'][j]+'_'+element_id).append(`<option value='---' disabled selected>${placeholder}</option>`)
+                      } else{
+                        $('#id_'+a['depField'][j]+'_'+element_id).append(`<option value='---'>---</option>`)
+                      }
+                      $('#id_'+a['depField'][j]+'_'+element_id).val('---').trigger('change')
+                    }
+                  }
+                  for(let i = 0; i < data.data.length; i++) {
+                    for(let j = 0; j < data.data[i].length; j++) {
+                      $('#id_'+a['depField'][j]+'_'+element_id).append(`<option value='${data.data[i][j]}'>${data.data[i][j]}</option>`)
+                    }
+                  }
+                } else {
+                  for(let i = 0; i < a['depField'].length; i++) {
+                    let placeholder = $('#id_'+a['depField'][i]+'_'+element_id).attr("placeholder")
+                    $('#id_'+a['depField'][i]+'_'+element_id).val('').trigger('change')
+                    $('#id_'+a['depField'][i]+'_'+element_id).empty()
+                    if(![undefined,""].includes(placeholder)){
+                      $('#id_'+a['depField'][i]+'_'+element_id).append(`<option value="" disabled selected>${placeholder}</option>`)
+                    }
+                  }
+                }
+
+              },
+              error: ()=>{
+                  alert("Error");
+              }
+            })
+          }
+          jsChange.call(this)
+        }
+      }
+    }
+    function commonFieldTrue(b,element_id) {
+      for(let i = 0; i < b['selectedColumn'].length; i++) {
+        if(b['selectedColumn'][i].includes("__cbbutton") || button_ids.includes(b['selectedColumn'][i])){
+          if(b.hasOwnProperty('color')) {
+            $('#'+b['selectedColumn'][i]+element_id).css('background-color',`${b['color']}`);
+
+            $('#'+b['selectedColumn'][i]+element_id).css('border-radius',`5px`);
+            $('#'+b['selectedColumn'][i]+element_id).css('border-radius',`5px`);
+
+            if($('#'+b['selectedColumn'][i]+element_id).hasClass('select2')){
+              $('#'+b['selectedColumn'][i]+element_id).parent().find('.select2-selection').css('background-color',`${b['color']}`);
+            }
+            $('#'+b['selectedColumn'][i]+element_id).css('background-color',`${b['color']}`);
+            if($('#'+b['selectedColumn'][i]+element_id).attr('type') == 'file' || $('#'+b['selectedColumn'][i]+element_id) == 'image'){
+              $('#'+b['selectedColumn'][i]+element_id).find('label').css('background-color',`${b['color']}`);
+            }
+          } else {
+            $('#'+b['selectedColumn'][i]+element_id).css('display','inline-block')
+          }
+        } else {
+          if(b.hasOwnProperty('color')) {
+            $('#id_'+b['selectedColumn'][i]+'_'+element_id).parent().css('background-color',`${b['color']}`);
+
+            $('#id_'+b['selectedColumn'][i]+'_'+element_id).parent().css('border-radius',`5px`);
+            $('#id_'+b['selectedColumn'][i]+'_'+element_id).css('border-radius',`5px`);
+
+            if($('#id_'+b['selectedColumn'][i]+'_'+element_id).hasClass('select2')){
+              $('#id_'+b['selectedColumn'][i]+'_'+element_id).parent().find('.select2-selection').css('background-color',`${b['color']}`);
+            }
+            $('#id_'+b['selectedColumn'][i]+'_'+element_id).css('background-color',`${b['color']}`);
+            if($('#id_'+b['selectedColumn'][i]+'_'+element_id).attr('type') == 'file' || $('#id_'+b['selectedColumn'][i]+'_'+element_id) == 'image'){
+              $('#id_'+b['selectedColumn'][i]+'_'+element_id).parent().find('label').css('background-color',`${b['color']}`);
+            }
+          } else {
+            $('#id_'+b['selectedColumn'][i]+'_'+element_id).parent().parent().parent().css('display','block')
+          }
+        }
+      }
+    }
+    $('.form-row').find("input[data-cases], textarea[data-cases], select[data-cases]").on("change",function() {
+      var element_id = $(this).attr('id').split('whiteSpacewrap')[1]
+      element_id = 'whiteSpacewrap'+element_id
+      $("#createview"+element_id).find("input[data-jsattr], select[data-jsattr], textarea[data-jsattr]").each(function() {
+        jsFunc_.call(this);
+      })
+    })
+    function jsFunc_(){
+      var a = $(this).attr('data-jsattr')
+        if(a) {
+          a = JSON.parse(a);
+          for(let key = 0; key < a.length; key++) {
+            if(!a[key].hasOwnProperty("cases")){
+              a[key]["cases"] = []
+            }
+            var masterTable
+            var masterCol
+            var correspondingCol
+            var element_id = $(this).attr('id').split('whiteSpacewrap')[1]
+            element_id = 'whiteSpacewrap'+element_id
+            if(a[key]['parentvalue'] == "Foreign-key-relation") {
+             foreignKeyJs.call(this,a);
+            }
+            if(a[key]['parentvalue'] == "Auto-populate") {
+              masterTable = a[key]['finaljsattr'][1][0]['value']
+              masterCol = a[key]['finaljsattr'][2][0]['value']
+              correspondingCol = a[key]['finaljsattr'][0][0]['value']['depMapper']
+              copy_class_to_apply = ""
+              paste_class_to_apply = ""
+              if(cases(a[key]['cases'],element_id)) {
+                for(let i = 0; i < correspondingCol.length; i++) {
+                  let placeholder = $('#id_'+a[key]['finaljsattr'][0][0]['value']['depField'][i]+'_'+element_id).attr("placeholder")
+                  if([undefined,""].includes(placeholder)){
+                    placeholder = "";
+                  }
+                  $('#id_'+a[key]['finaljsattr'][0][0]['value']['depField'][i]+'_'+element_id).css('display','none');
+                  $('#id_'+a[key]['finaljsattr'][0][0]['value']['depField'][i]+'_'+element_id+'_').remove()
+                  if ($('#id_'+a[key]['finaljsattr'][0][0]['value']['depField'][i]+'_'+element_id).hasClass("copy_class_to_apply")){
+                    copy_class_to_apply = "copy_class_to_apply"
+                  }
+                  if ($('#id_'+a[key]['finaljsattr'][0][0]['value']['depField'][i]+'_'+element_id).hasClass("paste_class_to_apply")){
+                    paste_class_to_apply = "paste_class_to_apply"
+                  }
+                  $('#id_'+a[key]['finaljsattr'][0][0]['value']['depField'][i]+'_'+element_id).parent().append(`<input type="text" placeholder="${placeholder}" maxlength="256" id="${'id_'+a[key]['finaljsattr'][0][0]['value']['depField'][i]+'_'+element_id+'_'}" datatype="CharField"  class="textinput textInput form-control ${copy_class_to_apply} ${copy_class_to_apply}">`)
+
+                  $('.copy_class_to_apply').bind({
+                    copy : function(){
+                      return false
+                    }
+                  });
+
+                  $('.paste_class_to_apply').bind({
+                    paste : function(){
+                      return false
+                    }
+                  });
+                  $('#id_'+a[key]['finaljsattr'][0][0]['value']['depField'][i]+'_'+element_id+'_').prop('disabled','true');
+                }
+                autopopulate.call(this,a,key,element_id)
+              } else {
+                for(let i = 0; i < correspondingCol.length; i++) {
+                  $('#id_'+a[key]['finaljsattr'][0][0]['value']['depField'][i]+'_'+element_id).css('display','block');
+                  $('#id_'+a[key]['finaljsattr'][0][0]['value']['depField'][i]+'_'+element_id).val('').trigger("change");
+                  $('#id_'+a[key]['finaljsattr'][0][0]['value']['depField'][i]+'_'+element_id+'_').css('display','none');
+                }
+              }
+            }
+            if(a[key]['parentvalue'] == "Auto-populate Constant") {
+                autopopulateConstant.call(this,a,key,element_id)
+            }
+            if(a[key]['parentvalue'] == "Cascading") {
+              loop = a[key]['finaljsattr'][0][0]['value']
+              for(let i = 0; i < loop.length; i++) {
+                for(let j = 0; j < loop[i]['depMapper'].length; j++) {
+                  curr = $('#id_'+a[key]['finaljsattr'][0][0]['value'][i]['depField'][j]+'_'+element_id).parent()
+                  name = $('#id_'+a[key]['finaljsattr'][0][0]['value'][i]['depField'][j]+'_'+element_id).attr('name')
+                  var jsattr = $('#id_'+a[key]['finaljsattr'][0][0]['value'][i]['depField'][j]+'_'+element_id).attr('data-jsattr');
+                  var js_cases = $('#id_'+a[key]['finaljsattr'][0][0]['value'][i]['depField'][j]+'_'+element_id).attr('data-cases');
+                  var jsFuncAttr = $('#id_'+a[key]['finaljsattr'][0][0]['value'][i]['depField'][j]+'_'+element_id).attr('onchange');
+                  var req = ''
+                  var reqCheck = false
+                  if ($('#id_'+a[key]['finaljsattr'][0][0]['value'][i]['depField'][j]+'_'+element_id).prop('required')) {
+                    reqCheck = true
+                    req = 'required'
+                  }
+                  var data_tablename = $('#id_'+a[key]['finaljsattr'][0][0]['value'][i]['depField'][j]+'_'+element_id).attr('data-tablename')
+                  if(cases(a[key]['cases'],element_id)) {
+                    let placeholder = $('#id_'+a[key]['finaljsattr'][0][0]['value'][i]['depField'][j]+'_'+element_id).attr("placeholder")
+                    if([undefined,""].includes(placeholder)){
+                      placeholder = "";
+                    }
+                    $('#id_'+a[key]['finaljsattr'][0][0]['value'][i]['depField'][j]+'_'+element_id).remove()
+                    if (jsattr) {
+                      if (js_cases){
+                        curr.append(`<select placeholder="${placeholder}" id="${'id_'+a[key]['finaljsattr'][0][0]['value'][i]['depField'][j]+'_'+element_id}" name='${name}' onchange="jsChange.call(this)" class="form-control select2" data-jsattr='${jsattr}' data-cases='${js_cases}' data-name='${$(this).attr('name')}' ${req} data-tablename='${data_tablename}'><option value="---" disabled selected>${placeholder}</option></select>`);
+                      } else {
+                        curr.append(`<select placeholder="${placeholder}" id="${'id_'+a[key]['finaljsattr'][0][0]['value'][i]['depField'][j]+'_'+element_id}" name='${name}' onchange="jsChange.call(this)" class="form-control select2" data-jsattr='${jsattr}' data-name='${$(this).attr('name')}' ${req} data-tablename='${data_tablename}'><option value="---" disabled selected>${placeholder}</option></select>`);
+                      }
+                    } else {
+                      curr.append(`<select placeholder="${placeholder}" id="${'id_'+a[key]['finaljsattr'][0][0]['value'][i]['depField'][j]+'_'+element_id}" name='${name}' class="form-control select2" data-name='${$(this).attr('name')}' ${req} data-tablename='${data_tablename}'><option value="---" disabled selected>${placeholder}</option></select>`);
+                    }
+                    if(jsFuncAttr) {
+                      curr.attr("onchange",jsFuncAttr)
+                    }
+                    curr.find("select").select2()
+                    cascadingJs.call(this,a,key,element_id)
+                  } else{
+                    if($('#id_'+a[key]['finaljsattr'][0][0]['value'][i]['depField'][j]+'_'+element_id).hasClass("select2-hidden-accessible")){
+                      $('#id_'+a[key]['finaljsattr'][0][0]['value'][i]['depField'][j]+'_'+element_id).select2("destroy")
+                    }
+                    let placeholder = $('#id_'+a[key]['finaljsattr'][0][0]['value'][i]['depField'][j]+'_'+element_id).attr("placeholder")
+                    if([undefined,""].includes(placeholder)){
+                      placeholder = "";
+                    }
+                    $('#id_'+a[key]['finaljsattr'][0][0]['value'][i]['depField'][j]+'_'+element_id).remove()
+                    if (jsattr) {
+                      if (js_cases){
+                        curr.append(`<input placeholder='${placeholder}' id="${'id_'+a[key]['finaljsattr'][0][0]['value'][i]['depField'][j]+'_'+element_id}" name='${name}' onchange="jsChange.call(this)" class="form-control" data-jsattr='${jsattr}' data-cases='${js_cases}' data-name='${$(this).attr('name')}' ${req} data-tablename='${data_tablename}'>`);
+                      } else {
+                        curr.append(`<input placeholder='${placeholder}' id="${'id_'+a[key]['finaljsattr'][0][0]['value'][i]['depField'][j]+'_'+element_id}" name='${name}' onchange="jsChange.call(this)" class="form-control" data-jsattr='${jsattr}' data-name='${$(this).attr('name')}' ${req} data-tablename='${data_tablename}'>`);
+                      }
+                    } else {
+                    curr.append(`<input placeholder='${placeholder}' id="${'id_'+a[key]['finaljsattr'][0][0]['value'][i]['depField'][j]+'_'+element_id}" name='${name}' class="form-control" data-name='${$(this).attr('name')}' ${req} data-tablename='${data_tablename}'>`);
+                    }
+                    if(jsFuncAttr) {
+                      curr.attr("onchange",jsFuncAttr)
+                    }
+                  }
+                }
+                if (i > 0) {
+                  if(cases(a[key]['cases'],element_id)) {
+                    $('#id_'+loop[i]['indField']+'_'+element_id).attr('data-js',JSON.stringify(a[key]['finaljsattr'][0][0]['value'][i]))
+                    $('#id_'+loop[i]['indField']+'_'+element_id).attr('onchange','cascadingLv2.call(this)')
+                    $('#id_'+loop[i]['indField']+'_'+element_id).attr('data-table',a[key]['finaljsattr'][1][0]['value'][i])
+                    $('#id_'+loop[i]['indField']+'_'+element_id).attr('data-mapperCol',a[key]['finaljsattr'][2][0]['value'][i])
+                  }
+                }
+              }
+          } if(a[key]['parentvalue'] == "Show-hide") {
+            b1 = a[key]['finaljsattr'][2][0]["value"];
+            var b = b1
+            var ele_id = element_id
+            if(b) {
+              var b1 = b;
+              for(let i1 = 0; i1 < b1.length; i1++) {
+                var b = b1[i1]
+                for(let i = 0; i < b['selectedColumn'].length; i++) {
+                  if(ele_id == element_id && !($('#id_'+b['selectedColumn'][i]+'_'+element_id).prop('required'))) {
+                    if(cases(a[key]['cases'],ele_id)) {
+                      if(b['selectedColumn'][i].includes("__cbbutton") || button_ids.includes(b['selectedColumn'][i])){
+                        $('#'+b['selectedColumn'][i]+element_id).css('display','none');
+                        b1 = a[key]['finaljsattr'][2][0]["value"];
+                        if (a[key]['parentvalue'] == "Styling attribute" || a[key]['parentvalue'] == "Styling attribute") {
+                          if(b1['styleValidation'].length > 0) {
+                            b1 = b1['styleValidation']
+                          } else {
+                            b1 = []
+                          }
+                        } else {
+                          b1 = a[key]['finaljsattr'][2][0]["value"];
+                        }
+                        for(let i = 0; i < b1.length; i++) {
+                          var b = b1[i];
+                          var element_id = $(this).attr('id').split('whiteSpacewrap')[1]
+                          element_id = 'whiteSpacewrap'+element_id
+                          if(b['condition'] == 'In') {
+                            if(cases(a[key]['cases'],"whiteSpacewrap"+$(this).attr("id").split('whiteSpacewrap')[1])){
+                              if(b['value'].includes($(this).val())) {
+                                commonFieldTrue(b,element_id)
+                              } else {
+                              }
+                            } else{
+                            }
+                          } else if (b['condition'] == 'Equal to') {
+                            if(cases(a[key]['cases'],"whiteSpacewrap"+$(this).attr("id").split('whiteSpacewrap')[1])){
+                              if($(this).val() == b['value']) {
+                                commonFieldTrue(b,element_id)
+                              } else {
+                              }
+                            } else {
+                            }
+                          } else if (b['condition'] == 'Greater then') {
+                            var date
+                            var date1
+                            if ($(this).attr('type') == "date") {
+                              date = new Date($(this).val())
+                              if(b["value"].includes("-")) {
+                                date1 = new Date(b['value'])
+                              } else {
+                                date1 = new Date("01-01-2299")
+                              }
+                            } else {
+                              date = parseInt($(this).val())
+                              date1 = parseInt(b['value'])
+                            }
+                            if(cases(a[key]['cases'],"whiteSpacewrap"+$(this).attr("id").split('whiteSpacewrap')[1])){
+                              if(date > date1) {
+                                commonFieldTrue(b,element_id)
+                              } else {
+                              }
+                            } else{
+                            }
+                          } else if (b['condition'] == 'Smaller then') {
+                            var date
+                            var date1
+                            if ($(this).attr('type') == "date") {
+                              date = new Date($(this).val())
+                              if(b["value"].includes("-")) {
+                                date1 = new Date(b['value'])
+                              } else {
+                                date1 = new Date("01-01-1000")
+                              }
+                            } else {
+                              date = parseInt($(this).val())
+                              date1 = parseInt(b['value'])
+                            }
+                            if(cases(a[key]['cases'],"whiteSpacewrap"+$(this).attr("id").split('whiteSpacewrap')[1])){
+                              if(date < date1) {
+                                commonFieldTrue(b,element_id)
+                              } else {
+                              }
+                            } else {
+                            }
+                          }
+                        }
+                      } else {
+                        $('#id_'+b['selectedColumn'][i]+'_'+element_id).parent().parent().parent().css('display','none');
+                        b1 = a[key]['finaljsattr'][2][0]["value"];
+                        if (a[key]['parentvalue'] == "Styling attribute" || a[key]['parentvalue'] == "Styling attribute") {
+                          if(b1['styleValidation'].length > 0) {
+                            b1 = b1['styleValidation']
+                          } else {
+                            b1 = []
+                          }
+                        } else {
+                          b1 = a[key]['finaljsattr'][2][0]["value"];
+                        }
+                        for(let i = 0; i < b1.length; i++) {
+                          var b = b1[i];
+                          var element_id = $(this).attr('id').split('whiteSpacewrap')[1]
+                          element_id = 'whiteSpacewrap'+element_id
+                          if(b['condition'] == 'In') {
+                            if(cases(a[key]['cases'],"whiteSpacewrap"+$(this).attr("id").split('whiteSpacewrap')[1])){
+                              if(b['value'].includes($(this).val())) {
+                                commonFieldTrue(b,element_id)
+                              } else {
+                              }
+                            } else{
+                            }
+                          } else if (b['condition'] == 'Equal to') {
+                            if(cases(a[key]['cases'],"whiteSpacewrap"+$(this).attr("id").split('whiteSpacewrap')[1])){
+                              if($(this).val() == b['value']) {
+                                commonFieldTrue(b,element_id)
+                              } else {
+                              }
+                            } else {
+                            }
+                          } else if (b['condition'] == 'Greater then') {
+                            var date
+                            var date1
+                            if ($(this).attr('type') == "date") {
+                              date = new Date($(this).val())
+                              if(b["value"].includes("-")) {
+                                date1 = new Date(b['value'])
+                              } else {
+                                date1 = new Date("01-01-2299")
+                              }
+                            } else {
+                              date = parseInt($(this).val())
+                              date1 = parseInt(b['value'])
+                            }
+                            if(cases(a[key]['cases'],"whiteSpacewrap"+$(this).attr("id").split('whiteSpacewrap')[1])){
+                              if(date > date1) {
+                                commonFieldTrue(b,element_id)
+                              } else {
+                              }
+                            } else{
+                            }
+                          } else if (b['condition'] == 'Smaller then') {
+                            var date
+                            var date1
+                            if ($(this).attr('type') == "date") {
+                              date = new Date($(this).val())
+                              if(b["value"].includes("-")) {
+                                date1 = new Date(b['value'])
+                              } else {
+                                date1 = new Date("01-01-1000")
+                              }
+                            } else {
+                              date = parseInt($(this).val())
+                              date1 = parseInt(b['value'])
+                            }
+                            if(cases(a[key]['cases'],"whiteSpacewrap"+$(this).attr("id").split('whiteSpacewrap')[1])){
+                              if(date < date1) {
+                                commonFieldTrue(b,element_id)
+                              } else {
+                              }
+                            } else {
+                            }
+                          }
+                        }
+                      }
+                    } else {
+                      if (a[key]['parentvalue'] != "Styling attribute"){
+                        if(b['selectedColumn'][i].includes("__cbbutton") || button_ids.includes(b['selectedColumn'][i])){
+                          $('#'+b['selectedColumn'][i]+element_id).css('display','inline-block')
+                        } else {
+                          $('#id_'+b['selectedColumn'][i]+'_'+element_id).parent().parent().parent().css('display','block')
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          } if(a[key]['parentvalue'] == "Styling attribute") {
+              b1 = a[key]['finaljsattr'][2][0]["value"];
+              if(b1['column'].includes("__cbbutton") || button_ids.includes(b1['column'])){
+                if ($('#_'+b1['column']+element_id).css('display') != 'none'){
+                  if(cases(a[key]['cases'],element_id)) {
+                    $('#'+b1['column']+element_id).attr('style',b1['style'])
+                    $('#'+b1['column']+element_id).css('background-color','');
+                    $('#'+b1['column']+element_id).css('background-color',b1['background-color']);
+                    $('#'+b1['column']+element_id).css('background-color',b1['background-color']);
+                    if($('#'+b1['column']+element_id).attr('type') == 'file' || $('#'+b1['column']+element_id) == 'image'){
+                      $('#'+b1['column']+element_id).find('label').css('background-color',b1['background-color']);
+                    }
+                    if($('#'+b1['column']+element_id).hasClass('select2')) {
+                      $(`#${b1['column']}_${element_id}_div`).find('.select2-selection').css('background-color',b1['background-color'])
+                      var css = `<style>
+                        #${b1['column']}_${element_id}_div .select2-selection {
+                          background: ${b1['background-color']};
+                        }
+                      </style>`
+                      $('section').prepend(css);
+                    }
+                  } else {
+                    $('#'+b1['column']+element_id).attr('style',"")
+                    $('#'+b1['column']+element_id).css('background-color',`${$('#'+b1['column']+element_id).attr("data-color")}`);
+                    $('#'+b1['column']+element_id).css('background-color',`${$('#'+b1['column']+element_id).attr("data-color")}`);
+                    $('#'+b1['column']+element_id).css('background-color',`${$('#'+b1['column']+element_id).attr("data-color")}`);
+                    if($('#'+b1['column']+element_id).attr('type') == 'file' || $('#'+b1['column']+element_id) == 'image'){
+                      $('#'+b1['column']+element_id).find('label').css('background-color',"");
+                    }
+                    $(`#${b1['column']}${element_id}_div`).find('.select2-selection').css('background-color','')
+                    if($('#'+b1['column']+element_id).hasClass('select2')) {
+                      var css = `<style>
+                        #${b1['column']}${element_id}_div .select2-selection {
+                          background: ${"transparent"};
+                        }
+                      </style>`
+                      $('section').prepend(css);
+                    }
+                  }
+                }
+                if(b1['mandatoryfield'] != "" && b1["mandatoryfield"] != undefined) {
+                    if(cases(a[key]['cases'],element_id) && b1['mandatoryfield'] == true) {
+                      $('#id_'+b1['column']+'_'+element_id).prop('required',true);
+                      $('#id_'+b1['column']+'_'+element_id).parent().parent().find('.asteriskField').text('*')
+                    } else {
+                      $('#id_'+b1['column']+'_'+element_id).prop('required','');
+                      $('#id_'+b1['column']+'_'+element_id).parent().parent().find('.asteriskField').text('')
+                    }
+                }
+                if(cases(a[key]['cases'],element_id)) {
+                  $('#'+b1['column']+element_id).css('border-radius','5px')
+                  $('#'+b1['column']+element_id).css('border-radius','5px')
+                } else {
+                  $('#'+b1['column']+element_id).css('border-radius','5px')
+                  $('#'+b1['column']+element_id).css('border-radius','5px')
+                }
+                if(b1['instruction'] != "") {
+                  if(cases(a[key]['cases'],element_id)) {
+                    $('#'+b1['column']+element_id).find('small').remove()
+                    $('#'+b1['column']+element_id).append(`<small class="form-text text-muted">${b1['instruction']}</small>`)
+                  } else {
+                    $('#'+b1['column']+element_id).find('small').remove()
+                  }
+                  }
+                if(b1['details'] != "" && b1["details"] != undefined) {
+                  if(cases(a[key]['cases'],element_id)) {
+                    $('#id_'+b1['column']+'_'+element_id).parent().parent().find('button').remove();
+                    $('#id_'+b1['column']+'_'+element_id).parent().parent().prepend(`<button type="button" class="btn btn-link fa fa-info-circle popoverclass float-right" data-container="body" data-toggle="popover" data-placement="top" data-content="${b1['details']}" style="color:${b1['details-bg']}" data-original-title="" title=""></button>`)
+                    $('.popoverclass').popover({
+                    trigger: 'focus'
+                  })
+                  } else {
+                    $('#id_'+b1['column']+'_'+element_id).parent().parent().find('button').remove();
+                  }
+                }
+                if(b1['instruction'] != "") {
+                  if(cases(a[key]['cases'],element_id)) {
+                    $('#'+b1['column']+element_id).find('small').remove()
+                    $('#'+b1['column']+element_id).append(`<small class="form-text text-muted">${b1['instruction']}</small>`)
+                  } else {
+                    $('#'+b1['column']+element_id).find('small').remove()
+                  }
+                  }
+                if(b1['title'] != "") {
+                  if(cases(a[key]['cases'],element_id)) {
+                    $('#'+b1['column']+element_id).attr('data-toggle','tooltip')
+                    $('#'+b1['column']+element_id).attr('title',`${b1['title']}`)
+                  } else {
+                    $('#'+b1['column']+element_id).removeAttr('data-toggle')
+                    $('#'+b1['column']+element_id).removeAttr('title')
+                  }
+                }
+                var b = b1
+                var ele_id = element_id
+                if(b && b['styleValidation'].length > 0) {
+                  var b1 = b['styleValidation'];
+                  for(let i1 = 0; i1 < b1.length; i1++) {
+                    var b = b1[i1]
+                    for(let i = 0; i < b['selectedColumn'].length; i++) {
+                      if(ele_id == element_id) {
+                        if(cases(a[key]['cases'],ele_id)) {
+                          $('#'+b['selectedColumn'][i]+element_id).css('border-radius',`5px`)
+                          $('#'+b['selectedColumn'][i]+element_id).css('border-radius',`5px`)
+                          $('#'+b['selectedColumn'][i]+element_id).css('border-radius',`5px`)
+                        } else {
+                          $('#'+b['selectedColumn'][i]+element_id).css('border-radius',`0px`)
+                          $('#'+b['selectedColumn'][i]+element_id).css('border-radius',`0px`)
+                          $('#'+b['selectedColumn'][i]+element_id).css('border-radius',`0px`)
+                        }
+                      }
+                    }
+                  }
+                }
+              } else {
+                if ($('#id_'+b1['column']+'_'+element_id).parent().parent().parent().css('display') != 'none'){
+                  if(cases(a[key]['cases'],element_id)) {
+                    $('#id_'+b1['column']+'_'+element_id).parent().parent().parent().attr('style',b1['style'])
+                    $('#id_'+b1['column']+'_'+element_id).parent().parent().parent().css('background-color','');
+                    $('#id_'+b1['column']+'_'+element_id).parent().css('background-color',b1['background-color']);
+                    $('#id_'+b1['column']+'_'+element_id).css('background-color',b1['background-color']);
+                    if($('#id_'+b1['column']+'_'+element_id).attr('type') == 'file' || $('#id_'+b1['column']+'_'+element_id) == 'image'){
+                      $('#id_'+b1['column']+'_'+element_id).parent().find('label').css('background-color',b1['background-color']);
+                    }
+                    if($('#id_'+b1['column']+'_'+element_id).hasClass('select2')) {
+                      $(`#${b1['column']}_${element_id}_div`).find('.select2-selection').css('background-color',b1['background-color'])
+                      var css = `<style>
+                        #${b1['column']}_${element_id}_div .select2-selection {
+                          background: ${b1['background-color']};
+                        }
+                      </style>`
+                      $('section').prepend(css);
+                    }
+                  } else {
+                    $('#id_'+b1['column']+'_'+element_id).parent().parent().parent().attr('style',"")
+                    $('#id_'+b1['column']+'_'+element_id).parent().parent().parent().css('background-color','');
+                    $('#id_'+b1['column']+'_'+element_id).parent().css('background-color',"");
+                    $('#id_'+b1['column']+'_'+element_id).css('background-color',"");
+                    if($('#id_'+b1['column']+'_'+element_id).attr('type') == 'file' || $('#id_'+b1['column']+'_'+element_id) == 'image'){
+                      $('#id_'+b1['column']+'_'+element_id).parent().find('label').css('background-color',"");
+                    }
+                    $(`#${b1['column']}_${element_id}_div`).find('.select2-selection').css('background-color','')
+                    if($('#id_'+b1['column']+'_'+element_id).hasClass('select2')) {
+                      var css = `<style>
+                        #${b1['column']}_${element_id}_div .select2-selection {
+                          background: ${"transparent"};
+                        }
+                      </style>`
+                      $('section').prepend(css);
+                    }
+                  }
+                }
+                }
+                if(b1['instruction'] != "") {
+                  if(cases(a[key]['cases'],element_id)) {
+                    $('#id_'+b1['column']+'_'+element_id).parent().parent().find('small').remove()
+                    $('#id_'+b1['column']+'_'+element_id).parent().parent().append(`<small class="form-text text-muted">${b1['instruction']}</small>`)
+                  } else {
+                    $('#id_'+b1['column']+'_'+element_id).parent().parent().find('small').remove()
+                  }
+                }
+
+                  if(b1['details'] != "" && b1["details"] != undefined) {
+                if(cases(a[key]['cases'],element_id)) {
+                  $('#id_'+b1['column']+'_'+element_id).parent().parent().find('button').remove();
+                  $('#id_'+b1['column']+'_'+element_id).parent().parent().prepend(`<button type="button" class="btn btn-link fa fa-info-circle popoverclass float-right" data-container="body" data-toggle="popover" data-placement="top" data-content="${b1['details']}" style="color:${b1['details-bg']}" data-original-title="" title=""></button>`)
+                  $('.popoverclass').popover({
+                  trigger: 'focus'
+                })
+                } else {
+                  $('#id_'+b1['column']+'_'+element_id).parent().parent().find('button').remove();
+                }
+
+              }
+              if(b1['mandatoryfield'] != "" && b1["mandatoryfield"] != undefined) {
+                    if(cases(a[key]['cases'],element_id) && b1['mandatoryfield'] == true) {
+                      $('#id_'+b1['column']+'_'+element_id).prop('required',true);
+                      $('#id_'+b1['column']+'_'+element_id).parent().parent().find('.asteriskField').text('*')
+                    } else {
+                      $('#id_'+b1['column']+'_'+element_id).prop('required','');
+                      $('#id_'+b1['column']+'_'+element_id).parent().parent().find('.asteriskField').text('')
+                    }
+                }
+              if(b1['title'] != "") {
+                if(cases(a[key]['cases'],element_id)) {
+                  $('#id_'+b1['column']+'_'+element_id).parent().css('border-radius','5px')
+                  $('#id_'+b1['column']+'_'+element_id).parent().parent().parent().css('border-radius','5px')
+                } else {
+                  $('#id_'+b1['column']+'_'+element_id).parent().css('border-radius','0px')
+                  $('#id_'+b1['column']+'_'+element_id).parent().parent().parent().css('border-radius','0px')
+                }
+                if(b1['instruction'] != "") {
+                  if(cases(a[key]['cases'],element_id)) {
+                    $('#id_'+b1['column']+'_'+element_id).parent().parent().find('small').remove()
+                    $('#id_'+b1['column']+'_'+element_id).parent().parent().append(`<small class="form-text text-muted">${b1['instruction']}</small>`)
+                  } else {
+                    $('#id_'+b1['column']+'_'+element_id).parent().parent().find('small').remove()
+                  }
+                }
+                if(b1['title'] != "") {
+                  if(cases(a[key]['cases'],element_id)) {
+                    $('#id_'+b1['column']+'_'+element_id).parent().parent().parent().attr('data-toggle','tooltip')
+                    $('#id_'+b1['column']+'_'+element_id).parent().parent().parent().attr('title',`${b1['title']}`)
+                  } else {
+                    $('#id_'+b1['column']+'_'+element_id).parent().parent().parent().removeAttr('data-toggle')
+                    $('#id_'+b1['column']+'_'+element_id).parent().parent().parent().removeAttr('title')
+                  }
+                }
+                var b = b1
+                var ele_id = element_id
+                if(b && b['styleValidation'].length > 0) {
+                  var b1 = b['styleValidation'];
+                  for(let i1 = 0; i1 < b1.length; i1++) {
+                    var b = b1[i1]
+                    for(let i = 0; i < b['selectedColumn'].length; i++) {
+                      if(ele_id == element_id) {
+                        if(cases(a[key]['cases'],ele_id)) {
+                          $('#id_'+b['selectedColumn'][i]+'_'+element_id).parent().parent().parent().css('border-radius',`5px`)
+                          $('#id_'+b['selectedColumn'][i]+'_'+element_id).parent().css('border-radius',`5px`)
+                          $('#id_'+b['selectedColumn'][i]+'_'+element_id).css('border-radius',`5px`)
+                        } else {
+                          $('#id_'+b['selectedColumn'][i]+'_'+element_id).parent().parent().parent().css('border-radius',`0px`)
+                          $('#id_'+b['selectedColumn'][i]+'_'+element_id).parent().css('border-radius',`0px`)
+                          $('#id_'+b['selectedColumn'][i]+'_'+element_id).css('border-radius',`0px`)
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+          }
+          if(a[key]['parentvalue'] == "Show-hide_link") {
+            var insertData = a
+            b1 = a[key]['finaljsattr'][2][0]["value"];
+            var thiss = $(this)
+            $.ajax({
+              url:'/users/dynamicVal/',
+              data: {
+                'operation':'Show-hide_link',
+                'table': JSON.stringify(b1[0]["masterTable"]),
+                'value': JSON.stringify(b1[0]["value"]),
+                'selectedColumn': JSON.stringify(b1[0]["selectedColumn"]),
+                'sourceTable': a[key]['finaljsattr'][1][0]["value"],
+                'element_id':element_id
+              },
+              type: 'POST',
+              dataType: "json",
+              success: function (data) {
+                insertData[key]['finaljsattr'][2][0]["value"] = data['data']
+                thiss.attr('data-jsattr',JSON.stringify(insertData))
+                var b1 = data['data'];
+                for(let i1 = 0; i1 < b1.length; i1++) {
+                  var b = b1[i1]
+                  for(let i = 0; i < b['selectedColumn'].length; i++) {
+                    if(b['selectedColumn'][i].includes("__cbbutton") || button_ids.includes(b['selectedColumn'][i])){
+                      $('#i'+b['selectedColumn'][i]+element_id).css('display','none')
+                    } else{
+                      if(ele_id == element_id && !($('#id_'+b['selectedColumn'][i]+'_'+element_id).prop('required'))) {
+                        $('#id_'+b['selectedColumn'][i]+'_'+element_id).parent().parent().parent().css('display','none')
+                      }
+                    }
+                  }
+                }
+              },
+              error: ()=>{
+                  alert("Error");
+              }
+            })
+            var b = b1
+            var ele_id = element_id
+
+          }
+        }
+      }
+    }
+
+    </script>
+
+    <script>
+        var None = 'None';        var listViewTableDict={};        var listViewEditTemplate = {};        var createViewIdList = [];        var elementIDList=[];        var chartConfigDict={};        var crossFilterDict={};        var element_table_IDList = [];        var names = {};
+        var app_code_home = '';        var user_home = '';        var item_code_list = [];        var grapejs = 1;        var m_col_basefilter = {};        var globalFuncList_scenario = [];        var variableList_scenario = [];        var mColBasefilter = {};        var button_ids = ["savebutton_","saveDraftbutton_","customValidationList","calculateComp","viewHistory_","button-id-back","resetDraft_","previewDraft_","rejectedRecords","viewTransactions"];        var enableSaveButton = function() {
+ $(this).find('input[value=Save]').prop('disabled',false);
+};
+
+    </script>
+
+        <script>
+        $('.span_content_editable').each(function () {
+        $(this).on('click', function () {
+        $(this).attr("contenteditable", "true")
+        $(this).focus()
+        })
+        $(this).focusout(function () {
+        var tab_header = this.innerText
+        tab_header = tab_header.trim()
+        if (tab_header.length == 0){
+            this.innerText = "Set Name"
+            $(this).removeAttr("contenteditable");
+            $(this).addClass("bg-danger")
+            $(this).trigger("click")
+
+        }
+        else{
+        $(this).removeAttr("contenteditable");
+        $(this).removeClass("bg-danger")
+        $.ajax({
+            url: '/users/ajax/tabConfig/',
+
+            data: {
+            'operation': "update_tab_header_name",
+            'id': $(this).parent().parent().attr('data-tab_pk'),
+            'tab_header_name': tab_header,
+
+            },
+            type: "POST",
+            dataType: "json",
+            success: function (data) {
+            if($('.breadcrumblist').last() != tab_header){
+                $(document).ready(function(){
+                $('.breadcrumblist').remove()
+                $('#dynamic').append(`<li class="breadcrumb-item breadcrumblist"><b>${tab_header}</b></li>`)
+                })
+                }
+
+            },
+            error: function () {
+            alert("Error");
+            }
+        })
+        }
+
+        })
+    })
+    var populateTabFuctionalities = function() {
+    var tab_data = JSON.parse($(this).attr('data-data_list'));
+    var tab_data_ordered = {};
+    var count = 0;
+    for(let [key,value] of Object.entries(tab_data)) {
+      count++;
+      for(let [key1,value1] of Object.entries(tab_data)) {
+        if(count == parseInt(value1["order"])) {
+          tab_data_ordered[key1] = {}
+          tab_data_ordered[key1]["order"] = count
+          tab_data_ordered[key1]["show"] = value1["show"]
+        }
+      }
+    };
+    $('#tabsMultiFuncBodyTable').find('tbody').empty();
+
+    html_tab = ''
+    id_gen = 0
+    for(let [key,value] of Object.entries(tab_data_ordered)) {
+      id_gen++
+      html_tab = html_tab + `<tr style="text-align:center" data-element_id='${key}'>`
+      html_tab = html_tab + `<td><span>${$('#'+key+'-tab').text()}</span></td>`
+      html_tab = html_tab + `<td><input oninput='validation.call(this)' class='input form-control' style='width:55px;margin:auto;text-align:center' minimum=1 maximum='${count}' type="integer" value="${value["order"]}"</span></td>`
+      if(value["show"] == "1") {
+        html_tab = html_tab + `<td><div class="custom-control custom-checkbox" style="display: flex;justify-content: center;"><input type="checkbox" class='aciescustom-control-label checkboxinput custom-control-input' id="input${id_gen}" checked><label for="input${id_gen}"  class="custom-control-label"></label></div></td>`
+      } else {
+        html_tab = html_tab + `<td><div class="custom-control custom-checkbox" style="display: flex;justify-content: center;"><input type="checkbox" class='aciescustom-control-label checkboxinput custom-control-input' id="input${id_gen}"><label for="input${id_gen}"  class="custom-control-label"></label></div></td>`
+      }
+      html_tab = html_tab +`</tr>`
+    }
+   $('#tabsMultiFuncBodyTable').find('tbody').append(html_tab)
+  }
+  var validation = function() {
+    if(parseInt($(this).val()) < 1) {
+      $(this).val(1).trigger('change')
+    }
+    if(parseInt($(this).val()) > parseInt($(this).attr('maximum'))) {
+      $(this).val(parseInt($(this).attr('maximum'))).trigger('change')
+    }
+  }
+  var saveTabsFunc = function() {
+    $('#tabsMultiFunc').find('.modal-footer').find('button').html(`<i class="fa fa-circle-o-notch fa-spin"></i>`)
+    var order_data = {}
+    var validation = 0
+    var len = $('#tabsMultiFuncBodyTable').find('tbody').find('tr').length;
+    for(let j = 0; j < len; j++) {
+      validation = 0
+      var dummy = parseInt($('#tabsMultiFuncBodyTable').find('tbody').find('tr').eq(j).find('td').eq(1).find('input').val());
+      for(let i = 0; i < len; i++) {
+        var dummy1 = parseInt($('#tabsMultiFuncBodyTable').find('tbody').find('tr').eq(i).find('td').eq(1).find('input').val())
+        if (dummy == dummy1) {
+          validation = validation + 1;
+          if(validation > 1) {
+            break;
+          }
+        }
+      }
+      if(validation > 1) {
+        break;
+      }
+      if(!dummy){
+        validation = 2;
+        break;
+      }
+    }
+    if(validation < 2) {
+      $('#tabsMultiFuncBodyTable').find('tbody').find('tr').each(function() {
+        var ele_ids = $(this).attr('data-element_id')
+        var show
+        if ($(this).find('td').eq(2).find('input').prop('checked')){
+          show = "1"
+        } else {
+          show = "0"
+        }
+        order_data[ele_ids] = {'tab_name':$(this).find('td').eq(0).text(),
+            'data': {
+              'order': String($(this).find('td').eq(1).find('input').val()),
+              'show': show
+            }
+        }
+      });
+      $.ajax({
+       url: '/users/processGraphModule/',
+      data: {
+          'operation': 'saveTabOrder',
+          'order_data': JSON.stringify(order_data),
+          'pr_code':window.location.pathname.split('/')[2],
+        },
+        type: "POST",
+        dataType:"json",
+        success:function(data){
+          $('#tabsMultiFunc').find('.modal-footer').html(`<button onclick="saveTabsFunc.call(this)" type="button" class="btn btn-primary">Save</button>`)
+          window.location.reload();
+        },
+        error: function () {
+          $('#tabsMultiFunc').find('.modal-footer').html(`<button onclick="saveTabsFunc.call(this)" type="button" class="btn btn-primary">Save</button>`)
+          alert("Error");
+        }
+      })
+    } else {
+      $('#tabsMultiFunc').find('.modal-footer').html(`<button onclick="saveTabsFunc.call(this)" type="button" class="btn btn-primary">Save</button>`)
+      alert('Order cannot be blank or cannot be same')
+    }
+
+  }
+    </script>
+    <script>
+      CKEDITOR.replace(`text_editor`,{height: 60});
+      CKEDITOR.config.extraPlugins = 'tableresize,tableresizerowandcolumn';
+      CKEDITOR.config.skin = 'moonocolor';
+      var form_rtf = ['CreateDiv,Anchor,Language,About,PasteText,PasteFromWord,Find,Replace,SelectAll,Scayt,Blockquote,Outdent,Indent,BulletedList,NumberedList,CopyFormatting,RemoveFormat,Bold,Italic,Underline,Strike,Subscript,Superscript,TextColor,BidiLtr,BidiRtl,Templates,Link,Unlink,Source,Save,NewPage,ExportPdf,Preview,Print,Styles,Format,Font,FontSize,BGColor,ShowBlocks,Maximize,JustifyLeft,JustifyCenter,JustifyRight,JustifyBlock,HorizontalRule,SpecialChar,PageBreak,Iframe,Flash,Table,Image,Smiley'];
+      var home_rtf =['Source,Save,Templates,CreateDiv,Unlink,Anchor,Language,Link,Image,Flash,Table,HorizontalRule,SpecialChar,PageBreak,Iframe,ShowBlocks,Maximize,About,Print,Preview,ExportPdf,NewPage,Form,Checkbox,Radio,TextField,Textarea,Select,Button,ImageButton,HiddenField,Smiley'];
+      var tools_rtf =['Flash,About,Templates,Cut,Copy,Paste,PasteText,PasteFromWord,Redo,Undo,Find,Replace,SelectAll,Scayt,Form,Checkbox,Radio,TextField,Textarea,Select,Button,ImageButton,HiddenField,Bold,Italic,Underline,Strike,Subscript,Superscript,CopyFormatting,RemoveFormat,Outdent,NumberedList,BulletedList,Indent,Blockquote,JustifyLeft,CreateDiv,JustifyCenter,JustifyRight,JustifyBlock,Language,BidiRtl,BidiLtr,Link,Unlink,Anchor,Image,Table,HorizontalRule,Smiley,SpecialChar,PageBreak,Iframe,Styles,Format,Font,FontSize,TextColor,BGColor'];
+      var insert_rtf2 =['Source,Save,NewPage,ExportPdf,Preview,Print,Templates,PasteText,PasteFromWord,Replace,Find,SelectAll,Scayt,Form,Checkbox,Radio,TextField,Textarea,Select,Button,ImageButton,HiddenField,Bold,BidiLtr,BidiRtl,Language,JustifyRight,JustifyBlock,JustifyCenter,CreateDiv,Indent,BulletedList,NumberedList,Outdent,Blockquote,JustifyLeft,CopyFormatting,RemoveFormat,Styles,Format,Font,FontSize,TextColor,BGColor,ShowBlocks,Maximize,About,Italic,Underline,Strike,Subscript,Superscript'];
+      $(".rtf_action_tab").find('li').each(function(){
+        $(this).find('button').on('click',function(){
+          $(".rtf_action_tab").find('li').find('button').removeClass('active')
+          $(this).addClass('active')
+          if($(this).attr('data-bs-target') == "Form"){
+            var editor = CKEDITOR.instances[`text_editor`];
+            var editor_data = CKEDITOR.instances[`text_editor`].getData()
+            if (editor) { editor.destroy(true); }
+            CKEDITOR.replace(`text_editor`,{height: 60,removeButtons:form_rtf[0] });
+            CKEDITOR.instances[`text_editor`].setData(editor_data)
+
+          }
+          else if ($(this).attr('data-bs-target') == "Text"){
+            var editor = CKEDITOR.instances[`text_editor`];
+            var editor_data = CKEDITOR.instances[`text_editor`].getData()
+            if (editor) { editor.destroy(true); }
+            CKEDITOR.replace(`text_editor`,{height: 60,removeButtons:home_rtf[0] });
+            CKEDITOR.instances[`text_editor`].setData(editor_data)
+
+          }
+          else if ($(this).attr('data-bs-target') == "Insert"){
+            var editor = CKEDITOR.instances[`text_editor`];
+            var editor_data = CKEDITOR.instances[`text_editor`].getData()
+            if (editor) { editor.destroy(true); }
+            CKEDITOR.replace(`text_editor`,{height: 60,removeButtons:insert_rtf2[0] });
+            CKEDITOR.instances[`text_editor`].setData(editor_data)
+
+          }
+          else if ($(this).attr('data-bs-target') == "Page Layout"){
+            var editor = CKEDITOR.instances[`text_editor`];
+            var editor_data = CKEDITOR.instances[`text_editor`].getData()
+            if (editor) { editor.destroy(true); }
+            CKEDITOR.replace(`text_editor`,{height: 60,removeButtons:tools_rtf[0] });
+            CKEDITOR.instances[`text_editor`].setData(editor_data)
+          }
+        })
+
+      })
+    </script>

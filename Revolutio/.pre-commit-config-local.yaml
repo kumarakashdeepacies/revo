@@ -1,0 +1,55 @@
+default_stages: [commit]
+default_language_version:
+  # force all unspecified python hooks to run python3
+  python: python3
+minimum_pre_commit_version: "3.5.0"
+repos:
+-   repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.5.0
+    hooks:
+    -   id: fix-byte-order-marker
+    -   id: requirements-txt-fixer
+    -   id: trailing-whitespace
+    -   id: pretty-format-json
+    -   id: mixed-line-ending
+        args: ['--fix=no']
+        types: [python]
+        exclude_types: [javascript, json, yaml]
+-   repo: https://github.com/myint/eradicate
+    rev: 2.3.0
+    hooks:
+    -   id: eradicate
+        args: [--in-place, --aggressive]
+        types: [python]
+        exclude_types: [javascript, json, yaml]
+-   repo: https://github.com/asottile/pyupgrade
+    rev: v3.15.1
+    hooks:
+    -   id: pyupgrade
+        args: [--py37-plus]
+        types: [python]
+        exclude_types: [javascript, json, yaml]
+-   repo: https://github.com/python/black
+    rev: 24.2.0
+    hooks:
+    -   id: black
+        args: ["--line-length","110"]
+        language_version: python3
+        types: [python]
+        exclude_types: [javascript, json, yaml]
+-   repo: https://github.com/hhatto/autopep8
+    rev: v2.0.4
+    hooks:
+    -   id: autopep8
+        args: [--diff,
+        "--ignore=E402,E302,E305,E501,E265,E266,W503,E231,E203",
+        "--max-line-length=110"]
+        types: [python]
+        exclude_types: [javascript, json, yaml]
+-   repo: https://github.com/PyCQA/isort
+    rev: 5.13.2
+    hooks:
+    -   id: isort
+        name: isort (python)
+        types: [python]
+        exclude_types: [javascript, json, yaml]

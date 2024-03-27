@@ -1,0 +1,12 @@
+adlfs
+azure-identity
+azure-storage-blob
+kafka-python
+numpy
+pandas
+pyarrow==8.0.*
+pyarrow
+pyspark
+python-dotenv
+python-dotenv
+sseclient

@@ -1,0 +1,9 @@
+#!/bin/bash
+
+set -o errexit
+set -o pipefail
+set -o nounset
+
+#systemctl enable rqscheduler.service
+#systemctl start rqscheduler.service
+rq worker -u ${REDIS_URL_SCHEDULER} --with-scheduler

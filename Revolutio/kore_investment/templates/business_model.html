@@ -1,0 +1,828 @@
+{% extends extend_template %}
+{% load crispy_forms_tags %}
+{{ form.media }}
+{% load static %}
+{% block body_block %}
+
+
+<!-- DataTables -->
+<link rel="stylesheet" href="{% static 'css/KoreD/jquery.dataTables.css' %}">
+<link rel="stylesheet" href="{% static 'vendor/Base_theme/datatables-responsive/css/responsive.bootstrap4.min.css' %}">
+<link rel="stylesheet" href="{% static 'vendor/Base_theme/datatables-colreorder/css/colReorder.bootstrap4.min.css' %}">
+<link rel="stylesheet" href="{% static 'css/KoreD/buttons.dataTables.min.css' %}">
+
+<!-- DataTables -->
+<script src="{% static 'vendor/Base_theme/datatables/jquery.dataTables.js' %}"></script>
+<script src="{% static 'vendor/Base_theme/datatables-responsive/js/dataTables.responsive.min.js' %}"></script>
+<script src="{% static 'vendor/Base_theme/datatables-fixedheader/js/dataTables.fixedHeader.min.js' %}"></script>
+<script src="{% static 'vendor/Base_theme/datatables-colreorder/js/dataTables.colReorder.min.js' %}"></script>
+<script src="{%static 'vendor/Base_theme/datatables-bs4/js/dataTables.bootstrap4.js'%}"></script>
+
+<script src="{%static 'vendor/Base_theme/datatables-buttons/js/dataTables.buttons.min.js'%}"></script>
+<script src="{%static 'vendor/Base_theme/jszip/jszip.min.js'%}"></script>
+<script src="{%static 'vendor/Base_theme/pdfmake/pdfmake.min.js'%}"></script>
+<script src="{%static 'vendor/Base_theme/pdfmake/vfs_fonts.js'%}"></script>
+<script src="{%static 'vendor/Base_theme/datatables-buttons/js/buttons.html5.min.js'%}"></script>
+<script src="{%static 'vendor/Base_theme/datatables-buttons/js/buttons.colVis.min.js'%}"></script>
+
+<!-- Bootstrap4 Duallistbox -->
+<link rel="stylesheet" href="{% static 'vendor/Base_theme/bootstrap4-duallistbox/bootstrap-duallistbox.min.css' %}">
+
+<!-- Bootstrap4 Duallistbox -->
+<script src="{% static 'vendor/Base_theme/bootstrap4-duallistbox/jquery.bootstrap-duallistbox.min.js' %}"></script>
+
+
+
+<!-- Breadcrumb-->
+<div class="breadcrumb-holder" style="background-color: #e9ecef; ">
+  <div class="container-fluid" id="dynamicTabs">
+    <ul class="breadcrumb" id="dynamicbreadcrumbs">
+      <li class="breadcrumb-item"><a {% if current_application_code != 'App0' %} {% if current_application_code == 'Dev' %} {% if current_dev_mode == 'Edit' %} {% if edit_app_code != 'Not Selected' %} href="{% url 'users:homePage' edit_app_code current_dev_mode %}" {% else %} href="{% url 'users:homePage' 'Dev' current_dev_mode %}" {% endif %} {% elif current_dev_mode == 'Build' %} href="{% url 'users:homePage' build_app_code current_dev_mode %}"  {% endif %} {% else %} href="{% url 'users:homePage' current_application_code 'User' %}" {% endif %} {% else %} href="{% url 'users:select_application' %}" {% endif %}>
+        <b> Home </b></a></li>
+      <li class="breadcrumb-item "><b>Business Model</b></li>
+    </ul>
+  </div>
+</div>
+
+<script>
+  $(document).ready(function(){
+  const queryString = window.location.search;
+  const urlParams = new URLSearchParams(queryString);
+  const page_type = urlParams.get('value')
+
+$('.l3items').each(function(){
+  if(page_type != null){
+
+if($(this).text()==page_type){
+hrefOftabs= $(this).attr("href")
+$(`.nav-item a[href="${hrefOftabs}"]`).tab('show');
+  textbreadcrumb=$(this).text().trim()
+  $('#dynamicbreadcrumbs').append(`<li class="breadcrumb-item breadcrumbdynamiclist"><b>${textbreadcrumb}</b></li>`)
+}
+  }
+else{
+
+if($(this).attr('class')=="nav-link active l3items"){
+  linkbreadcrumbs=$(this).attr('href')
+  textbreadcrumb=$(this).text().trim()
+  $('#dynamicbreadcrumbs').append(`<li class="breadcrumb-item breadcrumbdynamiclist"><b>${textbreadcrumb}</b></li>`)
+}
+}
+})
+  })
+</script>
+<script>
+  $('.l3items').click(function(){
+    linkbreadcrumbs= $(this).attr('href')
+    textbreadcrumbs= $(this).text()
+    $('.breadcrumbdynamiclist').each(function(){
+      $(this).remove()
+    })
+    $('#dynamicbreadcrumbs').append(`<li class="breadcrumb-item breadcrumbdynamiclist"> <b> ${textbreadcrumbs}</b></li>`)
+  });
+</script>
+
+<section class="content">
+  <div class="container-fluid">
+    {% if current_application_code == 'Dev' %}
+    {% if current_dev_mode == 'Build' %}
+      <div class="card card-default collapsed-card">
+        <div class="card-header">
+          <h6 class="card-title">Business Model Creation</h6>
+          <div class="card-tools">
+            <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-plus"></i></button>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="table-wrap" style="overflow-x:auto;max-height: 9rem;">
+            <table id="businessModelTable" class="display" style="width:100%;overflow-x: scroll;overflow-y:scroll;">
+              <thead style="border-bottom:1px solid var(--primary-color)">
+                <tr>
+                  <th>Business Model</th>
+                  <th>Description</th>
+                  <th>Status</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="businessModelTableBody" style="border-bottom:1px solid var(--primary-color)">
+                  {% for bm in business_model_name %}
+                <tr>
+                  <td data-bm-code="{{bm.business_model_code}}">{{bm.business_model_name}}</td>
+                  <td>{{bm.description}}</td>
+                  <td>Existing</td>
+                  <td><i class="far fa-trash-alt ihover javaSC thin-icontrash button_validateBM" data-toggle="tooltip" title="Delete Business Model" style="color:var(--primary-color);font-size:15px;padding-left:12px;"></i></td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+          <br/><br/>
+          <div class="row">
+            <div class="col form-group col-md-4">
+              <div id="div_id_businessModel_name" class="form-group">
+                <label for="createBusinessModel">Business Model Name<span class="asteriskField">*</span></label>
+                <input type="text" name="createBusinessModel" placeholder="Business Model Name" class="textinput textInput form-control" required maxlength="264" id="createBusinessModel">
+              </div>
+              <div><span id ="alertBMSpan" style="display:none;color:red;">Business Model with the same name already exists! Please create a new one.</span></div>
+            </div>
+            <div class="col form-group col-md-4">
+              <div id="div_id_businessModel_desc" class="form-group">
+                <label for="businessModelDesc">Description<span class="asteriskField">*</span></label>
+                <input type="text" name="businessModelDesc" placeholder="Details for the business model" class="textinput textInput form-control" required maxlength="264" id="businessModelDesc">
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <button type="button" id="addBusinessModel" class="btn btn-primary float-left" style="border:none"> Add business model </button>
+            <button type="button" id="saveNewBusinessModel" class="btn btn-primary float-right standard_button_click" style="margin-left: 86%;"> Save </button>
+          </div>
+        </div>
+      </div>
+    {% endif %}
+    {% endif %}
+
+      <!-- Add Process -->
+      <div class="card card-default collapsed-card">
+        <div class="card-header">
+          <h6 class="card-title">Add Process</h6>
+          <div class="card-tools">
+            <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-plus"></i></button>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="table-wrap" style="overflow-x:auto;max-height: 9rem;">
+            <table id="bMProcessTable" class="display" style="width:100%;overflow-x: scroll;overflow-y:scroll;">
+              <thead style="border-bottom:1px solid var(--primary-color)">
+                <tr>
+                  <th>Business Model</th>
+                  <th>Process</th>
+                  <th>Status</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="bMProcessTableBody" style="border-bottom:1px solid var(--primary-color)">
+                  {% for bm in bMProcess %}
+                <tr>
+                  <td data-bm-code="{{bm.business_model_code}}">{{bm.business_model_name}}</td>
+                  <td data-process_code='{{bm.process_group_codes}}'>{{bm.process_group_names}}</td>
+                  <td>Existing</td>
+                  <td><i class="far fa-trash-alt ihover javaSC thin-icontrash button_validateBMProcess" data-toggle="tooltip" title="Delete Process" style="color:var(--primary-color);font-size:15px;padding-left:12px;"></i></td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+          <br/><br/>
+            <div class="row">
+              <div class="col form-group col-md-4">
+                <div id="div_id_businessModel_name" class="form-group">
+                  <label for="selectBusinessModelProcess" class=" requiredField">
+                    Business Model<span class="asteriskField">*</span>
+                  </label>
+
+                  <div class="">
+                    <select class="select2 form-control" name="businessModelList" id='selectBusinessModelProcess' required>
+                      <option value="" disabled selected>Select Business Model</option>
+                      {% for i in business_model_name %}
+                      <option value="{{i.business_model_code}}">{{i.business_model_name}}</option>
+                      {% endfor %}
+                    </select>
+                  </div>
+                </div>
+              </div>
+
+              <div class="col form-group col-md-4">
+                <div id="div_id_process_name" class="form-group">
+                  <label for="selectBMProcess" class=" requiredField">
+                    Process<span class="asteriskField">*</span>
+                  </label>
+                  <div>
+                    <select class="select2 form-control" name="processlist" id='selectBMProcess' required multiple>
+                      {% for j in process_list %}
+                      <option value="{{j.item_code}}">{{j.item_name}}</option>
+                      {% endfor %}
+                    </select>
+                  </div>
+                </div>
+                <div><span id ="alertspanBMProcess" style="display:none;color:red;">Process already exists in the business model! Please add a new one.</span></div>
+              </div>
+            </div>
+            <div class="row">
+            <button type="button" id="addBMProcess" class="btn btn-primary float-left" style="border:none"> Add process </button>
+            <button type="button" id="saveBMProcess" class="btn btn-primary float-right " style="margin-left: 89%;"> Save </button>
+          </div>
+        </div>
+      </div>
+      <!-- Add Data Models -->
+      <div class="card card-default collapsed-card">
+        <div class="card-header">
+          <h6 class="card-title">Add Data Model</h6>
+          <div class="card-tools">
+            <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-plus"></i></button>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="table-wrap" style="overflow-x:auto;max-height: 9rem;">
+            <table id="dataModelTable" class="display" style="width:100%;overflow-x: scroll;overflow-y:scroll;">
+              <thead style="border-bottom:1px solid var(--primary-color)">
+                <tr>
+                  <th>Business Model</th>
+                  <th>Data Model</th>
+                  <th>Status</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="dataModelTableBody" style="border-bottom:1px solid var(--primary-color);">
+                  {% for bm in bMTable %}
+                <tr>
+                  <td data-bm-code="{{bm.business_model_code}}">{{bm.business_model_name}}</td>
+                  <td>{{bm.table_names}}</td>
+                  <td>Existing</td>
+                  <td><i class="far fa-trash-alt ihover javaSC thin-icontrash button_validateBMData" data-toggle="tooltip" title="Delete Data Model" style="color:var(--primary-color);font-size:15px;padding-left:12px;"></i></td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+          <br /><br />
+          <div class="row">
+            <div class="col form-group col-md-4">
+              <div id="div_id_business_model_name" class="form-group">
+                <label for="selectbusinessModelData" class=" requiredField">
+                  Business Model<span class="asteriskField">*</span>
+                </label>
+                <div>
+                  <select class="select2 form-control" name="businessModelList" id='selectbusinessModelData' required>
+                    <option value="" disabled selected>Select Business Model</option>
+                    {% for i in business_model_name %}
+                    <option value="{{i.business_model_code}}">{{i.business_model_name}}</option>
+                    {% endfor %}
+                  </select>
+                </div>
+              </div>
+            </div>
+
+            <div class="col form-group col-md-4">
+              <div id="div_id_data_name" class="form-group">
+                <label for="selectBMDataModel" class=" requiredField">
+                  Data Model<span class="asteriskField">*</span>
+                </label>
+                <div class="">
+                  <select class="select2 form-control" name="dataModelList" id='selectBMDataModel' required multiple>
+                    {% for j in tables_list %}
+                    <option value="{{j}}">{{j}}</option>
+                    {% endfor %}
+                  </select>
+                </div>
+              </div>
+              <div><span id ="alertspanBMData" style="display:none;color:red;">Data already exists in the business model! Please add a new one.</span></div>
+            </div>
+          </div>
+          <div class="row">
+            <button type="button" id="addBMDataModel" class="btn btn-primary float-left" style="border:none"> Add data model </button>
+            <button type="button" id="saveBMDataModel" class="btn btn-primary float-right standard_button_click" style="margin-left: 88%;"> Save </button>
+          </div>
+        </div>
+      </div>
+
+<!-- Dependency -->
+<div class="modal" id="dependencyChecker">
+  <div class="modal-dialog modal-lg modal-dialog-centered" style="justify-content: center;">
+    <div class="modal-content" style="width: 50%;text-align: center;justify-content: center;" >
+
+      <div class="modal-header">
+        <h6 class="modal-title">Related Application Dependencies</h6>
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+      </div>
+
+      <div class="modal-body">
+          <table class="table">
+              <tbody id="dependencyTable" >
+              </tbody>
+          </table>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" id="btn_dependencySave" class="btn btn-primary btn-xs mx-2 rounded px-2" data-dismiss="modal">Delete</button>
+        <button type="button" class="btn btn-primary btn-xs mx-2 rounded px-2" data-dismiss="modal">Close</button>
+      </div>
+
+    </div>
+  </div>
+</div>
+</section>
+
+<script>
+$('a[data-toggle="tab"]').on('shown.bs.tab', function(e){
+    $($.fn.dataTable.tables(true)).DataTable()
+       .columns.adjust();
+ });
+
+ $(".button_validateBMProcess").each(function(){
+   $(this).click(deleteBMProcess);
+ });
+ function deleteBMProcess() {
+  let BMName = $(this).closest("tr").find("td").eq(0).text();
+  let BMCode = $(this).closest("tr").find("td").eq(0).attr("data-bm-code");
+  let status = $(this).closest("tr").find("td").eq(2).text();
+  let processName = $(this).closest("tr").find("td").eq(1).text();
+  let processCode = $(this).closest("tr").find("td").eq(1).attr("data-process_code");
+  let bMProcessRow = $(this).closest("tr");
+  if (status === "Existing") {
+    var currentDevMode = "{{current_dev_mode}}"
+    var mode_list=["Edit","Build"]
+    if(mode_list.includes(currentDevMode.trim())){      $.ajax({
+        url: window.location.pathname,
+        data: {
+          'operation': "fetchBMDependencies",
+          'businessModelName': BMName,
+          'businessModelCode': BMCode,
+        },
+        type: "POST",
+        dataType: "json",
+        success: function (data) {
+          if (data.appDependency.length > 0) {
+            $('#dependencyTable').empty()
+            for(var i=0;i<data.appDependency.length;i++){
+              $('#dependencyTable').append(`<tr><td style="font-weight:bold">${i+1}.</td><td style="font-weight:bold;text-align:start">&nbsp;&nbsp;${data.appDependency[i]}</td></tr>`)
+            }
+            $('#dependencyChecker').modal('show')
+            $('#btn_dependencySave').off('click').on('click',function(){
+                $.ajax({
+                  url: window.location.pathname,
+                  data: {
+                    'businessModelName': BMName,
+                    'businessModelCode': BMCode,
+                    'processName': processName,
+                    'processCode': processCode,
+                    'operation': 'deleteBusinessModelProcess',
+                  },
+                  type: "POST",
+                  dataType: "json",
+                  success: function (data) {
+                    bMProcessRow.remove();
+                    Swal.fire({icon: 'success',text: 'Selected process has been successfully removed from the business model.'});
+                    location.reload();
+                  },
+                  error: function () {
+                    Swal.fire({icon: 'error',text: 'Error! Failure in removing the selected process from business model. Please try again.'});
+                  }
+                });
+            })
+          } else {
+            $.ajax({
+              url: window.location.pathname,
+              data: {
+                'businessModelName': BMName,
+                'businessModelCode': BMCode,
+                'processName': processName,
+                'processCode': processCode,
+                'operation': 'deleteBusinessModelProcess',
+              },
+              type: "POST",
+              dataType: "json",
+              success: function (data) {
+                bMProcessRow.remove();
+                Swal.fire({icon: 'success',text: 'Selected process has been successfully removed from the business model.'});
+                location.reload();
+              },
+              error: function () {
+                Swal.fire({icon: 'error',text: 'Error! Failure in removing the selected process from business model. Please try again.'});
+              }
+            });
+          }
+        },
+        error: function () {
+          Swal.fire({icon: 'error',text: 'Error! Please try again.'});
+        }
+      });
+    } else{
+      $.ajax({
+        url: window.location.pathname,
+        data: {
+          'businessModelName': BMName,
+          'businessModelCode': BMCode,
+          'processName': processName,
+          'processCode': processCode,
+          'operation': 'deleteBusinessModelProcess',
+        },
+        type: "POST",
+        dataType: "json",
+        success: function (data) {
+          bMProcessRow.remove();
+          Swal.fire({icon: 'success',text: ' Selected process has been successfully removed from the business model.'});
+          location.reload();
+        },
+        error: function () {
+          Swal.fire({icon: 'error',text: 'Error! Failure in removing the selected process from business model. Please try again.'});
+        }
+      });
+    }
+  } else {
+    bMProcessRow.remove();
+  };
+};
+
+
+$(".button_validateBMData").each(function(){
+   $(this).click(deleteBMData);
+ });
+ function deleteBMData() {
+  let BMName = $(this).closest("tr").find("td").eq(0).text();
+  let BMCode = $(this).closest("tr").find("td").eq(0).attr("data-bm-code");
+  let tableName = $(this).closest("tr").find("td").eq(1).text();
+  let status = $(this).closest("tr").find("td").eq(2).text();
+  let bMProcessRow = $(this).closest("tr");
+  if (status === "Existing") {
+    var currentDevMode = "{{current_dev_mode}}"
+    var mode_list=["Edit","Build"]
+    if(mode_list.includes(currentDevMode.trim())){
+      $.ajax({
+        url: window.location.pathname,
+        data: {
+          'operation': "fetchBMDependencies",
+          'businessModelName': BMName,
+          'businessModelCode': BMCode,
+        },
+        type: "POST",
+        dataType: "json",
+        success: function (data) {
+          if (data.appDependency.length > 0) {
+            $('#dependencyTable').empty()
+              for(var i=0;i<data.appDependency.length;i++){
+                $('#dependencyTable').append(`<tr><td style="font-weight:bold">${i+1}.</td><td style="font-weight:bold;text-align:start">&nbsp;&nbsp;${data.appDependency[i]}</td></tr>`)
+              }
+              $('#dependencyChecker').modal('show')
+              $('#btn_dependencySave').off('click').on('click',function(){
+              $.ajax({
+                url: window.location.pathname,
+                data: {
+                  'businessModelName': BMName,
+                  'tableName': tableName,
+                  'operation': 'deleteBusinessModelData',
+                },
+                type: "POST",
+                dataType: "json",
+                success: function (data) {
+                  if (data.response === 'success') {
+                    bMProcessRow.remove();
+                    Swal.fire({icon: 'success',text: 'Selected data model has been successfully removed from the business model'});
+                    location.reload();
+                  } else {
+                    Swal.fire({icon: 'warning',text: 'Selected data model cannot be removed'});
+                  };
+                },
+                error: function () {
+                  Swal.fire({icon: 'error',text: 'Error! Failure in removing selected data model from the business model. Please try again.'});
+                }
+              });
+            })
+          } else {
+            $.ajax({
+              url: window.location.pathname,
+              data: {
+                'businessModelName': BMName,
+                'tableName': tableName,
+                'operation': 'deleteBusinessModelData',
+              },
+              type: "POST",
+              dataType: "json",
+              success: function (data) {
+                if (data.response === 'success') {
+                  bMProcessRow.remove();
+                  Swal.fire({icon: 'success',text: 'Selected data model has been successfully removed from the business model'});
+                  location.reload();
+                } else {
+                  Swal.fire({icon: 'warning',text: 'Selected data model cannot be removed'});
+                };
+              },
+              error: function () {
+                Swal.fire({icon: 'error',text: 'Error! Failure in removing selected data model from the business model. Please try again.'});
+              }
+            });
+          }
+        },
+        error: function () {
+          Swal.fire({icon: 'error',text: 'Error! Please try again.'});
+        }
+      });
+    } else{
+      $.ajax({
+        url: window.location.pathname,
+        data: {
+          'businessModelName': BMName,
+          'tableName': tableName,
+          'operation': 'deleteBusinessModelData',
+        },
+        type: "POST",
+        dataType: "json",
+        success: function (data) {
+          if (data.response === 'success') {
+            bMProcessRow.remove();
+            Swal.fire({icon: 'success',text: 'Selected data model has been successfully removed from the business model'});
+            location.reload();
+          } else {
+            Swal.fire({icon: 'warning',text: 'Selected data model cannot be removed'});
+          };
+        },
+        error: function () {
+          Swal.fire({icon: 'error',text: 'Error! Failure in removing selected data model from the business model. Please try again.'});
+        }
+      });
+    }
+  } else {
+    bMProcessRow.remove();
+  }
+};
+
+</script>
+<script>
+  $(document).ready(function(){
+    $(this).find("select").each(function(){
+      parent = $(this).parent()
+      $(this).select2({dropdownParent:parent})
+    });
+  });
+  $(".button_validateBM").each(function(){
+   $(this).click(deleteBModel);
+ });
+
+  function deleteBModel() {
+    let bmStatus = $(this).closest("tr").find("td").eq(2).text();
+    let BMRow = $(this).closest("tr");
+    if (bmStatus === "New") {
+      BMRow.remove();
+    } else {
+      let BMName = $(this).closest("tr").find("td").eq(0).text();
+      let BMCode = $(this).closest("tr").find("td").eq(0).attr("data-bm-code");
+      $.ajax({
+        url: window.location.pathname,
+        data: {
+          'businessModelName': BMName,
+          'businessModelCode': BMCode,
+          'operation': 'deleteBusinessModel',
+        },
+        type: "POST",
+        dataType: "json",
+        success: function (data) {
+          BMRow.remove();
+          Swal.fire({icon: 'success',text: 'Business Model successfully deleted!'});
+          location.reload();
+        },
+        error: function () {
+          Swal.fire({icon: 'error',text: 'Error! Failure in deleting Business Model. Please try again.'});
+        }
+      });
+    };
+  };
+
+  // Add Business Model
+  $('#addBusinessModel').on('click', function(){
+    var businessModelName = ($("#createBusinessModel").val());
+    var newRow, i;
+    var newvar = businessModelName;
+    var check = [];
+    var bool = false;
+    $("#businessModelTableBody tr").each(function(){
+      var x = ($(this).find("td").first().text())
+      check.push(x);
+    });
+
+    for (i = 0; i < check.length; i++) {
+      if((newvar) == check[i]) {
+        $('#alertBMSpan').css("display","block")
+        $('#alertBMSpan').css("margin-bottom","1em")
+        $('#div_id_businessModel_name').css("margin-bottom","0em")
+        bool = true;
+        $('createBusinessModel').on('keydown', function(event) {
+          const key = event.key;
+          if (key === "Backspace" || key === "Delete") {
+            $('#alertBMSpan').css("display","none");
+            $('#div_id_businessModel_name').css("margin-bottom","1em");
+          };
+        });
+        $('#createBusinessModel').keypress(function(){
+          $('#alertBMSpan').css("display","none");
+          $('#div_id_businessModel_name').css("margin-bottom","1em");
+        });
+      };
+    };
+    if(bool == false){
+      var desc = ($("#businessModelDesc").val());
+      newRow = '<tr>';
+      newRow += '<td>' + newvar + '</td>';
+      newRow += '<td>' + desc + '</td>';
+      newRow += '<td>' + "New" + '</td>';
+      newRow += '<td>' + `<button type="button" data-toggle="tooltip" title="Delete Business Model" class="far fa-trash-alt btn ihover javaSC thin-icontrash button_validateBM" style="height: 25px; width: 30px;font-size:15px; padding-top: 2px;"> <!--Add--></button> </td>`
+      newRow += '</tr>';
+    }
+    $("#businessModelTableBody").append(newRow);
+    $('.button_validateBM').each(function () {
+      $(this).on('click', deleteBModel);
+    });
+  });
+
+  // Save Business Model
+  $('#saveNewBusinessModel').on('click', function(){
+    var businessModelName = ($("#createBusinessModel").val());
+    var businessModelDesc = ($("#businessModelDesc").val());
+    $.ajax({
+      url: window.location.pathname,
+      data: {
+        'businessModelName': businessModelName,
+        'businessModelDesc': businessModelDesc,
+        'operation': 'createBusinessModel',
+      },
+      type: "POST",
+      dataType: "json",
+      success: function (data) {
+        Swal.fire({icon: 'success',text: 'New Business Model successfully created!'});
+        location.reload();
+      },
+      error: function () {
+        Swal.fire({icon: 'error',text: 'Error! Failure in creating new Business Model. Please try again.'});
+      }
+    });
+  });
+
+  // Add Process Filter
+
+  $('#selectBusinessModelProcess').on("change select2:select", function(){
+    let bmSelected = $('#selectBusinessModelProcess option:selected').text();
+    $("#bMProcessTableBody").find("tr").each(function(){
+      $(this).css('display','table-row');
+    });
+    $("#bMProcessTableBody").find("tr").each(function(){
+      if ($(this).find('td').eq(0).text() !== bmSelected) {
+        $(this).css('display','none');
+      } else {
+        $(this).css('display','table-row');
+      }
+    });
+  });
+
+  // Add Process to Business Model
+  $('#addBMProcess').on('click', function(){
+    var businessM_name = $('#selectBusinessModelProcess option:selected').html();
+    var newvar = [];
+    $('#selectBMProcess option:selected').each(function () {
+      newvar.push($(this).html());
+    });
+    var check = []
+    var bool = false;
+    $("#bMProcessTable tr").each(function(){
+      var x = ($(this).find("td:nth-child(1)").text())
+      for (let i = 0; i < newvar.length; i++) {
+        let data = newvar[i];
+        if((data) == $(this).find("td:nth-child(2)").text()) {
+          if(businessM_name == ($(this).find("td:first-child").text())) {
+            $('#alertspanBMProcess').css("display","block")
+            $('#alertspanBMProcess').css("margin-bottom","1em")
+            $('#div_id_process_name').css("margin-bottom","0em")
+            bool = true;
+            $('#selectBMProcess').on('change', function(event) {
+              $('#alertspanBMProcess').css("display","none")
+              $('#div_id_process_name').css("margin-bottom","1em")
+            });
+          }
+        }
+        check.push(x);
+      }
+    });
+    if(bool == false){
+      for (let i = 0; i < newvar.length; i++) {
+        let process = newvar[i];
+        newRow = '<tr>';
+        newRow += '<td>' + businessM_name + '</td>';
+        newRow += '<td>' + process + '</td>';
+        newRow += '<td>' + "New" + '</td>';
+        newRow += '<td>' + `<button type="button" data-toggle="tooltip" title="Delete Process" class="far fa-trash-alt btn ihover javaSC thin-icontrash button_validateBMProcess" style="height: 25px; width: 30px;font-size:15px; padding-top: 2px;"> <!--Add--></button> </td>`
+        newRow += '</tr>';
+        $("#bMProcessTableBody").append(newRow);
+        $('.button_validateBMProcess').each(function () {
+          $(this).on('click', deleteBMProcess);
+        });
+      }
+    }
+  });
+
+  // Save Process in the business model table
+  $('#saveBMProcess').on('click', function(){
+    var businessModelName = $('#selectBusinessModelProcess option:selected').html();
+    var businessModelCode = $('#selectBusinessModelProcess option:selected').val();
+    var process_name =[];
+    $('#selectBMProcess option:selected').each(function () {
+      process_name.push($(this).html());
+    });
+    var process_code = $('#selectBMProcess').val();
+
+    $.ajax({
+      url: window.location.pathname,
+      data: {
+        'businessModelName': businessModelName,
+        'businessModelCode': businessModelCode,
+        'process_name': JSON.stringify(process_name),
+        'process_code': JSON.stringify(process_code),
+        'operation': 'addBMProcess',
+      },
+      type: "POST",
+      dataType: "json",
+      success: function (data) {
+        if(data.hasOwnProperty('error')){
+          Swal.fire({icon: 'error',text: data.error});
+        }else{
+          Swal.fire({icon: 'success',text: 'Process successfully added to the Business Model!'});
+        location.reload();
+        }
+
+      },
+      error: function () {
+        Swal.fire({icon: 'error',text: 'Error! Failure in adding Process to Business Model. Please try again.'});
+      }
+    });
+  });
+
+  $('#selectbusinessModelData').on("change select2:select", function(){
+    let bmSelected = $('#selectbusinessModelData option:selected').text();
+    $("#dataModelTableBody").find("tr").each(function(){
+      $(this).css('display','table-row');
+    });
+    $("#dataModelTableBody").find("tr").each(function(){
+      if ($(this).find('td').eq(0).text() !== bmSelected) {
+        $(this).css('display','none');
+      } else {
+        $(this).css('display','table-row');
+      }
+    });
+  });
+
+  // Add Data Model to Business Model
+  $('#addBMDataModel').on('click', function(){
+    var businessM_name = $('#selectbusinessModelData option:selected').text();
+    var newvar = $('#selectBMDataModel').val();
+    var check = [];
+    var bool = false;
+    $("#dataModelTable tr").each(function(){
+      var x = ($(this).find("td:nth-child(1)").text())
+      for (let i = 0; i < newvar.length; i++) {
+        let data = newvar[i];
+        if((data) == $(this).find("td:nth-child(2)").text()) {
+          if(businessM_name == $(this).find("td:first-child").text()) {
+            $('#alertspanBMData').css("display","block")
+            $('#alertspanBMData').css("margin-bottom","1em")
+            $('#div_id_data_name').css("margin-bottom","0em")
+            bool = true;
+            $('#selectBMDataModel').on('change', function(event) {
+              $('#alertspanBMData').css("display","none")
+              $('#div_id_data_name').css("margin-bottom","1em")
+            });
+          }
+        }
+        check.push(x);
+      }
+    });
+    if(bool == false){
+      for (let i = 0; i < newvar.length; i++) {
+        let data = newvar[i];
+        newRow = '<tr>';
+        newRow += '<td>' + businessM_name + '</td>';
+        newRow += '<td>' + data + '</td>';
+        newRow += '<td>' + "New" + '</td>';
+        newRow += '<td>' + `<button type="button" data-toggle="tooltip" title="Remove Data Model" class="far fa-trash-alt btn ihover javaSC thin-icontrash button_validateBMData" style="height: 25px; width: 30px;font-size:15px; padding-top: 2px;"> <!--Add--></button> </td>`
+        newRow += '</tr>';
+        $("#dataModelTableBody").append(newRow);
+        $('.button_validateBMData').each(function () {
+          $(this).on('click', deleteBMData);
+        });
+      }
+    }
+  });
+
+  // Save Data Model in the business model table
+  $('#saveBMDataModel').on('click', function(){
+    var businessModelName = $('#selectbusinessModelData option:selected').html();
+    var table_name = JSON.stringify($('#selectBMDataModel').val());
+
+    $.ajax({
+      url: window.location.pathname,
+      data: {
+        'businessModelName': businessModelName,
+        'table_name': table_name,
+        'operation': 'addBMData',
+      },
+      type: "POST",
+      dataType: "json",
+      success: function (data) {
+        Swal.fire({icon: 'success',text: 'Data Model successfully added to the Business Model!'});
+        location.reload();
+      },
+      error: function () {
+        Swal.fire({icon: 'error',text: 'Error! Failure in adding Data Model to Business Model. Please try again.'});
+      }
+    });
+  });
+
+</script>
+
+{% endblock %}
+

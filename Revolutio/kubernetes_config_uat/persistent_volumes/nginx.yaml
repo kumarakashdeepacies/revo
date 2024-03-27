@@ -1,0 +1,36 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  namespace: uat
+  name: nginx-conf-azurefile
+spec:
+  capacity:
+    storage: 1Gi
+  accessModes:
+    - ReadWriteMany
+  storageClassName: azurefile
+  azureFile:
+    secretName: pv-secrets
+    shareName: aksshare
+    readOnly: false
+  mountOptions:
+  - dir_mode=0777
+  - file_mode=0777
+  - uid=70070  # as in compose/production/django/Dockerfile
+  - gid=70070
+  - mfsymlinks
+  - nobrl
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  namespace: uat
+  name: nginx-conf-azurefile
+spec:
+  accessModes:
+    - ReadWriteMany
+  storageClassName: azurefile
+  volumeName: nginx-conf-azurefile
+  resources:
+    requests:
+      storage: 1Gi

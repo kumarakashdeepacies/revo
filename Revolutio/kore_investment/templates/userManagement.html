@@ -1,0 +1,3386 @@
+{% extends extend_template %}
+{% load static %}
+{% block body_block %}
+{% load crispy_forms_tags %}
+
+<!-- DataTables -->
+<link rel="stylesheet" href="{% static 'css/KoreD/jquery.dataTables.css' %}">
+<link rel="stylesheet" href="{% static 'vendor/Base_theme/datatables-responsive/css/responsive.bootstrap4.min.css' %}">
+<link rel="stylesheet" href="{% static 'vendor/Base_theme/datatables-colreorder/css/colReorder.bootstrap4.min.css' %}">
+
+<!-- DataTables -->
+<script src="{% static 'vendor/Base_theme/datatables/jquery.dataTables.js' %}"></script>
+<script src="{% static 'vendor/Base_theme/datatables-responsive/js/dataTables.responsive.min.js' %}"></script>
+<script src="{% static 'vendor/Base_theme/datatables-fixedheader/js/dataTables.fixedHeader.min.js' %}"></script>
+<script src="{% static 'vendor/Base_theme/datatables-colreorder/js/dataTables.colReorder.min.js' %}"></script>
+<script src="{%static 'vendor/Base_theme/datatables-bs4/js/dataTables.bootstrap4.js'%}"></script>
+
+<!-- Date Range Picker -->
+<script type="text/javascript" src="{%static 'moment/moment.min.js'%}"></script>
+<script type="text/javascript" src="{%static 'daterangepicker/js/daterangepicker.min.js'%}"></script>
+<link rel="stylesheet" href="{%static 'daterangepicker/css/daterangepicker.css'%}">
+<script type="text/javascript" src="{% static 'js/usermanagement.min.js' %}"></script>
+<!-- Cryto Js for Password Hashing -->
+<script src="{% static 'js/crypto-js/js/crypto-js.min.js' %}"></script>
+
+<style>
+
+.dataTables_length{
+    margin-left: unset;
+}
+
+#userTable_length{
+    display: flex;
+    align-items: center;
+    gap: 3px;
+    margin-top: 5px;
+    margin-right: 20px;
+}
+
+#userTable_role_type_filter{
+    display: flex;
+    align-items: center;
+    gap: 3px;
+    margin-top: -9px;
+    margin-left: 10px;
+    position: relative;
+}
+#userTable_wrapper .dataTables_scrollBody{
+    position: unset !important;
+}
+.show_filter_wrap{
+    display: flex;
+    align-items: center;
+}
+.role_filter_wrap{
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    text-indent: 0px;
+    padding-left: 7.5px;
+    margin-top: 6px;
+}
+.role_filter_wrap h6{
+    font-size: 13px;
+}
+
+#select2-userTable_length-oe-container{
+    padding-left: 0px;
+}
+
+#select2-userTable_length-oe-container + .select2-selection__arrow{
+    top: -1px;
+    right: 6px;
+}
+
+.dataTableLayout {
+    table-layout:fixed;
+    width:100%;
+}
+
+.swal2-container.swal2-backdrop-show, .swal2-container.swal2-noanimation {
+    background: rgba(0,0,0,.4);
+    backdrop-filter: blur(8px) !important;
+}
+
+.user-container{
+    border: 1px solid #d9d9d9;
+    border-radius: 0.6rem;
+    padding: 0;
+}
+.header-container{
+    background-color: #d9d9d9;
+    padding: 0.6rem 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+.searchUsers{
+    background: white !important;
+    border: 0 !important;
+    border-radius: 2rem !important;
+    outline: none !important;
+    padding: 0 1rem !important;
+    margin: 0 1rem !important;
+    height: 2.7em !important;
+}
+.button-group{
+    margin: 0 1rem;
+    gap: 1rem;
+}
+.action-access-menu{
+    font-size: 23px;
+    cursor: pointer;
+}
+.title-search{
+    gap: 1rem;
+}
+.users_data{
+    /* padding: 1rem; */
+}
+.placeholder_text{
+    color: grey;
+    margin: 0.5rem 1rem;
+}
+.table-content{
+    min-height: 33rem;
+}
+
+/* Responsive table */
+
+.responsive-table{
+    padding: 0;
+}
+
+.responsive-table li {
+  padding: 15px 13px;
+}
+.table-header {
+  background-color: #f1f1f1;
+  font-size: 14px;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  font-weight: bold;
+}
+.responsive-table .table-row {
+  background-color: #ffffff;
+  box-shadow: 0px 0px 9px 0px rgba(0, 0, 0, 0.1);
+}
+
+.user_details{
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+.col-username{
+    margin-bottom: 0.2rem !important;
+    text-align:left;
+}
+
+.user_details.roles.manage_user_modal{
+    background: #f2f2f2;
+    border-radius: 1.8rem;
+    padding: 5px;
+}
+
+.manage_user_modal .roles-ui-buttons{
+    padding: 4px 7px !important;
+    width: 6rem;
+}
+
+.manage_user_modal .roles-ui-buttons.no-role{
+    width: fit-content;
+}
+
+.roles-ui-buttons{
+    padding: 9px 20px;
+    border-radius: 2rem;
+    color: #fff;
+    width: 8em;
+    text-align: center;
+    box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+}
+.no-role{
+    color: red;
+    border: 1px solid red;
+    padding: 9px 13px;
+}
+.role-user{
+    background-color: #70AD47;
+}
+.role-admin{
+   background-color: #002060;
+}
+.role-developer{
+    background-color: #dca80c;
+}
+.main-buttons, .main-buttons:focus{
+    box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+}
+.main-buttons:hover{
+    border-color: var(--primary-color);
+    font-weight: bold;
+}
+.call_to_action_buttons{
+    background: white;
+    padding: 9px 9px;
+    font-size: 12px;
+    display: flex;
+    font-weight: normal;
+    width: 10em;
+    align-items: center;
+    border: 1px solid transparent;
+    border-radius: 2rem;
+    justify-content: center;
+    border: 1px solid lightgrey;
+    white-space: nowrap;
+}
+.call_to_action_buttons:hover{
+    color: var(--font-hover-color);
+    background-color: var(--primary-color);
+    box-shadow: rgba(0, 0, 0, 0.1) 0 4px 12px;
+    outline: none;
+    transform: translateY(-1px);
+    font-weight: bold;
+}
+
+.call_to_action_buttons:active {
+    border-color: rgba(0, 0, 0, 0.15);
+    box-shadow: rgba(0, 0, 0, 0.06) 0 2px 4px;
+    transform: translateY(0);
+    outline: none;
+}
+.call_to_action_buttons img, .mobile_view_actions img{
+    width: 1.5rem;
+    height: 1.5rem;
+    object-fit: contain;
+    margin-right: 0.5rem;
+}
+
+.call_to_action_buttons.logout-user{
+    height: 38px;
+    width: 38px;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.remove-user{
+    border-width: 1px !important;
+}
+.remove-user:active, .remove-user:hover, .logout-user:hover{
+    background-color: rgb(237 63 55);
+    color: #fff !important;
+    border-color: rgb(237 63 55);
+}
+.remove-user:active i, .remove-user:hover i{
+    color: #fff;
+}
+.remove-user i{
+    color: red;
+}
+button.deactivate-user:active, button.deactivate-user:hover{
+    background-color: #d87f29;
+    border-color: #ffc107;
+    color: white;
+}
+button.activate-user:active, button.activate-user:hover{
+    color: #fff;
+    background-color: #44ca63;
+    border-color: #28a745;
+}
+.call_to_action_buttons:focus, .remove-user:focus{
+    outline: 0;
+}
+.img-circle.elevation-2.navlink-img{
+    font-size: 130%;
+    height: 50px;
+    width: 50px;
+    opacity: 1 !important;
+}
+input[type="checkbox"]:hover{
+    cursor: pointer;
+}
+.btn-light{
+    border-radius: 1rem !important;
+    border-color: #d9d9d9;
+    position: relative;
+}
+.btn-light:hover{
+    color: var(--font-hover-color);
+    background-color: var(--primary-color);
+    box-shadow: rgba(0, 0, 0, 0.1) 0 2px 4px;
+}
+.mobile_view_actions{
+    display: none;
+}
+.dropdown-menu{
+    z-index: 50 !important;
+}
+.user-actions-dropdown{
+    height: fit-content;
+    min-width: 14em;
+    border-radius: 1rem !important;
+    overflow-y: auto;
+    padding:0 !important;
+    overflow: hidden;
+    cursor: pointer;
+}
+.user-actions-dropdown{
+    padding-top: 0;
+}
+.user-actions-dropdown .dropdown-divider {
+    margin: 0;
+}
+.user-actions-dropdown.show{
+    overflow-y: unset !important;
+}
+.user-actions-dropdown span.dropdown-item:hover{
+    background-color: var(--primary-color);
+    color: var(--font-hover-color);
+}
+.user-actions-dropdown  span.dropdown-item{
+    font-size: 85%;
+    padding: 6% 9%;
+    display: flex;
+    align-items: center;
+}
+.row{
+    align-items: center;
+}
+.users_data{
+    max-height: 40rem;
+    overflow-y: scroll;
+}
+.pagination{
+    float: right;
+}
+.pagination a {
+    color: var(--font-color);
+    float: left;
+    padding: 8px 16px;
+    text-decoration: none;
+    transition: background-color .3s;
+}
+
+.pagination a.active {
+    background-color: var(--primary-color);
+    color: var(--font-hover-color);
+}
+
+.pagination a:hover:not(.active) {background-color: #ddd;}
+
+.user_creation_fields, .select2-selection.select2-selection--multiple, .select2-selection.select2-selection--single{
+    border-radius: 1.8rem !important;
+}
+.user_manage_details{
+    margin: 1rem auto;
+}
+.modal{
+    backdrop-filter: blur(6px);
+}
+#ManageUserModal .modal-body, #ManageUserModal .modal-footer{
+    padding: 1rem 2rem;
+}
+.second_label{
+    margin-left: 25px;
+}
+.user_manage_groups .select2-selection__choice, .select2-selection.select2-selection--multiple .select2-selection__choice{
+    border-radius: 1.8rem !important;
+    padding: 1px 7px !important;
+}
+#AddNewUserGroup .modal-dialog
+{
+    width: 50rem;
+    max-width: 50rem;
+}
+
+#ManageUserGroupsAndPermissions .modal-body{
+    padding: 1rem 2rem !important;
+}
+
+.user_creation{
+    margin: 10px;
+    border-bottom: 1px solid #dddddd;
+    padding-bottom: 15px;
+    margin-bottom: 20px;
+}
+.user_creation input[type=text], .user_creation input[type=password], .user_creation input[type=email]{
+    margin: 10px 0;
+}
+#createNewUserModal .modal-dialog{
+    max-width: 50rem;
+}
+.custom-control-input:checked~.custom-control-label::after {
+    background-image: url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 8'%3E%3Cpath fill='%23ffffff' d='M6.564.75l-3.59 3.612-1.538-1.55L0 4.26 2.974 7.25 8 2.193z'/%3E%3C/svg%3E");
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+}
+.custom-control-label::after {
+    position: absolute;
+    top: .25rem;
+    left: -1.5rem;
+    display: block;
+    width: 1rem;
+    height: 1rem;
+    content: "";
+    background: no-repeat 50%/50% 50%;
+}
+.custom-control-label::before {
+    border-radius: .25rem;
+}
+.modal{
+    padding-right: unset !important;
+}
+#userAccessApprovalsModal .modal-dialog{
+    max-width: 80%;
+}
+.approval_notification_badge{
+    position: absolute;
+    background: red;
+    color: white;
+    top: -10px;
+    right: -4px;
+    padding: 0;
+    border-radius: 50%;
+    height: 18px;
+    width: 18px;
+}
+#viewDetailsUserModal .modal-content{
+    width: 80%;
+}
+#viewDetailsUserModal .modal-dialog{
+    justify-content: center !important;
+}
+#reset-password{
+    width: 100%;
+}
+.mobile-display{
+    display: none !important;
+}
+.menu-buttons{
+    justify-content: space-between;
+}
+#user_access_approvals_table_filter_approval_type{
+    margin: 0.7rem;
+}
+#user_requests_table_filter_approval_type{
+    margin: 0.7rem;
+}
+.col-action{
+    text-align: center;
+}
+.col-roles{
+    padding-left: 5%;
+}
+.user-actions-dropdown{
+    top: 10px !important;
+    left: 16px !important;
+}
+.addNewGroupDiv{
+    justify-content: left;
+}
+.reset-password-div {
+    justify-content: right;
+    display: flex;
+}
+#reset-password {
+    width: 83%;
+    margin-top: 10px;
+}
+.save-cancel {
+    margin-top: 10px;
+    width: 83%;
+}
+#user_access_approvals_table thead tr, #user_access_approvals_table_wrapper thead tr, #user_requests_table_wrapper thead tr, #viewDetailsGroupTable thead tr, #approval_table thead tr, #example_viewpermissions_wrapper thead tr, #viewpermissions_for_groups thead tr, #example_usergroup thead tr, #example_usergroup_wrapper thead tr, #viewDetailsUserTable thead tr, #permission_table thead tr, #viewDetailsPermissionTable thead tr, #group_details_wrapper thead tr, #viewpermissions_for_groups_wrapper thead tr{
+    background: var(--primary-color);
+    color: var(--font-hover-color);
+}
+table.table-bordered.dataTable tbody th, table.table-bordered.dataTable tbody td {
+    vertical-align: middle;
+}
+#user_access_approvals_table_wrapper, #user_requests_table_wrapper{
+    margin-top: 1%;
+}
+.daterangepicker td.active, .daterangepicker td.active:hover {
+    background-color: var(--primary-color);
+    border-color: transparent;
+    color: var(--font-hover-color);
+}
+.daterangepicker td.in-range {
+    background-color: var(--primary-color);
+    border-color: transparent;
+    color: var(--font-hover-color);
+    border-radius: 0;
+}
+.dropdown-i{
+    cursor: pointer;
+}
+.manage-user-profile .profile-initials {
+    text-transform: uppercase;
+    white-space: nowrap;
+    font-size: 65%;
+}
+.responsive-table .profile-initials {
+    text-transform: uppercase;
+    white-space: nowrap;
+}
+.username_details{
+    word-break: break-all;
+}
+.approvals_table_container .nav-tabs{
+    padding: 12px 0;
+    padding-bottom: 0;
+    gap: 10px;
+    border-bottom: 5px solid #f4f4f4;
+}
+
+.approvals_table_container .nav-tabs li{
+    border: 1px solid #dfdfdf;
+    border-bottom: none !important;
+    border-top-right-radius: 10px;
+    border-top-left-radius: 10px;
+    background-color: #f4f6f9;
+}
+.approvals_table_container .nav-tabs li a{
+    opacity: .5;
+}
+.approvals_table_container .nav-tabs li a:hover{
+    opacity: 1;
+    box-shadow: rgb(0 0 0 / 50%) 0 -2px 10px;
+    border-top-right-radius: 10px;
+    border-top-left-radius: 10px;
+    background-color: #fff;
+}
+.approvals_table_container .nav-tabs li a.active {
+    opacity: 1;
+    box-shadow: rgb(0 0 0 / 50%) 0 -2px 10px;
+    border-top-right-radius: 10px;
+    border-top-left-radius: 10px;
+    background-color: #fff;
+}
+
+.col-additional-info {
+    text-align: left;
+}
+#userTable_wrapper #userTable_length label{
+    text-indent: 8px;
+}
+
+@media screen and (min-width: 1025px) {
+    .search-users{
+        width: 25rem;
+    }
+    .tab_view_actions{
+        justify-content: flex-end;
+    }
+    #userTable_wrapper .table-header th:not(:last-child){
+        padding-left: 8%;
+        text-align: left;
+    }
+
+}
+
+
+/*  */
+
+@media screen and (max-width: 1025px) {
+    .button-group {
+        margin: 0 1rem;
+        gap: 0.4rem;
+    }
+    .main-buttons, .main-buttons:focus {
+        padding: 4px 9px;
+        font-size: 11px;
+    }
+    .mobile_view_actions{
+        display: block;
+    }
+    .tab_view_actions{
+        display: none;
+    }
+}
+
+@media screen and (max-width: 769px) {
+    .addNewGroupDiv{
+        justify-content: left;
+    }
+    #user_access_approvals_table_filter.dataTables_filter {
+        float: unset;
+    }
+    #user_access_approvals_table_filter_approval_type{
+        margin: 0;
+    }
+    #user_requests_table_filter.dataTables_filter {
+        float: unset;
+    }
+    #user_requests_table_filter_approval_type{
+        margin: 0;
+    }
+    .mobile-column-reverse{
+        flex-direction: column-reverse;
+        align-items: flex-start;
+    }
+    .mobile-column-reverse .select2-container--default .select2-selection--single {
+        padding: .2rem;
+        height: 2em!important;
+    }
+    .mobile-column-reverse .select2-container--default .select2-selection--single .select2-selection__arrow {
+        height: 2em!important;
+    }
+    #user_access_approvals_table_filter input{
+        width: 75%;
+    }
+    #user_access_approvals_table_filter{
+        margin-bottom: 2rem;
+        margin-top: 1rem;
+    }
+    #user_requests_table_filter input{
+        width: 75%;
+    }
+    #user_requests_table_filter{
+        margin-bottom: 2rem;
+        margin-top: 1rem;
+    }
+    .modal-header small{
+        font-size: 9px;
+    }
+    .datatable_filter_approval_type{
+        padding-right: 7.5px;
+        padding-left: 7.5px;
+    }
+    .mobile-none{
+        display: none;
+    }
+    .mobile-display{
+        display: block !important;
+    }
+    .user-profile-photo{
+        height: 30px;
+        width: 30px;
+      }
+    #ManageUserGroupsAndPermissions .modal-dialog , #AddNewUserGroup .modal-dialog
+    {
+        width: 96%;
+        max-width: 500px;
+    }
+    .btn-light{
+        font-size: 12px;
+        padding: 5px 8px;
+    }
+    .header{
+        font-size: 14px;
+    }
+    .searchUsers{
+        height: 2.4em !important;
+    }
+    .mobile_view_actions{
+        display: block;
+    }
+    .tab_view_actions{
+        display: none;
+    }
+    .col-sm-1 {
+    -webkit-box-flex: 0;
+    -ms-flex: 0 0 8.333333% !important;
+    flex: 0 0 8.333333% !important;
+    max-width: 8.333333% !important;
+    }
+    .col-sm-4 {
+        -ms-flex: 0 0 33.333333%;
+        flex: 0 0 33.333333%;
+        max-width: 33.333333%;
+    }
+    .col-sm-5 {
+    -webkit-box-flex: 0;
+    -ms-flex: 0 0 41.666667% !important;
+    flex: 0 0 41.666667% !important;
+    max-width: 41.666667%;
+    }
+    .col-sm-6 {
+    -ms-flex: 0 0 50%;
+    flex: 0 0 50%;
+    max-width: 50%;
+    }
+    .user_details{
+        font-size: 10px;
+        gap: 8px;
+    }
+    .user_details.roles{
+        gap: 20px;
+    }
+    .col-action{
+        text-align: right;
+    }
+    .img-circle.elevation-2.navlink-img {
+    font-size: 114%;
+    height: 30px;
+    width: 30px;
+    }
+    .col-username{
+        font-size: 12px;
+    }
+
+    .roles-ui-buttons {
+        padding: 7px 7px;
+        width: 7em;
+    }
+    .responsive-table li {
+    padding: 12px 8px;
+    }
+    .search-users{
+        width: 55%;
+    }
+    .searchUsers {
+        margin: 0 0.3rem !important;
+    }
+    .user-actions-dropdown{
+      height: fit-content;
+      min-width: 12em !important;
+      border-radius: 1rem !important;
+      overflow-y: auto;
+      padding:0 !important;
+      overflow: hidden;
+      top: 10px !important;
+      left: 16px !important;
+    }
+    .user-actions-dropdown{
+      padding-top: 0;
+    }
+    .user-actions-dropdown .dropdown-divider {
+      margin: 0;
+    }
+    .user-actions-dropdown.show{
+      overflow-y: unset !important;
+    }
+    .user-actions-dropdown span.dropdown-item:hover{
+      background-color: var(--primary-color);
+      color: var(--font-hover-color);
+    }
+    .user-actions-dropdown span.dropdown-item {
+        font-size: 10px;
+        padding: 6% 7%;
+        display: flex;
+        align-items: center;
+    }
+    .users_data {
+        max-height: 30rem;
+    }
+    #ManageUserModal .modal-body{
+        padding: 1rem 2rem;
+    }
+    #ManageUserModal label{
+        font-size: 11px;
+    }
+    .second_label{
+        margin-left: unset !important;
+    }
+    #ManageUserGroupsAndPermissions h6{
+        font-size: 14px;
+    }
+    #userAccessApprovalsModal .modal-dialog{
+        max-width: 80%;
+    }
+    #viewDetailsUserModal .modal-content{
+        width: 100%;
+    }
+    .menu-buttons{
+        justify-content: flex-end;
+        gap: 10px;
+    }
+    #user_access_approvals_table_filter_approval_type .select2.select2-container.select2-container--default{
+        width: 65% !important;
+    }
+    #user_requests_table_filter_approval_type .select2.select2-container.select2-container--default{
+        width: 65% !important;
+    }
+    .user_details.roles.manage_user_modal{
+        justify-content: center;
+    }
+    .reset-password-div {
+        justify-content: right;
+        display: flex;
+    }
+    #reset-password {
+        width: 83%;
+        margin-top: 10px;
+    }
+    .save-cancel {
+        margin-top: 10px;
+        width: 100%;
+    }
+
+}
+
+@media screen and (max-width: 500px) {
+    #userAccessApprovalsModal .modal-dialog {
+        max-width: 100% !important;
+    }
+    #user_access_approvals_table_filter input {
+        width: 79%;
+    }
+    #user_requests_table_filter input {
+        width: 79%;
+    }
+    .mobile-column-reverse .select2-container--default .select2-selection--single {
+        padding: .2rem;
+        height: 2.3em!important;
+    }
+    .mobile-column-reverse .select2-container--default .select2-selection--single .select2-selection__arrow {
+        height: 2em!important;
+    }
+    .select2, .select2-container, .select2-container--default, .select2-container--below, .select2-container--focus{
+    width: 100%;
+    }
+}
+
+
+
+@media screen and (max-width: 426px) {
+    #userTable_length{
+        margin-right: 2px;
+    }
+    .role_filter_wrap {
+        text-indent: 0px;
+        padding-left: 7.5px;
+        margin-top: 6px;
+        margin-right: 10px;
+        gap: 0px;
+    }
+    .role_filter_wrap h6{
+        font-size: 10px;
+        width: 7em;
+        margin-right: 0 !important;
+    }
+    .show_filter_wrap {
+        justify-content: space-between;
+        font-size: 10px;
+    }
+    .role_filter_wrap .select2.select2-container.select2-container--default{
+        width: 100%;
+    }
+    #approvalTabContent{
+        padding: 8px;
+        border: 1px solid #f2f2f2;
+        border-bottom-right-radius: 8px;
+        border-bottom-left-radius: 8px;
+    }
+    .desktop-tabs-approval{
+        display: none;
+    }
+    .mobile-tabs-approval{
+        display: block;
+    }
+    .option-container {
+        position: absolute;
+        z-index: 2000;
+        display: none;
+        box-shadow: 0 0.5rem 1rem rgba(0,0,0,.175);
+        border-radius: 5px;
+        overflow: auto;
+        height: auto;
+        max-height: 16rem;
+    }
+    .dropdown-header {
+        padding: 0.5rem;
+        background: #e9ecef;
+        width: 100%;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        font-size: 14px;
+    }
+    #user_access_approvals_table_filter label, #user_access_approvals_table_filter_approval_type h6, #user_access_approvals_table_length label, #user_access_approvals_table_info, .pagination a,
+    #user_requests_table_filter label, #user_requests_table_filter_approval_type h6, #user_requests_table_length label, #user_requests_table_info, .pagination a{
+        font-size: 12px;
+    }
+    .pagination a {
+        padding: 5px 13px;
+    }
+    #userAccessApprovalsModal .modal-header{
+        align-items: flex-start;
+    }
+    .btn-light {
+        font-size: 10px;
+    }
+    .addNewGroupDiv{
+        justify-content: center;
+    }
+    .col-action{
+        margin-left: 12px;
+    }
+    .user_details.roles {
+        gap: 6px;
+    }
+    .responsive-table .table-header {
+        font-size: 12px;
+    }
+    .mobile-none{
+        display: none;
+    }
+    .mobile-display{
+        display: block;
+    }
+    #reset-password{
+        width: 75%;
+        margin-top: 10px;
+    }
+    .save-cancel{
+        margin-top: 10px;
+        width: 100%;
+    }
+    .reset-password-div{
+        justify-content: center;
+        display: flex;
+    }
+    #viewDetailsUserModal .modal-content{
+        width: 100%;
+    }
+    .header-container{
+        flex-wrap: wrap;
+        flex-direction: column;
+        gap: 15px;
+    }
+    .menu-buttons{
+        width: 100%;
+        justify-content: flex-end;
+        gap: 10px;
+    }
+    .button-group{
+        margin: unset;
+    }
+    .roles-ui-buttons {
+        padding: 3px 4px;
+        border-radius: 2rem;
+        color: #fff;
+        width: 6em;
+        text-align: center;
+        font-size: 8px;
+    }
+    .breadcrumb{
+        font-size: 12px;
+    }
+    .header{
+        font-size: 13px;
+    }
+    .title-search {
+        width: 100%;
+    }
+    #ManageUserModal .modal-header{
+        padding: 0.5rem;
+    }
+    #ManageUserModal .modal-body {
+        padding: 0.5rem 2rem;
+    }
+    .user_manage_details {
+        margin: 0.2rem auto;
+    }
+    .user_manage_groups h6{
+        margin-bottom: 0;
+    }
+    #ManageUserModal .modal-footer{
+        padding: 0.5rem;
+    }
+    .groupsavebutton{
+        text-align: center;
+        margin-top: 7px;
+    }
+    #user_access_approvals_table_filter input{
+        width: 84%;
+        height: 2em !important;
+    }
+    #user_access_approvals_table_filter{
+        margin-bottom: 2rem;
+        margin-top: 1rem;
+    }
+    #user_requests_table_filter input{
+        width: 84%;
+        height: 2em !important;
+    }
+    #user_requests_table_filter{
+        margin-bottom: 2rem;
+        margin-top: 1rem;
+    }
+    .modal-header small{
+        font-size: 9px;
+    }
+    .img-circle.elevation-2.navlink-img {
+        font-size: 80%;
+        height: 23px;
+        width: 23px;
+    }
+    .user-profile-photo{
+        height: 23px;
+        width: 23px;
+    }
+    .manage-user-profile .profile-initials {
+        font-size: 85%;
+    }
+    .user_details {
+        font-size: 9px;
+        gap: 8px;
+    }
+    .col-username {
+        font-size: 9px;
+    }
+    #user_access_approvals_table_filter_approval_type .select2.select2-container.select2-container--default{
+        width: 72% !important;
+    }
+    #user_requests_table_filter_approval_type .select2.select2-container.select2-container--default{
+        width: 72% !important;
+    }
+    table.dataTable th.dt-center, table.dataTable td.dt-center, table.dataTable td.dataTables_empty {
+        font-size: 10px !important;
+    }
+    #showUserDetails, #assign_users_to_group, #showGroupDetails{
+        width: 50%;
+    }
+    .no-role {
+        color: red;
+        border: 1px solid red;
+        width: 7em;
+    }
+}
+
+@media screen and (max-width: 320px) {
+    .role_filter_wrap .select2.select2-container.select2-container--default {
+        width: 80px !important;
+    }
+}
+
+@media screen and (min-width: 375px) and (max-width: 426px) {
+    .option-container {
+        width: 92%;
+    }
+}
+
+@media screen and (max-width: 375px) {
+    .option-container {
+        width: 90%;
+    }
+}
+</style>
+
+<!-- Breadcrumb-->
+<div class="breadcrumb-holder" style="background-color: #e9ecef; ">
+    <div class="container-fluid" id="dynamicTabs">
+      <ul class="breadcrumb" id="dynamicbreadcrumbs">
+        <li class="breadcrumb-item"><a {% if current_application_code != 'App0' %} {% if current_application_code == 'Dev' %} {% if current_dev_mode == 'Edit' %} {% if edit_app_code != 'Not Selected' %} href="{% url 'users:homePage' edit_app_code current_dev_mode %}" {% else %} href="{% url 'users:homePage' 'Dev' current_dev_mode %}" {% endif %} {% elif current_dev_mode == 'Build' %} href="{% url 'users:homePage' build_app_code current_dev_mode %}"  {% endif %} {% else %} href="{% url 'users:homePage' current_application_code 'User' %}" {% endif %} {% else %} href="{% url 'users:select_application' %}" {% endif %}>
+          <b> Home </b></a></li>
+        <li class="breadcrumb-item "><b>Application Admin</b></li>
+        <li class="breadcrumb-item "><b>User Management </b></li>
+      </ul>
+    </div>
+</div>
+<div class="modal fade" id="addNewUserModal" tabindex="-1" role="dialog" aria-labelledby="addNewUserModal" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+            <div>
+                <h5 class="modal-title" id="">Add users to your App</h5>
+                <small>You can add exisitng users to your app</small>
+            </div>
+            <button type="button" class="btn btn-light " data-dismiss="modal" aria-label="Close" id="closeCreateUsers" style="height: 27px;width: 27px;padding: 0;">
+                <i class="fa-solid fa-times"></i>
+            </button>
+        </div>
+        <style>
+
+        </style>
+        <div class="modal-body">
+            <div class="add_user_div" style="margin: 1rem;">
+                <div class="row">
+                    <div class="col-6">
+                        <select name="add_users_to_app" id="add_users_to_app" class="form-control select2 user_creation_fields" disabled>
+                            <option value="user1">User1</option>
+                        </select>
+                    </div>
+                    <div class="col-6">
+                        <button class="btn btn-primary" id="add_users_to_app_button" disabled>Add User</button>
+                    </div>
+                </div>
+            </div>
+            <div style="margin: 1rem;margin-top: 4rem;">
+                If you can't find users here, <button class="btn btn-primary" id="create_new_users_modal_button" data-toggle="modal" data-target="#createNewUserModal">Create New Users</button>
+            </div>
+        </div>
+      </div>
+    </div>
+</div>
+
+<div class="modal fade" id="createNewUserModal" tabindex="-1" role="dialog" aria-labelledby="createNewUserModal" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+            <div>
+                <h5 class="modal-title" id="">Add users to your App</h5>
+                <small>You can add upto 5 users by entering the details below.</small>
+            </div>
+
+            <button type="button" class="btn btn-light " data-dismiss="modal" style="height: 27px;width: 27px;padding: 0;" aria-label="Close" >
+                <i class="fa-solid fa-times"></i>
+            </button>
+        </div>
+        <style>
+
+        </style>
+        <div class="modal-body" style="max-height: 75vh; overflow-y: auto;">
+            <div class="user_creation_form_div" id="user_creation_form_div">
+                <div class="user_creation">
+                    <label for="">User 1</label>
+                    <div class="row">
+                        <div class="col-md-4 col-sm-12 col-xs-12">
+                            <input type="text" class="form-control textInput user_creation_fields" name="username" id="username__1" placeholder="Enter Username">
+                        </div>
+                        <div class="col-md-4 col-sm-12 col-xs-12">
+                            <input type="password" class="form-control textInput user_creation_fields" name="password" id="password__1" placeholder="Enter Password" disabled>
+                        </div>
+                        <div class="col-md-4 col-sm-12 col-xs-12">
+                            <input type="email" class="form-control textInput user_creation_fields" name="email" id="email__1" placeholder="Enter Email">
+                        </div>
+                        <div class="col-md-4 col-sm-12 col-xs-12" style="display: flex;margin-top:10px;" >
+                            <input type="checkbox" name="is_developer" id="is_developer__1" class="aciescustom-control-label checkboxinput custom-control-input">
+                            <label for="is_developer__1" style="margin-bottom:0;margin-left:30px;" class="custom-control-label">Developer?</label>
+                        </div>
+                        <div class="col-md-4 col-sm-12 col-xs-12 " style="display: flex;margin-top:10px;" >
+                            <input type="radio" name="a_type__1" id="app_login__1" value="application" class="aciescustom-control-label checkboxinput custom-control-input">
+                            <label for="app_login__1" style="margin-bottom:0;margin-left:30px;" class="custom-control-label">Application Login</label value="application">
+                        </div>
+                        <div class="col-md-4 col-sm-12 col-xs-12" style="display: flex;margin-top:10px;" >
+                            <input type="radio" name="a_type__1" id="ldap_login__1" value="ldap" class="aciescustom-control-label checkboxinput custom-control-input">
+                            <label for="ldap_login__1" style="margin-bottom:0;margin-left:30px;" class="custom-control-label">LDAP Login</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="user_creation">
+                    <label for="">User 2</label>
+                    <div class="row">
+                        <div class="col-md-4 col-sm-12 col-xs-12">
+                            <input type="text" class="form-control textInput user_creation_fields" name="username" id="username__2" placeholder="Enter Username">
+                        </div>
+                        <div class="col-md-4 col-sm-12 col-xs-12">
+                            <input type="password" class="form-control textInput user_creation_fields" name="password" id="password__2" placeholder="Enter Password" disabled>
+                        </div>
+                        <div class="col-md-4 col-sm-12 col-xs-12">
+                            <input type="email" class="form-control textInput user_creation_fields" name="email" id="email__2" placeholder="Enter Email">
+                        </div>
+                        <div class="col-md-4 col-sm-12 col-xs-12" style="display: flex;margin-top:10px;">
+                            <input type="checkbox" name="is_developer" id="is_developer__2" class="aciescustom-control-label checkboxinput custom-control-input">
+                            <label for="is_developer__2" style="margin-bottom:0;margin-left:30px;"  class="custom-control-label">Developer?</label>
+                        </div>
+                        <div class="col-md-4 col-sm-12 col-xs-12" style="display: flex;margin-top:10px;">
+                            <input type="radio" name="a_type__2" id="app_login__2" value="application" class="aciescustom-control-label checkboxinput custom-control-input">
+                            <label for="app_login__2" style="margin-bottom:0;margin-left:30px;"  class="custom-control-label">Application Login</label>
+                        </div>
+                        <div class="col-md-4 col-sm-12 col-xs-12" style="display: flex;margin-top:10px;">
+                            <input type="radio" name="a_type__2" id="ldap_login__2" value="ldap" class="aciescustom-control-label checkboxinput custom-control-input">
+                            <label for="ldap_login__2" style="margin-bottom:0;margin-left:30px;"  class="custom-control-label">LDAP Login</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="user_creation">
+                    <label for="">User 3</label>
+                    <div class="row">
+                        <div class="col-md-4 col-sm-12 col-xs-12">
+                            <input type="text" class="form-control textInput user_creation_fields" name="username" id="username__3" placeholder="Enter Username">
+                        </div>
+                        <div class="col-md-4 col-sm-12 col-xs-12">
+                            <input type="password" class="form-control textInput user_creation_fields" name="password" id="password__3" placeholder="Enter Password" disabled>
+                        </div>
+                        <div class="col-md-4 col-sm-12 col-xs-12">
+                            <input type="email" class="form-control textInput user_creation_fields" name="email" id="email__3" placeholder="Enter Email">
+                        </div>
+                        <div class="col-md-4 col-sm-12 col-xs-12 " style="display: flex;margin-top:10px;">
+                            <input type="checkbox" name="is_developer" id="is_developer__3" class="aciescustom-control-label checkboxinput custom-control-input">
+                            <label for="is_developer__3" style="margin-bottom:0;margin-left:30px;" class="custom-control-label">Developer?</label>
+                        </div>
+                        <div class="col-md-4 col-sm-12 col-xs-12" style="display: flex;margin-top:10px;">
+                            <input type="radio" name="a_type__3" id="app_login__3" value="application" class="aciescustom-control-label checkboxinput custom-control-input">
+                            <label for="app_login__3" style="margin-bottom:0;margin-left:30px;" class="custom-control-label">Application Login</label>
+                        </div>
+                        <div class="col-md-4 col-sm-12 col-xs-12" style="display: flex;margin-top:10px;">
+                            <input type="radio" name="a_type__3" id="ldap_login__3" value="ldap" class="aciescustom-control-label checkboxinput custom-control-input">
+                            <label for="ldap_login__3" style="margin-bottom:0;margin-left:30px;" class="custom-control-label">LDAP Login</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="user_creation">
+                    <label for="">User 4</label>
+                    <div class="row">
+                        <div class="col-md-4 col-sm-12 col-xs-12">
+                            <input type="text" class="form-control textInput user_creation_fields" name="username" id="username__4" placeholder="Enter Username">
+                        </div>
+                        <div class="col-md-4 col-sm-12 col-xs-12">
+                            <input type="password" class="form-control textInput user_creation_fields" name="password" id="password__4" placeholder="Enter Password" disabled>
+                        </div>
+                        <div class="col-md-4 col-sm-12 col-xs-12">
+                            <input type="email" class="form-control textInput user_creation_fields" name="email" id="email__4" placeholder="Enter Email">
+                        </div>
+                        <div class="col-md-4 col-sm-12 col-xs-12 " style="display: flex;margin-top:10px;">
+                            <input type="checkbox" name="is_developer" id="is_developer__4" class="aciescustom-control-label checkboxinput custom-control-input">
+                            <label for="is_developer__4" style="margin-bottom:0;margin-left:30px;" class="custom-control-label">Developer?</label>
+                        </div>
+                        <div class="col-md-4 col-sm-12 col-xs-12" style="display: flex;margin-top:10px;">
+                            <input type="radio" name="a_type__4" id="app_login__4" value="application" class="aciescustom-control-label checkboxinput custom-control-input">
+                            <label for="app_login__4" style="margin-bottom:0;margin-left:30px;" class="custom-control-label">Application Login</label>
+                        </div>
+                        <div class="col-md-4 col-sm-12 col-xs-12" style="display: flex;margin-top:10px;">
+                            <input type="radio" name="a_type__4" id="ldap_login__4" value="ldap" class="aciescustom-control-label checkboxinput custom-control-input">
+                            <label for="ldap_login__4" style="margin-bottom:0;margin-left:30px;" class="custom-control-label">LDAP Login</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="user_creation" style="border-bottom:0">
+                    <label for="">User 5</label>
+                    <div class="row">
+                        <div class="col-md-4 col-sm-12 col-xs-12">
+                            <input type="text" class="form-control textInput user_creation_fields" name="username" id="username__5" placeholder="Enter Username">
+                        </div>
+                        <div class="col-md-4 col-sm-12 col-xs-12">
+                            <input type="password" class="form-control textInput user_creation_fields" name="password" id="password__5" placeholder="Enter Password" disabled>
+                        </div>
+                        <div class="col-md-4 col-sm-12 col-xs-12">
+                            <input type="email" class="form-control textInput user_creation_fields" name="email" id="email__5" placeholder="Enter Email">
+                        </div>
+                        <div class="col-md-4 col-sm-12 col-xs-12 " style="display: flex;margin-top:10px;">
+                            <input type="checkbox" name="is_developer" id="is_developer__5" class="aciescustom-control-label checkboxinput custom-control-input">
+                            <label for="is_developer__5" style="margin-bottom:0;margin-left:30px;" class="custom-control-label">Developer?</label>
+                        </div>
+                        <div class="col-md-4 col-sm-12 col-xs-12" style="display: flex;margin-top:10px;">
+                            <input type="radio" name="a_type__5" id="app_login__5" value="application" class="aciescustom-control-label checkboxinput custom-control-input">
+                            <label for="app_login__5" style="margin-bottom:0;margin-left:30px;" class="custom-control-label">Application Login</label>
+                        </div>
+                        <div class="col-md-4 col-sm-12 col-xs-12" style="display: flex;margin-top:10px;">
+                            <input type="radio" name="a_type__5" id="ldap_login__5" value="ldap" class="aciescustom-control-label checkboxinput custom-control-input">
+                            <label for="ldap_login__5" style="margin-bottom:0;margin-left:30px;" class="custom-control-label">LDAP Login</label>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            {% if ldap_activated == "true" and allow_ldap_user_creation != "false" %}
+                <br>
+                <hr>
+                <br>
+                <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+                    <h6 class="card-title">Add LDAP Users</h6>
+                    </div>
+                    <div class="card-body" style="min-height: 320px;">
+                    <div class="row">
+                        <div class="col-md-6 col-sm-12">
+                        <div class="row">
+                            <div class="col-12">
+                            <div>
+                                <span>Search Criteria:</span>
+                                <button class="btn btn-primary float-right" id="searchLDAPUserButton">Search</button>
+                            </div>
+                            <hr>
+                            </div>
+                            <div class="col-md-6 col-sm-12 form-group">
+                            <label for="LDAPusername">Username (sAMAccountName):</label>
+                            <input type="text" name="LDAPusername" id="LDAPusername" class="form-control textInput">
+                            </div>
+                            <div class="col-md-6 col-sm-12 form-group">
+                            <label for="LDAPfirstName">First Name (givenName):</label>
+                            <input type="text" name="LDAPfirstName" id="LDAPfirstName" class="form-control textInput">
+                            </div>
+                            <div class="col-md-6 col-sm-12 form-group">
+                            <label for="LDAPlastName">Last Name (sn):</label>
+                            <input type="text" name="LDAPlastName" id="LDAPlastName" class="form-control textInput">
+                            </div>
+                            <div class="col-md-6 col-sm-12 form-group">
+                            <label for="LDAPemail">Email (mail):</label>
+                            <input type="text" name="LDAPemail" id="LDAPemail" class="form-control textInput">
+                            </div>
+                        </div>
+                        </div>
+                        <div class="col-md-6 col-sm-12">
+                        <div class="col-12">
+                            <div>
+                            <span>Search Output:</span>
+                            <button class="btn btn-primary float-right" id="createLDAPUserButton">Create Users</button>
+                            </div>
+                            <hr>
+                        </div>
+                        <div class="col-12">
+                            <table id="ldapSearchResultTable">
+                            <thead>
+                                <tr>
+                                <th>sAMAccountname</th>
+                                <th>givenName</th>
+                                <th>sn</th>
+                                <th>mail</th>
+                                <th>department</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            </tbody>
+                            </table>
+                        </div>
+                        </div>
+                    </div>
+                    </div>
+                </div>
+                </div>
+            {% endif %}
+        </div>
+        <div class="modal-footer  justify-content-end">
+            <button class="btn btn-primary" onclick="createUsers()">Create Users</button>
+        </div>
+      </div>
+    </div>
+</div>
+
+<script>
+
+    $("#add_users_to_app").select2()
+
+    for(let i=1;i<6;i++){
+        $(`[name=a_type__${i}]`).change(function(){
+            if(this.value == "application"){
+                $(this).closest(".user_creation").find("[name=password]").prop("disabled", false)
+            }
+            else{
+                $(this).closest(".user_creation").find("[name=password]").prop("disabled", true)
+            }
+        })
+    }
+
+</script>
+
+<div class="modal fade" id="addUsersCsv" tabindex="-1" role="dialog" aria-labelledby="addUsersCsv" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content" style="height: 18rem;">
+        <div class="modal-header">
+          <h5 class="modal-title" id="">Upload New Users</h5>
+          <button type="button" class="btn btn-light " style="height: 27px;width: 27px;padding: 0;" data-dismiss="modal" aria-label="Close" >
+                <i class="fa-solid fa-times"></i>
+            </button>
+        </div>
+        <div class="modal-body">
+            <div class="card-body" id ='uploadUserFileUG'style="min-height: 185px; padding: 0 1.25rem">
+                <button class="btn btn-primary float-right mr-2" style="border-radius:8rem" id="downloadUserFileTemplate" onclick="downloadTemplate(this.id)">Download Template</button>
+                <form method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                <input type="file" class="custom-file-input" id='uploadUserFile_UG' name="file" onchange="restrictFile(this.id)" required accept=".xlsx,.csv">
+                <label id="userupload" class="custom-file-label" for="uploadUserFile_UG" style="margin: 4rem 2.6rem 1rem 2.6rem;">Upload File</label>
+                <input type="hidden" id="nameoffile2" name="filename" value="{{file}}">
+                <button id="uploadUserButton_group" type="submit" data-toggle="tooltip" style="margin-top: 5rem; float: right;"
+                  class="btn btn-primary btn-md mx-2 rounded px-2 button_standard_save" name="operation" value="UG_User">
+                 Upload Data <i class="fa fa-upload"></i>
+                  </button>
+                </form>
+            </div>
+        </div>
+      </div>
+    </div>
+</div>
+
+
+<div class="modal fade" id="addGroupsCsv" tabindex="-1" role="dialog" aria-labelledby="addGroupsCsv" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content" style="height: 18rem;">
+        <div class="modal-header">
+          <h5 class="modal-title" id="">Upload New Groups</h5>
+          <button type="button" class="btn btn-light " style="height: 27px;width: 27px;padding: 0;" data-dismiss="modal" aria-label="Close" >
+            <i class="fa-solid fa-times"></i>
+        </button>
+        </div>
+        <div class="modal-body">
+            <div class="card-body" style="min-height: 185px;padding: 0 1.25rem">
+                <button class="btn btn-primary float-right mr-2" style="border-radius:8rem" id="downloadUserGroupTemplate" onclick="downloadTemplate(this.id)">Download Template</button>
+                <form method="post" id="uploadGroups" enctype="multipart/form-data">
+                    {%csrf_token%}
+                    <input type="file" id="uploadGroupFile_G" class="custom-file-input" name="file" data-toggle="tooltip" title="Column name 'group_name'" onchange="restrictFile(this.id)" required accept=".xlsx,.csv">
+                    <label id="groupupload" class="custom-file-label" for="uploadGroupFile_G" style="margin: 4rem 2.6rem 1rem 2.6rem;">Upload File</label>
+                    <input type="hidden" id="nameoffile1" name="filename" value="" >
+                    <button id="uploadGroupButton_group" type="submit"  class="btn btn-primary btn-md mx-2 rounded px-2 button_standard_save" style="margin-top: 5rem; float: right;" name="operation" value="G">
+                        Upload Data <i class="fa fa-upload"></i>
+                      </button>
+                      <div class="row buttonalign">
+                      </div>
+                </form>
+            </div>
+        </div>
+      </div>
+    </div>
+</div>
+
+
+<div class="modal fade" id="assignGroupsCsv" tabindex="-1" role="dialog" aria-labelledby="addGroupsCsv" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content" style="height: 18rem;">
+        <div class="modal-header">
+          <h5 class="modal-title" id="">Upload Users with Groups</h5>
+          <button type="button" class="btn btn-light " style="height: 27px;width: 27px;padding: 0;" data-dismiss="modal" aria-label="Close" >
+            <i class="fa-solid fa-times"></i>
+        </button>
+        </div>
+        <div class="modal-body">
+            <div class="card-body" style="min-height: 185px;padding: 0 1.25rem">
+                <button class="btn btn-primary float-right mr-2" style="border-radius:8rem" id="downloadUserWithGroupTemplate" onclick="downloadTemplate(this.id)">Download Template</button>
+                <form method="post" id="assignGroups" enctype="multipart/form-data">
+                    {%csrf_token%}
+                    <input type="file" id="uploadFile_UG" class="custom-file-input" name="file" required accept=".xlsx,.csv" onchange="restrictFile(this.id)">
+                    <label id="groupupload" class="custom-file-label" for="uploadFile_UG" style="margin: 4rem 2.6rem 1rem 2.6rem;">Upload File</label>
+                    <input type="hidden" id="nameoffile1" name="filename" value="" >
+                    <button id="uploadButton_group" type="submit"  class="btn btn-primary btn-md mx-2 rounded px-2 button_standard_save" style="margin-top: 5rem; float: right;" name="operation" value="UG">
+                        Upload Data <i class="fa fa-upload"></i>
+                      </button>
+                      <div class="row buttonalign">
+                      </div>
+                </form>
+            </div>
+        </div>
+      </div>
+    </div>
+</div>
+
+
+<div class="modal fade" id="addPermissionsCsv" tabindex="-1" role="dialog" aria-labelledby="addPermissionsCsv" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content" style="height: 17rem;">
+        <div class="modal-header">
+          <h5 class="modal-title" id="">Upload Group Permissions</h5>
+          <button type="button" class="btn btn-light " style="height: 27px;width: 27px;padding: 0;" data-dismiss="modal" aria-label="Close" >
+            <i class="fa-solid fa-times"></i>
+        </button>
+        </div>
+        <div class="modal-body">
+            <div class="card-body" style="min-height: 185px; padding: 0 1.25rem">
+                <button class="btn btn-primary float-right mr-2" style="border-radius:8rem" id="downloadGroupPermissionsTemplate" onclick="downloadTemplate(this.id)">Download Template</button>
+                <form method="post" enctype="multipart/form-data">
+                    {%csrf_token%}
+                    <input type="file" id="uploadGroupFile_P" class="custom-file-input"  name="file" required onchange="restrictFile(this.id)" accept=".xlsx,.csv">
+                    <label id="permissionupload" class="custom-file-label" for="uploadGroupFile_P" style="margin: 4rem 2.6rem 1rem 2.6rem;">Upload File</label>
+                    <input type="hidden" id="nameoffile4" name="filename" value="" >
+                    <button id="uploadGroupButton_permission" type="submit"  class="btn btn-primary btn-md mx-2 rounded px-2 button_standard_save" style="margin-top: 5rem; float: right;" name="operation" value="P">
+                      Upload Data <i class="fa fa-upload"></i>
+                      </button>
+                      <div class="row buttonalign">
+                      </div>
+                </form>
+            </div>
+        </div>
+      </div>
+    </div>
+</div>
+
+
+<div class="modal fade" id="ManageUserModal" tabindex="-1" role="dialog" aria-labelledby="ManageUserModal" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h4 class="modal-title" id="exampleModalLongTitle">
+            <div class="user_details">
+                <div class="img-circle elevation-2 navlink-img manage-user-profile">
+
+                </div>
+                <div class="username_details">
+                    <h5 class="col-username"></h5>
+                    <div class="col-additional-info" style="font-weight: light;"></div>
+                </div>
+            </div>
+          </h4>
+          <button type="button" class="btn btn-light " style="height: 27px;width: 27px;padding: 0;" data-dismiss="modal" aria-label="Close" >
+            <i class="fa-solid fa-times"></i>
+        </button>
+        </div>
+        <div class="modal-body">
+            <h6 style="font-weight: bold;">User Details</h6>
+            <div class="user_manage_details">
+                <div class="row justify-content-between">
+                    <div class="col-md-6 mt-2 mb-2">
+                        <div class="row">
+                            <div class="col-md-4 col-sm-2">
+                                <label for="first_name">First Name</label>
+                            </div>
+                            <div class="col-md-8 col-sm-10">
+                                <input type="text" name="first_name" id="first_name" class="user_creation_fields textInput form-control">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6 mt-2 mb-2">
+                        <div class="row justify-content-end">
+                            <div class="col-md-4 col-sm-2">
+                                <label class="second_label" for="last_name">Last Name</label>
+                            </div>
+                            <div class="col-md-8 col-sm-10">
+                                <input type="text" name="last_name" id="last_name" class="user_creation_fields textInput form-control">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-12 mt-2 mb-2">
+                        <div class="row">
+                            <div class="col-sm-2 col-md-2">
+                                <label for="email">Email</label>
+                            </div>
+                            <div class="col-md-10 col-sm-10">
+                                <input type="email" name="email" id="email" class="user_creation_fields textInput form-control">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-12 mt-2 mb-2">
+                        <div class="row">
+                            <div class="col-sm-2 col-md-2">
+                                <label for="reset_password">Password</label>
+                            </div>
+                            <div class="col-md-10 col-sm-8">
+                                <input type="password" name="reset_password_input" id="reset_password_input" value="**********" disabled class="user_creation_fields textInput form-control">
+                            </div>
+                            <div class="col-md-12 col-sm-2 reset-password-div">
+                                <button class="btn btn-light" id="reset-password">Reset Password</button>
+                                <div style="display: none;" class="justify-content-between save-cancel">
+                                    <button class="btn btn-light" id="save_reset_password" style="width: 100%;">Save</button>
+                                    <button class="btn btn-light" id="cancel_reset_password" style="width: 100%;">Cancel</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <h6 style="font-weight: bold;">Roles</h6>
+            <div class="user_manage_groups">
+                <div class="row">
+                    <div class="col-md-12 mt-2 mb-2">
+                        <div class="row">
+                            <div class="col-sm-2 col-md-2">
+                                <label for="roles">Assigned Roles</label>
+                            </div>
+                            <div class="col-md-10 col-sm-10">
+                                <div class="user_details roles manage_user_modal">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <h6 style="font-weight: bold;">User Groups</h6>
+            <div class="user_manage_groups">
+                <div class="row">
+                    <div class="col-md-12 mt-2 mb-2">
+                        <div class="row">
+                            <div class="col-sm-2 col-md-2">
+                                <label for="assign_user_groups">Assigned Groups</label>
+                            </div>
+                            <div class="col-md-10 col-sm-10">
+                                <select id="assign_user_groups" class="user_creation_fields form-control textInput select2" multiple>
+                                    {% for group in list_view_datatable %}
+                                        <option value="{{group.Name}}">{{group.Name}}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            <button class="btn btn-light float-right" id="ManageUserGroupsAndPermissionsButton" data-toggle="modal" data-target="#ManageUserGroupsAndPermissions">Add/ Manage User Groups</button>
+            </div>
+        </div>
+        <div class="modal-footer justify-content-end">
+            <button type="button" class="btn btn-secondary" id="saveManageUser">Save</button>
+        </div>
+      </div>
+    </div>
+</div>
+
+<script>
+    $("#ManageUserGroupsAndPermissionsButton").click(function(){
+        $("#ManageUserModal").modal("hide")
+
+        $("#ManageUserGroupsAndPermissions").find(".select2").select2()
+    })
+
+
+</script>
+
+<div class="modal fade" id="approvaldownmodal" role="dialog" aria-labelledby="exampleModalCenterTitle" style="z-index: 1052">
+    <div class="modal-dialog modal-lg" role="document">
+      <div class="modal-content">
+        <div class="modal-header" style='background:#565a5e; color:white;'>
+          <h5 class="modal-title"  >Approvals Pending
+            <span id='approvalmodal_heading'></span></h5>
+            <button type="button" class="btn btn-light " style="height: 27px;width: 27px;padding: 0;" data-dismiss="modal" aria-label="Close" >
+                <i class="fa-solid fa-times"></i>
+            </button>
+        </div>
+        <div class="modal-body" style="overflow-y: scroll ;max-height: 40rem;">
+          <label for="approve_all" style="float:right; right: 95px; top:4px;">Approve All </label>
+          <button id="approve_all" type="button" data-dismiss="modal" aria-label="Approve" class="btn btn-floating btn-lg" style="color:var(--primary-color) !important;padding:0;float: right;">
+            <span aria-hidden="true"><i class="fa fa-check-square"></i></span>
+          </button>
+          <label for="reject_all" style="float:right; right: 230px;position:absolute; top:20px">Reject All </label>
+          <button id="reject_all" type="button" data-dismiss="modal" aria-label="Reject All" class="btn btn-floating btn-lg" style="color:#ee0000;position: absolute; padding:0; float:right;right: 200px;top:15px;">
+            <span aria-hidden="true"><i class="fa fa-window-close"  style="color:#000000;"></i></span>
+          </button>
+
+          <table id="approval_table" class="table hover table-bordered" style="width:100%;">
+            <thead id="modalTable">
+              <tr id="modal-table-header">
+
+              </tr>
+            </thead>
+            <tbody id="modal-table-body">
+
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+</div>
+
+<div class="modal fade" id="permissiondownmodal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" style="z-index: 1052">
+    <div class="modal-dialog modal-lg" role="document">
+      <div class="modal-content">
+        <div class="modal-header" style='background:#565a5e; color:white;'>
+          <h5 class="modal-title"  >Approvals Pending
+            <span id='permissionmodal_heading'></span><span id='permissionmodal_level' style="display:none;"></span></h5>
+            <button type="button" class="btn btn-light " style="height: 27px;width: 27px;padding: 0;" data-dismiss="modal" aria-label="Close" >
+                <i class="fa-solid fa-times"></i>
+            </button>
+        </div>
+        <div class="modal-body" style="max-height: 40rem;">
+            <div class="col-md-4 col-sm-12 permission-approve-reject">
+                <div class="row">
+                    <div class="col-6 d-flex align-items-center justify-content-between">
+                        <label for="approve_all">Approve All </label>
+                        <button id="approve_all_permission" type="button" data-dismiss="modal" aria-label="Approve" class="btn btn-primary btn-xs rounded mb-1 px-2" style="color:var(--primary-color) !important;background-color:unset !important;border:0">
+                            <i class="fas fa-check-circle" style="font-size: large;"></i>
+                        </button>
+                    </div>
+                    <div class="col-6 d-flex align-items-center" style="justify-content: space-evenly;">
+                        <label for="reject_all">Reject All </label>
+                        <button id="reject_all_permission" type="button" data-dismiss="modal" aria-label="Reject All" class="btn btn-primary btn-xs rounded mb-1 px-2" style="color:var(--primary-color) !important;background-color:unset !important;border:0">
+                            <i class="fa-solid fa-circle-xmark" style="font-size: large;"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+          <table id="permission_table" class="table hover table-bordered" style="width:100%;">
+            <thead id="modalTable">
+              <tr id="modal-table-header-permission">
+
+              </tr>
+            </thead>
+            <tbody id="modal-table-body-permission">
+
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+</div>
+
+
+<div class="modal fade" id="viewDetailsUserModal" tabindex="-1" role="dialog" aria-labelledby="viewDetailsUserModal" style="z-index: 1052;backdrop-filter: blur(8px);">
+    <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+      <div class="modal-content" style="height: 20rem;">
+        <div class="modal-header" style='background:#565a5e; color:white;'>
+          <h5 class="modal-title"  >Approval Details</h5>
+          <button type="button" class="btn btn-light " style="height: 27px;width: 27px;padding: 0;" data-dismiss="modal" aria-label="Close" >
+            <i class="fa-solid fa-times"></i>
+        </button>
+        </div>
+        <div class="modal-body" style="overflow-y: scroll ;max-height: 40rem;">
+          <table id="viewDetailsUserTable" class="table hover table-bordered" style="width:100%;">
+            <thead id="modalTable">
+              <tr>
+               <th>Username</th>
+               <th>Email</th>
+               <th>Action Requested</th>
+              </tr>
+            </thead>
+            <tbody id="viewDetailsUserTableBody">
+
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+</div>
+
+
+<div class="modal fade" id="viewDetailsGroupModal" tabindex="-1" role="dialog" aria-labelledby="viewDetailspGroupModal" style="z-index: 1052;backdrop-filter: blur(8px);">
+    <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+      <div class="modal-content" style="height: 20rem;">
+        <div class="modal-header" style='background:#565a5e; color:white;'>
+          <h5 class="modal-title"  >Approval Details</h5>
+          <button type="button" class="btn btn-light " style="height: 27px;width: 27px;padding: 0;" data-dismiss="modal" aria-label="Close" style="height: 27px;width: 27px;padding: 0;">
+            <i class="fa-solid fa-times"></i>
+        </button>
+        </div>
+        <div class="modal-body" style="overflow-y: auto ;max-height: 40rem;">
+          <table id="viewDetailsGroupTable" class="table hover table-bordered" style="width:100%;">
+            <thead id="modalTable">
+              <tr>
+                <th>Username</th>
+                <th>User Group</th>
+               </tr>
+            </thead>
+            <tbody id="viewDetailsGroupTableBody">
+
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+</div>
+
+
+<div class="modal fade" id="viewDetailsPermissionModal" tabindex="-1" role="dialog" aria-labelledby="viewDetailsPermissionModal" style="z-index: 1052;backdrop-filter: blur(8px);">
+    <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+      <div class="modal-content" style="height: 20rem;">
+        <div class="modal-header" style='background:#565a5e; color:white;'>
+          <h5 class="modal-title"  >Approval Details</h5>
+          <button type="button" class="btn btn-light " style="height: 27px;width: 27px;padding: 0;" data-dismiss="modal" aria-label="Close" >
+            <i class="fa-solid fa-times"></i>
+        </button>
+        </div>
+        <div class="modal-body" style="overflow-y: scroll ;max-height: 40rem;">
+          <table id="viewDetailsPermissionTable" class="table hover table-bordered" style="width:100%;">
+            <thead id="modalTable">
+                <tr>
+                    <th>Group Name</th>
+                    <th>Permission Name</th>
+                    <th>Application Name</th>
+                </tr>
+            </thead>
+            <tbody id="viewDetailsPermissionTableBody">
+
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+</div>
+
+
+<div class="modal fade" id="ManageUserGroupsAndPermissions" tabindex="-1" role="dialog" aria-labelledby="ManageUserGroupsAndPermissions" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div>
+                    <h4 class="modal-title" id="exampleModalLongTitle">Manage User Groups and Permissions</h4>
+                    <small>You can add user groups or manage permissions within a specific user group</small>
+                </div>
+                <button type="button" class="btn btn-light " style="height: 27px;width: 27px;padding: 0;"
+                    data-dismiss="modal" aria-label="Close" id="closeManageUserGroups">
+                    <i class="fa-solid fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="select_user_group pb-4" style="border-bottom: 1px solid #dddddd;">
+                    <div class="row justify-content-between">
+                        <div class="col-12 d-flex mb-3 addNewGroupDiv">
+                            <button class="btn btn-light AddNewUserGroupButton" data-toggle="modal" id="AddNewUserGroupButton" data-target="#AddNewUserGroup">Add New User Group</button>
+                        </div>
+                        <div class="col-md-12 mt-2">
+                            <label for="select_user_group">Select Existing User Group/s</label>
+                        </div>
+                        <div class="col-12">
+                            <div class="row">
+                                <div class="col-xs-12 col-sm-12 col-md-6">
+                                    <select id="select_user_group" class="user_creation_fields form-control textInput select2" multiple>
+                                        {% for group in list_view_datatable %}
+                                            <option value="{{group.Name}}">{{group.Name}}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                                <div class="col-xs-12 col-sm-12 col-md-6 groupsavebutton">
+                                    <button class="btn btn-light" id="saveUserGroupDetails">Save</button>
+                                </div>
+                            </div>
+
+                        </div>
+
+                    </div>
+                </div>
+                <h6 style="font-weight: bold;margin-top: 1rem;">Permissions Assigned</h6>
+                <div class="group_permissions_assigned pb-4" >
+
+                    <table id="example_viewpermissions" class="table hover table-bordered" width="100%" style="width:100%;">
+                        <thead>
+                          <tr>
+                            <th>User Group</th>
+                            <th>Permission Level</th>
+                            <th>Permission Name</th>
+                            <th>Permission Type</th>
+                            <th>Created By</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+
+                        </tbody>
+                    </table>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="ManageOnlyGroupsAndPermissions" data-focus="false" role="dialog" aria-labelledby="ManageOnlyGroupsAndPermissions">
+    <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div>
+                    <h4 class="modal-title" id="exampleModalLongTitle">Manage User Groups and Permissions</h4>
+                    <small>You can add user groups or manage permissions within a specific user group</small>
+                </div>
+                <button type="button" class="btn btn-light "
+                    data-dismiss="modal" aria-label="Close" id="closeManageUserGroupsOnly" style="height: 27px;width: 27px;padding: 0;">
+                    <i class="fa-solid fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="select_user_group pb-4" style="border-bottom: 1px solid #dddddd;">
+                    <div class="row justify-content-between">
+                        <div class="col-12 d-flex addNewGroupDiv mb-3">
+                            <button class="btn btn-light AddNewUserGroupButton" data-toggle="modal" id="AddNewUserGroupButton" data-target="#AddNewUserGroup">Add New User Group</button>
+                        </div>
+                        <div class="col-md-12 mt-2">
+                            <label for="select_unique_user_group">Select Existing User Group</label>
+                        </div>
+                        <div class="col-12">
+                            <div class="row">
+                                <div class="col-xs-12 col-sm-12 col-md-6">
+                                    <select id="select_unique_user_group" class="user_creation_fields form-control textInput select2">
+                                        <option value="" selected disabled>Choose Group</option>
+                                        {% for group in list_view_datatable %}
+                                            <option value="{{group.Name}}">{{group.Name}}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                                <div class="col-xs-12 col-sm-12 col-md-6 groupsavebutton">
+                                    <button class="btn btn-light" id="showUserDetails" style="display: none;" data-toggle="modal" data-target="#Users_modal">View Users</button>
+                                    <button class="btn btn-light" id="showGroupDetails" style="display: none;" data-toggle="modal" data-target="#Groups_modal">View Group Details</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-12 mt-2 assigntogroups" style="display: none;">
+                            <label for="select_users_to_group">Assign User/s to Group</label>
+                            <div class="row">
+                                <div class="col-xs-12 col-sm-12 col-md-6">
+                                    <select id="select_users_to_group" class="user_creation_fields form-control textInput select2" multiple>
+                                        {% for user in all_users_data %}
+                                            <option value="{{user.id}}">{{user.username}}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                                <div class="col-xs-12 col-sm-12 col-md-6 groupsavebutton">
+                                    <button class="btn btn-light" id="assign_users_to_group">Save</button>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+                <script>
+                    $("#assign_users_to_group").click(function(){
+                        var group_name = $("#select_unique_user_group").val()
+                        var users_id_list = $("#select_users_to_group").val()
+
+                        if(users_id_list.length > 0){
+                            $.ajax({
+                                "url": `/users/${app_code2}/${current_dev_mode2}/user_management/`,
+                                "data": {
+                                    'users_id_list':JSON.stringify(users_id_list),
+                                    'group_name':group_name,
+                                    'operation': 'assign_users_to_group',
+                                },
+                                "dataType": "json",
+                                "type": "POST",
+                                "success": function (d) {
+                                    if (!d.sent_for_approval) {
+                                        $('#userTable').DataTable().draw();
+                                    }
+                                    Swal.fire({
+                                        icon: 'success',
+                                        text: d.response
+                                    });
+                                },
+                                "error": function () {
+                                    Swal.fire({icon: 'error',text: 'Error! Please try again'});
+                                }
+                            });
+                        }
+                        else{
+                            Swal.fire({icon: 'warning',text: 'Please select Users and try again.'});
+                        }
+
+                    })
+                </script>
+                <div class="group_permissions_display" style="display: none;">
+                    <h6 style="font-weight: bold;margin-top: 1rem;">Permissions Assigned</h6>
+                    <div class="group_permissions pb-4" >
+
+                        <table id="viewpermissions_for_groups" class="table hover table-bordered" width="100%" style="width:100%;">
+                            <thead>
+                              <tr>
+                                <th>Action</th>
+                                <th>User Group</th>
+                                <th>Permission Type</th>
+                                <th>Permission Level</th>
+                                <th>Permission Name</th>
+                                <th>Created By</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+
+                            </tbody>
+                        </table>
+
+                    </div>
+                </div>
+
+                <div class="d-flex align-items-center" style="gap: 15px; margin-top: 1rem;">
+                    <h6 style="font-weight: bold;margin-top: 1rem;">Add New Permission</h6>
+                    <button class="btn btn-primary" style="margin-top: 0.5rem;" id="add_new_permission" disabled>Add New Permission</button>
+                </div>
+
+                <div class="add_new_permission mt-3 mb-2">
+                    {% crispy form2 %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="Users_modal" role="dialog">
+    <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header" style="background:#565a5e; color:white; text-align:center;">
+          <h5 class="modal-title text-center w-100" >View Users</h5>
+          <button type="button" class="btn btn-light " style="height: 27px;width: 27px;padding: 0;" data-dismiss="modal" aria-label="Close" >
+            <i class="fa-solid fa-times"></i>
+        </button>
+        </div>
+
+        <div class="modal-body">
+          <table id="example_usergroup" class="table hover table-bordered" style="width:100%;">
+            <thead>
+              <tr>
+                <th>Action</th>
+                <th>Group</th>
+                <th>User</th>
+              </tr>
+            </thead>
+            <tbody>
+            </tbody>
+          </table>
+        </div>
+      </div>
+     </div>
+</div>
+
+<div class="modal fade" id="Groups_modal" role="dialog">
+    <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header" style="background:#565a5e; color:white; text-align:center;">
+          <h5 class="modal-title text-center w-100" >View Group Details</h5>
+          <button type="button" class="btn btn-light " style="height: 27px;width: 27px;padding: 0;" data-dismiss="modal" aria-label="Close" >
+            <i class="fa-solid fa-times"></i>
+        </button>
+        </div>
+
+        <div class="modal-body">
+          <table id="group_details" class="table hover table-bordered" style="width:100%;">
+            <thead>
+              <tr>
+                <th>Action</th>
+                <th>Group Name</th>
+                <th>Created by</th>
+                <th>Created Date</th>
+                <th>Modified by</th>
+                <th>Modified Date</th>
+              </tr>
+            </thead>
+            <tbody>
+            </tbody>
+          </table>
+        </div>
+      </div>
+     </div>
+</div>
+
+<div class="modal fade bd-example-modal-sm" id="edit_group" role="dialog">
+    <div class="modal-dialog modal-dialog-centered modal-sm" role="document">
+        <div class="modal-content">
+            <div class="modal-header b-0" style="border-bottom: 0;">
+                <div>
+                    <h4 class="modal-title" id="">Rename Group</h4>
+                </div>
+                <button type="button" class="btn btn-light " style="height: 27px;width: 27px;padding: 0;"
+                    data-dismiss="modal" aria-label="Close" id="">
+                    <i class="fa-solid fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <input type="text" class="textInput form-control" id="edit_group_input">
+            </div>
+            <div class="modal-footer justify-content-end" style="border-top: 0;">
+                <button class="btn btn-primary" id="renameUserGroup" onclick="renameUserGroup()">Rename</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="modal fade" id="AddNewUserGroup" tabindex="-1" role="dialog" aria-labelledby="AddNewUserGroup" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div>
+                    <h4 class="modal-title" id="exampleModalLongTitle">Manage User Groups and Permissions</h4>
+                    <small>You can add user groups or manage permissions within a specific user group</small>
+                </div>
+                <button type="button" class="btn btn-light " style="height: 27px;width: 27px;padding: 0;"
+                    data-dismiss="modal" aria-label="Close" id="closeAddNewGroup">
+                    <i class="fa-solid fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="add_new_user_group pb-4">
+                    <div class="row justify-content-between">
+                        <div class="col-md-12 mt-2">
+                            <label for="add_new_user_group">Add New User Group</label>
+                        </div>
+                        <div class="col-12">
+                            <div class="row">
+                                <div class="col-xs-12 col-sm-12 col-md-6">
+                                    <input type="text" id="add_new_user_group" class="user_creation_fields form-control textInput" >
+                                </div>
+                            </div>
+
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer justify-content-end">
+                <button class="btn btn-primary" id="saveAddNewUserGroup">Add New User Group</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="userAccessApprovalsModal" role="dialog" aria-labelledby="userAccessApprovalsModal" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div>
+                    <h4 class="modal-title" id="exampleModalLongTitle">Approvals</h4>
+                    <small>You can approve requests for new users, new user groups and permissions</small>
+                </div>
+                <button type="button" class="btn btn-light d-flex align-items-center justify-content-center" style="height: 27px;width: 27px;padding: 0;" data-dismiss="modal" aria-label="Close" >
+                    <i class="fa-solid fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="approvals_table_container">
+
+                    <ul class="nav nav-tabs nav-fill desktop-tabs-approval" id="myTab" role="tablist">
+
+                        <li class="nav-item">
+                          <a class="nav-link active" id="pending-approvals-tab" data-toggle="tab" href="#pending_approvals_tab_content" role="tab" aria-controls="pending_approvals" aria-selected="true">My Pending Approvals</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" id="pending_requests-tab" data-toggle="tab" href="#pending_requests_tab_content" role="tab" aria-controls="pending_requests" aria-selected="true">My Requests Pending Approval</a>
+                        </li>
+
+                    </ul>
+
+                    <div class="dropdown-container mobile-tabs-approval" style="box-shadow: 0 0 1px rgba(0,0,0,.125), 0 1px 3px rgba(0,0,0,.2);border-radius: 5px;overflow: hidden;">
+                        <div class="dropdown-header active" id="" data-toggle="tab">
+                            <span class="selected_text" style="margin: auto 9px;">My Pending Approvals</span><i class="fa-lg fa-solid fa-angle-down"></i>
+                        </div>
+                        <div class="option-container" style="display: none;">
+                            <div class="mobile-text" style="padding: 0.2rem;font-size: 13px;background: #fff;border-top: 1px solid lightgrey;width:100%;margin: unset !important;display:inline-block;white-space: nowrap; margin:auto 5px; border-bottom:none !important;">
+                                <a class="nav-link active" id="pending-approvals-tab-mobile" data-toggle="tab" href="#pending_approvals_tab_content" role="tab" aria-controls="pending_approvals_tab_content" aria-selected="true" style="border: 0 !important; box-shadow: none !important;word-break:break-word;white-space:break-spaces;">My Pending Approvals</a>
+                            </div>
+                            <div class="mobile-text" style="padding: 0.2rem;font-size: 13px;background: #fff;border-top: 1px solid lightgrey;width:100%;margin: unset !important;display:inline-block;white-space: nowrap; margin:auto 5px; border-bottom:none !important;">
+                                <a class="nav-link" id="pending_requests-tab-mobile" data-toggle="tab" href="#pending_requests_tab_content" role="tab" aria-controls="pending_requests_tab_content" aria-selected="true" style="border: 0 !important; box-shadow: none !important;word-break:break-word;white-space:break-spaces;">My Requests Pending Approval</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <script>
+                        $(".option-container").find(".nav-link").eq(0).addClass("active")
+
+                        $(".dropdown-header").click(function(){
+                            $(this).siblings(".option-container").toggle()
+                        })
+
+                        $(".option-container").find(".nav-link").click(function(){
+                            current_nav = $(this)
+                            $(".dropdown-header .selected_text").text($(this).text())
+                            $(".option-container").find(".nav-link").each(function(){
+                                if($(this) != current_nav){
+                                $(this).removeClass("active")
+                                }
+                            })
+                            $(".option-container").toggle()
+                        })
+
+                        $(document).on("click", function(event){
+                            var $trigger = $(".dropdown-container");
+                            if($trigger !== event.target && !$trigger.has(event.target).length){
+                                $(".option-container").css("display","none");
+                            }
+                        });
+                    </script>
+
+                    <div class="tab-content" id="approvalTabContent">
+
+                        <div class="tab-pane fade show active table-responsive container_main" id="pending_approvals_tab_content" role="tabpanel" aria-labelledby="list_view-tab">
+
+                            <table id="user_access_approvals_table" class="table table-bordered hover" cellspacing="0" width="100%">
+                                <thead>
+                                    <tr>
+                                        <th>Approve / Reject</th>
+                                        <th>Request Details</th>
+                                        <th>Approval Type</th>
+                                        <th>Requested For</th>
+                                        <th>Requested By</th>
+                                        <th>Requested Date</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="user_access_approvals_tbody">
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="tab-pane fade table-responsive container_main" id="pending_requests_tab_content" role="tabpanel" aria-labelledby="list_view-tab">
+
+                            <table id="user_requests_table" class="table table-bordered hover" cellspacing="0" width="100%">
+                                <thead>
+                                    <tr>
+                                        <th>Request Details</th>
+                                        <th>Approval Type</th>
+                                        <th>Requested For</th>
+                                        <th>Requested By</th>
+                                        <th>Requested Date</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="user_requests_tbody">
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<section class="user-management-content">
+    <div class="container-fluid user-container">
+        <div class="header-container">
+            <div class="modal fade" id="myModal" role="dialog">
+                <div class="modal-dialog modal-dialog-centered" role="document">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <h5 class="modal-title">Download User Profile</h5>
+                      <i class="fa-solid fa-download iconsize"></i>
+                    </div>
+
+                    <div class="modal-body">
+                      <form method="post" enctype="multipart/form-data" id="download_profile_form">
+                        {% csrf_token %}
+
+
+                          <div id ="daterangeStart" class="col-12">
+                            <div class ="row">
+                              <div class="col-6 pl-0">
+                              <label for="">Select date range of joining: </label>
+                            </div>
+
+                            <div class="col-6 pl-0">
+                              <input type="text" class="form-control textInput p-2 dtrangepicker actdetails" id="user_range" style="border: 1px solid grey;cursor:pointer" name="date" placeholder="Start Date | End Date">
+                            </div>
+                            </div>
+
+                         </div>
+                         <br>
+                         <div class="d-flex mt-4 justify-content-between pl-0 pr-0">
+                            <button type="button" class="btn buttonfooter" data-dismiss="modal">Close</button>
+                          <button id='download' type="submit" name="operation" value="downloaduserData" class="btn buttonfooter"><i class="fa fa-download"></i>&nbsp;Download</button>
+
+                        </div>
+
+                    </form>
+                    </div>
+
+
+                  </div>
+
+                 </div>
+              </div>
+
+            <div class="title-search d-flex align-items-center justify-content-between" >
+                <h5 class="header mb-0">User Management</h5>
+                <div class="search-users">
+                    <input type="text" class="form-control textInput searchUsers" style="padding: 0 1rem !important" name="searchUsers" id="searchUsers" placeholder="Search">
+                </div>
+            </div>
+            <div class="menu-buttons d-flex align-items-center">
+                <div class="button-group d-flex align-items-center justify-content-between">
+                    <button class="btn btn-light main-buttons" id="userAccessApprovalsButton" data-toggle="modal" data-target="#userAccessApprovalsModal" style="width: 7rem;">Approvals
+                        {% if total_pending_approvals > 0 %}
+                       <span class="approval_notification_badge">{{total_pending_approvals}}</span>
+                       {% endif %}
+                    </button>
+                    <button class="btn btn-light main-buttons mobile-none" data-toggle="modal" data-target="#createNewUserModal" style="width: 7rem;">Add User</button>
+                    <button class="btn btn-light main-buttons mobile-none" data-toggle="modal"  id="manageOnlyGroupPermissionsButton" data-target="#ManageOnlyGroupsAndPermissions" style="width: 12rem;">Add/ Manage User Groups</button>
+                    <button class="btn btn-light main-buttons mobile-none" id="regenerate_access" style="width: 12rem;">Regenerate Permissions</button>
+                </div>
+                <div class="action-access-menu">
+                    <i id="" class="fa-solid fa-bars" data-toggle="dropdown"></i>
+                    <div class="dropdown-menu dropdown-menu-sm dropdown-menu-right user-actions-dropdown">
+                        <span class="dropdown-item mobile-display" data-toggle="modal" data-target="#createNewUserModal">
+                            <i class="fa-solid fa-user-plus mr-2"></i>Add User
+                        </span>
+                        <div class="dropdown-divider mobile-display"></div>
+                        <span class="dropdown-item mobile-display" data-toggle="modal" data-target="#ManageOnlyGroupsAndPermissions" id="manageOnlyGroupPermissionsButtonMobile">
+                            <i class="fa-solid fa-users-gear mr-2"></i>Add/ Manage User Groups
+                        </span>
+                        <div class="dropdown-divider mobile-display"></div>
+                        <span class="dropdown-item mobile-display" id="regenerate_access_mobile">
+                            <i class="fa-solid fa-rotate-right mr-2"></i>Regenerate Permissions
+                        </span>
+                        <div class="dropdown-divider mobile-display"></div>
+                        <span class="dropdown-item" data-toggle="modal" data-target="#myModal" id="download_profile_button">
+                            <i class="fa-solid fa-file-arrow-down mr-2"></i>Download User Profile
+                        </span>
+                        <div class="dropdown-divider"></div>
+                        <span class="dropdown-item" data-toggle="modal" data-target="#addUsersCsv">
+                            <i class="fa-solid fa-file-arrow-up mr-2"></i>Upload New Users
+                        </span>
+                        <div class="dropdown-divider"></div>
+                        <span class="dropdown-item" data-toggle="modal" data-target="#addGroupsCsv">
+                            <i class="fa-solid fa-file-arrow-up mr-2"></i>Upload New Groups
+                        </span>
+                        <div class="dropdown-divider"></div>
+                        <span class="dropdown-item" data-toggle="modal" data-target="#assignGroupsCsv">
+                            <i class="fa-solid fa-file-arrow-up mr-2"></i>Upload Users with Groups
+                        </span>
+                        <div class="dropdown-divider"></div>
+                        <span class="dropdown-item" data-toggle="modal" data-target="#addPermissionsCsv">
+                            <i class="fa-solid fa-file-arrow-up mr-2"></i>Upload Group Permissions
+                        </span>
+                        <div class="dropdown-divider" style="display: none;"></div>
+                        <span class="dropdown-item" style="display: none;">
+                            <i class="far fa-edit mr-2" ></i>Edit Roles through file
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <style>
+            .radioGroup {
+                display: inline-flex;
+                border: 1px solid lightgrey;
+                position: relative;
+                background-color: #f7f7f7;
+                color: black;
+                border-radius: 5px;
+                overflow: hidden;
+                justify-content: space-around;
+                width: 160px;
+                background: white;
+                border: 1px solid transparent;
+                border-radius: 2rem;
+                border: 1px solid lightgrey;
+                height: 39px;
+
+            }
+            .radioGroup input[type=radio]+label {
+    padding: .5rem;
+    display: inline-flex;
+    z-index: 2;
+    font-size: 12px !important;
+    cursor: pointer;
+    color: #000;
+    text-align: center;
+    margin-bottom: 0;
+    top: unset;
+    width: 5rem;
+    justify-content: center;
+    font-weight: normal;
+}
+.radioGroup input[type=radio]:checked + label{
+    font-weight: 700;
+}
+.radioGroup input[type=radio] {
+    display: none;
+}
+.radioGroup input[type=radio]:nth-child(1):checked + label {
+    color: white;
+    transition: color 200ms;
+}
+.radioGroup input[type=radio]:nth-child(1):checked ~ .indicator {
+    color: #fff;
+    background-color: #00e936;
+    border-color: #0ebc35;
+    width: 75px;
+    left: 0%;
+    box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+}
+.radioGroup input[type=radio]:nth-child(3):checked~.indicator {
+    left: 50%;
+    width: 77px;
+    background-color: #f91c1c;
+    border-color: #c20c29;
+    color: white;
+    box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+}
+.radioGroup .indicator {
+    display: inline-flex;
+    position: absolute;
+    height: 100%;
+    top: 0px;
+    bottom: 0;
+    z-index: 1;
+    transition: all ease 300ms;
+    left: -110px;
+    border-radius: 5px;
+    opacity: 0.8;
+    border-radius: 2rem;
+}
+@media screen and (min-width: 769px){
+    .user-profile-photo{
+    height: 50px;
+    width: 50px;
+    }
+}
+@media screen and (min-width: 426px){
+    .mobile-tabs-approval{
+        display: none;
+    }
+    .role_filter_wrap .select2.select2-container.select2-container--default {
+        width: 150px !important;
+    }
+}
+
+
+        </style>
+
+    <div>
+        <table id="userTable" class="display" sty;e="width:100%;">
+            <thead>
+                <tr class="table-header">
+                    <th>Name</th>
+                    <th>Role</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+
+            </tbody>
+        </table>
+    </div>
+
+    <script>
+    renderUserTables()
+    </script>
+
+
+    <script>
+
+        let userCreationInputs = $('input.user_creation_fields');
+        userCreationInputs.on('input paste', function (){
+            $(this).val($(this).val().replace(/[^0-9a-zA-Z_@.]/g, ''));
+        });
+
+        var submitButtonCreateFormUser = $('#user_creation_form_div').find('form input[name="submit"]')
+
+        submitButtonCreateFormUser.on('click', function () {
+            var validname = {
+            id: "div1",
+            class: "divclass pb-3",
+                css: {
+                    "color": "Red",
+                    "display": "none",
+                }
+            };
+            var $div2 = $("<div>", validemail);
+            var validemail = {
+                id: "div2",
+                class: "divclass pb-3",
+                css: {
+                    "color": "Red",
+                    "display": "none",
+                }
+            };
+            var $div2 = $("<div>", validemail);
+            $div2.html("Please Enter a Valid email.");
+            var $div1 = $("<div>", validname);
+            $div1.html("Please Enter a Valid user name.");
+            var username = $('#id_username').val().toLowerCase();
+            var group_regex = /^[a-z\d\-_\s]+$/i;
+            var postalResult = group_regex.test(username);
+            if(postalResult == false){
+                $("#div_id_username").append($div1);
+                $('#div1').css('display','block')
+            }
+            else{
+                $('#div1').css('display','none')
+            }
+            var password =  $('#id_password').val();
+            var email =  $('#id_email').val();
+            const re = /^(([^<>()\[\]\.,;:\s@\"]+(\.[^<>()\[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i;
+            var result = re.test((email).toLowerCase())
+
+            let url = ""
+            if(current_dev_mode2 != "Build" && current_dev_mode2 != "Edit"){
+                current_dev_mode2 = "User"
+            }
+            if(result == false)
+            {
+                $("#div_id_email").append($div2);
+                $('#div2').css('display','block')
+            }
+            else{
+                $('#div2').css('display','none')
+            }
+            if($("#id_application_login")[0].checked){
+                a_type = "application"
+            }
+            else if($("#id_ldap_login")[0].checked){
+                a_type = "ldap"
+            }
+            else{
+                a_type="none"
+            }
+            is_developer = $("#id_is_developer").prop("checked")
+
+            if(postalResult == true && result == true)
+            {
+                $.ajax({
+                    "url": `/users/${app_code2}/${current_dev_mode2}/usercreate/`,
+                    "data": {
+                        'name':username,
+                        'password':password,
+                        'email':email,
+                        'a_type':a_type,
+                        'operation': 'save_user',
+                        'is_developer':is_developer
+                    },
+                    "dataType": "json",
+                    "type": "POST",
+                    "success": function (d) {
+                        Swal.fire({
+                            icon: 'warning',
+                            text: d['check']
+                        })
+                        $('.standard_button_click').prop('disabled',false)
+                    },
+                    "error": function () {
+                        Swal.fire({icon: 'error',text: 'Error! Failure in creating user. Please try again'});
+                        $('.standard_button_click').prop('disabled',false)
+                    }
+                });
+            }
+        })
+
+        $('#id_ldap_login').click(function(){
+        if(this.checked) {
+        $("#id_password").attr('readonly', true);
+        $("#id_application_login").prop('disabled', true);
+        }
+        else{
+        $("#id_password").prop('readonly', false);
+        $("#id_application_login").prop('disabled', false);
+        }
+        })
+
+        $('#id_application_login').click(function(){
+        if(this.checked) {
+            $("#id_password").prop('readonly', false);
+        $("#id_ldap_login").prop('disabled', true);
+        }
+        else{
+            $("#id_password").attr('readonly', true);
+        $("#id_ldap_login").prop('disabled', false);
+        }
+        })
+
+
+        $("#closeManageUserGroups").click(function(){
+
+        $("#ManageUserModal").modal("show")
+    })
+
+    $(".AddNewUserGroupButton").click(function(){
+
+
+        $("#AddNewUserGroup").find(".select2").select2()
+
+        if($(this).attr("data-open") == "groupsOnlyModal"){
+            $("#ManageOnlyGroupsAndPermissions").modal("hide")
+            $("#closeAddNewGroup").attr("data-close",$(this).attr("data-open"))
+        }else{
+            $("#ManageUserGroupsAndPermissions").modal("hide")
+        }
+    })
+    $("#closeAddNewGroup").click(function(){
+        if($(this).attr("data-close") == "groupsOnlyModal"){
+            $("#ManageOnlyGroupsAndPermissions").modal("show")
+        }
+        else{
+            $("#ManageUserGroupsAndPermissions").modal("show")
+        }
+
+    })
+
+    $("#closeManageUserGroupsOnly").click(function(){
+        $("#AddNewUserGroupButton").removeAttr("data-open")
+        $("#closeAddNewGroup").removeAttr("data-close")
+    })
+
+    $("#saveAddNewUserGroup").click(function(){
+        var create_group_name = $("#add_new_user_group").val()
+        let check_html = /<|>/.test(create_group_name);
+        if (check_html){
+            Swal.fire({
+                icon: "error",
+                text: "Unauthorised input. Please check and try again.",
+            });
+        }else{
+            if(create_group_name){
+
+                $.ajax({
+                    "url": `/users/${app_code2}/${current_dev_mode2}/user_management/`,
+                    "data": {
+                        'group_name' : create_group_name,
+                        'operation': 'create_group_name',
+                    },
+                    "dataType": "json",
+                    "type": "POST",
+                    "success": function (response) {
+
+                        Swal.fire({icon: response.icon ,text: response.text}).then((result) => {
+                            if (result.isConfirmed) {
+                                window.location.reload()
+                            }
+                        })
+                    },
+                    "error": function () {
+                        Swal.fire({icon: 'error',text: 'Error! Failure in creating user group. Please try again'});
+                    }
+                });
+
+            }
+            else{
+                Swal.fire({text:"Please fill in the group name.",icon:'Warning'})
+            }
+        }
+    })
+
+    var new_users_groups_global = []
+    var user_group_list = JSON.parse(`{{user_group_list | safe}}`.replaceAll("'",'"'))
+
+    $(".user_manage_groups").find(".select2").select2()
+
+
+    $("#select_user_group").change(function(){
+        getPermissionTableData()
+    })
+
+    $("#id_usergroup").change(function(){
+        $("#id_application").val(`${app_code2}`).trigger("change")
+    })
+
+
+    $("#approve_all").on('click', approve_all)
+  $("#reject_all").on('click', reject_all)
+    $("#download_profile_button").click(function(){
+        $("#download_profile_form").attr("action", `/users/${app_code2}/${current_dev_mode2}/user_management/`)
+    })
+
+    </script>
+    <!--Assign Group Permissions Cascading dropdowns-->
+<script>
+
+let appMode = '{{app_mode}}';
+$("#div_dev_mode").css('display','none')
+if (appMode === "App + Dev") {
+  $("#div_dev_mode").append(
+    `<div class="form-group col-md-3 custom-control custom-checkbox" style="padding-left:30px">
+      <input type="checkbox" class="custom-control-input" name="dev_mode_option" value="dev" id="dev_mode_option">
+      <label for="dev_mode_option" class="custom-control-label">Application developer</label>
+    </div>
+    <div class="form-group col-md-3 custom-control custom-checkbox" style="padding-left:30px">
+      <input type="checkbox" name="appAdmin_access" class="custom-control-input" value="dev" id="appAdmin_access">
+      <label for="appAdmin_access" class="custom-control-label">Application admin</label>
+    </div>
+    `
+  )
+
+} else {
+  $("#div_dev_mode").empty()
+}
+$("#dev_mode_option").on('change',function() {
+  if($(this).prop("checked")) {
+    $("#appAdmin_access").prop("checked",true);
+    $("#appAdmin_access").prop("disabled",true);
+  } else {
+    $("#appAdmin_access").prop("checked",false);
+    $("#appAdmin_access").prop("disabled",false);
+  }
+})
+$('#from, #to').on('change', function(){
+      $('#from').attr('max', $('#to').val());
+      $('#to').attr('min', $('#from').val());
+    });
+
+$('a[data-toggle="tab"]').on('shown.bs.tab', function(e){
+    $($.fn.dataTable.tables(true)).DataTable()
+       .columns.adjust();
+ });
+
+
+    $('#id_permission_type').append(`<option value="Administrative access">Administrative access</option>`)
+    $('#regenerate_access, #regenerate_access_mobile').on('click',function() {
+      $('#regenerate_access').prop('disabled', true);
+      $.ajax({
+        url: `/users/${app_code2}/${current_dev_mode2}/user_management/`,
+        data: {"operation":"regenerate_access"},
+        type: "POST",
+        dataType: "json",
+        success: function (data) {
+          Swal.fire({
+            icon: 'info',
+            text: 'Regeneration in progress. Please check the notifications bell for further updates.'
+          })
+        },
+        error: function () {
+          Swal.fire({icon: 'error',text: 'Error! Failure in re-generating processes. Please regenerate again'});
+          $('#regenerate_access').prop('disabled', false);
+        }
+      });
+    });
+    $('#id_application').on('change', function () {
+        let appSelected = $(this).val();
+        $('#id_permission_type').val("").trigger('change');
+        $('#id_permission_type').val("").trigger('select2:select');
+        $('#permlevel').css('display', 'none');
+        $('#id_permission_name').empty();
+        $('#id_level_1').empty();
+        $('#id_level_2').empty();
+        $('#div_level_0').css('display', 'none');
+        $('#div_level_1').css('display', 'none');
+        $('#div_level_2').css('display', 'none');
+        $("#dev_mode_option").prop("checked", false);
+        $("#appAdmin_access").prop("checked",false)
+
+
+        //Show permission level when navbar access selected
+        $('#id_permission_type').on('select2:select', function () {
+            var selected_type = $('#id_permission_type').val()
+            if (selected_type == "Navbar" || selected_type == "Administrative access") {
+                if (selected_type == "Navbar") {
+                    $('#permlevel').css('display', 'block')
+                    $("#div_level_0").css('display', 'none')
+                    $("#div_level_1").css('display', 'none')
+                    $("#div_dev_mode").css('display','none');
+                    $("#id_permission_level").val("").trigger("change")
+                } else if(selected_type == "Administrative access") {
+                    $('#permlevel').css('display', 'none')
+                    $("#div_level_0").css('display', 'none')
+                    $("#div_level_1").css('display', 'none')
+                    $("#div_level_2").css('display', 'none')
+                    $("#div_dev_mode").css('display','flex');
+                    $("#div_level_button_access").css('display', 'none')
+                } else {
+                    $("#div_dev_mode").css('display','none');
+                }
+                    //Empty level 0 perm dropdown
+                    $('#id_permission_name').empty()
+
+                $('#id_permission_level').on('select2:select', function () {
+                    $('#div_level_0').css('display', 'none')
+                    $('#div_level_1').css('display', 'none')
+                    $('#div_level_2').css('display', 'none')
+                    $('#div_level_button_access').css('display', 'none')
+                    $('#id_permission_name').empty()
+                    $('#id_level_1').empty()
+                    $('#id_level_2').empty()
+                    var selected_level = $('#id_permission_level').val()
+                    appSelected = $('#id_application').val();
+
+                    if(selected_level){
+                        $.ajax({
+                            url: `/users/${app_code2}/${current_dev_mode2}/user_management/`,
+                            data: {
+                                'operation': "perm_level_selected",
+                                'level': selected_level,
+                                'app_code': appSelected,
+                            },
+                            type: "POST",
+                            dataType: "json",
+                            success: function (data) {
+                                if (data.response == "failure") {
+                                    Swal.fire({icon: 'warning',text: 'Select valid permission level'});
+                                }
+                                else {
+                                    var permission_label = $("label[for='id_permission_name']")
+                                    permission_label.empty()
+                                    permission_label.append("Process Name<span class='asteriskField'>*</span>")
+                                    $('#id_permission_name').empty();
+                                    $('#div_level_0').css('display', 'block')
+                                    for (var i = 0; i < data.data.length; i++) {
+                                        $('#id_permission_name').append(new Option(data.data[i].item_name, data.data[i].item_code, false, false));
+                                    }
+                                    // $('#id_permission_name').trigger('select2:select')
+
+                                    var permission_label = $("label[for='id_level_1']")
+                                    permission_label.empty()
+                                    permission_label.append("Sub-Process Name<span class='asteriskField'>*</span>")
+
+                                    if (selected_level == "1") {
+                                        $('#newdiv').empty()
+                                        $('#div_level_1').css('display', 'block')
+                                    }
+                                    if (selected_level == "2") {
+                                        $('#newdiv').empty()
+                                        $('#newdivision').empty()
+                                        $('#div_level_1').css('display', 'block')
+                                        $('#div_level_2').css('display', 'block')
+                                    }
+                                    if (selected_level == "3") {
+                                        $('#newdiv').empty()
+                                        $('#newdivision').empty()
+                                        $('#div_level_1').css('display', 'block')
+                                        $('#div_level_2').css('display', 'block')
+                                        $('#div_level_button_access').css('display', 'block')
+                                    }
+                                }
+                            },
+                            error: function () {
+                                Swal.fire({icon: 'error',text: 'Error! Failure in assigning permission level. Please try again'});
+                            }
+                        })
+                    }
+
+                })
+
+                //Level 0 perm selected
+                $('#id_permission_name').off('select2:select').on('select2:select', level_0_selected)
+                $('#id_permission_name').off('select2:unselect').on('select2:unselect', level_0_selected)
+
+
+                //Level 1 perm selected
+                $('#id_level_1').on('change', level_1_selected)
+
+                $('#div_id_level_2').on('change', level_2_selected)
+
+            }
+            if (selected_type == "Data hierarchy") {
+                $("#div_level_2").css('display', 'none')
+                $("#div_level_button_access").css('display', 'none')
+                $("#div_dev_mode").css('display','none');
+                $('#permlevel').css('display', 'none')
+                $("#id_permission_level option[value='1']").prop("selected",true)
+                $('#id_permission_name').empty()
+                $('#id_level_1').empty()
+                $('#id_level_2').empty()
+                $.ajax({
+                    url: `/users/${app_code2}/${current_dev_mode2}/user_management/`,
+                    data: {
+                    'operation': "data_access_selected",
+                    "app_code": $("#id_application").val(),
+                    },
+                    type: "POST",
+                    dataType: "json",
+                    success: function (data) {
+                    if (data.response == "failure") {
+                        Swal.fire({icon: 'warning',text: 'Select valid Access Type'});
+                    }
+                    else {
+
+                        var permission_label = $("label[for='id_permission_name']")
+                        permission_label.empty()
+                        permission_label.append("Data hierarchy group access<span class='asteriskField'>*</span>")
+                        $('#div_level_0').css('display', 'block')
+                        for (var i = 0; i < data.data.length; i++) {
+                        $('#id_permission_name').append(new Option(data.data[i], data.data[i], false, false));
+                        }
+
+                        var permission_label = $("label[for='id_level_1']")
+                        permission_label.empty()
+                        permission_label.append("Data hierarchy access<span class='asteriskField'>*</span>")
+                        $('#div_level_1').css('display', 'block')
+
+                    }
+                    },
+                    error: function () {
+                    Swal.fire({icon: 'error',text: 'Error! Failure in assigning Access Type. Please try again'});
+                    }
+                })
+                //Hierarchy name selected
+                $('#id_permission_name').on('select2:select', hierarchy_selected)
+            }
+        });
+    });
+
+    $('#save_userpermission_master_form_button').on('click', function () {
+
+        $("#button-id-button").attr('formaction', `/users/${app_code2}/${current_dev_mode2}/user_management/` + 'create/')
+        $("#button-id-button").attr('type', 'submit')
+        var data = {};
+        if ($('#id_permission_type').val() == '' && $('#id_permission_type').val() != "Administrative access") {
+            return false
+        }
+        if ($('#id_permission_level').val() == '' && $('#id_permission_type').val() != "Administrative access") {
+            return false
+        }
+        if ($('#id_permission_level').val() == '0') {
+            data.perm_name = JSON.stringify($('#id_permission_name').val())
+        }
+        if ($('#id_permission_level').val() == '1') {
+            data.perm_name = JSON.stringify($('#id_level_1').val())
+        }
+        if ($('#id_permission_level').val() == '2') {
+            data.perm_name = JSON.stringify($('#id_level_2').val())
+        }
+        if ($('#id_permission_level').val() == '3') {
+            data.perm_name = JSON.stringify($('#id_level_2').val())
+            data.lba = JSON.stringify($('#id_level_button_access').val())
+        }
+        data.usergroup = $('#id_usergroup').val()
+        data.application = $('#id_application').val();
+        data.app_dict = JSON.stringify($('#id_application').attr('data-app_name'))
+        data.user_app_name = $('#id_application option:selected').text()
+        data.perm_level = $('#id_permission_level').val()
+        data.perm_type = $('#id_permission_type').val()
+        if (appMode = "App + Dev") {
+            data.application_developer = $("#dev_mode_option").prop("checked");
+            data.appAdmin_access = $("#appAdmin_access").prop("checked");
+        }
+        data.operation = "save_user_permission"
+        $.ajax({
+            url: `/users/${app_code2}/${current_dev_mode2}/user_management/`,
+            data: data,
+            type: "POST",
+            dataType: "json",
+            success: function (data) {
+                if(data.message) {
+                    Swal.fire({
+                        icon: 'warning',
+                        text:data.message
+                    })
+                $("#save_userpermission_master_form_button").closest(".form-group").parent().off('click').on('click', function() {
+                    $("#save_userpermission_master_form_button").prop('disabled', false)
+                })
+                }else{
+                    window.location.reload()
+                }
+            },
+            error: function () {
+                Swal.fire({icon: 'error',text: 'Error! Please try again'});
+            }
+        })
+    })
+
+
+
+    $("#create_new_users_modal_button").click(function(){
+        $("#addNewUserModal").modal("hide")
+    })
+
+    var showDeleteDetail = function() {
+
+        var data = {
+        "usergroup":$(this).attr('data-group'),
+        "permission_level":$(this).attr('data-plevel'),
+        "app_code":$(this).attr('data-app_code'),
+        "permission_type":$(this).attr('data-ptype')
+        }
+        var code = $(this).attr('data-code')
+
+        Swal.fire({
+                icon:'question',
+                text: `Are you sure you want to delete permission from application ${$(this).attr('data-app')}?`,
+                showDenyButton: true,
+                showCancelButton: false,
+                confirmButtonText: 'Yes',
+                denyButtonText: `No`,
+                showCloseButton: true
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                    "url": `/users/${app_code2}/${current_dev_mode2}/user_management/`,
+                    "data": {
+                        'operation': "deleteUserGroup",
+                        'code': code,
+                        'data': JSON.stringify(data)
+                    },
+                    "dataType": "json",
+                    "type": "POST",
+                    "success": function (d) {
+                        window.location.reload()
+                    },
+                    "error": function () {
+                        Swal.fire({icon: 'error',text: 'Error! Please try again'});
+                    }
+                });
+
+                } else if (result.isDenied) {
+
+                }
+            })
+    }
+  </script>
+  <!-- code ends Assign Group Permissions Cascading dropdowns-->
+
+  <script>
+
+
+
+    $('#reset-password').off('click').on('click', function() {
+
+        $("#reset_password_input").val("")
+        $("#reset_password_input").prop("disabled",false)
+        $("#reset_password_input").focus()
+
+        $(this).css("display","none")
+        $(".save-cancel").css("display","flex")
+        $(".save-cancel").css("gap","8px")
+
+    });
+
+    $("#save_reset_password").click(function(){
+        var username = $(this).attr("data-user")
+        var password = $('#reset_password_input').val()
+        var key ='{{k_value}}'
+        key = CryptoJS.enc.Utf8.parse(key);
+        var iv = CryptoJS.enc.Utf8.parse("{{h_value}}");
+        var encrypted_password = CryptoJS.AES.encrypt(password, key, { iv: iv, mode: CryptoJS.mode.CBC});
+        encrypted_password = encrypted_password.toString();
+        var encrypted_username = CryptoJS.AES.encrypt(username, key, { iv: iv, mode: CryptoJS.mode.CBC});
+        encrypted_username = encrypted_username.toString();
+        $("#reset_password_input").val(encrypted_password)
+        $.ajax({
+            url: `/users/${app_code2}/${current_dev_mode2}/update_user_password/`,
+            data: {
+                'operation': 'change_user_password',
+                'username': encrypted_username,
+                'password': encrypted_password,
+            },
+
+            type: "POST",
+            dataType: "json",
+            success: function (data) {
+                if(data.response == "error"){
+                  Swal.fire({icon: 'error',text: data.error_msg}).then((result) => {
+                    if (result.isConfirmed) {
+                        window.location.reload()
+                    }
+                })
+                }
+                else{
+                  Swal.fire({icon: 'success',text: 'Password updated successfully!'});
+                }
+
+            },
+            error: function () {
+                Swal.fire({icon: 'error',text: 'Error! Please try again.'});
+            }
+        });
+    })
+
+    $("#cancel_reset_password").click(function(){
+        $(".save-cancel").css("display","none")
+        $("#reset-password").css("display","block")
+        $("#reset_password_input").val("*********")
+        $("#reset_password_input").prop("disabled",true)
+    })
+
+    $("#manageOnlyGroupPermissionsButton, #manageOnlyGroupPermissionsButtonMobile").click(function(){
+        $("#ManageOnlyGroupsAndPermissions").find("select.select2").select2()
+
+
+        $("#ManageOnlyGroupsAndPermissions").find("#AddNewUserGroupButton").attr("data-open","groupsOnlyModal")
+
+    })
+
+
+    $("#select_unique_user_group").change(function(){
+
+        var groupname = $(this).val()
+
+        $("#showUserDetails").css("display","")
+        $("#showUserDetails").attr("data-groupname",groupname)
+
+        $("#showGroupDetails").css("display","")
+        $("#showGroupDetails").attr("data-groupname",groupname)
+
+        $(".assigntogroups").css("display","block")
+        if(groupname && (groupname.length > 0)){
+            $(".group_permissions_display").css("display","block")
+            $.ajax({
+                url: `/users/${app_code2}/${current_dev_mode2}/user_management/`,
+                data: {
+                    'operation': 'fetch_group_permissions',
+                    'group_name': groupname,
+                },
+                type: "POST",
+                dataType: "json",
+                success: function (data) {
+                    let permissionArray = data.permission_list;
+                    if($.fn.dataTable.isDataTable('#viewpermissions_for_groups')){
+                        $('#viewpermissions_for_groups').DataTable().clear().destroy()
+                    }
+                    for (const perm in permissionArray) {
+                        let permRow = permissionArray[perm]
+                        permissionArray[perm]['action'] = `
+                        <a data-app="${permRow.app_name}" data-group="${permRow.user}" onclick="showDeleteDetail.call(this)" data-plevel="${permRow.level}"
+                            data-app_code="${permRow.app_code}" data-ptype="${permRow.type}" data-code="${permRow.code}" value="delete">
+                            <i name="actions" value="delete" class="far fa-trash-alt ihover javaSC thin-icontrash" style="font-size: 15px ">
+                        </i></a>`;
+                        delete permissionArray[perm]["app_name"];
+                        delete permissionArray[perm]["app_code"];
+                    }
+                    var column_permission_group = [
+                        {"data":"action","mData":"action"},
+                        {"data":"user","mData":"user"},
+                        {"data":"type","mData":"type"},
+                        {"data":"level","mData":"level"},
+                        {"data":"name","mData":"name"},
+                        {"data":"created_by","mData":"created_by"},
+                    ];
+                    $("#viewpermissions_for_groups").DataTable( {
+                        "data":permissionArray,
+                        "columns":column_permission_group,
+                        "autoWidth": true,
+                        "scrollY": 200,
+                        "scrollX": 500,
+                        "scrollCollapse": true,
+                        "bSort": false,
+                        orderCellsTop: true,
+                        responsive: true,
+                        colReorder: {
+                            fixedColumnsLeft: 1
+                        },
+                        "deferRender": true,
+                        "paging": true,
+                        "lengthMenu": [[1, 5, 50, -1], [1, 5, 50, "All"]],
+                        "pageLength": 50,
+                        "search":false,
+                        columnDefs: [
+                            {
+                                targets: "_all",
+                                className: 'dt-center allColumnClass all'
+                            },
+                        ],
+                    }).columns.adjust();
+                    $('#viewpermissions_for_groups').on( 'column-visibility.dt', function ( e, settings, column, state ) {
+                        $(`#`+'viewpermissions_for_groups').DataTable().columns.adjust()
+                    });
+                    $(document).on('shown.bs.modal', function (e) {
+                        $.fn.dataTable.tables( {visible: true, api: true} ).columns.adjust();
+                    });
+
+                    $('[name=viewpermissions_for_groups_length]').closest("label").css("display","flex")
+                    $('[name=viewpermissions_for_groups_length]').closest("label").css("align-items","center")
+                    $('[name=viewpermissions_for_groups_length]').closest("label").css("gap","9px")
+                    $('[name=viewpermissions_for_groups_length]').closest(".col-sm-12.col-md-6").css("padding-left","1rem")
+                    $('[name=viewpermissions_for_groups_length]').select2({
+                        width: "50%"
+                    })
+
+                    $("#viewpermissions_for_groups_filter").find("input[type=search]").attr("style","border-radius: 1.8rem !important;border: 1px solid lightgrey !important;height: 28px;padding: 4px 9px;")
+                },
+                error: function () {}
+            });
+        }
+    });
+
+
+    $("#showUserDetails").click(function(){
+        var groupname = $(this).attr("data-groupname")
+
+        if($.fn.dataTable.isDataTable('#example_usergroup')){
+          $('#example_usergroup').DataTable().clear().destroy()
+        }
+
+        var column_names = [{'data': 'Action'}, {'data': 'Group'}, {'data':'Users'}]
+        var list_view_datatable = {{list_view_datatable|safe}};
+
+        for(lv in list_view_datatable){
+            if(list_view_datatable[lv]["Name"] == groupname){
+                var new_list=[]
+
+                for(list_v in list_view_datatable[lv]["Users"])
+                {
+                    var dict_list = {}
+                    var grpUsername = list_view_datatable[lv]["Users"][list_v];
+                    dict_list.Action = `<a value="delete" onclick="removeUserFromGroup.call(this)" data-group-name="${groupname}" data-username="${grpUsername}"><i name="actions" value="delete" class="far fa-trash-alt ihover javaSC thin-icontrash" style="font-size: 15px "></i></a>`
+                    dict_list.Group = groupname
+                    dict_list.Users = grpUsername
+                    new_list.push(dict_list)
+                }
+            }
+        }
+
+        $('#example_usergroup').on( 'column-visibility.dt', function ( e, settings, column, state ) {
+            $(`#`+'example_usergroup').DataTable().columns.adjust()
+        });
+
+        if ( !($.fn.dataTable.isDataTable('#example_usergroup')) ) {
+            var table_user = $("#example_usergroup").DataTable({
+            "data":new_list,
+            "columns":[{'data': 'Action'}, {'data': 'Group'}, {'data':'Users'}],
+            "autoWidth": true,
+            "scrollY": "50vh",
+            "scrollCollapse": true,
+            "scrollX": "110%",
+            "bSort": false,
+            orderCellsTop: true,
+            "bSort": false,
+            responsive: true,
+            colReorder: {
+            fixedColumnsLeft: 1
+            },
+            stateSave: true,
+            "deferRender": true,
+            "paging": true,
+            "lengthMenu": [[1, 5, 50, -1], [1, 5, 50, "All"]],
+            "pageLength": 50,
+            "sScrollX": "100%",
+            "scrollX": true,
+            columnDefs: [
+            {
+                targets: "_all",
+                className: 'dt-center allColumnClass all'
+            },
+            ],
+        }).columns.adjust()
+        $('#example_usergroup').on( 'column-visibility.dt', function ( e, settings, column, state ) {
+            $(`#`+'example_usergroup').DataTable().columns.adjust()
+        });
+        $(document).on('shown.bs.modal', function (e) {
+            $.fn.dataTable.tables( {visible: true, api: true} ).columns.adjust();
+        });
+
+        $('[name=example_usergroup_length]').closest("label").css("display","flex")
+        $('[name=example_usergroup_length]').closest("label").css("align-items","center")
+        $('[name=example_usergroup_length]').closest("label").css("gap","9px")
+        $('[name=example_usergroup_length]').closest(".col-sm-12.col-md-6").css("padding-left","1rem")
+        $('[name=example_usergroup_length]').select2({
+            width: "50%"
+        })
+
+        $("#example_usergroup_filter").find("input[type=search]").attr("style","border-radius: 1.8rem !important;border: 1px solid lightgrey !important;height: 28px;padding: 4px 9px;")
+
+      }
+
+    });
+
+    $("#approve_all_permission").on('click', approve_all_permission)
+    $("#reject_all_permission").on('click', reject_all_permission)
+
+    $("#showGroupDetails").click(function(){
+        var groupname = $(this).attr("data-groupname")
+
+        var list_view_datatable = {{list_view_datatable|safe}};
+
+        if($.fn.dataTable.isDataTable('#group_details')){
+          $('#group_details').DataTable().clear().destroy()
+        }
+
+        for(lv in list_view_datatable){
+            if(list_view_datatable[lv]["Name"] == groupname){
+                var new_list=[{
+                    "Action" : `<a data-id=${list_view_datatable[lv]["Id"]} data-toggle="tooltip" title="Edit record" onclick="editUserGroupName('${list_view_datatable[lv]["Id"]}', '${groupname}')"><i name="actions" value="update" class="fa fa-edit ihover javaSC thin-icon" style="font-size:15px"></i></a>&nbsp;
+                    <a data-toggle="tooltip" title="Delete record" onclick="deleteUserGroup('${list_view_datatable[lv]["Id"]}', '${groupname}')"><i name="actions" class="far fa-trash-alt ihover javaSC thin-icontrash" style="font-size: 15px "></i></a>`,
+                    "Group Name" : list_view_datatable[lv]["Name"],
+                    "Created By" : list_view_datatable[lv]["Created By"],
+                    "Created Date" : list_view_datatable[lv]["Created Date"],
+                    "Modified By" : list_view_datatable[lv]["Modified By"],
+                    "Modified Date" : list_view_datatable[lv]["Modified Date"],
+                }]
+
+            }
+        }
+
+
+
+        $('#group_details').on( 'column-visibility.dt', function ( e, settings, column, state ) {
+            $(`#`+'group_details').DataTable().columns.adjust()
+        });
+
+        if ( !($.fn.dataTable.isDataTable('#group_details')) ) {
+            var table_user = $("#group_details").DataTable({
+                "data":new_list,
+                "columns":[{'data': 'Action'}, {'data': 'Group Name'}, {'data': 'Created By'}, {'data':'Created Date'}, {'data':'Modified By'}, {'data':'Modified Date'}],
+                "autoWidth": true,
+                "scrollY": "50vh",
+                "scrollCollapse": true,
+                "scrollX": "110%",
+                "bSort": false,
+                orderCellsTop: true,
+                "bSort": false,
+                responsive: true,
+                colReorder: {
+                fixedColumnsLeft: 1
+                },
+                stateSave: true,
+                "deferRender": true,
+                "paging": true,
+                "lengthMenu": [[1, 5, 50, -1], [1, 5, 50, "All"]],
+                "pageLength": 50,
+                "sScrollX": "100%",
+                "scrollX": true,
+                columnDefs: [
+                {
+                    targets: "_all",
+                    className: 'dt-center allColumnClass all'
+                },
+                ],
+            }).columns.adjust()
+            $('#group_details').on( 'column-visibility.dt', function ( e, settings, column, state ) {
+                $(`#`+'group_details').DataTable().columns.adjust()
+            });
+            $(document).on('shown.bs.modal', function (e) {
+                $.fn.dataTable.tables( {visible: true, api: true} ).columns.adjust();
+            });
+
+            $('[name=group_details_length]').closest("label").css("display","flex")
+            $('[name=group_details_length]').closest("label").css("align-items","center")
+            $('[name=group_details_length]').closest("label").css("gap","9px")
+            $('[name=group_details_length]').closest(".col-sm-12.col-md-6").css("padding-left","1rem")
+            $('[name=group_details_length]').select2({
+                width: "50%"
+            })
+
+            $("#group_details_filter").find("input[type=search]").attr("style","border-radius: 1.8rem !important;border: 1px solid lightgrey !important;height: 28px;padding: 4px 9px;")
+            $("#group_details_filter").find("label").css("font-size","0.8rem")
+        }
+
+    })
+
+    $("#userAccessApprovalsButton").on("click", userAccessHandler);
+
+    if ($('#ldapSearchResultTable').length > 0) {
+      $("#ldapSearchResultTable").DataTable({
+        "autoWidth": true,
+        "scrollY": 300,
+        "scrollX": 600,
+        "scrollCollapse": true,
+        orderCellsTop: true,
+        responsive: true,
+        colReorder: {
+          fixedColumnsLeft: 1
+        },
+        stateSave: false,
+        "deferRender": true,
+        "paging": true,
+        "lengthMenu": [[1, 5, 50, -1], [1, 5, 50, "All"]],
+        stripeClasses: false,
+        "pageLength": 50,
+        dom: 'lfBrtip',
+        buttons: [],
+        columnDefs: [
+        { "name": "sAMAccountname",   "targets": 0 },
+        { "name": "givenName",  "targets": 1 },
+        { "name": "sn", "targets": 2 },
+        { "name": "mail",  "targets": 3 },
+        { "name": "department",    "targets": 4 },
+          {
+            targets: "_all",
+            className: 'dt-center allColumnClass all'
+          },
+        ],
+      }).draw();
+    }
+
+    let ldapSearchOnInput = '{{ldap_trigger_search_on_input}}';
+
+    if (ldapSearchOnInput == "True") {
+      let minNoOfCharactersForSearch = '{{ldap_min_characters_for_search}}';
+      minNoOfCharactersForSearch = Number(minNoOfCharactersForSearch)
+      if (minNoOfCharactersForSearch == 0) {
+        minNoOfCharactersForSearch = 1
+      }
+      minNoOfCharactersForSearch -= 1;
+      $("#LDAPusername, #LDAPfirstName, #LDAPlastName, #LDAPemail").on('keypress', function () {
+        let username = $("#LDAPusername").val();
+        let firstName = $("#LDAPfirstName").val();
+        let lastName = $("#LDAPlastName").val();
+        let email = $("#LDAPemail").val();
+        if (username.length >= minNoOfCharactersForSearch || firstName.length >= minNoOfCharactersForSearch || lastName.length >= minNoOfCharactersForSearch || email.length >= minNoOfCharactersForSearch) {
+          $.ajax({
+            url: window.location.href,
+            data: {
+              'operation': "fetchUserFromLDAP",
+              'username': username,
+              'firstName': firstName,
+              'lastName': lastName,
+              'email': email,
+            },
+            type: "POST",
+            dataType: "json",
+            success: function (data) {
+              if (data.response != "success") {
+                Swal.fire({icon: 'error',text: data.response});
+              } else {
+                let ldapTable = $('#ldapSearchResultTable').DataTable();
+                ldapTable.clear();
+                ldapTable.rows.add(data.user_details);
+                ldapTable.draw();
+              }
+            },
+            error: function () {
+              Swal.fire({icon: 'error',text: 'Error! Failure in fetching users from LDAP. Please try again.'});
+            }
+          });
+        }
+      });
+    } else {
+      $("#searchLDAPUserButton").on('click', function () {
+        let username = $("#LDAPusername").val();
+        let firstName = $("#LDAPfirstName").val();
+        let lastName = $("#LDAPlastName").val();
+        let email = $("#LDAPemail").val();
+        if (username || firstName || lastName || email) {
+          $.ajax({
+            url: window.location.href,
+            data: {
+              'operation': "fetchUserFromLDAP",
+              'username': username,
+              'firstName': firstName,
+              'lastName': lastName,
+              'email': email,
+            },
+            type: "POST",
+            dataType: "json",
+            success: function (data) {
+              if (data.response != "success") {
+                Swal.fire({icon: 'error',text: data.response});
+              } else {
+                let ldapTable = $('#ldapSearchResultTable').DataTable();
+                ldapTable.clear();
+                ldapTable.rows.add(data.user_details);
+                ldapTable.draw();
+              }
+            },
+            error: function () {
+              Swal.fire({icon: 'error',text: 'Error! Failure in fetching users from LDAP. Please try again.'});
+            }
+          });
+        }
+      });
+    }
+
+    $("#createLDAPUserButton").on('click', function(){
+      let userData = $("#ldapSearchResultTable").DataTable().rows().data().toArray();
+      if (userData.length > 0) {
+        $.ajax({
+          url: window.location.href,
+          data: {
+            'operation': "createUsersLDAP",
+            'userData': JSON.stringify(userData),
+          },
+          type: "POST",
+          dataType: "json",
+          success: function (data) {
+            Swal.fire({icon: 'success',text: "User successfully created."});
+          },
+          error: function () {
+            Swal.fire({icon: 'error',text: 'Error! Failure in creating users from LDAP. Please try again.'});
+          }
+        });
+      } else {
+        Swal.fire({icon: 'error',text: 'Error!'});
+      }
+    })
+
+
+  </script>
+</section>
+
+{% endblock %}

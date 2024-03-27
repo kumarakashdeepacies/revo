@@ -1,0 +1,18 @@
+{
+  "compileOnSave": true,
+  "compilerOptions": {
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "skipLibCheck": true,
+    "outDir": "./dist/",
+		"module": "commonjs",
+		"target": "es6",
+		"jsx": "react",
+		"allowSyntheticDefaultImports": true,
+		"strict": false,
+			"lib": [
+				"DOM",
+				"ES6"
+			]
+  },
+}

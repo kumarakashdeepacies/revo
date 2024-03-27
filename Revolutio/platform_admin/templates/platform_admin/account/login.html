@@ -1,0 +1,945 @@
+{% extends "account/base.html" %}
+{% load static %}
+{% load i18n %}
+{% load crispy_forms_tags %}
+
+{% block head_title %}{% trans "Sign In" %}{% endblock %}
+
+{% block inner %}
+
+<!--<h1>{% trans "Sign In" %}</h1-->
+<!--<div class="container_lgn">-->
+
+<!-- Sweet Alert2 -->
+<script src="{% static 'vendor/sweet_alert/sweetalert2.all.min.js' %}"></script>
+<!-- Cryto Js for Password Hashing -->
+<script src="{% static 'js/crypto-js/js/crypto-js.min.js' %}"></script>
+
+<style>
+   :root {
+  --primary-color:#d4af37;
+  --secondary-color:black;
+  --font-color: #000000;
+  --font-hover-color: #ffffff;
+  }
+
+.swal2-actions {
+    flex-wrap: nowrap;
+  }
+
+  .swal2-title{
+    font-size: 1em !important;
+    font-weight: unset !important;
+  }
+  .swal2-styled.swal2-confirm, .swal2-styled.swal2-deny, .swal2-styled.swal2-cancel{
+  background-color: var(--primary-color) !important;
+  padding: 0.3em 0.8em;
+  flex: 0 0 5em;
+  border: 0  !important;
+  background-image: radial-gradient(rgba(255,255,255,0.1),rgba(255,255,255,0.1))!important;
+}
+.swal2-styled.swal2-confirm:focus, .swal2-styled.swal2-deny:focus, .swal2-styled.swal2-cancel:focus {
+  box-shadow: 0 0 0 2px var(--secondary-color) !important;
+}
+.swal2-styled.swal2-confirm:hover, .swal2-styled.swal2-deny:hover, .swal2-styled.swal2-cancel:hover {
+  background-color: var(--primary-color)!important;
+  color: var(--font-hover-color)!important;
+  border: 0 !important;
+  background-image: linear-gradient(rgba(0,0,0,0),rgba(0,0,0,0)) !important;
+  box-shadow: 0 0 0 2px var(--secondary-color);
+}
+
+  input[type=text],input[type=password]{
+    background: transparent;
+    border: 1px solid #ced4da !important;
+  }
+  input[type=text]:focus,input[type=password]:focus{
+    color: #495057;
+    background-color: #fff;
+    border-color: var(--primary-color) !important;
+    outline: 0;
+  }
+  label{
+    top: unset;
+  }
+  .login-dropdown .dropdown-item:hover{
+    border-radius: 5px;
+    background-color: #f5f5f5;
+    color: black !important;
+  }
+  .dropdown-divider{
+    margin: 0;
+  }
+  .login-dropdown{
+    height: fit-content;
+    min-width: 9em;
+    border-radius: 6px;
+    overflow-y: auto;
+    padding:5px;
+    overflow: hidden;
+  }
+  .login-dropdown.show{
+    overflow-y: unset;
+  }
+  .login-dropdown .dropdown-text{
+    white-space: break-spaces;
+  }
+  .formBx{
+    left: 0 !important;
+    right: 0 !important;
+    margin: 0 auto;
+    height: 90%;
+  }
+  .formBx .signinForm{
+    transition-delay: 0.25s;
+  }
+  .formBx.flipped {
+    transform: rotateY(3.142rad);
+    opacity: 0;
+    z-index: -1;
+  }
+  .forgot-password{
+    background: white;
+    border-radius: 10px;
+    position: absolute;
+    left: 0 !important;
+    right: 0 !important;
+    margin: 0 auto;
+    width: 50%;
+    height: 90%;
+    z-index: -1;
+    opacity: 0;
+    transition: 0.3s;
+    transition-delay: 0.4s;
+    box-shadow: 0 5px 45px rgb(0 0 0 / 15%);
+  }
+  .forgot-password.isVisible{
+    opacity: 1;
+    z-index: 1000;
+  }
+  .formBx .signupForm {
+    left: 100%;
+    transition-delay: 0s;
+
+  }
+  .formBx.active .signupForm{
+    left: 0;
+    transition-delay: 0.25s;
+    margin-top: 10%;
+  }
+
+  .formBx.active .signinForm{
+    left: -100%;
+    transition-delay: 0s;
+  }
+
+  .form-control{
+    padding: 5px !important;
+    border-radius: 4px !important;
+  }
+  .messages-content{
+    position: relative;
+  }
+  .switch-container {
+    width: 4em;
+    height: 2em;
+    border-radius: 10em;
+    box-shadow: 2px 0px 10px 0px #cfd8dc;
+    position: relative;
+  }
+  input.switch {
+    display: none;
+  }
+  .switch-color {
+    width: 3.45em;
+    height: 1.8em;
+    left: 0.1em;
+    top: 0.1em;
+    background: #cfd8dc;
+    border-radius: 10em;
+    z-index: 0;
+    position: absolute;
+    transition: all 500ms cubic-bezier(0.34, 1.36, 0.2, 1);
+  }
+  .switch-color .trigger-label{
+    height: 100%;
+    width: 100%;
+    margin: 0;
+    cursor: pointer;
+  }
+  .switch-container label.switch-label {
+    width: 1.6em;
+    height: 1.6em;
+    border-radius: 10em;
+    background: white;
+    position: absolute;
+    top: 0.15em;
+    left: 0.2em;
+    box-shadow: 2px 2px 10px 2px #cfd8dc;
+    z-index: 99;
+    cursor: pointer;
+  }
+  .switch:checked ~ label.switch-label {
+    transform: translatex(1.65em) rotatez(360deg);
+  }
+
+  .switch:checked ~ .switch-color {
+    background: var(--primary-color);
+    opacity: 0.8;
+  }
+
+  .switch ~ label.switch-label {
+    transition: all 1s cubic-bezier(0.34, 1.36, 0.2, 1);
+  }
+
+  .switch-container.terms-check{
+    width: 3em;
+    height: 1.5em;
+
+  }
+  .terms-check .switch-color {
+    width: 2.8em;
+    height: 1.25em;
+    top: 9.15%;
+  }
+  .switch-container.terms-check label.switch-label {
+    width: 1.1em;
+    height: 1.1em;
+    top: 0.2em;
+  }
+  .terms-check .switch:checked ~ label.switch-label {
+    transform: translatex(1.5em) rotatez(360deg);
+    box-shadow: 2px 2px 10px 2px #ffffff;
+  }
+  .terms-check + .form-check-label{
+    margin-left: 3%;
+    margin-bottom: 0%;
+    padding: 0;
+  }
+  .fade-scale {
+    transform: scale(0);
+    opacity: 0;
+    -webkit-transition: all .3s linear;
+    -o-transition: all .3s linear;
+    transition: all .3s linear;
+  }
+
+  .fade-scale.in {
+    opacity: 1;
+    transform: scale(1);
+  }
+  .terms-header{
+    text-align: center;
+    width: fit-content;
+    margin: auto;
+    padding-bottom: 10px;
+    letter-spacing: 2px;
+    font-weight: bold;
+    padding-top: 30px;
+  }
+  .terms-conditions{
+    margin-top: 30px;
+  }
+  .acies-text-left{
+    text-align: justify;
+  }
+  .terms-close{
+    display: flex;
+    justify-content: flex-end;
+  }
+  .terms-conditions .container{
+    width: 90%;
+    margin-top: 1rem;
+  }
+  .terms-conditions ul li{
+    font-size: 16px;
+  }
+  .Modal-content {
+    background-color: #f7f7f7;
+    margin: auto;
+    padding: 12px;
+    border-radius: 15px;
+    max-width: 80%;
+    height: 96%;
+    overflow: hidden;
+  }
+  .Modal-content .wrapper {
+    position: relative;
+    overflow: auto;
+    height: 92%;
+    padding: 0 10px;
+    min-height: unset;
+  }
+  .content-header{
+    margin-top: 1rem;
+  }
+
+  @media screen and (max-width: 768px){
+
+    .content-header h1 {
+      font-size: 1.4rem;
+      text-align: center;
+    }
+    .terms-conditions .container{
+      width: 95%;
+    }
+    .acies-text-left,.acies-text-left a {
+      font-size: 13px;
+    }
+    .terms-conditions ul li {
+      font-size: 13px !important;
+      text-align: justify;
+    }
+    .Modal-content {
+      padding: 8px;
+    }
+    .acies_logo_short {
+      margin-bottom: 10px;
+    }
+    .alert{
+      margin-bottom: 0.2rem;
+    }
+
+  .terms-header{
+    font-size: 1.5rem;
+  }
+}
+
+  @media (max-width: 991px){
+
+    .formBx, .forgot-password{
+      width: 100%;
+      height: 460px;
+      top: 10%;
+    }
+    .box.signin{
+      top: -6px;
+    }
+    .box.signup{
+      bottom: -12px;
+    }
+    .formBx.active{
+      left: 0;
+      top: 174px;
+    }
+    .bluebg .box.signup{
+      flex-direction: column-reverse;
+    }
+    .acies_logo_short{
+      margin-top: 1rem;
+    }
+    .box.signin p{
+      margin-bottom: 0.4rem !important;
+    }
+    .form-check-label {
+      margin-bottom: 0;
+      padding-left: 0.3rem !important;
+    }
+  }
+</style>
+
+<div class="login-page">
+  <div class="login-container">
+    <div class="formBx">
+      <div class="form signinForm">
+        <form class="login" id="login" action="/platform_admin/accounts/login/" method="POST">
+          <div class="logo_checkbox_wrapper d-flex justify-content-between">
+            <a href="/platform_admin/accounts/login/">
+              <img src="{%static 'images/Base_theme/Acies_short_logo.png'%}" style="margin-bottom: 10px;margin-top: -8px;" alt="Acies Logo" class="acies_logo_short" height="50" width="60">
+            </a>
+            <div class="form-check admin-check ">
+              <label data-toggle="dropdown" style="cursor:pointer">Platform Admin <i class="fa fa-chevron-down pl-2" ></i></label>
+              <div class="dropdown-menu dropdown-menu-sm dropdown-menu-right login-dropdown">
+
+                <a href="/applicationlogin/" class="dropdown-item">
+                  <span class="dropdown-text">User </span>
+                </a>
+                <a href="/tenant_admin/accounts/login/" class="dropdown-item" >
+                  <span class="dropdown-text">Tenant Admin </span>
+                </a>
+
+              </div>
+            </div>
+          </div>
+          <div id='messages-content' class="messages-content">
+            {% include 'messages.html' %}
+          </div>
+          {% csrf_token %}
+
+          {{ form|crispy }}
+
+          {% if redirect_field_value %}
+          <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" />
+          <input type="hidden" name="username" value="{{ username }}" />
+          {% endif %}
+          <div class="row">
+            <!--<div class="col-6">
+              <a href="{{ signup_url }}" class="acies-text-center">Register account</a>
+            </div>-->
+          </div>
+          <div class="form-group" id="terms_div" data-check="termscheck">
+            <div class="form-check" style="padding-left: 0" >
+              <div class="d-flex align-items-center justify-content-start">
+                <div class="switch-container terms-check">
+                  <input type="checkbox" class="checkboxinput form-check-input switch" id="master-checkbox" style="top:3.5px;"
+                    onchange="document.getElementById('aciessigninbutton').disabled = !this.checked;">
+                    <div class="switch-color"><label class="trigger-label" for="master-checkbox"></label></div>
+                    <label class="switch-label" for="master-checkbox"></label>
+                </div>
+                <label for="master-checkbox" class="form-check-label">
+                  Accept
+                  <a onMouseOver="this.style.color='black'" onMouseOut="this.style.color='var(--primary-color)'" id="myBtn"
+                    class="acies-nrm-text" style="color: var(--primary-color)">
+                    <font size="2">Terms & Conditions</font>
+                  </a>
+
+                </label>
+              </div>
+            </div>
+          </div>
+
+
+          <div class="row" style="vertical-align:middle;">
+            <div class="col-4">
+              <button disabled id="aciessigninbutton"
+                class="primaryAction btn btn-primary btn-block depends-on-master-checkbox btnActiveOverride">{% trans "Sign In" %}</button>
+            </div>
+            <div class="col-6" style="position: relative; right: -6px; bottom: -6px;">
+              <a class="acies-text-center" id="forgotpasswordFlip">{% trans "Forgot Password?" %}</a>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+    <div class="forgot-password">
+      <div class="card-body login-card-body" style="padding: 30px 25px;">
+        {% if user.is_authenticated %}
+        {% include "account/snippets/already_logged_in.html" %}
+        {% endif %}
+        <!--EXTRA CODE-->
+        <a href="/platform_admin/accounts/login/">
+          <img src="{%static 'images/Base_theme/Acies_short_logo.png'%}"
+               alt="Acies Logo" height="50" width="60">
+        </a>
+
+        <a id="backtoSignin">Sign In <i class="fa fa-arrow-right"></i></a>
+        <p></p>
+        <div style="margin-top: 3rem;padding: .5rem;">
+          <h6 style="text-align: left;"><b>{% trans "Password Reset" %}</b></h6>
+          <div id="email-sent" style="display: none;">
+            <p style="text-align:left;">{% blocktrans %}We have sent you an e-mail. Please contact us if you do not receive it within a few minutes.{% endblocktrans %}</p>
+            <p style="text-align:left;">Did not receive the password reset email?</p>
+            <button class="btn btn-primary btn-xs rounded" id="resend-email" style="padding: 5px 10px;">Resend Email</button>
+          </div>
+          <div id="reset-username-form">
+            <p style="text-align:left;">{% trans "Forgot your password? Enter your Username below, and we'll send you an e-mail allowing you to reset it." %}</p>
+            <form>
+              {% csrf_token %}
+              <label for="reset_email_username">Username:</label>
+              <input type="text" class="textinput textInput form-control" required id="reset_email_username" placeholder="Username">
+              <br>
+              <button type="button" id="reset_submit" class="btn btn-primary btn-xs rounded" style="padding: 5px 10px;">Reset My Password</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  $(document).ready(function(){
+    $('.acies_head_logo a').attr('href','/platform_admin/accounts/login/');
+  });
+
+  login_input = document.getElementById("id_login")
+  login_input.addEventListener("input", function(){
+    this.value = this.value.replace(/[^0-9a-zA-Z_@.]/g, '').replace(/(\..*)\./g, '$1');
+  });
+
+  password_input = document.getElementById("id_password")
+  password_input.setAttribute("onkeypress","return event.charCode != 32");
+
+  $('<input type="hidden" name="operation" value="login">').insertAfter("#div_id_password");
+
+  $(document).ready(function(){
+    $('#login #div_id_remember input[type="checkbox"], #div_id_remember label').wrapAll('<div class="d-flex align-items-center justify-content-start">');
+    $('#login #div_id_remember input[type="checkbox"]').wrapAll('<div class="switch-container terms-check remember-check">');
+    $('#login #div_id_remember').css('padding-left','0');
+    $('#login #div_id_remember input[type="checkbox"]').addClass('switch');
+    $('#login .remember-check').append('<div class="switch-color"><label class="trigger-label" for="id_remember"></label></div>');
+    $('#login .remember-check').append('<label class="switch-label" for="id_remember"></label>');
+  });
+
+  var tracker = 0
+  var card = document.querySelector('.formBx');
+  var forgotPassword = document.querySelector('.forgot-password')
+  var backtoSignin = document.querySelector("#backtoSignin")
+
+  document.getElementById('forgotpasswordFlip').addEventListener('click', function() {
+    card.classList.add('flipped');
+    forgotPassword.classList.add('isVisible')
+    tracker=1
+  }, false);
+
+  backtoSignin.addEventListener('click', function() {
+    tracker=0
+      card.classList.remove('flipped');
+      forgotPassword.classList.remove('isVisible')
+  }, false);
+
+  var ctoken = $('form').find("input[name='csrfmiddlewaretoken']").attr('value')
+  $.ajaxSetup({
+      beforeSend: function (xhr, settings) {
+      xhr.setRequestHeader("X-CSRFToken", ctoken);
+
+      }
+  });
+
+  $("#reset_submit,#resend-email").off("click").on("click", function(){
+    var id = this.id
+    $.ajax({
+      url: `/platform_admin/accounts/password/reset_password/`,
+      data: {
+          'reset_email_username':$("#reset_email_username").val(),
+      },
+      type: "POST",
+      dataType: "json",
+      success: function (data) {
+        if (data.data == "success"){
+          if(id=="resend-email"){
+            Swal.fire({text:"Your request to resend the password reset email has been received. Please check your email.",icon:"success"})
+          }
+          else{
+            $("#reset-username-form").fadeOut("fast");
+            $("#email-sent").fadeIn(3000);
+          }
+          tracker=2
+        }else{
+          Swal.fire({text:data.msg,icon:"info"})
+          .then((result) => {
+            if (result.isConfirmed) {
+              url = '/platform_admin/accounts/login/'
+              window.location.href = url
+            }
+          })
+
+        }
+      },
+      error: function () {
+        Swal.fire({text:"Error! Please try again. ",icon:"error"});
+      }
+    })
+  })
+
+</script>
+
+
+<!--EXTRA CODE-->
+<div id="myModal" class="Modal fade-scale">
+  <div class="Modal-content" id="Modal-content">
+    <div class="wrapper">
+      <!-- Navbar -->
+      <!--<nav class="main-header navbar navbar-expand-md navbar-dark navbar-black">
+        <a href="{% url 'account_login' %}">
+          <img height="50" width="150" src="{%static 'images/Base_theme/Acies_white_logo.png'%} "
+               alt="Acies Logo">
+        </a>
+
+      </nav>-->
+        <!-- Content Header (Page header) -->
+        <div class="content-header" id="content-header">
+          <div class="container">
+            <h3 class="terms-header" id="terms-header">Terms of Use</h3>
+            <hr class="hr">
+            <!-- /.container-fluid -->
+            <div class="acies-nrm-text"></div>
+          </div>
+        </div>
+        <div class="content terms-conditions">
+          <div class="container">
+            <div class="row">
+              <div class="col-lg-12">
+
+
+                    <h5>Acceptance of Terms</h5>
+                    <p class="acies-text-left">
+                      Any information, resources or other material provided to you through our websites, applications
+                      and other online and offline properties is subject to the terms of use specified in this
+                      statement. By using any of our resources and other material provided to you, you are accepting the
+                      terms of use. In case you have any questions or clarifications related to the terms of use, please
+                      contact us using the Contact Us link on any of the webpages on our website <a
+                        class="acies-nrm-text" href="https://www.acies.consulting/"> www.acies.consulting.</a>
+                    </p>
+                    <p></p>
+                    <p class="acies-text-left" align="left">
+                      Acies LLP (‘Acies’ or ‘we’ or ‘us’) reserves the right to update or revise the terms of
+                      use at any time without providing notice to you. It is your responsibility to be aware of the
+                      updates or revisions to the terms of use. The latest version of the terms of use can be accessed
+                      through the Terms of Use link provided at the bottom of our web pages, applications and other
+                      online and offline properties.
+                    </p>
+                    <p></p>
+                    <p class="acies-text-left" align="left">
+                      Acies may provide you through our websites, applications, online and offline properties a variety
+                      of resources including tools, software, download areas, communication forums, business and product
+                      information,thought papers and marketing material (collectively referred to as ‘resources’). The
+                      resources, including updates, enhancements, new features, additions to the web pages, additions/
+                      modifications to the web properties are all subject to the terms of use.
+                    </p>
+                    <h5>Use of Resources</h5>
+                    <p class="acies-text-left" align="left">
+                      Unless otherwise indicated in the relevant content, and on the condition that you comply with all
+                      of your obligations under these terms of use, you are authorized to view, copy, print (not for
+                      distribution) the content on this website; provided that (i) such use is for informational,
+                      non-commercial purposes only, and (ii) any copy of the content that you make must include the
+                      copyright notice or other attribution associated with the content.
+                    </p>
+                    <p></p>
+                    <p class="acies-text-left" align="left">
+                      You will comply with all applicable laws in accessing and using the resources. You agree to the
+                      terms of our Privacy Statement.
+                    </p>
+                    <h5>Warranties</h5>
+                    <p class="acies-text-left" align="left">
+                      All content on our websites, applications and other online and offline properties is provided “as
+                      is", with no guarantees of completeness, accuracy or timeliness, and without representations,
+                      warranties or other contractual terms of any kind, express or implied. Acies does not represent or
+                      warrant that the resources provided and/ or any information or other material, will be accurate,
+                      current, error-free, omission-free or free of viruses or other harmful components. While every
+                      effort has been made to provide current and accurate information, errors can occur. Acies reserves
+                      the right to review materials and to remove any materials in its sole discretion.
+                    </p>
+                    <p></p>
+                    <p class="acies-text-left" align="left">
+                      The resources may contain information pertaining to but not limited to products, services,
+                      technology solutions, e-mail services, bulletin board services, news groups, forums, communities,
+                      and/or other message or communication facilities designed to enable you to communicate with us.
+                    </p>
+                    <p></p>
+                    <p class="acies-text-left" align="left">
+                      While using the content provided in the resources, you agree that you will not (actions include
+                      but are not limited to below mentioned points):
+                    <ul>
+                      <li>
+                        Use the resources for commercial purposes or otherwise in connection with surveys, contests,
+                        pyramid schemes, chain letters, junk email, spamming or any duplicative or unsolicited messages
+                      </li>
+                      <li>
+                        Defame, abuse, harass, stalk, threaten or otherwise violate the legal rights of others
+                      </li>
+                      <li>
+                        Publish, post, distribute or disseminate any inappropriate, profane, defamatory, obscene,
+                        indecent or unlawful topic, name, material or information
+                      </li>
+                      <li>
+                        Use any material or information, including images or photographs, which are made available
+                        through the resources in any manner that infringes any copyright, trademark, patent, or other
+                        proprietary right of any party.
+                      </li>
+                      <li>
+                        Download any file that you know, or reasonably should know, cannot be legally reproduced,
+                        displayed, and/or distributed in such manner.
+                      </li>
+                      <li>
+                        Harvest or otherwise collect information about others, including e-mail addresses
+                      </li>
+                      <li>
+                        Violate any applicable laws or regulations
+                      </li>
+                      <li>
+                        Use, download or otherwise copy, or provide whether for commercial purpose or otherwise to a
+                        person or entity any directory of users of the resources or other user or usage information or
+                        any portion thereof.
+                      </li>
+                    </ul>
+                    </p>
+                    <p></p>
+                    <p class="acies-text-left" align="left">
+                      As a condition of your use of the information provided under resources, you will not use the
+                      resources for any purpose that is unlawful or prohibited by these terms, conditions, and notices.
+                      You may not use the resources in any manner that could damage, disable, overburden, or impair any
+                      Acies’ server, or the network(s) connected to any Acies server, or interfere with any other
+                      party's use and enjoyment of any service.
+                    </p>
+                    <h5>Use of software, tools and templates (collectively called ‘software’)</h5>
+                    <p class="acies-text-left" align="left">
+                      Any software, tool or template that is made available to download is the copyrighted work of
+                      Acies. Use of the software is governed by the terms of the end user license agreement, if any,
+                      which accompanies or is included with the Software ("License Agreement"). An end user will be
+                      unable to install any Software that is accompanied by or includes a License Agreement, unless he
+                      or she first agrees to the License Agreement terms.
+                    </p>
+                    <p></p>
+                    <p class="acies-text-left" align="left">
+                      The Software is made available for download solely for use by end users according to the License
+                      Agreement. Any reproduction or redistribution of the Software not in accordance with the License
+                      Agreement is expressly prohibited by law and may result in severe civil and criminal penalties.
+                      Violators will be prosecuted to the maximum extent possible.
+                    </p>
+                    <p></p>
+                    <p class="acies-text-left" align="left">
+                      Without limiting the foregoing, copying or reproduction of the software to any other server or
+                      location for further reproduction or redistribution is expressly prohibited, unless such
+                      reproduction or redistribution is expressly permitted by the license agreement accompanying such
+                      software.
+                    </p>
+                    <p></p>
+                    <p class="acies-text-left" align="left">
+                      The software is warranted, if at all, only according to the terms of the license agreement. Except
+                      as warranted in the license agreement, Acies hereby disclaims all warranties and conditions with
+                      regardto the software, including all warranties and conditions of merchantability, whether
+                      express, implied or statutory, fitness for a particular purpose, title and non-infringement. For
+                      your convenience, Acies may make available as part of the services or in its software products,
+                      tools and utilities for use and/or download. Acies does not make any assurances with regard to the
+                      accuracy of the results or output that derives from such use of any such tools and utilities.
+                      Please respect the intellectual property rights of others when using the tools and utilities made
+                      available on the Resources or in Acies software products.
+                    </p>
+                    <h5>Use of Documents</h5>
+                    <p class="acies-text-left" align="left">
+                      Permission to use documents such as thought papers, brochures, white papers, datasheets and FAQs
+                      from the resources is granted, provided that (1) the below copyright notice appears in all copies
+                      and that both the copyright notice and this permission notice appear, (2) use of such documents
+                      from the Resources is for informational and non-commercial or personal use only and will not be
+                      copied, distributed or broadcast in any media, and (3) no modifications of any documents are made.
+                      Use for any other purpose is expressly prohibited by law and may result in severe civil and
+                      criminal penalties. Violators will be prosecuted to the maximum extent possible.
+                    </p>
+                    <p></p>
+                    <p class="acies-text-left" align="left">
+                      Information on Acies websites are protected by trade dress, trademark, unfair competition,
+                      copyright and other laws and may not be copied or imitated in whole or in part. No logo, graphic,
+                      sound or image from the website may be copied or retransmitted unless expressly permitted by
+                      Acies.
+                    </p>
+                    <p></p>
+                    <p class="acies-text-left" align="left">
+                      Acies makes no representations about the suitability of the information contained in the documents
+                      and related graphics published as part of the resources for any purpose. All such documents and
+                      related graphics are provided "as is" without warranty of any kind. Acies hereby disclaims all
+                      warranties and conditions with regard to this information, including all warranties and conditions
+                      of merchantability, whether express, implied or statutory, fitness for a particular purpose, title
+                      and non-infringement. In no event shall Acies be liable for any special, indirect or consequential
+                      damages or any damages whatsoever resulting from loss of use, data or profits, whether in an
+                      action of contract, negligence or other tortious action, arising out of or in connection with the
+                      use or performance of information available from the Resources.
+                    </p>
+                    <p></p>
+                    <p class="acies-text-left" align="left">
+                      The documents and related graphics published on the Resources could include technical inaccuracies
+                      or typographical errors. Acies may make improvements and/or changes in the documents herein at any
+                      time.
+                    </p>
+                    <h5>Links to Third Party Sites</h5>
+                    <p class="acies-text-left" align="left">
+                      You may link to this website, application and other online and offline property provided that such
+                      link does not involve:
+                    <ul>
+                      <li>
+                        unauthorized use of our logo
+                      </li>
+                      <li>
+                        any false claim (actual or implied) of endorsement by, or other relationship with Acies
+                      </li>
+                      <li>
+                        framing or embedding of any pages of our site
+                      </li>
+                      <li>
+                        other infringement of our trademarks, copyright and/or other intellectual property rights
+                      </li>
+                    </ul>
+                    </p>
+                    <p></p>
+                    <p class="acies-text-left" align="left">
+                      Acies does not bear any responsibility whatsoever for the content, accuracy or security of any
+                      third-party websites that are linked (by way of hyperlink or otherwise) to this website. The
+                      linked sites are not under the control of Acies and Acies is not responsible for the contents of
+                      any linked site or any link contained in a linked site, or any changes or updates to such sites.
+                      Acies is not responsible for webcasting or any other form of transmission received from any linked
+                      site. These links are provided to you only as a convenience, and the inclusion of any link does
+                      not imply endorsement by Acies.
+                    </p>
+                    <h5>Copyright Notice</h5>
+                    <p class="acies-text-left" align="left">
+                      Except where noted otherwise, all material on the website is Copyright © 2023 for Acies LLP.
+                      All rights reserved. No part of the materials on this site, including but not limited to the
+                      text, graphics and html code, may be reproduced or transmitted in any form, or by any means
+                      without Acies’ written permission.
+                    </p>
+                    <p></p>
+                    <p class="acies-text-left" align="left">
+                      “Acies” and the Acies logo are registered or pending registration with the Indian Patent and
+                      Trademark Office or other trademark offices around the world.
+                    </p>
+                    <h5>Disclaimers and Limitations of Liability</h5>
+                    <p class="acies-text-left" align="left">
+                      This website, application or other online and offline property (including without limitation any
+                      content or other part thereof) contains general information only, and we are not, by means of this
+                      website, application or other online and offline property, rendering professional advice or
+                      services.The information presented on this website, application or other online and offline
+                      property should not be construed as legal, regulatory, tax, accounting or any other professional
+                      opinion, advice or service. You should consult with a professional advisor familiar with your
+                      particular factual situation for advice concerning specific tax or other matters before making any
+                      decision. You may reach out to us using the ‘Contact us’ link on each web page should you wish to
+                      engage with us further on the information presented on this website, application or other online
+                      and offline property.
+                    </p>
+                    <p></p>
+                    <p class="acies-text-left" align="left">
+                      Acies reserves the right at all times to disclose any information as Acies deems necessary to
+                      satisfy any applicable law, regulation, legal process or governmental request, or to edit, refuse
+                      to post or to remove any information or materials, in whole or in part, in Acies' sole discretion.
+                    </p>
+                    <p></p>
+                    <p class="acies-text-left" align="left">
+                      This website, application or other online and offline property is provided as is, and we make no
+                      express or implied representations or warranties regarding it. Without limiting the foregoing, we
+                      do not warrant that this website, application or other online and offline property will be secure,
+                      error-free, free from viruses or malicious code, or will meet any particular criteria of
+                      performance or quality. We expressly disclaim all implied warranties, including, without
+                      limitation, warranties of merchantability, title, fitness for a particular purpose,
+                      non-infringement, compatibility, security, and accuracy.
+                    </p>
+                    <p></p>
+                    <p class="acies-text-left" align="left">
+                      Your use of this website, application or other online and offline property is at your own risk and
+                      you assume full responsibility and risk of loss resulting from your usage, including, without
+                      limitation, with respect to loss of service or data. We will not be liable for any direct,
+                      indirect, special, incidental, consequential, or punitive damages or any other damages whatsoever,
+                      whether in an action of contract, statute, tort (including, without limitation, negligence), or
+                      otherwise, relating to or arising out of the use of this website, even if we knew, or should have
+                      known, of the possibility of such damages.
+                    </p>
+                    <p></p>
+                    <p class="acies-text-left" align="left">
+                      Certain links on this website may lead to websites, resources or tools maintained by third parties
+                      over whom we have no control, including, without limitation, those maintained by other entities or
+                      individual personnel of such entities. Without limiting any of the foregoing, we make no express
+                      or implied representations or warranties whatsoever regarding such websites, resources and tools,
+                      and links to any such websites, resources and tools should not be construed as an endorsement of
+                      them or their content by us.
+                    </p>
+              </div>
+            </div>
+          </div>
+        </div>
+    </div>
+    <div class="modal-footer" style="justify-content: space-between;">
+      <a href="#content-header" id="scrollToTop" class="btn btn-primary"><i class="fa fa-arrow-up"></i></a>
+      <button id="closeModal1" class="btn btn-primary">Close</button>
+    </div>
+  </div>
+</div>
+
+<script>
+
+  document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function (e) {
+          e.preventDefault();
+
+          document.querySelector(this.getAttribute('href')).scrollIntoView({
+              behavior: 'smooth'
+          });
+      });
+  });
+
+  var modal = document.getElementById("myModal");
+  var btnOpen1 = document.getElementById("myBtn");
+  var btnClose1 = document.getElementById("closeModal1");
+  if(btnOpen1){
+    btnOpen1.addEventListener('click', function () {
+      modal.classList.add("in")
+    })
+  }
+
+  btnClose1.onclick = function () {
+    modal.classList.remove("in")
+
+  }
+
+  window.onclick = function (event) {
+    if (event.target.id == "myModal") {
+      modal.classList.remove("in");
+    }
+  };
+  window.onkeyup = function (event) {
+    if (event.keyCode == 27) {
+      modal.classList.remove("in");
+    }
+  }
+
+
+  $("#id_login").focusout && $("#aciessigninbutton").click(function () {
+    if ($("#id_login").val() == '') {
+      $("#id_login").css('border-bottom', 'solid 2px red');
+    }
+    else {
+      $("#id_login").css("border-bottom", 'solid 1px var(--primary-color)');
+    }
+
+  });
+
+  $("#id_login").focusin(function () {
+    if ($("#id_login").val() != '') {
+      $("#id_login").css("border-bottom", 'solid 1px var(--primary-color)');
+    }
+
+  });
+
+
+  $("#id_password").focusout && $("#aciessigninbutton").click(function () {
+    if ($("#id_password").val() == '') {
+      $("#id_password").css('border-bottom', 'solid 2px red');
+    }
+    else {
+      $("#id_password").css("border-bottom", 'solid 1px var(--primary-color)');
+    }
+
+  });
+  $("#id_password").focusin(function () {
+    if ($("#id_password").val() != '') {
+      $("#id_password").css("border-bottom", 'solid 1px var(--primary-color)');
+    }
+
+  });
+
+  $("#aciessigninbutton").on('click', function(e){
+    e.preventDefault();
+    var password = $("#id_password").val();
+    var username = $("#id_login").val();
+    var key ='{{k_value}}'
+    key = CryptoJS.enc.Utf8.parse(key);
+
+    var iv = CryptoJS.enc.Utf8.parse("{{h_value}}");
+    var encrypted_password = CryptoJS.AES.encrypt(password, key, { iv: iv, mode: CryptoJS.mode.CBC});
+    encrypted_password = encrypted_password.toString();
+
+    var encrypted_username = CryptoJS.AES.encrypt(username, key, { iv: iv, mode: CryptoJS.mode.CBC});
+    encrypted_username = encrypted_username.toString();
+
+    $("#id_password").val(encrypted_password)
+    $("#id_login").attr("type","password")
+    $("#id_login").val(encrypted_username)
+    $("#login").trigger('submit');
+
+  });
+
+
+
+
+
+
+</script>
+
+
+{% endblock %}
+
+
+<!--<div class="row" style="vertical-align:middle;">
+
+  <div class="col-4">
+    <button disabled id="aciessigninbutton" type="submit" class="btn btn-primary btn-block depends-on-master-checkbox">Sign In</button>
+    <input type="hidden" name="next" value="{{ next }}" />
+  </div>
+</div>-->

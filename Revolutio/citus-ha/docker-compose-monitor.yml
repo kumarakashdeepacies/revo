@@ -1,0 +1,17 @@
+version: "3.9"  # optional since v1.27.0
+services:
+  monitor:
+    image: revolutiodev.azurecr.io/revolutio_kubernetes/pg_auto_failover:citus
+    build:
+      context: ./pg_auto_failover
+    environment:
+      PGDATA: /tmp/pgaf
+      PG_AUTOCTL_DEBUG: 1
+    #command: pg_autoctl create monitor --ssl-self-signed --auth trust --run
+    command: monitor
+    entrypoint: /var/lib/postgres/entrypoint
+    hostname: ha-demo-monitor.centralindia.cloudapp.azure.com
+    expose:
+      - 5432
+    ports:
+      - 5432:5432

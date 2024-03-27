@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  namespace: production
+  name: postgres-backups-new
+spec:
+  capacity:
+    storage: 50Gi
+  accessModes:
+  - ReadWriteOnce
+  storageClassName: default  # managed-premium is preferred however expensive.
+status: {}

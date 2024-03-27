@@ -1,0 +1,71 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  labels:
+    service: postgres15
+  namespace: production
+  name: postgres15
+spec:
+  selector:
+    matchLabels:
+      service: postgres15
+  serviceName: "postgres15"
+  template:
+    metadata:
+      labels:
+        service: postgres15
+    spec:
+      containers:
+      - envFrom:
+          - configMapRef:
+              name: envs-production-postgres
+          - secretRef:
+              name: secrets-production-postgres
+        image: revolutio.azurecr.io/revolutio_kubernetes/postgres:15-bullseye
+        imagePullPolicy: Always
+        name: postgres15
+        args: ["-c", "shared_buffers=3GB","-c", "work_mem=64MB","-c", "maintenance_work_mem=1GB","-c", "effective_io_concurrency=100","-c", "wal_compression=on","-c", "max_wal_size=1GB","-c", "min_wal_size=80MB","-c", "log_statement=all","-c", "autovacuum_max_workers=5","-c", "autovacuum_vacuum_cost_limit=1000","-c", "idle_in_transaction_session_timeout=240s"]
+        ports:
+          - containerPort: 5432
+            name: postgredb
+        resources:
+          requests:
+            cpu: 2.0
+            memory: 8Gi
+          limits:
+            cpu: 4.0
+            memory: 16Gi
+        volumeMounts:
+        - mountPath: /var/lib/postgresql/data
+          name: postgresql-data15
+          subPath: postgres
+        - mountPath: /backups
+          name: postgresql-backups15
+      nodeSelector:
+          poolclass: centraldb
+      restartPolicy: Always
+      serviceAccountName: ""
+      volumes:
+      - name: postgresql-data15
+        persistentVolumeClaim:
+          claimName: postgresql-data15
+      - name: postgresql-backups15
+        persistentVolumeClaim:
+          claimName: postgresql-backups15
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    service: postgres15
+  namespace: production
+  name: postgres15
+spec:
+  type: NodePort
+  ports:
+  - name: "5432"
+    port: 5432
+  selector:
+    service: postgres15
+status:
+  loadBalancer: {}
