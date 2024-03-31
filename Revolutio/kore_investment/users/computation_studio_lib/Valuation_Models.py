@@ -66,7 +66,7 @@ def ndays(month, year, start_day, month_day):
 
 
 # linear interpolation
-#@njit(cache=True, fastmath=True)
+@njit(cache=True, fastmath=True)
 def linearinterp(x, y, independent_var_value):
     n = len(x)
     for j in range(1, n):
@@ -75,7 +75,7 @@ def linearinterp(x, y, independent_var_value):
 
 
 # linear extrapolation
-#@njit(cache=True, fastmath=True)
+@njit(cache=True, fastmath=True)
 def linearexterp(x, y, independent_var_value):
     if independent_var_value > (x[-1]):
         return y[-1] + (independent_var_value - x[-1]) * (y[-1] - y[-2]) / (x[-1] - x[-2])
@@ -89,7 +89,7 @@ def cubicspline(x, y, independent_var_value):
     return check(independent_var_value)
 
 
-#@njit(cache=True, fastmath=True)
+@njit(cache=True, fastmath=True)
 def flatexterp(x, y, independent_var_value):
     if independent_var_value > (x[-1]):
         return y[-1]
@@ -97,7 +97,7 @@ def flatexterp(x, y, independent_var_value):
         return y[0]
 
 
-#@guvectorize([void(float64[:], float64[:], float64, float64[:])], "(n),(n),()->()")
+@guvectorize([void(float64[:], float64[:], float64, float64[:])], "(n),(n),()->()")
 def linforward(x, y, independent_var_value, result):
     n = len(x)
     for j in range(1, n):
@@ -114,7 +114,7 @@ def linforward(x, y, independent_var_value, result):
 
 
 # piecewise linear
-#@njit(cache=True, fastmath=True)
+@njit(cache=True, fastmath=True)
 def bilinearint(x, y, f, x0, y0):
     w = []
     n = len(x)
@@ -147,7 +147,7 @@ def macaulay_duration(c, y, m, n):
 
 
 # Cashflow Amount Calculation
-#@njit(cache=True, fastmath=True)
+@njit(cache=True, fastmath=True)
 def fixed_income_government_cashflows(
     Cashflow_Date, Year_frac, Face_Value, Coupon_Rate, Maturity_Date, Redemption_Amount
 ):
@@ -158,7 +158,7 @@ def fixed_income_government_cashflows(
 
 
 # FIB Government Valuation
-#@njit(cache=True, fastmath=True)
+@njit(cache=True, fastmath=True)
 def fixed_income_valuation(
     TTM_array,
     Total_amount_array,
@@ -215,7 +215,7 @@ def fixed_income_valuation(
             PV_minus_1bps,
         )
 
-#@njit(cache=True, fastmath=True)
+@njit(cache=True, fastmath=True)
 def fixed_income_valuation_investments(
     TTM_array,
     Total_amount_array,
@@ -266,7 +266,7 @@ def fixed_income_valuation_investments(
             PV_minus_1bps,
         )
 
-#@guvectorize([void(float64[:], float64[:], float64, float64[:])], "(n),(n),()->()")
+@guvectorize([void(float64[:], float64[:], float64, float64[:])], "(n),(n),()->()")
 def fixed_income_valuation_VAR(TTM_array, Total_amount_array, zero_rates, result):
     df = np.exp(-TTM_array * zero_rates)
     PV_table = Total_amount_array * df
@@ -274,7 +274,7 @@ def fixed_income_valuation_VAR(TTM_array, Total_amount_array, zero_rates, result
     result[:] = PV_output
 
 
-#@njit(cache=True, fastmath=True)
+@njit(cache=True, fastmath=True)
 def commercial_paper_valuation(
     TTM_Array, Redemption_Amount, all_in_rate, curve_compounding_frequency="Annual"
 ):
@@ -312,14 +312,14 @@ def commercial_paper_valuation(
     return PV, TTM_Array, df, PV_plus_1bps, PV_minus_1bps
 
 
-#@njit(cache=True, fastmath=True)
+@njit(cache=True, fastmath=True)
 def commercial_paper_mtm_valuation(TTM_Array, Redemption_Amount, ytm, ytm_frequency=1):
     df = 1 / (1 + (ytm / ytm_frequency)) ** (ytm_frequency * (TTM_Array))
     PV = Redemption_Amount * df
     return PV, TTM_Array, df
 
 
-#@njit(cache=True, fastmath=True)
+@njit(cache=True, fastmath=True)
 def effective_duration_calc(PV, total_amount, TTM_Array, ytm):
     PV_m1 = np.sum(total_amount * np.exp(-TTM_Array * (ytm - 0.01)))
     PV_p1 = np.sum(total_amount * np.exp(-TTM_Array * (ytm + 0.01)))
@@ -327,7 +327,7 @@ def effective_duration_calc(PV, total_amount, TTM_Array, ytm):
     return effective_duration
 
 
-#@njit(cache=True, fastmath=True)
+@njit(cache=True, fastmath=True)
 def tenor_extraction(tenor, tenor_unit):
     if tenor_unit == "M":
         return int(tenor) / 12
@@ -910,7 +910,7 @@ class Valuation_Models:
                 Year_frac_array[0] =  Year_frac_0_value
 
             def calculate_year_frac(row):
-                logging.warning(f" akash calculate_year_frac updated vector fxn version 2")
+                #logging.warning(f" akash calculate_year_frac updated vector fxn version 2")
                 if str(row['Ending_Date']) == "NaT":
                     return max(conventions.A_day_count(Last_coupon_date, row['Ending_Date'], accrual_convention_code, custom_daycount_conventions=custom_daycount_conventions), 0)
                 else:
