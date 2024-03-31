@@ -145,12 +145,23 @@ class Conventions:
         holiday_list=[],
         custom_daycount_conventions=None,
     ):
-        years_start = Payment_start_date.astype("datetime64[Y]").astype(int) + 1970
-        years_end = Payment_end_date.astype("datetime64[Y]").astype(int) + 1970
-        months_start = Payment_start_date.astype("datetime64[M]").astype(int) % 12 + 1
-        months_end = Payment_end_date.astype("datetime64[M]").astype(int) % 12 + 1
-        days_start = (Payment_start_date - Payment_start_date.astype("datetime64[M]")).astype(int) + 1
-        days_end = (Payment_end_date - Payment_end_date.astype("datetime64[M]")).astype(int) + 1
+        
+        Payment_start_date = pd.to_datetime(Payment_start_date)
+        Payment_end_date = pd.to_datetime(Payment_end_date)
+        years_start = Payment_start_date.year
+        years_end = Payment_end_date.year
+        months_start = Payment_start_date.month
+        months_end = Payment_end_date.month
+        days_start = Payment_start_date.day
+        days_end = Payment_end_date.day
+
+        # years_start = Payment_start_date.astype("datetime64[Y]").astype(int) + 1970
+        # years_end = Payment_end_date.astype("datetime64[Y]").astype(int) + 1970
+        # months_start = Payment_start_date.astype("datetime64[M]").astype(int) % 12 + 1
+        # months_end = Payment_end_date.astype("datetime64[M]").astype(int) % 12 + 1
+        # days_start = (Payment_start_date - Payment_start_date.astype("datetime64[M]")).astype(int) + 1
+        # days_end = (Payment_end_date - Payment_end_date.astype("datetime64[M]")).astype(int) + 1
+        
         # 30/360 Bond Basis
         if Convention == 1:
             if days_end == 31 and (days_start == 30 or days_start == 31):
