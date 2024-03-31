@@ -905,15 +905,12 @@ class Valuation_Models:
                     custom_daycount_conventions=custom_daycount_conventions,
                 )
 
-            #Year_frac_array = np.empty([0], dtype="float64")
-            Year_frac_array = np.zeros(Begining_Date_array.size + 1)    
+            Year_frac_array = np.zeros(Begining_Date_array.size)    
             if Year_frac_0_value > 0:
                 Year_frac_array[0] =  Year_frac_0_value
-            else:
-                Year_frac_array[0] = 0
 
             def calculate_year_frac(row):
-                #logging.warning(f" akash calculate_year_frac updated vector fxn version 2")
+                logging.warning(f" akash calculate_year_frac updated vector fxn version 2")
                 if str(row['Ending_Date']) == "NaT":
                     return max(conventions.A_day_count(Last_coupon_date, row['Ending_Date'], accrual_convention_code, custom_daycount_conventions=custom_daycount_conventions), 0)
                 else:
@@ -921,7 +918,7 @@ class Valuation_Models:
                 
             temp = pd.DataFrame({'Begining_Date': Begining_Date_array, 'Ending_Date': Ending_Date_array})
             start3 =  time.time()
-            year_year = temp.apply(calculate_year_frac,axis =1)
+            year_year = temp.iloc[1:].apply(calculate_year_frac,axis =1)
             Year_frac_array[1:] = year_year.values
             end3 = time.time()
             logging.warning(f"calculate_year_frac took {end3 - start3} sec")
@@ -21530,7 +21527,7 @@ def compound_interest_schedule_generation(
     compound_interest_schedule = []
 
     def calculate_interest_parameters(start_dates, end_dates, cashflow_dates, last_payment_date, interest_rate, principal, accrued_interest, valuation_date, discount_convention_code, custom_daycount_conventions, payout, model_code):
-        logging.warning(f" akash calculate_interest_parameter updated vector fxn ")
+        logging.warning(f" akash --  calculate_interest_parameter updated vector fxn M051 ")
         start_dates = np.array(start_dates)
         end_dates = np.array(end_dates)
         cashflow_dates = np.array(cashflow_dates)
