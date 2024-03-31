@@ -913,7 +913,7 @@ class Valuation_Models:
                 Year_frac_array[0] = 0
 
             def calculate_year_frac(row):
-                logging.warning(f" akash calculate_year_frac updated vector fxn version 2")
+                #logging.warning(f" akash calculate_year_frac updated vector fxn version 2")
                 if str(row['Ending_Date']) == "NaT":
                     return max(conventions.A_day_count(Last_coupon_date, row['Ending_Date'], accrual_convention_code, custom_daycount_conventions=custom_daycount_conventions), 0)
                 else:
@@ -926,7 +926,7 @@ class Valuation_Models:
             end3 = time.time()
             logging.warning(f"calculate_year_frac took {end3 - start3} sec")
             logging.warning(f"{Year_frac_array}")
-            logging.warning(f"Expected size: {Begining_Date_array.size}, Actual size: {year_year.size}")
+            logging.warning(f"Expected size: {Begining_Date_array.size}, Actual size: {Year_frac_array.size}")
             
             Coupon_Rate = np.repeat(Coupon_Rate, len(Cashflow_Date_array))
             Face_Value = np.repeat(Face_Value, len(Cashflow_Date_array))
@@ -11014,7 +11014,7 @@ def Value_extraction_pf(
         return final_output_dict, cashflow_model_results, measure_value
 
     elif row[column_index_dict["model_code"]] in ["M019", "M046","M051"]:
-        logging.warning(f" M051 model entered later will remove m051 to different else condition ")
+        #logging.warning(f" M051 model entered later will remove m051 to different else condition ")
         final_output_dict = {}
         unique_reference_Id = row[column_index_dict["unique_reference_id"]]
         position_id = row[column_index_dict["position_id"]]
