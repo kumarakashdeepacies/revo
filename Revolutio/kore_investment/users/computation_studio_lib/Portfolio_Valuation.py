@@ -727,9 +727,6 @@ def final_valuation_fn(config_dict, request, data=None):
             final_cashflow_data['present_value_-1bps'] = final_cashflow_data['cashflow']*final_cashflow_data['discount_factor_-1bps']
 
             final_cashflow_data["pv*t"] = final_cashflow_data['present_value']*final_cashflow_data['time_to_maturity']
-
-
-
             
             final_cashflow_data_aggregation = final_cashflow_data.loc[final_cashflow_data['cashflow_type']!="Accrued Interest"].groupby(['position_id'])[['present_value','present_value_+1bps','present_value_-1bps','pv*t']].aggregate("sum", engine="cython").reset_index().rename(columns= {'present_value':'present_value_position','present_value_+1bps':'present_value_position_+1bps', 'present_value_-1bps':'present_value_position_-1bps','pv*t':'pv*t_position'})
             final_cashflow_data = final_cashflow_data.merge(final_cashflow_data_aggregation, left_on='position_id',right_on='position_id',how='left')
