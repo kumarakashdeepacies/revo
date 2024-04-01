@@ -921,9 +921,9 @@ class Valuation_Models:
             year_year = temp.iloc[1:].apply(calculate_year_frac,axis =1)
             Year_frac_array[1:] = year_year.values
             end3 = time.time()
-            logging.warning(f"calculate_year_frac took {end3 - start3} sec")
-            logging.warning(f"{Year_frac_array}")
-            logging.warning(f"Expected size: {Begining_Date_array.size}, Actual size: {Year_frac_array.size}")
+            #logging.warning(f"calculate_year_frac took {end3 - start3} sec")
+            #logging.warning(f"{Year_frac_array}")
+            #logging.warning(f"Expected size: {Begining_Date_array.size}, Actual size: {Year_frac_array.size}")
             
             Coupon_Rate = np.repeat(Coupon_Rate, len(Cashflow_Date_array))
             Face_Value = np.repeat(Face_Value, len(Cashflow_Date_array))
@@ -962,6 +962,7 @@ class Valuation_Models:
             ].to_numpy(dtype="float64")
             Total_Amount = Coupons
 
+        logging.warning(f"before null checks {accrued_interest}")
         if str(accrued_interest) in ["nan", "None", ""]:
             if str(Last_coupon_date) in ["None", "NaT", "-", "nan"]:
                 time_period = conventions.A_day_count(
@@ -1031,6 +1032,8 @@ class Valuation_Models:
 
         Unique_Reference_Id = Unique_Reference_Id
         Valuation_Date = Valuation_Date
+
+        logging.warning(f"final accrued_interest values{accrued_interest}")
         
         result_array = [
             Unique_Reference_Id,
@@ -3481,6 +3484,13 @@ def Value_extraction_pf(
     product_holiday_code=None,
     request=None,
 ):
+    #logging.warning(f"entered value_extraction_df fxn")
+    #logging.warning(f"row data should be  ::  {row}")
+    #logging.warning(f"ROW :: {row}")
+    #logging.warning(f"column index dict : {column_index_dict['reporting_date']}") 
+    #logging.warning(f"reporting_date : {row[column_index_dict['reporting_date']]}")
+
+
     curve_component_transformation_vect = np.vectorize(curve_component_transformation)
     curve_component_transformation_result = curve_component_transformation_vect(
         curve_repo_data.to_dict("records")
@@ -11154,6 +11164,39 @@ def Value_extraction_pf(
         output_msg = output_check_fn(
             cashflow_results=cashflow_model_results[cashflow_model_results["time_to_maturity"] != 0]
         )
+
+        if row[column_index_dict["model_code"]] in ["M051"]:
+            cashflow_model_results["unique_reference_id"] = Unique_Reference_Id
+            cashflow_model_results["position_id"] = Position_Id
+            logging.warning(f"accurud interest values -- --")     
+            logging.warning(f"{accrued_interest[0]}")                
+            if str(accrued_interest[0]) not in ["", "0.0", "None", "nan"]:
+                cashflow_model_results = pd.concat(
+                    [cashflow_model_results, cashflow_model_results.iloc[[-1]]], ignore_index=True
+                )
+                if str(Quantity) in ["", "None", "nan"]:
+                    Quantity = 1
+                cashflow_model_results.iloc[-1, cashflow_model_results.columns.get_loc("cashflow")] = (
+                    accrued_interest[0] * Quantity
+                )
+                cashflow_model_results.iloc[-1, cashflow_model_results.columns.get_loc("cashflow_type")] = (
+                    "Accrued Interest"
+                )
+                cashflow_model_results.iloc[-1, cashflow_model_results.columns.get_loc("transaction_date")] = (
+                    pd.to_datetime(Valuation_Date[0])
+                )
+                cashflow_model_results.iloc[-1, cashflow_model_results.columns.get_loc("present_value")] = None
+                cashflow_model_results.iloc[-1, cashflow_model_results.columns.get_loc("time_to_maturity")] = (
+                    cashflow_model_results["time_to_maturity"].iloc[0]
+                )
+                cashflow_model_results.iloc[-1, cashflow_model_results.columns.get_loc("discount_factor")] = None
+                cashflow_model_results = cashflow_model_results.sort_values(
+                    by=["transaction_date", "cashflow_type"], ascending=True
+                )
+
+            logging.warning("returning from break as cashflow only")
+            return [],cashflow_model_results,[]
+        
         if output_msg["CF_Output"] == "Present":
 
             if config_dict["inputs"]["Output_choice"]["Valuation"] == "Yes":
