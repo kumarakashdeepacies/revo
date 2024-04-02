@@ -543,7 +543,7 @@ def final_valuation_fn(config_dict, request, data=None):
     
     pos = 0
 
-    val_date_filtered_cashflow_uploaded_aggregate_model = val_date_filtered.loc[
+    val_date_filtered_cashflow_uploaded_aggregate_model_M053 = val_date_filtered.loc[
         val_date_filtered["model_code"].isin(["M053"])
     ]
 
@@ -794,7 +794,7 @@ def final_valuation_fn(config_dict, request, data=None):
         val_date_filtered = val_date_filtered.loc[val_date_filtered['model_code']!="M051"]
 
 
-    if len(val_date_filtered_cashflow_uploaded_aggregate_model)>0:
+    if len(val_date_filtered_cashflow_uploaded_aggregate_model_M053)>0:
         for chunk_pos_data_cashflow in np.array_split(val_date_filtered, len(val_date_filtered)/chunk_size if len(val_date_filtered)>chunk_size else 1):
             logging.warning(f"ENTERED M053 AGGREGATE MODEL - {pos}")
             cashflow_data_filtered = cashflow_uploaded_data.loc[cashflow_uploaded_data['position_id'].isin(chunk_pos_data_cashflow['position_id'])]
