@@ -11021,7 +11021,7 @@ def Value_extraction_pf(
         return final_output_dict, cashflow_model_results, measure_value
 
     elif row[column_index_dict["model_code"]] in ["M019", "M046","M051"]:
-        #logging.warning(f" M051 model entered later will remove m051 to different else condition ")
+        logging.warning(f" M051 model entered later will remove m051 to different else condition ")
         final_output_dict = {}
         unique_reference_Id = row[column_index_dict["unique_reference_id"]]
         position_id = row[column_index_dict["position_id"]]
